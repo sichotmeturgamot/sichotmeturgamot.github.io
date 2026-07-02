@@ -46,7 +46,7 @@
 </main>
 
 
-<script src="data.js"></script>
+<script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
   const visible = y => y.sichos.filter(s => !s.hidden);
   const totalSichos = YEARS.reduce((n, y) => n + visible(y).reduce((m, s) => m + (s.count || 1), 0), 0);
@@ -58,8 +58,8 @@
 
   // שלוש השיחות האחרונות (לפי תאריך)
   const all = [];
-  YEARS.forEach(y => visible(y).forEach(s => all.push({ ...s, year: y.year })));
-  all.sort((a, b) => (b.sortDate || '').localeCompare(a.sortDate || ''));
+  YEARS.forEach((y, yi) => visible(y).forEach(s => all.push({ ...s, year: y.year, yi })));
+  all.sort((a, b) => (b.yi - a.yi) || (b.sortDate || '').localeCompare(a.sortDate || ''));
   const latest = all.slice(0, 3);
   if (latest.length) {
     document.getElementById('latest-card').style.display = 'block';

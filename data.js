@@ -16,7 +16,8 @@ const YEARS = [
         "file": "pdfs/sefer-hasichos-5706.pdf",
         "pages": 61,
         "count": 29,
-        "sortDate": "1945-09-08"
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי"
       }
     ]
   },
@@ -31,7 +32,8 @@ const YEARS = [
         "file": "pdfs/sichos-tishrei-5707.pdf",
         "pages": 26,
         "count": 17,
-        "sortDate": "1946-09-26"
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי"
       }
     ]
   }
