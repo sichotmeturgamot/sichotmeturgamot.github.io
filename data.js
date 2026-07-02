@@ -32,14 +32,6 @@ const YEARS = [
         "pages": 26,
         "count": 1,
         "sortDate": "1946-09-26"
-      },
-      {
-        "title": "ש״פ נח, בדר״ח מרחשון — בסעודת היום",
-        "subtitle": "שיחת שבת פרשת נח, בדר״ח מרחשון",
-        "file": "pdfs/shabbos-noach-5707.pdf",
-        "pages": 3,
-        "count": 1,
-        "sortDate": "1946-10-26"
       }
     ]
   }
