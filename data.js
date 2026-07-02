@@ -1,7 +1,4 @@
-/* ============================================================
-   נתוני האתר — נערך דרך עמוד הניהול (admin.html) או ידנית
-   sortDate = תאריך לועזי של אמירת השיחה, למיון כרונולוגי
-   ============================================================ */
+/* קובץ זה נערך אוטומטית דרך עמוד הניהול (admin.html) — אפשר גם לערוך ידנית */
 
 const MAILING_LIST_URL = "https://forms.google.com/YOUR_FORM_LINK_HERE";
 const DONATE_EMAIL = "doviber@gmail.com";
@@ -43,14 +40,6 @@ const YEARS = [
         "pages": 3,
         "count": 1,
         "sortDate": "1946-10-26"
-      },
-      {
-        "title": "י״ט כסלו תש״ז",
-        "subtitle": "שיחת חג הגאולה י״ט כסלו — ראש השנה לחסידות",
-        "file": "pdfs/yud-tes-kislev-5707.pdf",
-        "pages": 14,
-        "count": 1,
-        "sortDate": "1946-12-12"
       }
     ]
   }
