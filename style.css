@@ -109,25 +109,11 @@ main { max-width: 900px; margin: 0 auto; padding: 36px 16px; width: 100%; flex: 
   margin: 6px 0 14px;
 }
 .year-panel-head h2 { font-size: 1.5rem; }
-
-/* ===== Year sections (sichos page) ===== */
-.year-section { margin-bottom: 22px; }
-.year-header {
-  display: flex; align-items: center; gap: 14px; cursor: pointer;
-  background: var(--paper); border: 1px solid #e8e2d4; border-radius: 14px;
-  padding: 16px 20px; transition: box-shadow .2s;
-}
-.year-header:hover { box-shadow: 0 4px 18px rgba(26,41,66,.1); }
-.year-header h2 { font-size: 1.5rem; }
 .badge { font-size: .78rem; padding: 3px 12px; border-radius: 999px; font-weight: 500; }
 .badge.done { background: #e5f2e5; color: var(--green); }
 .badge.wip { background: #fdf3dd; color: #93690f; }
-.year-note { color: var(--muted); font-size: .88rem; margin-inline-start: auto; }
-.chev { transition: transform .25s; color: var(--gold); font-size: 1rem; }
-.year-section.open .chev { transform: rotate(90deg); }
-.sichos-list { display: none; padding-top: 12px; }
-.year-section.open .sichos-list { display: block; }
 .count-tag { font-size: .8rem; color: var(--gold); }
+.year-note { color: var(--muted); font-size: .88rem; margin-inline-start: auto; }
 
 .sicha {
   background: var(--paper); border: 1px solid #eee7d8; border-radius: 12px;
@@ -147,4 +133,44 @@ main { max-width: 900px; margin: 0 auto; padding: 36px 16px; width: 100%; flex: 
 #viewer-bar { display: flex; align-items: center; justify-content: space-between; color: #fff; padding-bottom: 10px; gap: 10px; flex-wrap: wrap; }
 #viewer-title { font-family: 'Frank Ruhl Libre', serif; font-size: 1.05rem; }
 #viewer-close { background: var(--gold); color: var(--navy); font-weight: 700; }
-#viewer-frame { flex: 1; width: 100%;
+#viewer-frame { flex: 1; width: 100%; border: none; border-radius: 10px; background: #525659; }
+
+/* ===== Forms ===== */
+label { display: block; font-size: .85rem; color: var(--muted); margin: 10px 0 3px; }
+input[type=text], input[type=password], input[type=number], input[type=date], textarea, select {
+  width: 100%; padding: 9px 11px; border: 1px solid #d8d2c2; border-radius: 8px;
+  font-family: 'Heebo', sans-serif; font-size: .95rem; background: #fffdf8;
+}
+input.en { direction: ltr; text-align: left; }
+
+.ltr { direction: ltr; unicode-bidi: embed; }
+
+/* ===== Mobile ===== */
+@media (max-width: 640px) {
+  .year-note { display: none; }
+
+  .topnav { padding: 10px 12px; flex-direction: column; gap: 6px; align-items: center; }
+  .topnav .links { margin-inline-start: 0; justify-content: center; }
+  .topnav .links a { font-size: .88rem; padding: 4px 9px; }
+
+  .hero { padding: 44px 16px 40px; }
+  .hero .actions { flex-direction: column; align-items: stretch; padding: 0 10vw; }
+  .hero .actions .btn { justify-content: center; }
+  .stats { gap: 8px; }
+  .stat { padding: 10px 12px; min-width: 0; flex: 1 1 0; }
+  .stat b { font-size: 1.25rem; }
+  .stat span { font-size: .75rem; }
+  main { padding: 26px 12px; }
+  .card { padding: 20px 18px; }
+
+  .years-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+  .year-chip { font-size: .95rem; padding: 8px 2px; }
+
+  .sicha { padding: 14px 14px; }
+  .sicha .btns { width: 100%; }
+  .sicha .btns .btn { flex: 1 1 0; justify-content: center; }
+
+  #viewer-wrap { padding: 0; }
+  #viewer-bar { padding: 10px 12px 8px; }
+  #viewer-frame { border-radius: 0; }
+}
