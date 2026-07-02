@@ -1,6 +1,6 @@
 /* קובץ זה נערך אוטומטית דרך עמוד הניהול (admin.html) — אפשר גם לערוך ידנית */
 
-const MAILING_LIST_URL = "https://forms.google.com/YOUR_FORM_LINK_HERE";
+const MAILING_LIST_URL = "";
 const WHATSAPP_URL = "https://chat.whatsapp.com/HidWyvYZFgB4PfMxdsGvoo";
 const DONATE_EMAIL = "doviber@gmail.com";
 const DONATE_BIT_PHONE = "058-516-6540";
