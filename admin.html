@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניהול האתר — ספר השיחות</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --navy:#1a2942; --gold:#b8933e; --cream:#faf7f0; --paper:#fff; --muted:#6b6b6b; --red:#b03030; --green:#2e6b2e; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Heebo',sans-serif; background:var(--cream); color:#2a2a2a; line-height:1.6; }
+  h1,h2,h3 { font-family:'Frank Ruhl Libre',serif; color:var(--navy); }
+  header { background:var(--navy); color:#fff; padding:20px; text-align:center; border-bottom:4px solid var(--gold); }
+  header h1 { color:#fff; font-size:1.5rem; }
+  main { max-width:860px; margin:0 auto; padding:24px 14px 60px; }
+  .card { background:var(--paper); border:1px solid #e8e2d4; border-radius:12px; padding:20px 22px; margin-bottom:18px; }
+  label { display:block; font-size:.85rem; color:var(--muted); margin:10px 0 3px; }
+  input[type=text], input[type=password], input[type=number], textarea {
+    width:100%; padding:8px 10px; border:1px solid #d8d2c2; border-radius:8px; font-family:'Heebo'; font-size:.95rem; background:#fffdf8;
+  }
+  input.en { direction:ltr; text-align:left; }
+  .btn { border:none; border-radius:8px; padding:8px 16px; font-family:'Heebo'; font-size:.9rem; cursor:pointer; }
+  .btn:hover { opacity:.85; }
+  .btn-main { background:var(--navy); color:#fff; }
+  .btn-gold { background:var(--gold); color:#fff; }
+  .btn-line { background:transparent; border:1.5px solid var(--navy); color:var(--navy); }
+  .btn-danger { background:transparent; border:1.5px solid var(--red); color:var(--red); }
+  .btn-sm { padding:4px 9px; font-size:.85rem; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+  .row > div { flex:1 1 160px; }
+  #status { position:fixed; bottom:0; right:0; left:0; padding:10px 18px; font-size:.9rem; display:none; z-index:50; }
+  #status.ok { display:block; background:#e5f2e5; color:var(--green); }
+  #status.err { display:block; background:#fbe5e5; color:var(--red); }
+  #status.busy { display:block; background:#fdf3dd; color:#93690f; }
+  .year-block { border:1px solid #e8e2d4; border-radius:10px; margin-bottom:14px; overflow:hidden; }
+  .year-head { background:#f4efe3; padding:10px 14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .year-head h3 { font-size:1.15rem; }
+  .sicha-row { display:flex; align-items:center; gap:8px; padding:10px 14px; border-top:1px solid #f0ead9; flex-wrap:wrap; }
+  .sicha-row .info { flex:1 1 240px; }
+  .sicha-row .info b { color:var(--navy); }
+  .sicha-row .info small { color:var(--muted); display:block; }
+  .sicha-row .file { font-size:.75rem; color:var(--gold); direction:ltr; unicode-bidi:embed; }
+  .hidden-tag { background:#eee; color:#888; font-size:.72rem; padding:1px 8px; border-radius:99px; }
+  .icons { display:flex; gap:4px; }
+  .icons button { background:none; border:1px solid #ddd; border-radius:6px; cursor:pointer; padding:3px 7px; font-size:.9rem; }
+  .icons button:hover { background:#f4efe3; }
+  dialog { border:none; border-radius:14px; padding:24px; max-width:520px; width:92vw; box-shadow:0 10px 50px rgba(0,0,0,.3); }
+  dialog::backdrop { background:rgba(20,28,45,.6); }
+  dialog h3 { margin-bottom:8px; }
+  .dlg-btns { display:flex; gap:8px; margin-top:16px; justify-content:flex-start; }
+  .help { font-size:.82rem; color:var(--muted); background:#f8f4ea; border-radius:8px; padding:10px 14px; margin-top:10px; }
+  .help a { color:var(--gold); }
+  code { background:#f0ead9; padding:1px 5px; border-radius:4px; font-size:.85em; direction:ltr; unicode-bidi:embed; }
+  .top-actions { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+</style>
+</head>
+<body>
+<header><h1>⚙️ ניהול האתר — ספר השיחות מתורגם ללה״ק</h1></header>
+<main>
+
+  <!-- ===== התחברות ===== -->
+  <div class="card" id="login-card">
+    <h2>התחברות</h2>
+    <div class="row">
+      <div><label>שם המשתמש ב-GitHub</label><input type="text" id="in-owner" class="en" placeholder="your-username"></div>
+      <div><label>שם המאגר (Repository)</label><input type="text" id="in-repo" class="en" placeholder="sichos"></div>
+      <div><label>Branch</label><input type="text" id="in-branch" class="en" value="main"></div>
+    </div>
+    <label>מפתח גישה (Token)</label>
+    <input type="password" id="in-token" class="en" placeholder="github_pat_...">
+    <label style="display:flex;align-items:center;gap:6px;margin-top:8px"><input type="checkbox" id="in-remember" checked style="width:auto"> זכור אותי במחשב זה (אל תסמן במחשב ציבורי)</label>
+    <div class="dlg-btns"><button class="btn btn-main" onclick="login()">התחברות</button></div>
+    <div class="help">
+      <b>יצירת מפתח (חד פעמי):</b> ב-GitHub — Settings ‏› Developer settings ‏› Fine-grained tokens ‏› Generate new token.
+      בחר גישה רק למאגר של האתר, ותחת Permissions תן ל-<code>Contents</code> הרשאת <code>Read and write</code>.
+      מומלץ לקבוע תוקף של שנה ולחדש כשפג.
+    </div>
+  </div>
+
+  <!-- ===== אזור ניהול ===== -->
+  <div id="panel" style="display:none">
+
+    <div class="top-actions">
+      <button class="btn btn-gold" onclick="openAddSicha()">＋ הוספת שיחה חדשה</button>
+      <button class="btn btn-line" onclick="addYear()">＋ הוספת שנה</button>
+      <button class="btn btn-line" onclick="loadAll()">↻ רענון</button>
+      <a class="btn btn-line" id="history-link" target="_blank" rel="noopener">🕘 היסטוריית שינויים</a>
+      <a class="btn btn-line" href="index.html" target="_blank">👁 צפייה באתר</a>
+      <button class="btn btn-danger" onclick="logout()" style="margin-inline-start:auto">יציאה</button>
+    </div>
+
+    <div class="card">
+      <h2>השיחות באתר</h2>
+      <p style="font-size:.85rem;color:var(--muted)">כל שינוי נשמר מיד ומופיע באתר תוך כדקה. חיצים משנים סדר, 👁 מסתיר/מציג שיחה בלי למחוק.</p>
+      <div id="years-admin"></div>
+    </div>
+
+    <div class="card">
+      <h2>הגדרות כלליות</h2>
+      <label>קישור לטופס רשימת התפוצה (Google Forms)</label>
+      <input type="text" id="set-mailing" class="en">
+      <div class="row">
+        <div><label>אימייל ליצירת קשר / תרומות</label><input type="text" id="set-email" class="en"></div>
+        <div><label>מספר טלפון לביט</label><input type="text" id="set-bit" class="en"></div>
+      </div>
+      <div class="dlg-btns"><button class="btn btn-main" onclick="saveSettings()">שמירת הגדרות</button></div>
+    </div>
+  </div>
+
+  <!-- ===== דיאלוג הוספת/עריכת שיחה ===== -->
+  <dialog id="dlg-sicha">
+    <h3 id="dlg-sicha-title">הוספת שיחה</h3>
+    <label>שנה</label>
+    <select id="s-year" style="width:100%;padding:8px;border-radius:8px;border:1px solid #d8d2c2;font-family:'Heebo'"></select>
+    <label>כותרת השיחה</label>
+    <input type="text" id="s-title" placeholder='למשל: ש״פ ויצא תש״ז'>
+    <label>תיאור קצר (שורת משנה)</label>
+    <input type="text" id="s-subtitle">
+    <label>תאריך אמירת השיחה (לועזי) — קובע את מיקומה הכרונולוגי באתר</label>
+    <input type="date" id="s-date" class="en">
+    <div class="row">
+      <div><label>מספר עמודים</label><input type="number" id="s-pages" min="1"></div>
+      <div><label>מספר שיחות בקובץ</label><input type="number" id="s-count" min="1" value="1"></div>
+      <div><label>שם קובץ באנגלית (בלי רווחים)</label><input type="text" id="s-filename" class="en" placeholder="vayeitzei-5707.pdf"></div>
+    </div>
+    <label id="s-file-label">קובץ PDF</label>
+    <input type="file" id="s-file" accept="application/pdf">
+    <div class="dlg-btns">
+      <button class="btn btn-main" onclick="saveSicha()">שמירה</button>
+      <button class="btn btn-line" onclick="dlg('dlg-sicha').close()">ביטול</button>
+    </div>
+  </dialog>
+
+  <!-- ===== דיאלוג עריכת שנה ===== -->
+  <dialog id="dlg-year">
+    <h3>עריכת שנה</h3>
+    <label>שם השנה</label><input type="text" id="y-name">
+    <label>הערה (מוצגת ליד השנה)</label><input type="text" id="y-note">
+    <label style="display:flex;align-items:center;gap:6px;margin-top:8px"><input type="checkbox" id="y-complete" style="width:auto"> התרגום לשנה זו הושלם</label>
+    <div class="dlg-btns">
+      <button class="btn btn-main" onclick="saveYear()">שמירה</button>
+      <button class="btn btn-line" onclick="dlg('dlg-year').close()">ביטול</button>
+    </div>
+  </dialog>
+
+</main>
+<div id="status"></div>
+
+<script>
+'use strict';
+const API = 'https://api.github.com';
+let cfg = null;          // {owner, repo, branch, token}
+let data = null;         // {MAILING_LIST_URL, DONATE_EMAIL, DONATE_BIT_PHONE, YEARS}
+let dataSha = null;      // sha of data.js
+let editing = null;      // {yi, si} when editing an existing sicha
+let editingYear = null;  // yi when editing a year
+
+const $ = id => document.getElementById(id);
+const dlg = id => $(id);
+
+/* ---------- status bar ---------- */
+let statusTimer = null;
+function setStatus(msg, cls) {
+  const el = $('status'); el.textContent = msg; el.className = cls;
+  clearTimeout(statusTimer);
+  if (cls !== 'busy') statusTimer = setTimeout(() => el.className = '', 5000);
+}
+
+/* ---------- GitHub API ---------- */
+async function gh(path, opts = {}) {
+  const res = await fetch(API + path, {
+    method: opts.method || 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + cfg.token,
+      'Accept': 'application/vnd.github+json',
+      ...(opts.body ? { 'Content-Type': 'application/json' } : {})
+    },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if (!res.ok) {
+    const t = await res.json().catch(() => ({}));
+    throw new Error(res.status + ' — ' + (t.message || 'שגיאה'));
+  }
+  return res.status === 204 ? null : res.json();
+}
+const repoPath = p => `/repos/${cfg.owner}/${cfg.repo}/${p}`;
+
+/* utf8 <-> base64 */
+const enc = s => { const b = new TextEncoder().encode(s); let r = ''; b.forEach(c => r += String.fromCharCode(c)); return btoa(r); };
+const dec = b => { const s = atob(b.replace(/\n/g, '')); const a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return new TextDecoder().decode(a); };
+
+async function getFileSha(path) {
+  const tree = await gh(repoPath(`git/trees/${cfg.branch}?recursive=1`));
+  const item = tree.tree.find(t => t.path === path);
+  return item ? item.sha : null;
+}
+
+/* ---------- load ---------- */
+async function loadAll() {
+  setStatus('טוען נתונים…', 'busy');
+  const f = await gh(repoPath(`contents/data.js?ref=${cfg.branch}`));
+  dataSha = f.sha;
+  const code = dec(f.content);
+  data = new Function(code + ';return {MAILING_LIST_URL, DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
+  render();
+  setStatus('הנתונים נטענו', 'ok');
+}
+
+/* ---------- save data.js ---------- */
+function serialize() {
+  return `/* קובץ זה נערך אוטומטית דרך עמוד הניהול (admin.html) — אפשר גם לערוך ידנית */
+
+const MAILING_LIST_URL = ${JSON.stringify(data.MAILING_LIST_URL)};
+const DONATE_EMAIL = ${JSON.stringify(data.DONATE_EMAIL)};
+const DONATE_BIT_PHONE = ${JSON.stringify(data.DONATE_BIT_PHONE)};
+
+const YEARS = ${JSON.stringify(data.YEARS, null, 2)};
+`;
+}
+async function commitData(message) {
+  const r = await gh(repoPath('contents/data.js'), {
+    method: 'PUT',
+    body: { message, content: enc(serialize()), sha: dataSha, branch: cfg.branch }
+  });
+  dataSha = r.content.sha;
+}
+
+/* ---------- file ops ---------- */
+async function uploadFile(path, base64, message) {
+  const existing = await getFileSha(path);
+  await gh(repoPath('contents/' + path), {
+    method: 'PUT',
+    body: { message, content: base64, branch: cfg.branch, ...(existing ? { sha: existing } : {}) }
+  });
+}
+async function deleteFile(path, message) {
+  const sha = await getFileSha(path);
+  if (!sha) return;
+  await gh(repoPath('contents/' + path), { method: 'DELETE', body: { message, sha, branch: cfg.branch } });
+}
+async function renameFile(oldPath, newPath, message) {
+  const ref = await gh(repoPath(`git/ref/heads/${cfg.branch}`));
+  const headSha = ref.object.sha;
+  const commit = await gh(repoPath(`git/commits/${headSha}`));
+  const blobSha = await getFileSha(oldPath);
+  if (!blobSha) throw new Error('הקובץ המקורי לא נמצא: ' + oldPath);
+  const newTree = await gh(repoPath('git/trees'), {
+    method: 'POST',
+    body: { base_tree: commit.tree.sha, tree: [
+      { path: newPath, mode: '100644', type: 'blob', sha: blobSha },
+      { path: oldPath, mode: '100644', type: 'blob', sha: null }
+    ]}
+  });
+  const nc = await gh(repoPath('git/commits'), { method: 'POST', body: { message, tree: newTree.sha, parents: [headSha] } });
+  await gh(repoPath(`git/refs/heads/${cfg.branch}`), { method: 'PATCH', body: { sha: nc.sha } });
+}
+
+/* ---------- render ---------- */
+function render() {
+  $('set-mailing').value = data.MAILING_LIST_URL;
+  $('set-email').value = data.DONATE_EMAIL;
+  $('set-bit').value = data.DONATE_BIT_PHONE;
+  $('history-link').href = `https://github.com/${cfg.owner}/${cfg.repo}/commits/${cfg.branch}`;
+
+  const root = $('years-admin');
+  root.innerHTML = '';
+  data.YEARS.forEach((y, yi) => {
+    const block = document.createElement('div');
+    block.className = 'year-block';
+    block.innerHTML = `
+      <div class="year-head">
+        <h3>שנת ${esc(y.year)}</h3>
+        <span style="font-size:.8rem;color:${y.complete ? 'var(--green)' : '#93690f'}">${y.complete ? '✔ הושלם' : '⏳ בתהליך'}</span>
+        <span style="font-size:.8rem;color:var(--muted)">${esc(y.note || '')}</span>
+        <span class="icons" style="margin-inline-start:auto">
+          <button title="הזז שנה למעלה" onclick="moveYear(${yi},-1)">↑</button>
+          <button title="הזז שנה למטה" onclick="moveYear(${yi},1)">↓</button>
+          <button title="עריכת שנה" onclick="openEditYear(${yi})">✏️</button>
+          <button title="מחיקת שנה" onclick="removeYear(${yi})">🗑️</button>
+        </span>
+      </div>
+      ${y.sichos.map((s, si) => `
+        <div class="sicha-row">
+          <div class="info">
+            <b>${esc(s.title)}</b> ${s.hidden ? '<span class="hidden-tag">מוסתר</span>' : ''}
+            <small>${esc(s.subtitle || '')}</small>
+            <span class="file">${esc(s.file)}${s.pages ? ' · ' + s.pages + ' עמ׳' : ''}${s.sortDate ? ' · ' + s.sortDate : ''}</span>
+          </div>
+          <div class="icons">
+            <button title="עריכה" onclick="openEditSicha(${yi},${si})">✏️</button>
+            <button title="שינוי שם קובץ" onclick="renameSicha(${yi},${si})">📄</button>
+            <button title="החלפת קובץ PDF (גרסה מתוקנת)" onclick="replacePdf(${yi},${si})">🔄</button>
+            <button title="${s.hidden ? 'הצגה באתר' : 'הסתרה מהאתר'}" onclick="toggleHidden(${yi},${si})">👁</button>
+            <button title="מחיקה" onclick="removeSicha(${yi},${si})">🗑️</button>
+          </div>
+        </div>`).join('')}
+    `;
+    root.appendChild(block);
+  });
+}
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- actions: sichos ---------- */
+function fillYearSelect(sel) {
+  $('s-year').innerHTML = data.YEARS.map((y, i) => `<option value="${i}" ${i === sel ? 'selected' : ''}>${esc(y.year)}</option>`).join('');
+}
+function openAddSicha() {
+  editing = null;
+  $('dlg-sicha-title').textContent = 'הוספת שיחה חדשה';
+  fillYearSelect(data.YEARS.length - 1);
+  $('s-title').value = ''; $('s-subtitle').value = ''; $('s-pages').value = ''; $('s-count').value = '1'; $('s-filename').value = ''; $('s-file').value = ''; $('s-date').value = '';
+  $('s-file-label').textContent = 'קובץ PDF';
+  dlg('dlg-sicha').showModal();
+}
+function openEditSicha(yi, si) {
+  editing = { yi, si };
+  const s = data.YEARS[yi].sichos[si];
+  $('dlg-sicha-title').textContent = 'עריכת שיחה';
+  fillYearSelect(yi);
+  $('s-title').value = s.title; $('s-subtitle').value = s.subtitle || ''; $('s-pages').value = s.pages || ''; $('s-count').value = s.count || 1; $('s-date').value = s.sortDate || '';
+  $('s-filename').value = s.file.replace(/^pdfs\//, ''); $('s-filename').disabled = true;
+  $('s-file').value = '';
+  $('s-file-label').textContent = 'קובץ PDF (השאר ריק כדי לשמור את הקובץ הקיים)';
+  dlg('dlg-sicha').showModal();
+}
+async function saveSicha() {
+  try {
+    const title = $('s-title').value.trim();
+    if (!title) return setStatus('חסרה כותרת', 'err');
+    const yi = +$('s-year').value;
+    const entry = {
+      title,
+      subtitle: $('s-subtitle').value.trim(),
+      file: '',
+      pages: +$('s-pages').value || undefined,
+      count: +$('s-count').value || 1,
+      sortDate: $('s-date').value || undefined
+    };
+    const fileInput = $('s-file').files[0];
+
+    if (editing) {
+      const old = data.YEARS[editing.yi].sichos[editing.si];
+      entry.file = old.file;
+      if (old.hidden) entry.hidden = true;
+      if (fileInput) {
+        setStatus('מעלה קובץ מעודכן…', 'busy');
+        await uploadFile(old.file, await readB64(fileInput), 'עדכון קובץ: ' + title);
+      }
+      // remove from old spot, insert to (possibly new) year
+      data.YEARS[editing.yi].sichos.splice(editing.si, 1);
+      data.YEARS[yi].sichos.push(entry);
+      sortYear(yi);
+    } else {
+      let name = $('s-filename').value.trim();
+      if (!fileInput) return setStatus('חסר קובץ PDF', 'err');
+      if (!name) return setStatus('חסר שם קובץ באנגלית', 'err');
+      if (!/^[A-Za-z0-9._-]+$/.test(name)) return setStatus('שם הקובץ חייב להיות באנגלית, בלי רווחים', 'err');
+      if (!name.toLowerCase().endsWith('.pdf')) name += '.pdf';
+      entry.file = 'pdfs/' + name;
+      setStatus('מעלה קובץ PDF…', 'busy');
+      await uploadFile(entry.file, await readB64(fileInput), 'העלאת שיחה: ' + title);
+      data.YEARS[yi].sichos.push(entry);
+      sortYear(yi);
+    }
+    setStatus('שומר…', 'busy');
+    await commitData((editing ? 'עריכת שיחה: ' : 'הוספת שיחה: ') + title);
+    $('s-filename').disabled = false;
+    dlg('dlg-sicha').close();
+    render();
+    setStatus('נשמר! האתר יתעדכן תוך כדקה', 'ok');
+  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+async function removeSicha(yi, si) {
+  const s = data.YEARS[yi].sichos[si];
+  if (!confirm(`למחוק את "${s.title}"?\nגם קובץ ה-PDF יימחק מהאתר.\n(ניתן לשחזר דרך היסטוריית השינויים)`)) return;
+  try {
+    setStatus('מוחק…', 'busy');
+    await deleteFile(s.file, 'מחיקת קובץ: ' + s.title);
+    data.YEARS[yi].sichos.splice(si, 1);
+    await commitData('מחיקת שיחה: ' + s.title);
+    render(); setStatus('נמחק', 'ok');
+  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+async function renameSicha(yi, si) {
+  const s = data.YEARS[yi].sichos[si];
+  let name = prompt('שם קובץ חדש (אנגלית, בלי רווחים):', s.file.replace(/^pdfs\//, ''));
+  if (!name) return;
+  name = name.trim();
+  if (!/^[A-Za-z0-9._-]+$/.test(name)) return setStatus('שם הקובץ חייב להיות באנגלית, בלי רווחים', 'err');
+  if (!name.toLowerCase().endsWith('.pdf')) name += '.pdf';
+  try {
+    setStatus('משנה שם קובץ…', 'busy');
+    await renameFile(s.file, 'pdfs/' + name, `שינוי שם: ${s.file} → pdfs/${name}`);
+    s.file = 'pdfs/' + name;
+    await commitData('עדכון שם קובץ: ' + s.title);
+    render(); setStatus('שם הקובץ שונה', 'ok');
+  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+function replacePdf(yi, si) {
+  const s = data.YEARS[yi].sichos[si];
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'application/pdf';
+  inp.onchange = async () => {
+    try {
+      setStatus('מעלה גרסה מתוקנת…', 'busy');
+      await uploadFile(s.file, await readB64(inp.files[0]), 'החלפת קובץ (גרסה מתוקנת): ' + s.title);
+      setStatus('הקובץ הוחלף! האתר יתעדכן תוך כדקה', 'ok');
+    } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  };
+  inp.click();
+}
+async function toggleHidden(yi, si) {
+  const s = data.YEARS[yi].sichos[si];
+  s.hidden = !s.hidden;
+  if (!s.hidden) delete s.hidden;
+  try {
+    setStatus('שומר…', 'busy');
+    await commitData((s.hidden ? 'הסתרת' : 'הצגת') + ' שיחה: ' + s.title);
+    render(); setStatus('נשמר', 'ok');
+  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+function sortYear(yi) {
+  data.YEARS[yi].sichos.sort((a, b) => (a.sortDate || '9999').localeCompare(b.sortDate || '9999'));
+}
+
+/* ---------- actions: years ---------- */
+async function addYear() {
+  const name = prompt('שם השנה (למשל: תש״ח):');
+  if (!name) return;
+  data.YEARS.push({ year: name.trim(), note: 'בתהליך תרגום', complete: false, sichos: [] });
+  try { setStatus('שומר…', 'busy'); await commitData('הוספת שנה: ' + name); render(); setStatus('נוספה שנת ' + name, 'ok'); }
+  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+function openEditYear(yi) {
+  editingYear = yi;
+  const y = data.YEARS[yi];
+  $('y-name').value = y.year; $('y-note').value = y.note || ''; $('y-complete').checked = !!y.complete;
+  dlg('dlg-year').showModal();
+}
+async function saveYear() {
+  const y = data.YEARS[editingYear];
+  y.year = $('y-name').value.trim(); y.note = $('y-note').value.trim(); y.complete = $('y-complete').checked;
+  try {
+    setStatus('שומר…', 'busy');
+    await commitData('עריכת שנה: ' + y.year);
+    dlg('dlg-year').close(); render(); setStatus('נשמר', 'ok');
+  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+async function removeYear(yi) {
+  const y = data.YEARS[yi];
+  if (y.sichos.length) return setStatus('לא ניתן למחוק שנה שיש בה שיחות — מחק/העבר אותן קודם', 'err');
+  if (!confirm(`למחוק את שנת ${y.year}?`)) return;
+  data.YEARS.splice(yi, 1);
+  try { setStatus('שומר…', 'busy'); await commitData('מחיקת שנה: ' + y.year); render(); setStatus('נמחק', 'ok'); }
+  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+async function moveYear(yi, dir) {
+  const j = yi + dir;
+  if (j < 0 || j >= data.YEARS.length) return;
+  [data.YEARS[yi], data.YEARS[j]] = [data.YEARS[j], data.YEARS[yi]];
+  try { setStatus('שומר…', 'busy'); await commitData('שינוי סדר שנים'); render(); setStatus('נשמר', 'ok'); }
+  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+
+/* ---------- settings ---------- */
+async function saveSettings() {
+  data.MAILING_LIST_URL = $('set-mailing').value.trim();
+  data.DONATE_EMAIL = $('set-email').value.trim();
+  data.DONATE_BIT_PHONE = $('set-bit').value.trim();
+  try { setStatus('שומר…', 'busy'); await commitData('עדכון הגדרות'); setStatus('ההגדרות נשמרו', 'ok'); }
+  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+
+/* ---------- helpers ---------- */
+function readB64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+/* ---------- login ---------- */
+async function login() {
+  cfg = {
+    owner: $('in-owner').value.trim(),
+    repo: $('in-repo').value.trim(),
+    branch: $('in-branch').value.trim() || 'main',
+    token: $('in-token').value.trim()
+  };
+  if (!cfg.owner || !cfg.repo || !cfg.token) return setStatus('נא למלא את כל השדות', 'err');
+  try {
+    await loadAll();
+    if ($('in-remember').checked) localStorage.setItem('sichos-admin', JSON.stringify(cfg));
+    $('login-card').style.display = 'none';
+    $('panel').style.display = 'block';
+  } catch (e) { setStatus('ההתחברות נכשלה: ' + e.message, 'err'); }
+}
+function logout() {
+  localStorage.removeItem('sichos-admin');
+  location.reload();
+}
+(function init() {
+  const saved = localStorage.getItem('sichos-admin');
+  if (saved) {
+    cfg = JSON.parse(saved);
+    $('in-owner').value = cfg.owner; $('in-repo').value = cfg.repo; $('in-branch').value = cfg.branch; $('in-token').value = cfg.token;
+    login();
+  }
+})();
+</script>
+</body>
+</html>

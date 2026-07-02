@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>קריאת השיחות — ספר השיחות מתורגם ללה״ק</title>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <div class="links">
+    <a href="index.html">ראשי</a>
+    <a href="sichos.html" class="active">קריאת השיחות</a>
+    <a href="subscribe.html">הצטרפות לעדכונים</a>
+    <a href="donate.html">תרומה</a>
+  </div>
+</nav>
+
+<main>
+  <div style="text-align:center;margin-bottom:22px">
+    <div style="color:var(--gold);font-size:1.1rem;letter-spacing:.35em">✦ ✦ ✦</div>
+    <h1 style="font-size:1.9rem;margin-top:4px">קריאת השיחות</h1>
+  </div>
+  <div class="years-grid" id="years-grid"></div>
+  <div id="year-panel"></div>
+</main>
+
+<div id="viewer-wrap" onclick="if(event.target===this)closeViewer()">
+  <div id="viewer-bar">
+    <span id="viewer-title"></span>
+    <div class="btns">
+      <a class="btn btn-line-light btn-sm" id="viewer-dl" download>הורדת PDF ⬇</a>
+      <button class="btn btn-sm" id="viewer-close" onclick="closeViewer()">סגירה ✕</button>
+    </div>
+  </div>
+  <iframe id="viewer-frame"></iframe>
+</div>
+
+
+<script src="data.js"></script>
+<script>
+  // כל שנות נשיאותו של אדמו"ר הריי"צ: תר"פ – ה'שי"ת
+  const ALL_YEARS = ["תר״פ","תרפ״א","תרפ״ב","תרפ״ג","תרפ״ד","תרפ״ה","תרפ״ו","תרפ״ז","תרפ״ח","תרפ״ט",
+    "תר״צ","תרצ״א","תרצ״ב","תרצ״ג","תרצ״ד","תרצ״ה","תרצ״ו","תרצ״ז","תרצ״ח","תרצ״ט",
+    "ת״ש","תש״א","תש״ב","תש״ג","תש״ד","תש״ה","תש״ו","תש״ז","תש״ח","תש״ט","ה'שי״ת"];
+
+  const norm = s => String(s).replace(/[״"׳']/g, '');
+  const findYear = name => YEARS.find(y => norm(y.year) === norm(name));
+  const visible = y => y.sichos
+    .filter(s => !s.hidden)
+    .slice()
+    .sort((a, b) => (a.sortDate || '9999').localeCompare(b.sortDate || '9999'));
+
+  const grid = document.getElementById('years-grid');
+  const panel = document.getElementById('year-panel');
+
+  ALL_YEARS.forEach(name => {
+    const y = findYear(name);
+    const has = y && visible(y).length > 0;
+    const b = document.createElement('button');
+    b.className = 'year-chip' + (has ? '' : ' empty');
+    b.textContent = name;
+    if (has) {
+      b.onclick = () => selectYear(name, b);
+    } else {
+      b.disabled = true;
+      b.title = 'טרם תורגם';
+    }
+    grid.appendChild(b);
+  });
+
+  function selectYear(name, btn) {
+    document.querySelectorAll('.year-chip.active').forEach(el => el.classList.remove('active'));
+    btn.classList.add('active');
+    const y = findYear(name);
+    const list = visible(y);
+    panel.innerHTML = `
+      <div class="year-panel-head">
+        <h2>שנת ${y.year}</h2>
+        <span class="badge ${y.complete ? 'done' : 'wip'}">${y.complete ? 'התרגום הושלם' : 'בתהליך תרגום'}</span>
+        <span class="count-tag">${list.length} ${list.length === 1 ? 'קובץ' : 'קבצים'}</span>
+      </div>
+      ${list.map(s => `
+        <div class="sicha">
+          <div class="sicha-info">
+            <h3>${s.title}</h3>
+            <p>${s.subtitle || ''}</p>
+            ${s.pages ? `<span class="pages">${s.pages} עמודים</span>` : ''}
+          </div>
+          <div class="btns">
+            <button class="btn btn-navy btn-sm" onclick="openViewer('${s.file}', '${s.title.replace(/'/g, "\\'")}')">קריאה באתר 📖</button>
+            <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה ⬇</a>
+          </div>
+        </div>`).join('')}`;
+  }
+
+  // פתיחה אוטומטית של השנה האחרונה שיש בה תוכן
+  const withContent = [...grid.querySelectorAll('.year-chip:not(.empty)')];
+  if (withContent.length) withContent[withContent.length - 1].click();
+
+  function openViewer(file, title) {
+    document.getElementById('viewer-title').textContent = title;
+    document.getElementById('viewer-frame').src = file + '#toolbar=1';
+    document.getElementById('viewer-dl').href = file;
+    document.getElementById('viewer-wrap').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeViewer() {
+    document.getElementById('viewer-wrap').classList.remove('open');
+    document.getElementById('viewer-frame').src = '';
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewer(); });
+</script>
+</body>
+</html>

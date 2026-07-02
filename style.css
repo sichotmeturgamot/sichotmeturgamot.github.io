@@ -1,0 +1,150 @@
+:root {
+  --navy: #1a2942;
+  --navy-light: #2b3f63;
+  --gold: #b8933e;
+  --gold-light: #d4b56a;
+  --cream: #faf7f0;
+  --paper: #ffffff;
+  --text: #2a2a2a;
+  --muted: #6b6b6b;
+  --red: #b03030;
+  --green: #2e6b2e;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.7;
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+h1, h2, h3 { font-family: 'Frank Ruhl Libre', serif; color: var(--navy); }
+main { max-width: 900px; margin: 0 auto; padding: 36px 16px; width: 100%; flex: 1; }
+
+/* ===== Top navigation ===== */
+.topnav {
+  background: var(--navy);
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  padding: 12px 22px;
+  border-bottom: 3px solid var(--gold);
+}
+.topnav .brand {
+  color: var(--gold-light); text-decoration: none;
+  font-family: 'Frank Ruhl Libre', serif; font-weight: 700; font-size: 1.1rem;
+}
+.topnav .links { display: flex; gap: 4px; margin-inline-start: auto; flex-wrap: wrap; }
+.topnav .links a {
+  color: rgba(255,255,255,.85); text-decoration: none; font-size: .92rem;
+  padding: 4px 12px; border-radius: 8px;
+}
+.topnav .links a:hover { background: rgba(255,255,255,.12); color: #fff; }
+.topnav .links a.active { background: var(--gold); color: var(--navy); font-weight: 500; }
+
+/* ===== Hero (index) ===== */
+.hero {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-light) 100%);
+  color: #fff; text-align: center; padding: 70px 20px 62px; position: relative;
+}
+.hero::after {
+  content: ""; position: absolute; bottom: 0; right: 0; left: 0; height: 4px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+}
+.hero .bsd { font-size: .85rem; opacity: .7; position: absolute; top: 12px; right: 18px; }
+.hero h1 { font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 900; margin-bottom: 12px; color: #fff; }
+.hero .sub { font-size: clamp(1.05rem, 2.6vw, 1.35rem); color: var(--gold-light); font-family: 'Frank Ruhl Libre', serif; }
+.hero .actions { margin-top: 30px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ===== Stats ===== */
+.stats { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: -26px auto 0; position: relative; z-index: 2; padding: 0 16px; }
+.stat { background: var(--paper); border-radius: 12px; padding: 14px 28px; box-shadow: 0 6px 24px rgba(26,41,66,.12); text-align: center; min-width: 140px; }
+.stat b { display: block; font-size: 1.6rem; color: var(--navy); font-family: 'Frank Ruhl Libre', serif; }
+.stat span { font-size: .85rem; color: var(--muted); }
+
+/* ===== Buttons ===== */
+.btn {
+  border: none; border-radius: 8px; padding: 10px 22px; font-size: .95rem;
+  font-family: 'Heebo', sans-serif; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px; transition: opacity .15s;
+}
+.btn:hover { opacity: .85; }
+.btn-navy { background: var(--navy); color: #fff; }
+.btn-gold { background: var(--gold); color: #fff; }
+.btn-line { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); }
+.btn-line-light { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.7); }
+.btn-sm { padding: 7px 16px; font-size: .88rem; }
+
+/* ===== Cards ===== */
+.card {
+  background: var(--paper); border: 1px solid #e8e2d4; border-radius: 14px;
+  padding: 26px 28px; margin-bottom: 18px;
+}
+.card.center { text-align: center; }
+.card h2 { margin-bottom: 10px; }
+.card p.muted { color: var(--muted); font-size: .93rem; }
+
+/* ===== Years grid (sichos page) ===== */
+.years-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+  margin-bottom: 26px;
+}
+.year-chip {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 1.02rem; font-weight: 500;
+  background: var(--paper); color: var(--navy);
+  border: 1.5px solid var(--gold);
+  border-radius: 10px; padding: 9px 4px;
+  cursor: pointer; transition: all .15s;
+}
+.year-chip:hover:not(.empty) { background: var(--gold-light); color: #fff; }
+.year-chip.active { background: var(--navy); color: var(--gold-light); border-color: var(--navy); }
+.year-chip.empty {
+  background: transparent; color: #b5b0a4;
+  border: 1.5px dashed #d8d2c2;
+  cursor: default; opacity: .65;
+}
+.year-panel-head {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin: 6px 0 14px;
+}
+.year-panel-head h2 { font-size: 1.5rem; }
+
+/* ===== Year sections (sichos page) ===== */
+.year-section { margin-bottom: 22px; }
+.year-header {
+  display: flex; align-items: center; gap: 14px; cursor: pointer;
+  background: var(--paper); border: 1px solid #e8e2d4; border-radius: 14px;
+  padding: 16px 20px; transition: box-shadow .2s;
+}
+.year-header:hover { box-shadow: 0 4px 18px rgba(26,41,66,.1); }
+.year-header h2 { font-size: 1.5rem; }
+.badge { font-size: .78rem; padding: 3px 12px; border-radius: 999px; font-weight: 500; }
+.badge.done { background: #e5f2e5; color: var(--green); }
+.badge.wip { background: #fdf3dd; color: #93690f; }
+.year-note { color: var(--muted); font-size: .88rem; margin-inline-start: auto; }
+.chev { transition: transform .25s; color: var(--gold); font-size: 1rem; }
+.year-section.open .chev { transform: rotate(90deg); }
+.sichos-list { display: none; padding-top: 12px; }
+.year-section.open .sichos-list { display: block; }
+.count-tag { font-size: .8rem; color: var(--gold); }
+
+.sicha {
+  background: var(--paper); border: 1px solid #eee7d8; border-radius: 12px;
+  padding: 18px 20px; margin-bottom: 10px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+  border-inline-start: 4px solid var(--gold);
+}
+.sicha-info { flex: 1 1 300px; }
+.sicha-info h3 { font-size: 1.12rem; margin-bottom: 2px; }
+.sicha-info p { color: var(--muted); font-size: .88rem; }
+.sicha-info .pages { font-size: .78rem; color: var(--gold); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ===== PDF viewer ===== */
+#viewer-wrap { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(20,28,45,.85); padding: 3vh 3vw; }
+#viewer-wrap.open { display: flex; flex-direction: column; }
+#viewer-bar { display: flex; align-items: center; justify-content: space-between; color: #fff; padding-bottom: 10px; gap: 10px; flex-wrap: wrap; }
+#viewer-title { font-family: 'Frank Ruhl Libre', serif; font-size: 1.05rem; }
+#viewer-close { background: var(--gold); color: var(--navy); font-weight: 700; }
+#viewer-frame { flex: 1; width: 100%;
