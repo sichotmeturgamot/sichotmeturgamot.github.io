@@ -15,7 +15,7 @@ const YEARS = [
         "subtitle": "כל שיחות שנת תש״ו מתורגמות ללשון הקודש, יו״ל לראשונה מתורגם מאידיש",
         "file": "pdfs/sefer-hasichos-5706.pdf",
         "pages": 61,
-        "count": 1,
+        "count": 29,
         "sortDate": "1945-09-08"
       }
     ]
