@@ -117,8 +117,11 @@
     <input type="text" id="s-title" placeholder='למשל: ש״פ ויצא תש״ז'>
     <label>תיאור קצר (שורת משנה)</label>
     <input type="text" id="s-subtitle">
-    <label>תאריך אמירת השיחה (לועזי) — קובע את מיקומה הכרונולוגי באתר</label>
-    <input type="date" id="s-date" class="en">
+    <label>תאריך אמירת השיחה — קובע את מיקומה הכרונולוגי בשנה</label>
+    <div class="row">
+      <div><select id="s-hday" style="width:100%;padding:8px;border-radius:8px;border:1px solid #d8d2c2;font-family:'Heebo'"></select></div>
+      <div><select id="s-hmonth" style="width:100%;padding:8px;border-radius:8px;border:1px solid #d8d2c2;font-family:'Heebo'"></select></div>
+    </div>
     <div class="row">
       <div><label>מספר עמודים</label><input type="number" id="s-pages" min="1"></div>
       <div><label>מספר שיחות בקובץ</label><input type="number" id="s-count" min="1" value="1"></div>
@@ -157,6 +160,30 @@ let editing = null;      // {yi, si} when editing an existing sicha
 let editingYear = null;  // yi when editing a year
 
 const $ = id => document.getElementById(id);
+
+/* תאריך עברי */
+const HEB_MONTHS = [['01','תשרי'],['02','מרחשון'],['03','כסלו'],['04','טבת'],['05','שבט'],['06','אדר'],['06','אדר א׳'],['07','אדר ב׳'],['08','ניסן'],['09','אייר'],['10','סיון'],['11','תמוז'],['12','אב'],['13','אלול']];
+const HEB_DAYS = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ז׳','ח׳','ט׳','י׳','י״א','י״ב','י״ג','י״ד','ט״ו','ט״ז','י״ז','י״ח','י״ט','כ׳','כ״א','כ״ב','כ״ג','כ״ד','כ״ה','כ״ו','כ״ז','כ״ח','כ״ט','ל׳'];
+function initHebDate() {
+  $('s-hday').innerHTML = HEB_DAYS.map((d, i) => `<option value="${i + 1}">${d}</option>`).join('');
+  $('s-hmonth').innerHTML = HEB_MONTHS.map((m, i) => `<option value="${i}">${m[1]}</option>`).join('');
+}
+initHebDate();
+function getHebDate() {
+  const day = +$('s-hday').value;
+  const m = HEB_MONTHS[+$('s-hmonth').value];
+  return { sortDate: m[0] + '-' + String(day).padStart(2, '0'), hebDate: HEB_DAYS[day - 1] + ' ' + m[1] };
+}
+function setHebDate(s) {
+  $('s-hday').value = '1'; $('s-hmonth').value = '0';
+  if (s.hebDate) {
+    let mi = -1;
+    HEB_MONTHS.forEach((m, i) => { if (s.hebDate.endsWith(m[1]) && (mi < 0 || m[1].length > HEB_MONTHS[mi][1].length)) mi = i; });
+    if (mi >= 0) $('s-hmonth').value = String(mi);
+    const di = HEB_DAYS.indexOf(s.hebDate.split(' ')[0]);
+    if (di >= 0) $('s-hday').value = String(di + 1);
+  }
+}
 const dlg = id => $(id);
 
 /* ---------- status bar ---------- */
@@ -285,7 +312,7 @@ function render() {
           <div class="info">
             <b>${esc(s.title)}</b> ${s.hidden ? '<span class="hidden-tag">מוסתר</span>' : ''}
             <small>${esc(s.subtitle || '')}</small>
-            <span class="file">${esc(s.file)}${s.pages ? ' · ' + s.pages + ' עמ׳' : ''}${s.sortDate ? ' · ' + s.sortDate : ''}</span>
+            <span class="file">${esc(s.file)}${s.pages ? ' · ' + s.pages + ' עמ׳' : ''}${s.hebDate ? ' · ' + s.hebDate : ''}</span>
           </div>
           <div class="icons">
             <button title="עריכה" onclick="openEditSicha(${yi},${si})">✏️</button>
@@ -309,7 +336,7 @@ function openAddSicha() {
   editing = null;
   $('dlg-sicha-title').textContent = 'הוספת שיחה חדשה';
   fillYearSelect(data.YEARS.length - 1);
-  $('s-title').value = ''; $('s-subtitle').value = ''; $('s-pages').value = ''; $('s-count').value = '1'; $('s-filename').value = ''; $('s-file').value = ''; $('s-date').value = '';
+  $('s-title').value = ''; $('s-subtitle').value = ''; $('s-pages').value = ''; $('s-count').value = '1'; $('s-filename').value = ''; $('s-file').value = ''; setHebDate({});
   $('s-file-label').textContent = 'קובץ PDF';
   dlg('dlg-sicha').showModal();
 }
@@ -318,7 +345,7 @@ function openEditSicha(yi, si) {
   const s = data.YEARS[yi].sichos[si];
   $('dlg-sicha-title').textContent = 'עריכת שיחה';
   fillYearSelect(yi);
-  $('s-title').value = s.title; $('s-subtitle').value = s.subtitle || ''; $('s-pages').value = s.pages || ''; $('s-count').value = s.count || 1; $('s-date').value = s.sortDate || '';
+  $('s-title').value = s.title; $('s-subtitle').value = s.subtitle || ''; $('s-pages').value = s.pages || ''; $('s-count').value = s.count || 1; setHebDate(s);
   $('s-filename').value = s.file.replace(/^pdfs\//, ''); $('s-filename').disabled = true;
   $('s-file').value = '';
   $('s-file-label').textContent = 'קובץ PDF (השאר ריק כדי לשמור את הקובץ הקיים)';
@@ -335,7 +362,7 @@ async function saveSicha() {
       file: '',
       pages: +$('s-pages').value || undefined,
       count: +$('s-count').value || 1,
-      sortDate: $('s-date').value || undefined
+      ...getHebDate()
     };
     const fileInput = $('s-file').files[0];
 
