@@ -32,7 +32,7 @@
 </main>
 
 
-<script src="data.js"></script>
+<script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
   document.getElementById('mailing-btn').href = MAILING_LIST_URL;
 </script>
