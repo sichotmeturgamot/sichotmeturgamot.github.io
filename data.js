@@ -30,7 +30,7 @@ const YEARS = [
         "subtitle": "כל שיחות חודש תשרי — ראש השנה, שבת שובה, סוכות ושמחת תורה",
         "file": "pdfs/sichos-tishrei-5707.pdf",
         "pages": 26,
-        "count": 1,
+        "count": 17,
         "sortDate": "1946-09-26"
       }
     ]
