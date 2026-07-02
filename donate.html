@@ -33,7 +33,7 @@
 </main>
 
 
-<script src="data.js"></script>
+<script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
   document.getElementById('bit-phone').textContent = DONATE_BIT_PHONE;
   const m = document.getElementById('donate-mail');
