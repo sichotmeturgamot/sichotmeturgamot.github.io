@@ -87,6 +87,7 @@
       <button class="btn btn-line" onclick="loadAll()">↻ רענון</button>
       <a class="btn btn-line" id="history-link" target="_blank" rel="noopener">🕘 היסטוריית שינויים</a>
       <a class="btn btn-line" href="index.html" target="_blank">👁 צפייה באתר</a>
+      <a class="btn btn-line" href="help.html">📘 מדריך ניהול</a>
       <button class="btn btn-danger" onclick="logout()" style="margin-inline-start:auto">יציאה</button>
     </div>
 
@@ -98,8 +99,10 @@
 
     <div class="card">
       <h2>הגדרות כלליות</h2>
-      <label>קישור לטופס רשימת התפוצה (Google Forms)</label>
+      <label>קישור לטופס רשימת התפוצה במייל (Google Forms)</label>
       <input type="text" id="set-mailing" class="en">
+      <label>קישור הצטרפות לקבוצת/ערוץ וואטסאפ (השאר ריק אם אין)</label>
+      <input type="text" id="set-whatsapp" class="en">
       <div class="row">
         <div><label>אימייל ליצירת קשר / תרומות</label><input type="text" id="set-email" class="en"></div>
         <div><label>מספר טלפון לביט</label><input type="text" id="set-bit" class="en"></div>
@@ -229,7 +232,7 @@ async function loadAll() {
   const f = await gh(repoPath(`contents/data.js?ref=${cfg.branch}`));
   dataSha = f.sha;
   const code = dec(f.content);
-  data = new Function(code + ';return {MAILING_LIST_URL, DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
+  data = new Function(code + ';return {MAILING_LIST_URL, WHATSAPP_URL: (typeof WHATSAPP_URL === "undefined" ? "" : WHATSAPP_URL), DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
   render();
   setStatus('הנתונים נטענו', 'ok');
 }
@@ -239,6 +242,7 @@ function serialize() {
   return `/* קובץ זה נערך אוטומטית דרך עמוד הניהול (admin.html) — אפשר גם לערוך ידנית */
 
 const MAILING_LIST_URL = ${JSON.stringify(data.MAILING_LIST_URL)};
+const WHATSAPP_URL = ${JSON.stringify(data.WHATSAPP_URL || '')};
 const DONATE_EMAIL = ${JSON.stringify(data.DONATE_EMAIL)};
 const DONATE_BIT_PHONE = ${JSON.stringify(data.DONATE_BIT_PHONE)};
 
@@ -286,6 +290,7 @@ async function renameFile(oldPath, newPath, message) {
 /* ---------- render ---------- */
 function render() {
   $('set-mailing').value = data.MAILING_LIST_URL;
+  $('set-whatsapp').value = data.WHATSAPP_URL || '';
   $('set-email').value = data.DONATE_EMAIL;
   $('set-bit').value = data.DONATE_BIT_PHONE;
   $('history-link').href = `https://github.com/${cfg.owner}/${cfg.repo}/commits/${cfg.branch}`;
@@ -493,6 +498,7 @@ async function moveYear(yi, dir) {
 /* ---------- settings ---------- */
 async function saveSettings() {
   data.MAILING_LIST_URL = $('set-mailing').value.trim();
+  data.WHATSAPP_URL = $('set-whatsapp').value.trim();
   data.DONATE_EMAIL = $('set-email').value.trim();
   data.DONATE_BIT_PHONE = $('set-bit').value.trim();
   try { setStatus('שומר…', 'busy'); await commitData('עדכון הגדרות'); setStatus('ההגדרות נשמרו', 'ok'); }
