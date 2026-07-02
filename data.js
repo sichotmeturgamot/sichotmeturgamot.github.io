@@ -2,7 +2,7 @@
 
 const MAILING_LIST_URL = "https://forms.google.com/YOUR_FORM_LINK_HERE";
 const DONATE_EMAIL = "doviber@gmail.com";
-const DONATE_BIT_PHONE = "05X-XXXXXXX";
+const DONATE_BIT_PHONE = "058-516-6540";
 
 const YEARS = [
   {
