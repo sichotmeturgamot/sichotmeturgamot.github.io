@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ספר השיחות — מתורגם ללשון הקודש</title>
+<meta name="description" content="שיחותיו הקדושות של כ״ק אדמו״ר הריי״צ מתורגמות מאידיש ללשון הקודש">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <div class="links">
+    <a href="index.html" class="active">ראשי</a>
+    <a href="sichos.html">קריאת השיחות</a>
+    <a href="subscribe.html">הצטרפות לעדכונים</a>
+    <a href="donate.html">תרומה</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="bsd">ב״ה</div>
+  <h1>ספר השיחות — מתורגם ללשון הקודש</h1>
+  <div class="sub">שיחותיו הקדושות של כ״ק אדמו״ר הריי״צ</div>
+  <div class="actions">
+    <a class="btn btn-gold" href="sichos.html">לקריאת השיחות 📖</a>
+    <a class="btn btn-line-light" href="donate.html">לתרומה</a>
+  </div>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<main>
+  <div class="card">
+    <p>שיחות כ״ק אדמו״ר מוהריי״צ, שנאמרו במקורן באידיש, מוגשות כאן מתורגמות ללשון הקודש.</p>
+    <p style="margin-top:8px">התרגום נמשך בעז״ה, ושיחות חדשות מתווספות מעת לעת. <a href="subscribe.html" style="color:var(--gold)">הצטרפו לרשימת התפוצה</a> כדי לקבל עדכון על כל שיחה חדשה.</p>
+  </div>
+
+  <div class="card" id="latest-card" style="display:none">
+    <h2>נוספו לאחרונה</h2>
+    <div id="latest"></div>
+  </div>
+</main>
+
+
+<script src="data.js"></script>
+<script>
+  const visible = y => y.sichos.filter(s => !s.hidden);
+  const totalSichos = YEARS.reduce((n, y) => n + visible(y).reduce((m, s) => m + (s.count || 1), 0), 0);
+  const totalPages  = YEARS.reduce((n, y) => n + visible(y).reduce((m, s) => m + (s.pages || 0), 0), 0);
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><b>${YEARS.length}</b><span>שנים</span></div>
+    <div class="stat"><b>${totalSichos}</b><span>שיחות שתורגמו</span></div>
+    <div class="stat"><b>${totalPages}</b><span>עמודים מתורגמים</span></div>`;
+
+  // שלוש השיחות האחרונות (לפי תאריך)
+  const all = [];
+  YEARS.forEach(y => visible(y).forEach(s => all.push({ ...s, year: y.year })));
+  all.sort((a, b) => (b.sortDate || '').localeCompare(a.sortDate || ''));
+  const latest = all.slice(0, 3);
+  if (latest.length) {
+    document.getElementById('latest-card').style.display = 'block';
+    document.getElementById('latest').innerHTML = latest.map(s => `
+      <div class="sicha">
+        <div class="sicha-info">
+          <h3>${s.title}</h3>
+          <p>${s.subtitle || ''}</p>
+        </div>
+        <div class="btns">
+          <a class="btn btn-navy btn-sm" href="sichos.html">לקריאה 📖</a>
+          <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה ⬇</a>
+        </div>
+      </div>`).join('');
+  }
+</script>
+</body>
+</html>

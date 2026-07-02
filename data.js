@@ -1,0 +1,57 @@
+/* ============================================================
+   נתוני האתר — נערך דרך עמוד הניהול (admin.html) או ידנית
+   sortDate = תאריך לועזי של אמירת השיחה, למיון כרונולוגי
+   ============================================================ */
+
+const MAILING_LIST_URL = "https://forms.google.com/YOUR_FORM_LINK_HERE";
+const DONATE_EMAIL = "doviber@gmail.com";
+const DONATE_BIT_PHONE = "05X-XXXXXXX";
+
+const YEARS = [
+  {
+    "year": "תש״ו",
+    "note": "תורגם במלואו",
+    "complete": true,
+    "sichos": [
+      {
+        "title": "ספר השיחות תש״ו — הספר המלא",
+        "subtitle": "כל שיחות שנת תש״ו מתורגמות ללשון הקודש, יו״ל לראשונה מתורגם מאידיש",
+        "file": "pdfs/sefer-hasichos-5706.pdf",
+        "pages": 61,
+        "count": 1,
+        "sortDate": "1945-09-08"
+      }
+    ]
+  },
+  {
+    "year": "תש״ז",
+    "note": "בתהליך תרגום",
+    "complete": false,
+    "sichos": [
+      {
+        "title": "שיחות חודש תשרי תש״ז",
+        "subtitle": "כל שיחות חודש תשרי — ראש השנה, שבת שובה, סוכות ושמחת תורה",
+        "file": "pdfs/sichos-tishrei-5707.pdf",
+        "pages": 26,
+        "count": 1,
+        "sortDate": "1946-09-26"
+      },
+      {
+        "title": "ש״פ נח, בדר״ח מרחשון — בסעודת היום",
+        "subtitle": "שיחת שבת פרשת נח, בדר״ח מרחשון",
+        "file": "pdfs/shabbos-noach-5707.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "1946-10-26"
+      },
+      {
+        "title": "י״ט כסלו תש״ז",
+        "subtitle": "שיחת חג הגאולה י״ט כסלו — ראש השנה לחסידות",
+        "file": "pdfs/yud-tes-kislev-5707.pdf",
+        "pages": 14,
+        "count": 1,
+        "sortDate": "1946-12-12"
+      }
+    ]
+  }
+];
