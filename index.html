@@ -53,19 +53,6 @@
 
 
 
-<button id="install-fab" class="install-fab" hidden aria-label="התקנת האפליקציה">
-  <img src="icon-192.png" alt="">
-  <span>התקנת האפליקציה</span>
-</button>
-
-<div id="install-modal" class="install-modal">
-  <div class="box">
-    <h3>📲 התקנת האפליקציה</h3>
-    <div id="install-steps"></div>
-    <button class="close-btn" onclick="document.getElementById('install-modal').classList.remove('open')">הבנתי</button>
-  </div>
-</div>
-
 <nav class="bottomnav">
   <a href="index.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>ראשי</span></a>
   <a href="sichos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/></svg><span>קריאה</span></a>
@@ -73,49 +60,6 @@
   <a href="donate.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 000-7.8z"/></svg><span>תרומה</span></a>
 </nav>
 
-<script>
-  // כפתור התקנת האפליקציה — קבוע בעמוד הבית
-  (function () {
-    const fab = document.getElementById('install-fab');
-    const modal = document.getElementById('install-modal');
-    const steps = document.getElementById('install-steps');
-    const ua = navigator.userAgent || '';
-    const isStandalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-    if (isStandalone) return; // כבר מותקנת — לא מציגים
-    const isIOS = /iphone|ipad|ipod/i.test(ua) && !window.MSStream;
-    const isAndroid = /android/i.test(ua);
-    let deferred = null;
-
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault(); deferred = e; fab.hidden = false;
-    });
-    // מכשירים שאין בהם התקנה אוטומטית (בעיקר אייפון) — מציגים בכל מקרה עם הוראות
-    if (isIOS) fab.hidden = false;
-    setTimeout(() => { if (deferred === null && !isIOS) fab.hidden = false; }, 1500);
-
-    const showSteps = () => {
-      steps.innerHTML = isIOS
-        ? '<ol><li>לחצו על כפתור השיתוף <b>⬆️</b> בתחתית הדפדפן.</li><li>גללו ובחרו <b>"הוספה למסך הבית"</b>.</li><li>לחצו <b>"הוסף"</b> — והאפליקציה תופיע במסך הבית.</li></ol>'
-        : (isAndroid
-          ? '<ol><li>פתחו את תפריט הדפדפן <b>⋮</b> בפינה.</li><li>בחרו <b>"התקנת האפליקציה"</b> או <b>"הוספה למסך הבית"</b>.</li><li>אשרו — והאפליקציה תותקן.</li></ol>'
-          : '<ol><li>בשורת הכתובת של הדפדפן חפשו את סמל ההתקנה <b>⊕</b>.</li><li>לחצו עליו ובחרו <b>"התקן"</b>.</li></ol>');
-      modal.classList.add('open');
-    };
-
-    fab.addEventListener('click', async () => {
-      if (deferred) {
-        deferred.prompt();
-        const { outcome } = await deferred.userChoice;
-        deferred = null;
-        if (outcome === 'accepted') fab.hidden = true;
-      } else {
-        showSteps();
-      }
-    });
-    window.addEventListener('appinstalled', () => { fab.hidden = true; modal.classList.remove('open'); });
-    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
-  })();
-</script>
 <script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
   // החלת טקסטים ועיצוב מההגדרות
@@ -263,5 +207,6 @@
     }
   })();
 </script>
+  <script src="install.js" defer></script>
 </body>
 </html>

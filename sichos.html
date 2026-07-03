@@ -79,9 +79,6 @@
     "תר״צ","תרצ״א","תרצ״ב","תרצ״ג","תרצ״ד","תרצ״ה","תרצ״ו","תרצ״ז","תרצ״ח","תרצ״ט",
     "ת״ש","תש״א","תש״ב","תש״ג","תש״ד","תש״ה","תש״ו","תש״ז","תש״ח","תש״ט","ה'שי״ת"];
 
-  const esc = s => String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   const norm = s => String(s).replace(/[״"׳']/g, '');
   const findYear = name => YEARS.find(y => norm(y.year) === norm(name));
   const visible = y => y.sichos
@@ -121,22 +118,16 @@
       ${list.map(s => `
         <div class="sicha">
           <div class="sicha-info">
-            <h3>${esc(s.title)}</h3>
-            <p>${esc(s.subtitle || '')}</p>
-            ${s.pages ? `<span class="pages">${esc(s.pages)} עמודים</span>` : ''}
+            <h3>${s.title}</h3>
+            <p>${s.subtitle || ''}</p>
+            ${s.pages ? `<span class="pages">${s.pages} עמודים</span>` : ''}
           </div>
           <div class="btns">
-            <button class="btn btn-navy btn-sm read-btn" data-file="${esc(s.file)}" data-title="${esc(s.title)}">קריאה באתר 📖</button>
-            <a class="btn btn-line btn-sm" href="${esc(s.file)}" download>הורדה ⬇</a>
+            <button class="btn btn-navy btn-sm" onclick="openViewer('${s.file}', '${s.title.replace(/'/g, "\\'")}')">קריאה באתר 📖</button>
+            <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה ⬇</a>
           </div>
         </div>`).join('')}`;
   }
-
-  // פתיחת הקורא בלחיצה — דרך data-attributes (עמיד לגרשיים/מרכאות בכותרת)
-  panel.addEventListener('click', e => {
-    const b = e.target.closest('.read-btn');
-    if (b) openViewer(b.dataset.file, b.dataset.title);
-  });
 
   // פתיחה אוטומטית של השנה האחרונה שיש בה תוכן
   const withContent = [...grid.querySelectorAll('.year-chip:not(.empty)')];
@@ -238,5 +229,6 @@
     }
   })();
 </script>
+  <script src="install.js" defer></script>
 </body>
 </html>
