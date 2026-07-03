@@ -21,3 +21,4 @@
 Settings ‏> Developer settings ‏> Fine-grained tokens ‏> Generate new token.
 בחר גישה רק למאגר של האתר, ותן ל-Contents הרשאת Read and write.
 הזן בעמוד הניהול את שם המשתמש, שם המאגר והמפתח — ו
+
