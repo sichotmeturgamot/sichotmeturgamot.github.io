@@ -46,7 +46,8 @@ const YEARS = [
         "pages": 1,
         "count": 1,
         "sortDate": "02-01",
-        "hebDate": "א׳ מרחשון"
+        "hebDate": "א׳ מרחשון",
+        "hidden": true
       }
     ]
   }
