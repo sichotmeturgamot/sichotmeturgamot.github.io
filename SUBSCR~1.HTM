@@ -33,14 +33,23 @@
 </main>
 
 
+
+<nav class="bottomnav">
+  <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>ראשי</span></a>
+  <a href="sichos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/></svg><span>קריאה</span></a>
+  <a href="subscribe.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10 21a2 2 0 004 0"/></svg><span>עדכונים</span></a>
+  <a href="donate.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 000-7.8z"/></svg><span>תרומה</span></a>
+</nav>
+
 <script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
   // החלת טקסטים ועיצוב מההגדרות
   if (typeof SITE !== 'undefined' && SITE) {
     const rt = document.documentElement.style;
-    if (SITE.colorNavy) rt.setProperty('--navy', SITE.colorNavy);
-    if (SITE.colorGold) rt.setProperty('--gold', SITE.colorGold);
-    if (SITE.colorCream) rt.setProperty('--cream', SITE.colorCream);
+    const darkMode = matchMedia('(prefers-color-scheme: dark)').matches;
+    if (!darkMode && SITE.colorNavy) rt.setProperty('--navy', SITE.colorNavy);
+    if (!darkMode && SITE.colorGold) rt.setProperty('--gold', SITE.colorGold);
+    if (!darkMode && SITE.colorCream) rt.setProperty('--cream', SITE.colorCream);
     if (SITE.brand) document.querySelectorAll('.brand').forEach(e => e.textContent = SITE.brand);
     const setTxt = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v; };
     setTxt('site-hero-title', SITE.heroTitle);
@@ -113,6 +122,32 @@
         location.href = pages[next];
       }
     }, { passive: true });
+  })();
+</script>
+<script>
+  // מעברי עמוד רכים + פרלקסה
+  (function () {
+    document.body.classList.add('page-in');
+    const inner = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html', 'help.html', 'admin.html'];
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+      const href = a.getAttribute('href') || '';
+      if (!inner.includes(href)) return;
+      e.preventDefault();
+      document.body.style.transition = 'opacity .16s ease';
+      document.body.style.opacity = '0';
+      setTimeout(() => location.href = href, 150);
+    });
+    const hero = document.querySelector('.hero');
+    if (hero) {
+      const h1 = hero.querySelector('h1'), sub = hero.querySelector('.sub');
+      addEventListener('scroll', () => {
+        const y = Math.min(scrollY, 500);
+        if (h1) h1.style.transform = 'translateY(' + y * 0.22 + 'px)';
+        if (sub) { sub.style.transform = 'translateY(' + y * 0.14 + 'px)'; sub.style.opacity = String(Math.max(0, 1 - y / 320)); }
+      }, { passive: true });
+    }
   })();
 </script>
 </body>
