@@ -266,6 +266,21 @@ async function loadAll() {
   setStatus('הנתונים נטענו', 'ok');
 }
 
+/* ---------- git single-commit engine ---------- */
+async function createBlob(base64) {
+  const r = await gh(repoPath('git/blobs'), { method: 'POST', body: { content: base64, encoding: 'base64' } });
+  return r.sha;
+}
+async function gitCommit(entries, message) {
+  const ref = await gh(repoPath(`git/ref/heads/${cfg.branch}`));
+  const headSha = ref.object.sha;
+  const commit = await gh(repoPath(`git/commits/${headSha}`));
+  const newTree = await gh(repoPath('git/trees'), { method: 'POST', body: { base_tree: commit.tree.sha, tree: entries } });
+  const nc = await gh(repoPath('git/commits'), { method: 'POST', body: { message, tree: newTree.sha, parents: [headSha] } });
+  await gh(repoPath(`git/refs/heads/${cfg.branch}`), { method: 'PATCH', body: { sha: nc.sha } });
+}
+const dataEntry = () => ({ path: 'data.js', mode: '100644', type: 'blob', content: serialize() });
+
 /* ---------- save data.js ---------- */
 function serialize() {
   return `/* קובץ זה נערך אוטומטית דרך עמוד הניהול (admin.html) — אפשר גם לערוך ידנית */
@@ -282,11 +297,7 @@ const YEARS = ${JSON.stringify(data.YEARS, null, 2)};
 `;
 }
 async function commitData(message) {
-  const r = await gh(repoPath('contents/data.js'), {
-    method: 'PUT',
-    body: { message, content: enc(serialize()), sha: dataSha, branch: cfg.branch }
-  });
-  dataSha = r.content.sha;
+  await gitCommit([dataEntry()], message);
 }
 
 /* ---------- file ops ---------- */
@@ -420,14 +431,17 @@ async function saveSicha() {
       const old = data.YEARS[editing.yi].sichos[editing.si];
       entry.file = old.file;
       if (old.hidden) entry.hidden = true;
+      let extra = [];
       if (fileInput) {
         setStatus('מעלה קובץ מעודכן…', 'busy');
-        await uploadFile(old.file, await readB64(fileInput), 'עדכון קובץ: ' + title);
+        extra.push({ path: old.file, mode: '100644', type: 'blob', sha: await createBlob(await readB64(fileInput)) });
       }
       // remove from old spot, insert to (possibly new) year
       data.YEARS[editing.yi].sichos.splice(editing.si, 1);
       data.YEARS[yi].sichos.push(entry);
       sortYear(yi);
+      setStatus('שומר…', 'busy');
+      await gitCommit([...extra, dataEntry()], 'עריכת שיחה: ' + title);
     } else {
       let name = $('s-filename').value.trim();
       if (!fileInput) return setStatus('חסר קובץ PDF', 'err');
@@ -436,12 +450,12 @@ async function saveSicha() {
       if (!name.toLowerCase().endsWith('.pdf')) name += '.pdf';
       entry.file = 'pdfs/' + name;
       setStatus('מעלה קובץ PDF…', 'busy');
-      await uploadFile(entry.file, await readB64(fileInput), 'העלאת שיחה: ' + title);
+      const blobSha = await createBlob(await readB64(fileInput));
       data.YEARS[yi].sichos.push(entry);
       sortYear(yi);
+      setStatus('שומר…', 'busy');
+      await gitCommit([{ path: entry.file, mode: '100644', type: 'blob', sha: blobSha }, dataEntry()], 'הוספת שיחה: ' + title);
     }
-    setStatus('שומר…', 'busy');
-    await commitData((editing ? 'עריכת שיחה: ' : 'הוספת שיחה: ') + title);
     $('s-filename').disabled = false;
     dlg('dlg-sicha').close();
     render();
@@ -453,9 +467,8 @@ async function removeSicha(yi, si) {
   if (!confirm(`למחוק את "${s.title}"?\nגם קובץ ה-PDF יימחק מהאתר.\n(ניתן לשחזר דרך היסטוריית השינויים)`)) return;
   try {
     setStatus('מוחק…', 'busy');
-    await deleteFile(s.file, 'מחיקת קובץ: ' + s.title);
     data.YEARS[yi].sichos.splice(si, 1);
-    await commitData('מחיקת שיחה: ' + s.title);
+    await gitCommit([{ path: s.file, mode: '100644', type: 'blob', sha: null }, dataEntry()], 'מחיקת שיחה: ' + s.title);
     render(); setStatus('נמחק', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
 }
@@ -468,9 +481,15 @@ async function renameSicha(yi, si) {
   if (!name.toLowerCase().endsWith('.pdf')) name += '.pdf';
   try {
     setStatus('משנה שם קובץ…', 'busy');
-    await renameFile(s.file, 'pdfs/' + name, `שינוי שם: ${s.file} → pdfs/${name}`);
+    const blobSha = await getFileSha(s.file);
+    if (!blobSha) throw new Error('הקובץ המקורי לא נמצא: ' + s.file);
+    const oldPath = s.file;
     s.file = 'pdfs/' + name;
-    await commitData('עדכון שם קובץ: ' + s.title);
+    await gitCommit([
+      { path: s.file, mode: '100644', type: 'blob', sha: blobSha },
+      { path: oldPath, mode: '100644', type: 'blob', sha: null },
+      dataEntry()
+    ], 'שינוי שם קובץ: ' + s.title);
     render(); setStatus('שם הקובץ שונה', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
 }
