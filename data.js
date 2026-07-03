@@ -6,7 +6,20 @@ const DONATE_EMAIL = "doviber@gmail.com";
 const DONATE_BIT_PHONE = "058-516-6540";
 
 /* טקסטים ועיצוב — ניתן לעריכה מעמוד הניהול */
-const SITE = {};
+const SITE = {
+  "brand": "",
+  "heroTitle": "",
+  "heroSub": "",
+  "about1": "",
+  "about2": "",
+  "subscribeText": "",
+  "donateTitle": "",
+  "donateText": "",
+  "colorNavy": "#ffffff",
+  "colorGold": "#b8933e",
+  "colorCream": "#0000ff",
+  "customCss": ""
+};
 
 const YEARS = [
   {
