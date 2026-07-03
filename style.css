@@ -279,29 +279,3 @@ input.en { direction: ltr; text-align: left; }
 body.page-in { animation: pageIn .28s ease; }
 .hero h1, .hero .sub { will-change: transform; }
 
-/* ===== מצב כהה אוטומטי ===== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --cream: #131a29;
-    --paper: #1c2537;
-    --text: #e9e5da;
-    --muted: #9aa3b5;
-    --navy-light: #223252;
-  }
-  h1, h2, h3 { color: #e3e9f5; }
-  .card, .sicha, .year-block { border-color: #2b3854; }
-  .sicha { border-inline-start-color: var(--gold); }
-  .year-chip { border-color: #8a6f31; }
-  .year-chip.empty { border-color: #33405c; color: #5f6b84; }
-  .year-chip.active { color: var(--gold-light); }
-  .stat { box-shadow: 0 6px 24px rgba(0,0,0,.45); }
-  .stat b { color: #e3e9f5; }
-  .badge.done { background: #1c3320; color: #90d095; }
-  .badge.wip { background: #3a3116; color: #e2c473; }
-  .btn-navy { background: #31415f; }
-  .btn-line { color: #dfe6f5; border-color: #7284a8; }
-  input[type=text], input[type=password], input[type=number], input[type=date], textarea, select {
-    background: #202a3f; color: var(--text); border-color: #34415e;
-  }
-  ::-webkit-scrollbar-track { background: #131a29; }
-}
