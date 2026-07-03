@@ -40,6 +40,16 @@ const YEARS = [
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-07-03"
+      },
+      {
+        "title": "שיחת ש\"פ נח - בסעודת היום",
+        "subtitle": "",
+        "file": "pdfs/Noach_Bayom_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "02-01",
+        "hebDate": "א׳ מרחשון",
+        "addedAt": "2026-07-03"
       }
     ]
   }
