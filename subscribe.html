@@ -22,12 +22,14 @@
 <main>
   <div class="card center" style="max-width:560px;margin:30px auto">
     <div style="font-size:2.2rem;margin-bottom:8px">📬</div>
-    <h2>הצטרפות לרשימת התפוצה</h2>
+    <h2>הצטרפות לעדכונים</h2>
     <p class="muted" style="margin-bottom:20px">
-      הצטרפו לרשימת התפוצה וקבלו הודעה במייל בכל פעם ששיחה חדשה מתורגמת ועולה לאתר.
-      ללא דואר מיותר — רק עדכונים על שיחות חדשות.
+      קבלו הודעה בכל פעם ששיחה חדשה מתורגמת ועולה לאתר — בדרך הנוחה לכם.
     </p>
-    <a class="btn btn-gold" id="mailing-btn" target="_blank" rel="noopener">להרשמה לחצו כאן</a>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-gold" id="mailing-btn" target="_blank" rel="noopener">עדכונים במייל 📧</a>
+      <a class="btn" id="whatsapp-btn" target="_blank" rel="noopener" style="background:#25D366;color:#fff;display:none">עדכונים בוואטסאפ 💬</a>
+    </div>
   </div>
 </main>
 
@@ -35,6 +37,11 @@
 <script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
   document.getElementById('mailing-btn').href = MAILING_LIST_URL;
+  if (typeof WHATSAPP_URL !== 'undefined' && WHATSAPP_URL) {
+    const w = document.getElementById('whatsapp-btn');
+    w.href = WHATSAPP_URL;
+    w.style.display = 'inline-flex';
+  }
 </script>
 </body>
 </html>
