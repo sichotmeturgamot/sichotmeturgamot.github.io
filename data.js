@@ -21,15 +21,6 @@ const YEARS = [
     "complete": false,
     "sichos": [
       {
-        "title": "שיחות חודש תשרי תש״ז",
-        "subtitle": "כל שיחות חודש תשרי — ראש השנה, שבת שובה, יום כיפור, סוכות, שמחת תורה ושבת בראשית",
-        "file": "pdfs/sichos-tishrei-5707.pdf",
-        "pages": 26,
-        "count": 17,
-        "sortDate": "01-01",
-        "hebDate": "א׳ תשרי"
-      },
-      {
         "title": "שבת פרשת נח - בסעודת היום",
         "subtitle": "",
         "file": "pdfs/Noach_5707.pdf",
