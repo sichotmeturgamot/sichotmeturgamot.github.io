@@ -13,17 +13,7 @@ const YEARS = [
     "year": "תש״ו",
     "note": "תורגם במלואו",
     "complete": true,
-    "sichos": [
-      {
-        "title": "ספר השיחות תש״ו — הספר המלא",
-        "subtitle": "כל שיחות שנת תש״ו מתורגמות ללשון הקודש.",
-        "file": "pdfs/sefer-hasichos-5706.pdf",
-        "pages": 61,
-        "count": 29,
-        "sortDate": "01-01",
-        "hebDate": "א׳ תשרי"
-      }
-    ]
+    "sichos": []
   },
   {
     "year": "תש״ז",
