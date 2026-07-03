@@ -229,6 +229,7 @@ function setStatus(msg, cls) {
 /* ---------- GitHub API ---------- */
 async function gh(path, opts = {}) {
   const res = await fetch(API + path, {
+    signal: AbortSignal.timeout ? AbortSignal.timeout(120000) : undefined,
     method: opts.method || 'GET',
     headers: {
       'Authorization': 'Bearer ' + cfg.token,
@@ -278,6 +279,30 @@ async function gitCommit(entries, message) {
   const newTree = await gh(repoPath('git/trees'), { method: 'POST', body: { base_tree: commit.tree.sha, tree: entries } });
   const nc = await gh(repoPath('git/commits'), { method: 'POST', body: { message, tree: newTree.sha, parents: [headSha] } });
   await gh(repoPath(`git/refs/heads/${cfg.branch}`), { method: 'PATCH', body: { sha: nc.sha } });
+  watchDeploy(nc.sha);
+}
+
+/* מעקב אחרי הפרסום לאתר — מציג אם העדכון עלה בפועל */
+let watchTimer = null;
+function watchDeploy(sha) {
+  clearInterval(watchTimer);
+  let tries = 0;
+  watchTimer = setInterval(async () => {
+    if (++tries > 20) { clearInterval(watchTimer); return; }
+    try {
+      const r = await fetch(`${API}/repos/${cfg.owner}/${cfg.repo}/actions/runs?head_sha=${sha}&per_page=1`);
+      const j = await r.json();
+      const run = j.workflow_runs && j.workflow_runs[0];
+      if (!run) return;
+      if (run.status === 'completed') {
+        clearInterval(watchTimer);
+        if (run.conclusion === 'success') setStatus('העדכון פורסם לאתר בהצלחה ✓', 'ok');
+        else setStatus('נשמר במאגר, אך הפרסום לאתר נכשל — פתח את "היסטוריית שינויים" ← Actions ← Re-run all jobs', 'err');
+      } else {
+        setStatus('נשמר ✓ מפרסם לאתר… (בדרך כלל עד דקה)', 'busy');
+      }
+    } catch (e) { /* מתעלמים, ננסה שוב */ }
+  }, 10000);
 }
 const dataEntry = () => ({ path: 'data.js', mode: '100644', type: 'blob', content: serialize() });
 

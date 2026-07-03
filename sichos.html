@@ -132,5 +132,52 @@
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewer(); });
 </script>
+<script>
+  // גלילה חיה: פס התקדמות + חשיפה הדרגתית
+  (function () {
+    const bar = document.createElement('div'); bar.id = 'scroll-progress'; document.body.appendChild(bar);
+    addEventListener('scroll', () => {
+      const h = document.documentElement;
+      bar.style.width = (h.scrollTop / ((h.scrollHeight - h.clientHeight) || 1) * 100) + '%';
+    }, { passive: true });
+    if (!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }), { threshold: .12 });
+    const hook = () => document.querySelectorAll('main .card:not(.reveal), .sicha:not(.reveal)').forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.transitionDelay = (Math.min(i, 6) * 70) + 'ms';
+      io.observe(el);
+    });
+    hook();
+    new MutationObserver(hook).observe(document.body, { childList: true, subtree: true });
+  })();
+</script>
+<script>
+  // החלקה בטלפון בין עמודי האתר
+  (function () {
+    const pages = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html'];
+    let cur = location.pathname.split('/').pop() || 'index.html';
+    if (!pages.includes(cur)) return;
+    let x0 = null, y0 = null;
+    addEventListener('touchstart', e => {
+      if (document.getElementById('viewer-wrap') && document.getElementById('viewer-wrap').classList.contains('open')) { x0 = null; return; }
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+    }, { passive: true });
+    addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      const dy = e.changedTouches[0].clientY - y0;
+      x0 = null;
+      if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2) return;
+      const i = pages.indexOf(cur);
+      const next = dx < 0 ? i + 1 : i - 1; // החלקה שמאלה = העמוד הבא בתפריט
+      if (next >= 0 && next < pages.length) {
+        document.body.style.transition = 'opacity .18s'; document.body.style.opacity = '0.25';
+        setTimeout(() => location.href = pages[next], 150);
+      }
+    }, { passive: true });
+  })();
+</script>
 </body>
 </html>
