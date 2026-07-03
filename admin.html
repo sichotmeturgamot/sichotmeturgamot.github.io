@@ -466,6 +466,7 @@ async function saveSicha() {
       const old = data.YEARS[editing.yi].sichos[editing.si];
       entry.file = old.file;
       if (old.hidden) entry.hidden = true;
+      if (old.addedAt) entry.addedAt = old.addedAt;
       let extra = [];
       if (fileInput) {
         setStatus('מעלה קובץ מעודכן…', 'busy');
@@ -484,6 +485,7 @@ async function saveSicha() {
       if (!/^[A-Za-z0-9._-]+$/.test(name)) return setStatus('שם הקובץ חייב להיות באנגלית, בלי רווחים', 'err');
       if (!name.toLowerCase().endsWith('.pdf')) name += '.pdf';
       entry.file = 'pdfs/' + name;
+      entry.addedAt = new Date().toISOString().slice(0, 10);
       setStatus('מעלה קובץ PDF…', 'busy');
       const blobSha = await createBlob(await readB64(fileInput));
       data.YEARS[yi].sichos.push(entry);

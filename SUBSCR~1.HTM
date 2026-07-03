@@ -84,24 +84,33 @@
   // החלקה בטלפון בין עמודי האתר
   (function () {
     const pages = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html'];
-    let cur = location.pathname.split('/').pop() || 'index.html';
+    const cur = location.pathname.split('/').pop() || 'index.html';
     if (!pages.includes(cur)) return;
-    let x0 = null, y0 = null;
+    // טעינה מוקדמת של שאר העמודים — מעבר מהיר
+    pages.filter(p => p !== cur).forEach(p => {
+      const l = document.createElement('link'); l.rel = 'prefetch'; l.href = p; document.head.appendChild(l);
+    });
+    let x0 = null, y0 = null, t0 = 0;
     addEventListener('touchstart', e => {
-      if (document.getElementById('viewer-wrap') && document.getElementById('viewer-wrap').classList.contains('open')) { x0 = null; return; }
-      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+      const v = document.getElementById('viewer-wrap');
+      if (v && v.classList.contains('open')) { x0 = null; return; }
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
     }, { passive: true });
     addEventListener('touchend', e => {
       if (x0 === null) return;
       const dx = e.changedTouches[0].clientX - x0;
       const dy = e.changedTouches[0].clientY - y0;
+      const dt = Date.now() - t0;
       x0 = null;
-      if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2) return;
+      if (dt > 600 || Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
       const i = pages.indexOf(cur);
-      const next = dx < 0 ? i + 1 : i - 1; // החלקה שמאלה = העמוד הבא בתפריט
+      // החלקה ימינה = העמוד הבא (שמאלה בתפריט); החלקה שמאלה = חזרה
+      const next = dx > 0 ? i + 1 : i - 1;
       if (next >= 0 && next < pages.length) {
-        document.body.style.transition = 'opacity .18s'; document.body.style.opacity = '0.25';
-        setTimeout(() => location.href = pages[next], 150);
+        document.body.style.transition = 'transform .12s ease, opacity .12s';
+        document.body.style.transform = 'translateX(' + (dx > 0 ? '40px' : '-40px') + ')';
+        document.body.style.opacity = '0.4';
+        location.href = pages[next];
       }
     }, { passive: true });
   })();
