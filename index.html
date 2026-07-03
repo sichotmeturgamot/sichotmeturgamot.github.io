@@ -23,8 +23,8 @@
 
 <div class="hero">
   <div class="bsd">ב״ה</div>
-  <h1>ספר השיחות — מתורגם ללשון הקודש</h1>
-  <div class="sub">שיחותיו הקדושות של כ״ק אדמו״ר הריי״צ</div>
+  <h1 id="site-hero-title">ספר השיחות — מתורגם ללשון הקודש</h1>
+  <div class="sub" id="site-hero-sub">שיחותיו הקדושות של כ״ק אדמו״ר הריי״צ</div>
   <div class="actions">
     <a class="btn btn-gold" href="sichos.html">לקריאת השיחות 📖</a>
     <a class="btn btn-line-light" href="donate.html">לתרומה</a>
@@ -35,8 +35,8 @@
 
 <main>
   <div class="card">
-    <p>שיחות כ״ק אדמו״ר מוהריי״צ, שנאמרו במקורן באידיש, מוגשות כאן מתורגמות ללשון הקודש.</p>
-    <p style="margin-top:8px">התרגום נמשך בעז״ה, ושיחות חדשות מתווספות מעת לעת. <a href="subscribe.html" style="color:var(--gold)">הצטרפו לרשימת התפוצה</a> כדי לקבל עדכון על כל שיחה חדשה.</p>
+    <p id="site-about1">שיחות כ״ק אדמו״ר מוהריי״צ, שנאמרו במקורן באידיש, מוגשות כאן מתורגמות ללשון הקודש.</p>
+    <p style="margin-top:8px"><span id="site-about2-text">התרגום נמשך בעז״ה, ושיחות חדשות מתווספות מעת לעת.</span> <a href="subscribe.html" style="color:var(--gold)">הצטרפו לרשימת התפוצה</a> כדי לקבל עדכון על כל שיחה חדשה.</p>
   </div>
 
   <div class="card" id="latest-card" style="display:none">
@@ -48,6 +48,23 @@
 
 <script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
+  // החלת טקסטים ועיצוב מההגדרות
+  if (typeof SITE !== 'undefined' && SITE) {
+    const rt = document.documentElement.style;
+    if (SITE.colorNavy) rt.setProperty('--navy', SITE.colorNavy);
+    if (SITE.colorGold) rt.setProperty('--gold', SITE.colorGold);
+    if (SITE.colorCream) rt.setProperty('--cream', SITE.colorCream);
+    if (SITE.brand) document.querySelectorAll('.brand').forEach(e => e.textContent = SITE.brand);
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v; };
+    setTxt('site-hero-title', SITE.heroTitle);
+    setTxt('site-hero-sub', SITE.heroSub);
+    setTxt('site-about1', SITE.about1);
+    setTxt('site-about2-text', SITE.about2);
+    setTxt('site-subscribe-text', SITE.subscribeText);
+    setTxt('site-donate-title', SITE.donateTitle);
+    setTxt('site-donate-text', SITE.donateText);
+    if (SITE.customCss) { const st = document.createElement('style'); st.textContent = SITE.customCss; document.head.appendChild(st); }
+  }
   const visible = y => y.sichos.filter(s => !s.hidden);
   const totalSichos = YEARS.reduce((n, y) => n + visible(y).reduce((m, s) => m + (s.count || 1), 0), 0);
   const totalPages  = YEARS.reduce((n, y) => n + visible(y).reduce((m, s) => m + (s.pages || 0), 0), 0);

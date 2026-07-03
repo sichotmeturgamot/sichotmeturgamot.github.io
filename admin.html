@@ -109,6 +109,35 @@
       </div>
       <div class="dlg-btns"><button class="btn btn-main" onclick="saveSettings()">שמירת הגדרות</button></div>
     </div>
+
+    <div class="card">
+      <h2>טקסטים ועיצוב</h2>
+      <p style="font-size:.85rem;color:var(--muted)">כאן עורכים את הכיתוב והצבעים של האתר. שינויים מופיעים באתר תוך כדקה.</p>
+      <label>שם האתר (בפינת התפריט העליון)</label>
+      <input type="text" id="t-brand">
+      <label>כותרת ראשית (עמוד הבית)</label>
+      <input type="text" id="t-heroTitle">
+      <label>כותרת משנה (עמוד הבית)</label>
+      <input type="text" id="t-heroSub">
+      <label>פסקת הסבר ראשונה (עמוד הבית)</label>
+      <textarea id="t-about1" rows="2"></textarea>
+      <label>פסקת הסבר שנייה (עמוד הבית, לפני הקישור לרשימת התפוצה)</label>
+      <textarea id="t-about2" rows="2"></textarea>
+      <label>טקסט עמוד ההצטרפות לעדכונים</label>
+      <textarea id="t-subscribeText" rows="2"></textarea>
+      <label>כותרת עמוד התרומה</label>
+      <input type="text" id="t-donateTitle">
+      <label>טקסט עמוד התרומה</label>
+      <textarea id="t-donateText" rows="2"></textarea>
+      <div class="row">
+        <div><label>צבע ראשי (כחול כהה)</label><input type="color" id="t-colorNavy" style="width:100%;height:38px;padding:2px;border:1px solid #d8d2c2;border-radius:8px"></div>
+        <div><label>צבע משני (זהב)</label><input type="color" id="t-colorGold" style="width:100%;height:38px;padding:2px;border:1px solid #d8d2c2;border-radius:8px"></div>
+        <div><label>צבע רקע</label><input type="color" id="t-colorCream" style="width:100%;height:38px;padding:2px;border:1px solid #d8d2c2;border-radius:8px"></div>
+      </div>
+      <label>CSS מותאם אישית (למתקדמים — שינויי פריסה ועיצוב חופשיים, השאר ריק אם לא בשימוש)</label>
+      <textarea id="t-customCss" rows="3" class="en" placeholder=".hero { padding: 40px; }"></textarea>
+      <div class="dlg-btns"><button class="btn btn-main" onclick="saveSite()">שמירת טקסטים ועיצוב</button></div>
+    </div>
   </div>
 
   <!-- ===== דיאלוג הוספת/עריכת שיחה ===== -->
@@ -232,7 +261,7 @@ async function loadAll() {
   const f = await gh(repoPath(`contents/data.js?ref=${cfg.branch}`));
   dataSha = f.sha;
   const code = dec(f.content);
-  data = new Function(code + ';return {MAILING_LIST_URL, WHATSAPP_URL: (typeof WHATSAPP_URL === "undefined" ? "" : WHATSAPP_URL), DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
+  data = new Function(code + ';return {MAILING_LIST_URL, WHATSAPP_URL: (typeof WHATSAPP_URL === "undefined" ? "" : WHATSAPP_URL), SITE: (typeof SITE === "undefined" ? {} : SITE), DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
   render();
   setStatus('הנתונים נטענו', 'ok');
 }
@@ -245,6 +274,9 @@ const MAILING_LIST_URL = ${JSON.stringify(data.MAILING_LIST_URL)};
 const WHATSAPP_URL = ${JSON.stringify(data.WHATSAPP_URL || '')};
 const DONATE_EMAIL = ${JSON.stringify(data.DONATE_EMAIL)};
 const DONATE_BIT_PHONE = ${JSON.stringify(data.DONATE_BIT_PHONE)};
+
+/* טקסטים ועיצוב — ניתן לעריכה מעמוד הניהול */
+const SITE = ${JSON.stringify(data.SITE || {}, null, 2)};
 
 const YEARS = ${JSON.stringify(data.YEARS, null, 2)};
 `;
@@ -293,6 +325,19 @@ function render() {
   $('set-whatsapp').value = data.WHATSAPP_URL || '';
   $('set-email').value = data.DONATE_EMAIL;
   $('set-bit').value = data.DONATE_BIT_PHONE;
+  const S = data.SITE || {};
+  $('t-brand').value = S.brand || '';
+  $('t-heroTitle').value = S.heroTitle || '';
+  $('t-heroSub').value = S.heroSub || '';
+  $('t-about1').value = S.about1 || '';
+  $('t-about2').value = S.about2 || '';
+  $('t-subscribeText').value = S.subscribeText || '';
+  $('t-donateTitle').value = S.donateTitle || '';
+  $('t-donateText').value = S.donateText || '';
+  $('t-colorNavy').value = S.colorNavy || '#1a2942';
+  $('t-colorGold').value = S.colorGold || '#b8933e';
+  $('t-colorCream').value = S.colorCream || '#faf7f0';
+  $('t-customCss').value = S.customCss || '';
   $('history-link').href = `https://github.com/${cfg.owner}/${cfg.repo}/commits/${cfg.branch}`;
 
   const root = $('years-admin');
@@ -492,6 +537,26 @@ async function moveYear(yi, dir) {
   if (j < 0 || j >= data.YEARS.length) return;
   [data.YEARS[yi], data.YEARS[j]] = [data.YEARS[j], data.YEARS[yi]];
   try { setStatus('שומר…', 'busy'); await commitData('שינוי סדר שנים'); render(); setStatus('נשמר', 'ok'); }
+  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+}
+
+/* ---------- site texts & design ---------- */
+async function saveSite() {
+  data.SITE = {
+    brand: $('t-brand').value.trim(),
+    heroTitle: $('t-heroTitle').value.trim(),
+    heroSub: $('t-heroSub').value.trim(),
+    about1: $('t-about1').value.trim(),
+    about2: $('t-about2').value.trim(),
+    subscribeText: $('t-subscribeText').value.trim(),
+    donateTitle: $('t-donateTitle').value.trim(),
+    donateText: $('t-donateText').value.trim(),
+    colorNavy: $('t-colorNavy').value,
+    colorGold: $('t-colorGold').value,
+    colorCream: $('t-colorCream').value,
+    customCss: $('t-customCss').value.trim()
+  };
+  try { setStatus('שומר…', 'busy'); await commitData('עדכון טקסטים ועיצוב'); setStatus('נשמר! האתר יתעדכן תוך כדקה', 'ok'); }
   catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
 }
 

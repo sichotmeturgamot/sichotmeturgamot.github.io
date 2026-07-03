@@ -42,6 +42,23 @@
 
 <script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
+  // החלת טקסטים ועיצוב מההגדרות
+  if (typeof SITE !== 'undefined' && SITE) {
+    const rt = document.documentElement.style;
+    if (SITE.colorNavy) rt.setProperty('--navy', SITE.colorNavy);
+    if (SITE.colorGold) rt.setProperty('--gold', SITE.colorGold);
+    if (SITE.colorCream) rt.setProperty('--cream', SITE.colorCream);
+    if (SITE.brand) document.querySelectorAll('.brand').forEach(e => e.textContent = SITE.brand);
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v; };
+    setTxt('site-hero-title', SITE.heroTitle);
+    setTxt('site-hero-sub', SITE.heroSub);
+    setTxt('site-about1', SITE.about1);
+    setTxt('site-about2-text', SITE.about2);
+    setTxt('site-subscribe-text', SITE.subscribeText);
+    setTxt('site-donate-title', SITE.donateTitle);
+    setTxt('site-donate-text', SITE.donateText);
+    if (SITE.customCss) { const st = document.createElement('style'); st.textContent = SITE.customCss; document.head.appendChild(st); }
+  }
   // כל שנות נשיאותו של אדמו"ר הריי"צ: תר"פ – ה'שי"ת
   const ALL_YEARS = ["תר״פ","תרפ״א","תרפ״ב","תרפ״ג","תרפ״ד","תרפ״ה","תרפ״ו","תרפ״ז","תרפ״ח","תרפ״ט",
     "תר״צ","תרצ״א","תרצ״ב","תרצ״ג","תרצ״ד","תרצ״ה","תרצ״ו","תרצ״ז","תרצ״ח","תרצ״ט",
