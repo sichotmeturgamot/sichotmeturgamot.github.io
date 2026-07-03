@@ -107,5 +107,26 @@
       </div>`).join('');
   }
 </script>
+<script>
+  // גלילה חיה: פס התקדמות + חשיפה הדרגתית
+  (function () {
+    const bar = document.createElement('div'); bar.id = 'scroll-progress'; document.body.appendChild(bar);
+    addEventListener('scroll', () => {
+      const h = document.documentElement;
+      bar.style.width = (h.scrollTop / ((h.scrollHeight - h.clientHeight) || 1) * 100) + '%';
+    }, { passive: true });
+    if (!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }), { threshold: .12 });
+    const hook = () => document.querySelectorAll('main .card:not(.reveal), .sicha:not(.reveal)').forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.transitionDelay = (Math.min(i, 6) * 70) + 'ms';
+      io.observe(el);
+    });
+    hook();
+    new MutationObserver(hook).observe(document.body, { childList: true, subtree: true });
+  })();
+</script>
 </body>
 </html>
