@@ -30,6 +30,17 @@ const YEARS = [
     "year": "תש״ז",
     "note": "בתהליך תרגום",
     "complete": false,
-    "sichos": []
+    "sichos": [
+      {
+        "title": "שיחות תשרי - תש\"ז",
+        "subtitle": "השיחות שנאמרו במהלך חודש תשרי תש\"ז",
+        "file": "pdfs/Tishrey_5707.pdf",
+        "pages": 17,
+        "count": 17,
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי",
+        "addedAt": "2026-07-03"
+      }
+    ]
   }
 ];
