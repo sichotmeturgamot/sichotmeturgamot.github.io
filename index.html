@@ -69,9 +69,20 @@
   const totalSichos = YEARS.reduce((n, y) => n + visible(y).reduce((m, s) => m + (s.count || 1), 0), 0);
   const totalPages  = YEARS.reduce((n, y) => n + visible(y).reduce((m, s) => m + (s.pages || 0), 0), 0);
   document.getElementById('stats').innerHTML = `
-    <div class="stat"><b>${YEARS.length}</b><span>שנים</span></div>
-    <div class="stat"><b>${totalSichos}</b><span>שיחות שתורגמו</span></div>
-    <div class="stat"><b>${totalPages}</b><span>עמודים מתורגמים</span></div>`;
+    <div class="stat"><b class="countup" data-n="${YEARS.length}">0</b><span>שנים</span></div>
+    <div class="stat"><b class="countup" data-n="${totalSichos}">0</b><span>שיחות שתורגמו</span></div>
+    <div class="stat"><b class="countup" data-n="${totalPages}">0</b><span>עמודים מתורגמים</span></div>`;
+
+  // מונים שנספרים בהדרגה
+  document.querySelectorAll('.countup').forEach(el => {
+    const target = +el.dataset.n, dur = 1100, t0 = performance.now();
+    const tick = now => {
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
 
   // שלוש השיחות האחרונות (לפי תאריך)
   const all = [];
