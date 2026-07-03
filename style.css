@@ -244,3 +244,64 @@ input.en { direction: ltr; text-align: left; }
 ::-webkit-scrollbar-track { background: var(--cream); }
 ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 6px; border: 2px solid var(--cream); }
 ::-webkit-scrollbar-thumb:hover { background: var(--navy); }
+
+/* ===== סרגל ניווט תחתון (טלפון) ===== */
+.bottomnav { display: none; }
+@media (max-width: 640px) {
+  .topnav { flex-direction: row; justify-content: center; }
+  .topnav .links { display: none; }
+  body { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
+  .bottomnav {
+    display: flex; position: fixed; bottom: 0; right: 0; left: 0; z-index: 60;
+    background: var(--navy); border-top: 2px solid var(--gold);
+    justify-content: space-around;
+    padding: 7px 4px calc(7px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 18px rgba(26,41,66,.3);
+  }
+  .bottomnav a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    color: rgba(255,255,255,.72); text-decoration: none;
+    font-size: .68rem; padding: 3px 12px; border-radius: 10px;
+    transition: color .15s, transform .1s;
+  }
+  .bottomnav a svg { width: 22px; height: 22px; }
+  .bottomnav a.active { color: var(--gold-light); }
+  .bottomnav a:active { transform: scale(.9); }
+}
+
+/* ===== משוב מגע בלחיצה ===== */
+.btn:active { transform: scale(.95) !important; }
+.year-chip:active:not(.empty) { transform: scale(.93) !important; }
+.sicha:active { transform: scale(.99); }
+
+/* ===== כניסת עמוד רכה ===== */
+@keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
+body.page-in { animation: pageIn .28s ease; }
+.hero h1, .hero .sub { will-change: transform; }
+
+/* ===== מצב כהה אוטומטי ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cream: #131a29;
+    --paper: #1c2537;
+    --text: #e9e5da;
+    --muted: #9aa3b5;
+    --navy-light: #223252;
+  }
+  h1, h2, h3 { color: #e3e9f5; }
+  .card, .sicha, .year-block { border-color: #2b3854; }
+  .sicha { border-inline-start-color: var(--gold); }
+  .year-chip { border-color: #8a6f31; }
+  .year-chip.empty { border-color: #33405c; color: #5f6b84; }
+  .year-chip.active { color: var(--gold-light); }
+  .stat { box-shadow: 0 6px 24px rgba(0,0,0,.45); }
+  .stat b { color: #e3e9f5; }
+  .badge.done { background: #1c3320; color: #90d095; }
+  .badge.wip { background: #3a3116; color: #e2c473; }
+  .btn-navy { background: #31415f; }
+  .btn-line { color: #dfe6f5; border-color: #7284a8; }
+  input[type=text], input[type=password], input[type=number], input[type=date], textarea, select {
+    background: #202a3f; color: var(--text); border-color: #34415e;
+  }
+  ::-webkit-scrollbar-track { background: #131a29; }
+}
