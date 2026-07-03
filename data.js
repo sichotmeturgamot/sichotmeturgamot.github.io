@@ -19,16 +19,6 @@ const YEARS = [
     "year": "תש״ז",
     "note": "בתהליך תרגום",
     "complete": false,
-    "sichos": [
-      {
-        "title": "שבת פרשת נח - בסעודת היום",
-        "subtitle": "",
-        "file": "pdfs/Noach_5707.pdf",
-        "pages": 1,
-        "count": 1,
-        "sortDate": "02-01",
-        "hebDate": "א׳ מרחשון"
-      }
-    ]
+    "sichos": []
   }
 ];
