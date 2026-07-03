@@ -5,6 +5,9 @@ const WHATSAPP_URL = "https://chat.whatsapp.com/HidWyvYZFgB4PfMxdsGvoo";
 const DONATE_EMAIL = "doviber@gmail.com";
 const DONATE_BIT_PHONE = "058-516-6540";
 
+/* טקסטים ועיצוב — ניתן לעריכה מעמוד הניהול */
+const SITE = {};
+
 const YEARS = [
   {
     "year": "תש״ו",
