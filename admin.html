@@ -273,6 +273,16 @@ async function createBlob(base64) {
   return r.sha;
 }
 async function gitCommit(entries, message) {
+  for (let attempt = 1; ; attempt++) {
+    try { await gitCommitOnce(entries, message); return; }
+    catch (e) {
+      if (attempt >= 2) throw e;
+      setStatus('ניסיון שמירה חוזר…', 'busy');
+      await new Promise(r => setTimeout(r, 1500));
+    }
+  }
+}
+async function gitCommitOnce(entries, message) {
   const ref = await gh(repoPath(`git/ref/heads/${cfg.branch}`));
   const headSha = ref.object.sha;
   const commit = await gh(repoPath(`git/commits/${headSha}`));
@@ -485,7 +495,7 @@ async function saveSicha() {
     dlg('dlg-sicha').close();
     render();
     setStatus('נשמר! האתר יתעדכן תוך כדקה', 'ok');
-  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 async function removeSicha(yi, si) {
   const s = data.YEARS[yi].sichos[si];
@@ -495,7 +505,7 @@ async function removeSicha(yi, si) {
     data.YEARS[yi].sichos.splice(si, 1);
     await gitCommit([{ path: s.file, mode: '100644', type: 'blob', sha: null }, dataEntry()], 'מחיקת שיחה: ' + s.title);
     render(); setStatus('נמחק', 'ok');
-  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 async function renameSicha(yi, si) {
   const s = data.YEARS[yi].sichos[si];
@@ -516,7 +526,7 @@ async function renameSicha(yi, si) {
       dataEntry()
     ], 'שינוי שם קובץ: ' + s.title);
     render(); setStatus('שם הקובץ שונה', 'ok');
-  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 function replacePdf(yi, si) {
   const s = data.YEARS[yi].sichos[si];
@@ -527,7 +537,7 @@ function replacePdf(yi, si) {
       setStatus('מעלה גרסה מתוקנת…', 'busy');
       await uploadFile(s.file, await readB64(inp.files[0]), 'החלפת קובץ (גרסה מתוקנת): ' + s.title);
       setStatus('הקובץ הוחלף! האתר יתעדכן תוך כדקה', 'ok');
-    } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+    } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
   };
   inp.click();
 }
@@ -539,7 +549,7 @@ async function toggleHidden(yi, si) {
     setStatus('שומר…', 'busy');
     await commitData((s.hidden ? 'הסתרת' : 'הצגת') + ' שיחה: ' + s.title);
     render(); setStatus('נשמר', 'ok');
-  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 function sortYear(yi) {
   data.YEARS[yi].sichos.sort((a, b) => (a.sortDate || '9999').localeCompare(b.sortDate || '9999'));
@@ -551,7 +561,7 @@ async function addYear() {
   if (!name) return;
   data.YEARS.push({ year: name.trim(), note: 'בתהליך תרגום', complete: false, sichos: [] });
   try { setStatus('שומר…', 'busy'); await commitData('הוספת שנה: ' + name); render(); setStatus('נוספה שנת ' + name, 'ok'); }
-  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 function openEditYear(yi) {
   editingYear = yi;
@@ -566,7 +576,7 @@ async function saveYear() {
     setStatus('שומר…', 'busy');
     await commitData('עריכת שנה: ' + y.year);
     dlg('dlg-year').close(); render(); setStatus('נשמר', 'ok');
-  } catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 async function removeYear(yi) {
   const y = data.YEARS[yi];
@@ -574,14 +584,14 @@ async function removeYear(yi) {
   if (!confirm(`למחוק את שנת ${y.year}?`)) return;
   data.YEARS.splice(yi, 1);
   try { setStatus('שומר…', 'busy'); await commitData('מחיקת שנה: ' + y.year); render(); setStatus('נמחק', 'ok'); }
-  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 async function moveYear(yi, dir) {
   const j = yi + dir;
   if (j < 0 || j >= data.YEARS.length) return;
   [data.YEARS[yi], data.YEARS[j]] = [data.YEARS[j], data.YEARS[yi]];
   try { setStatus('שומר…', 'busy'); await commitData('שינוי סדר שנים'); render(); setStatus('נשמר', 'ok'); }
-  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 
 /* ---------- site texts & design ---------- */
@@ -601,7 +611,7 @@ async function saveSite() {
     customCss: $('t-customCss').value.trim()
   };
   try { setStatus('שומר…', 'busy'); await commitData('עדכון טקסטים ועיצוב'); setStatus('נשמר! האתר יתעדכן תוך כדקה', 'ok'); }
-  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 
 /* ---------- settings ---------- */
@@ -611,7 +621,7 @@ async function saveSettings() {
   data.DONATE_EMAIL = $('set-email').value.trim();
   data.DONATE_BIT_PHONE = $('set-bit').value.trim();
   try { setStatus('שומר…', 'busy'); await commitData('עדכון הגדרות'); setStatus('ההגדרות נשמרו', 'ok'); }
-  catch (e) { setStatus('שגיאה: ' + e.message, 'err'); }
+  catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 
 /* ---------- helpers ---------- */
@@ -644,6 +654,17 @@ function logout() {
   localStorage.removeItem('sichos-admin');
   location.reload();
 }
+/* מנעול פעולות: פעולה אחת בכל רגע, וסנכרון מחדש בסיום */
+['saveSicha', 'removeSicha', 'renameSicha', 'toggleHidden', 'addYear', 'saveYear', 'removeYear', 'moveYear', 'saveSettings', 'saveSite'].forEach(name => {
+  const orig = window[name];
+  window[name] = async function (...args) {
+    if (window.__busyOp) { setStatus('פעולה קודמת עדיין מתבצעת — המתן מספר שניות', 'err'); return; }
+    window.__busyOp = true;
+    try { await orig.apply(this, args); }
+    finally { window.__busyOp = false; }
+  };
+});
+
 (function init() {
   const saved = localStorage.getItem('sichos-admin');
   if (saved) {
