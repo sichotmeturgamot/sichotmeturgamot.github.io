@@ -279,3 +279,20 @@ input.en { direction: ltr; text-align: left; }
 body.page-in { animation: pageIn .28s ease; }
 .hero h1, .hero .sub { will-change: transform; }
 
+
+/* ===== כפתור התקנה ושיתוף ===== */
+.install-fab { position: fixed; inset-inline-start: 16px; bottom: 20px; z-index: 70; display: flex; align-items: center; gap: 8px; }
+.install-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: #fff; border: none; border-radius: 999px; padding: 11px 16px; font-family: 'Heebo', sans-serif; font-size: .9rem; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(26,41,66,.28); transition: transform .1s ease, box-shadow .2s; }
+.install-btn:hover { box-shadow: 0 8px 26px rgba(26,41,66,.36); }
+.install-btn:active { transform: scale(.94); }
+.install-btn.share { padding: 11px; background: var(--navy); }
+@media (max-width: 640px) { .install-fab { bottom: 80px; inset-inline-start: 12px; } .install-btn { padding: 10px 14px; font-size: .84rem; } .install-btn.share { padding: 10px; } }
+
+.pwa-toast { position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 18px); background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 10px; font-family: 'Heebo', sans-serif; font-size: .9rem; z-index: 300; opacity: 0; transition: opacity .3s, transform .3s; box-shadow: 0 8px 24px rgba(0,0,0,.25); pointer-events: none; }
+.pwa-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.pwa-modal { position: fixed; inset: 0; z-index: 400; background: rgba(20,28,45,.6); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.pwa-modal-box { background: var(--paper); border-radius: 16px; padding: 28px 24px; max-width: 340px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,.3); font-family: 'Heebo', sans-serif; }
+.pwa-modal-icon { font-size: 2.4rem; margin-bottom: 6px; }
+.pwa-modal-box h3 { margin: 0 0 10px; color: var(--navy); }
+.pwa-modal-box p { color: var(--text); line-height: 1.65; margin-bottom: 18px; }
