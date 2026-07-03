@@ -13,7 +13,18 @@ const YEARS = [
     "year": "תש״ו",
     "note": "תורגם במלואו",
     "complete": true,
-    "sichos": []
+    "sichos": [
+      {
+        "title": "ספר השיחות תש\"ו",
+        "subtitle": "על ספר השיחות תש\"ו מתורגם ללה\"ק עם מפתחות",
+        "file": "pdfs/Sefer_hasichot_5706.pdf",
+        "pages": 44,
+        "count": 29,
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי",
+        "addedAt": "2026-07-03"
+      }
+    ]
   },
   {
     "year": "תש״ז",
