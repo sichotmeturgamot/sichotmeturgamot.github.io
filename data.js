@@ -15,9 +15,9 @@ const SITE = {
   "subscribeText": "",
   "donateTitle": "",
   "donateText": "",
-  "colorNavy": "#ffffff",
+  "colorNavy": "#1a2942",
   "colorGold": "#b8933e",
-  "colorCream": "#0000ff",
+  "colorCream": "#faf7f0",
   "customCss": ""
 };
 
