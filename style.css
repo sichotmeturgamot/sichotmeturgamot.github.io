@@ -24,7 +24,7 @@ body {
 }
 h1, h2, h3 { font-family: 'Frank Ruhl Libre', serif; color: var(--navy); font-weight: 700; }
 main { max-width: 860px; margin: 0 auto; padding: 44px 20px; width: 100%; flex: 1; }
-a { color: var(--gold-dark); }
+a { color: var(--gold-dark); text-decoration: none; }
 
 /* ===== Top navigation ===== */
 .topnav {
@@ -251,7 +251,7 @@ body.page-in { animation: pageIn .28s ease; }
 }
 .install-btn:hover { background: var(--navy-light); }
 .install-btn:active { transform: scale(.96); }
-.install-btn.share { padding: 9px; background: transparent; color: var(--navy); border-color: var(--navy); }
+.install-btn.share { padding: 9px; background: #ffffff; color: var(--navy); border-color: var(--gold); }
 @media (max-width: 640px) { .install-fab { bottom: 80px; inset-inline-start: 12px; } .install-btn { padding: 8px 13px; font-size: .8rem; } .install-btn.share { padding: 8px; } }
 
 .pwa-toast { position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 18px); background: var(--navy); color: var(--cream); padding: 12px 20px; border-radius: 8px; font-family: 'Heebo', sans-serif; font-size: .9rem; z-index: 300; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; }
