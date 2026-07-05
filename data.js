@@ -63,6 +63,16 @@ const YEARS = [
         "sortDate": "02-01",
         "hebDate": "א׳ מרחשון",
         "addedAt": "2026-07-03"
+      },
+      {
+        "title": "משיחת ליל ש''ק נח",
+        "subtitle": "",
+        "file": "pdfs/Leyl_nuach_5707.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "02-01",
+        "hebDate": "א׳ מרחשון",
+        "addedAt": "2026-07-05"
       }
     ]
   }
