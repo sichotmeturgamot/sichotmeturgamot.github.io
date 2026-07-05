@@ -28,7 +28,7 @@
 
 <main>
   <div style="text-align:center;margin-bottom:22px">
-    <div style="color:var(--gold);font-size:1.1rem;letter-spacing:.35em">✦ ✦ ✦</div>
+    <div style="color:var(--gold);font-size:1.1rem;letter-spacing:.35em">✦</div>
     <h1 style="font-size:1.9rem;margin-top:4px">קריאת השיחות</h1>
   </div>
   <div class="years-grid" id="years-grid"></div>
@@ -39,7 +39,7 @@
   <div id="viewer-bar">
     <span id="viewer-title"></span>
     <div class="btns">
-      <a class="btn btn-line-light btn-sm" id="viewer-dl" download>הורדת PDF ⬇</a>
+      <a class="btn btn-line-light btn-sm" id="viewer-dl" download>הורדת PDF</a>
       <button class="btn btn-sm" id="viewer-close" onclick="closeViewer()">סגירה ✕</button>
     </div>
   </div>
@@ -124,8 +124,8 @@
             ${s.pages ? `<span class="pages">${s.pages} עמודים</span>` : ''}
           </div>
           <div class="btns">
-            <a class="btn btn-navy btn-sm" href="${s.file}" target="_blank" rel="noopener">לקריאה 📖</a>
-            <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה ⬇</a>
+            <a class="btn btn-navy btn-sm" href="${s.file}" target="_blank" rel="noopener">לקריאה</a>
+            <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה</a>
           </div>
         </div>`).join('')}`;
   }
@@ -230,6 +230,4 @@
     }
   })();
 </script>
-  <script src="install.js" defer></script>
-</body>
-</html>
+  <script src="in
