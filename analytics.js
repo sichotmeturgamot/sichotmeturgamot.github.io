@@ -1,4 +1,5 @@
 // Google Analytics (GA4) — ספר השיחות
+// deploy: v2
 (function () {
   var id = 'G-EY7JC5N8BM';
   var s = document.createElement('script');
