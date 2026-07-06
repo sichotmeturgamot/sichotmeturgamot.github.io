@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="analytics.js"></script>
+<script src="notify.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1a2942">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -152,10 +153,4 @@
       const h1 = hero.querySelector('h1'), sub = hero.querySelector('.sub');
       addEventListener('scroll', () => {
         const y = Math.min(scrollY, 500);
-        if (h1) h1.style.transform = 'translateY(' + y * 0.22 + 'px)';
-        if (sub) { sub.style.transform = 'translateY(' + y * 0.14 + 'px)'; sub.style.opacity = String(Math.max(0, 1 - y / 320)); }
-      }, { passive: true });
-    }
-  })();
-</script>
-  <script src="install
+        if (h1) h1.style.transform
