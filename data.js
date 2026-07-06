@@ -75,5 +75,11 @@ const YEARS = [
         "addedAt": "2026-07-05"
       }
     ]
+  },
+  {
+    "year": "תרצ\"ח",
+    "note": "בתהליך תרגום",
+    "complete": false,
+    "sichos": []
   }
 ];
