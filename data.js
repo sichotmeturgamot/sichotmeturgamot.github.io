@@ -73,16 +73,6 @@ const YEARS = [
         "sortDate": "02-01",
         "hebDate": "א׳ מרחשון",
         "addedAt": "2026-07-05"
-      },
-      {
-        "title": "שיחת פורים תש\"ז",
-        "subtitle": "",
-        "file": "pdfs/Purim_5707.pdf",
-        "pages": 3,
-        "count": 1,
-        "sortDate": "06-14",
-        "hebDate": "י״ד אדר",
-        "addedAt": "2026-07-06"
       }
     ]
   },
