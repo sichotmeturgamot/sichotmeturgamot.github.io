@@ -4,7 +4,8 @@
     || window.navigator.standalone === true;
 
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  var deferredPrompt = null;
+  // אם ההודעה מהדפדפן כבר נתפסה מוקדם (בקוד שב-head) — משתמשים בה
+  var deferredPrompt = window.__bipEvent || null;
 
   var wrap = document.createElement('div');
   wrap.className = 'install-fab';
@@ -27,17 +28,28 @@
     e.preventDefault();
     deferredPrompt = e;
   });
+  // המתנה קצרה למקרה שההודעה מהדפדפן מגיעה רגע אחרי הלחיצה
+  function promptOrHelp() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function () { deferredPrompt = null; });
+      return;
+    }
+    var waited = setTimeout(showHelp, 1000);
+    window.addEventListener('beforeinstallprompt', function (e) {
+      clearTimeout(waited);
+      e.preventDefault();
+      deferredPrompt = e;
+      deferredPrompt.prompt();
+    }, { once: true });
+  }
   window.addEventListener('appinstalled', function () {
     installBtn.style.display = 'none';
   });
 
   installBtn.addEventListener('click', function () {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(function () { deferredPrompt = null; });
-    } else {
-      showHelp();
-    }
+    if (isIOS) { showHelp(); return; }
+    promptOrHelp();
   });
 
   shareBtn.addEventListener('click', function () {
