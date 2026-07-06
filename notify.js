@@ -14,7 +14,7 @@
           prompts: [{
             type: 'push',
             autoPrompt: true,
-            delay: { pageViews: 1, timeDelay: 8 },
+            delay: { pageViews: 1, timeDelay: 3 },
             text: {
               actionMessage: 'רוצים לקבל התראה כשעולה שיחה חדשה מתורגמת?',
               acceptButton: 'כן, עדכנו אותי',
