@@ -80,6 +80,17 @@ const YEARS = [
     "year": "תרצ\"ח",
     "note": "בתהליך תרגום",
     "complete": false,
-    "sichos": []
+    "sichos": [
+      {
+        "title": "י\"ט כסלו תרצ\"ח",
+        "subtitle": "",
+        "file": "pdfs/19_Kislev_5698.pdf",
+        "pages": 4,
+        "count": 1,
+        "sortDate": "03-19",
+        "hebDate": "י״ט כסלו",
+        "addedAt": "2026-07-06"
+      }
+    ]
   }
 ];
