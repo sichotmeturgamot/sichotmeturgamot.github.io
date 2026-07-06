@@ -1,8 +1,7 @@
 (function () {
-  // אם האתר כבר מותקן (רץ כאפליקציה) — אין צורך בכפתור
+  // אם האתר כבר מותקן (רץ כאפליקציה) — מסתירים רק את כפתור ההתקנה, השיתוף נשאר
   var standalone = window.matchMedia('(display-mode: standalone)').matches
     || window.navigator.standalone === true;
-  if (standalone) return;
 
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   var deferredPrompt = null;
@@ -22,12 +21,14 @@
   var installBtn = wrap.querySelector('#pwa-install');
   var shareBtn = wrap.querySelector('#pwa-share');
 
+  if (standalone) installBtn.style.display = 'none';
+
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
     deferredPrompt = e;
   });
   window.addEventListener('appinstalled', function () {
-    wrap.style.display = 'none';
+    installBtn.style.display = 'none';
   });
 
   installBtn.addEventListener('click', function () {
