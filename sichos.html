@@ -198,6 +198,8 @@
     addEventListener('touchstart', e => {
       const v = document.getElementById('viewer-wrap');
       if (v && v.classList.contains('open')) { x0 = null; return; }
+      // החלקה על סרגל השנים גוללת את הסרגל בלבד — לא מחליפה עמוד
+      if (e.target.closest('.years-rail')) { x0 = null; return; }
       x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
     }, { passive: true });
     addEventListener('touchend', e => {
