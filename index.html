@@ -122,7 +122,7 @@
           <p>${s.subtitle || ''}</p>
         </div>
         <div class="btns">
-          <a class="btn btn-navy btn-sm" href="${s.file}" target="_blank">לקריאה</a>
+          <a class="btn btn-navy btn-sm" href="read.html?file=${encodeURIComponent(s.file)}&title=${encodeURIComponent(s.title)}">לקריאה</a>
           <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה</a>
         </div>
       </div>`).join('');
