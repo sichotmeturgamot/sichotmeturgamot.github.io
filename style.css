@@ -261,3 +261,35 @@ body.page-in { animation: pageIn .28s ease; }
 .pwa-modal-icon { font-size: 2.2rem; margin-bottom: 6px; }
 .pwa-modal-box h3 { margin: 0 0 10px; color: var(--navy); }
 .pwa-modal-box p { color: var(--text); line-height: 1.7; margin-bottom: 18px; }
+
+/* ===== עמוד הקריאה: סרגל שנים קבוע + אזור שיחות גליל ===== */
+.read-main { max-width: 1060px; }
+.read-layout { display: flex; gap: 20px; align-items: flex-start; }
+.years-rail {
+  flex: 0 0 118px;
+  position: sticky; top: 66px;
+  max-height: calc(100vh - 86px);
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 2px;
+  scrollbar-width: thin;
+}
+.years-rail .year-chip { padding: 8px 6px; font-size: .98rem; }
+.sichos-area { flex: 1; min-width: 0; }
+
+@media (max-width: 640px) {
+  .read-layout { display: block; }
+  .years-rail {
+    position: sticky; top: 0; z-index: 40;
+    flex-direction: row; max-height: none;
+    overflow-x: auto; overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    background: var(--cream);
+    padding: 8px 2px;
+    margin: 0 -12px 10px;
+    padding-inline-start: 12px; padding-inline-end: 12px;
+    box-shadow: 0 6px 12px -8px rgba(26,41,66,.25);
+  }
+  .years-rail .year-chip { flex: 0 0 auto; padding: 7px 13px; font-size: .92rem; }
+  .years-rail::-webkit-scrollbar { display: none; }
+}
