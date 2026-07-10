@@ -27,13 +27,15 @@
   </div>
 </nav>
 
-<main>
+<main class="read-main">
   <div style="text-align:center;margin-bottom:22px">
     <div style="color:var(--gold);font-size:1.1rem;letter-spacing:.35em">✦</div>
     <h1 style="font-size:1.9rem;margin-top:4px">קריאת השיחות</h1>
   </div>
-  <div class="years-grid" id="years-grid"></div>
-  <div id="year-panel"></div>
+  <div class="read-layout">
+    <div class="years-rail" id="years-grid"></div>
+    <div class="sichos-area" id="year-panel"></div>
+  </div>
 </main>
 
 <div id="viewer-wrap" onclick="if(event.target===this)closeViewer()">
@@ -91,6 +93,14 @@
   const grid = document.getElementById('years-grid');
   const panel = document.getElementById('year-panel');
 
+  // הסרגל נצמד בדיוק מתחת לתפריט העליון — בכל גודל מסך
+  const fitRail = () => {
+    const nav = document.querySelector('.topnav');
+    if (nav) grid.style.top = (nav.offsetHeight + (innerWidth <= 640 ? 0 : 12)) + 'px';
+  };
+  fitRail();
+  addEventListener('resize', fitRail);
+
   ALL_YEARS.forEach(name => {
     const y = findYear(name);
     const has = y && visible(y).length > 0;
@@ -109,6 +119,10 @@
   function selectYear(name, btn) {
     document.querySelectorAll('.year-chip.active').forEach(el => el.classList.remove('active'));
     btn.classList.add('active');
+    // הצ'יפ הנבחר נכנס לטווח הראייה בסרגל, והרשימה חוזרת לראש
+    btn.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    const layoutTop = document.querySelector('.read-layout').offsetTop - 70;
+    if (window.scrollY > layoutTop) window.scrollTo({ top: Math.max(layoutTop, 0), behavior: 'smooth' });
     const y = findYear(name);
     const list = visible(y);
     panel.innerHTML = `
