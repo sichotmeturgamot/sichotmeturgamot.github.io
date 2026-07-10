@@ -9,9 +9,9 @@
 <script src="analytics.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #3a4356; font-family: 'Heebo', sans-serif; min-height: 100vh; }
+  html, body { height: 100%; }
+  body { background: #3a4356; font-family: 'Heebo', sans-serif; display: flex; flex-direction: column; }
   .bar {
-    position: sticky; top: 0; z-index: 10;
     background: #1a2942; color: #fff;
     display: flex; align-items: center; gap: 10px;
     padding: 10px 14px; border-bottom: 2px solid #b8933e;
@@ -25,13 +25,9 @@
     background: #b8933e; border-radius: 8px; padding: 6px 14px; white-space: nowrap;
   }
   .bar a.line { background: transparent; border: 1px solid rgba(255,255,255,.55); }
-  #pages { max-width: 900px; margin: 14px auto; padding: 0 8px; }
-  #pages canvas {
-    display: block; width: 100%; height: auto;
-    margin-bottom: 10px; border-radius: 6px;
-    box-shadow: 0 4px 18px rgba(0,0,0,.35); background: #fff;
-  }
+  #frame { flex: 1; width: 100%; border: none; background: #525659; }
   #msg { color: #fff; text-align: center; padding: 60px 20px; font-size: 1.05rem; }
+  #msg a { color: #d4b56a; }
 </style>
 </head>
 <body>
@@ -42,10 +38,9 @@
   <a class="line" href="index.html">לאתר</a>
 </div>
 
-<div id="msg">טוען את הקובץ…</div>
-<div id="pages"></div>
+<div id="msg" style="display:none"></div>
+<iframe id="frame" title="קריאת השיחה"></iframe>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 (function () {
   var params = new URLSearchParams(location.search);
@@ -56,43 +51,39 @@
   var dl = document.getElementById('dl');
   dl.href = file;
 
+  var frame = document.getElementById('frame');
+  var msg = document.getElementById('msg');
+
   // הגנה: מציגים רק קבצים מתוך האתר עצמו
   if (!file || file.indexOf('//') !== -1 || file.indexOf('..') !== -1 || !/\.pdf$/i.test(file)) {
-    document.getElementById('msg').textContent = 'לא נמצא קובץ להצגה.';
+    frame.style.display = 'none';
+    msg.style.display = 'block';
+    msg.textContent = 'לא נמצא קובץ להצגה.';
     return;
   }
 
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  var isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+  var fullUrl = location.origin + '/' + file;
 
-  var container = document.getElementById('pages');
-  var msg = document.getElementById('msg');
-
-  pdfjsLib.getDocument(file).promise.then(function (pdf) {
-    msg.style.display = 'none';
-    var scale = Math.min((window.devicePixelRatio || 1) * 1.5, 3);
-    var chain = Promise.resolve();
-    for (var n = 1; n <= pdf.numPages; n++) {
-      (function (pageNum) {
-        chain = chain.then(function () {
-          return pdf.getPage(pageNum).then(function (page) {
-            var viewport = page.getViewport({ scale: scale });
-            var canvas = document.createElement('canvas');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            container.appendChild(canvas);
-            return page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-          });
-        });
-      })(n);
-    }
-  }).catch(function (e) {
-    msg.textContent = 'שגיאה בטעינת הקובץ. אפשר לנסות להוריד אותו: ';
-    var a = document.createElement('a');
-    a.href = file; a.download = ''; a.textContent = 'הורדה';
-    a.style.color = '#d4b56a';
-    msg.appendChild(a);
-  });
+  if (isMobile) {
+    // בטלפון: תצוגה דרך שירות של גוגל (הדפדפן בטלפון לא מציג PDF בעצמו)
+    frame.src = 'https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(fullUrl);
+    // אם התצוגה לא נטענה תוך 8 שניות — ניסיון רענון אוטומטי (קורה לפעמים בשירות של גוגל)
+    var loaded = false;
+    frame.addEventListener('load', function () { loaded = true; });
+    setTimeout(function () {
+      if (!loaded) frame.src = frame.src;
+    }, 8000);
+    setTimeout(function () {
+      if (!loaded) {
+        msg.style.display = 'block';
+        msg.innerHTML = 'התצוגה מתעכבת… אפשר <a href="' + file + '">לפתוח את הקובץ ישירות</a>.';
+      }
+    }, 16000);
+  } else {
+    // במחשב: הדפדפן מציג PDF מצוין בעצמו
+    frame.src = file + '#toolbar=1';
+  }
 })();
 </script>
 </body>
