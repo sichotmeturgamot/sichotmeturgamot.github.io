@@ -55,16 +55,6 @@ const YEARS = [
         "addedAt": "2026-07-03"
       },
       {
-        "title": "שיחת ש\"פ נח - בסעודת היום",
-        "subtitle": "",
-        "file": "pdfs/Noach_Bayom_5707.pdf",
-        "pages": 1,
-        "count": 1,
-        "sortDate": "02-01",
-        "hebDate": "א׳ מרחשון",
-        "addedAt": "2026-07-03"
-      },
-      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
@@ -73,6 +63,16 @@ const YEARS = [
         "sortDate": "02-01",
         "hebDate": "א׳ מרחשון",
         "addedAt": "2026-07-05"
+      },
+      {
+        "title": "ש\"פ נח, בדר\"ח מר־חשון בסעודת היום תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/Noach_Bayom_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "02-01",
+        "hebDate": "א׳ מרחשון",
+        "addedAt": "2026-07-03"
       },
       {
         "title": "שיחת י\"ט כסלו תש\"ז",
