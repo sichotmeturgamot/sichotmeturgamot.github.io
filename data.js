@@ -75,6 +75,16 @@ const YEARS = [
         "addedAt": "2026-07-05"
       },
       {
+        "title": "שיחת י\"ט כסלו תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/19_kislev_5707.pdf",
+        "pages": 8,
+        "count": 1,
+        "sortDate": "03-19",
+        "hebDate": "י״ט כסלו",
+        "addedAt": "2026-07-10"
+      },
+      {
         "title": "שיחת פורים תש\"ז",
         "subtitle": "",
         "file": "pdfs/Purim_5707.pdf",
