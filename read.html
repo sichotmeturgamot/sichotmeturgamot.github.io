@@ -62,10 +62,17 @@
     return;
   }
 
-  var isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+  // זיהוי אמין: שואלים את הדפדפן אם הוא יודע להציג PDF בעצמו.
+  // אם אין תשובה ברורה — בודקים לפי סוג המכשיר.
+  var canInline;
+  if (typeof navigator.pdfViewerEnabled === 'boolean') {
+    canInline = navigator.pdfViewerEnabled;
+  } else {
+    canInline = !/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+  }
   var fullUrl = location.origin + '/' + file;
 
-  if (isMobile) {
+  if (!canInline) {
     // בטלפון: תצוגה דרך שירות של גוגל (הדפדפן בטלפון לא מציג PDF בעצמו)
     frame.src = 'https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(fullUrl);
     // אם התצוגה לא נטענה תוך 8 שניות — ניסיון רענון אוטומטי (קורה לפעמים בשירות של גוגל)
