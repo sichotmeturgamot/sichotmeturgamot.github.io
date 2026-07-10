@@ -65,7 +65,7 @@ const YEARS = [
         "addedAt": "2026-07-03"
       },
       {
-        "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון.",
+        "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
         "pages": 3,
