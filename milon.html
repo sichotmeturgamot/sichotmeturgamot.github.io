@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<script>window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__bipEvent=e;});</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מילון אידיש–עברית — ספר השיחות</title>
+<meta name="description" content="מילון אידיש–עברית: הקלידו מילה באידיש וקבלו את תרגומה ללשון הקודש">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="analytics.js"></script>
+<script src="notify.js"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a2942">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ספר השיחות">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  .milon-head { text-align: center; padding: 40px 20px 6px; }
+  .milon-head .bsd { font-size: .72rem; letter-spacing: .3em; color: var(--gold); margin-bottom: 14px; }
+  .milon-head h1 { font-size: clamp(1.8rem, 4.6vw, 2.5rem); line-height: 1.25; }
+  .milon-head h1::before { content: ""; display: block; width: 60px; height: 1px; background: var(--gold); margin: 0 auto 20px; }
+  .milon-head .sub { font-family: 'Frank Ruhl Libre', serif; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.18rem); margin-top: 10px; }
+
+  .search-wrap { max-width: 640px; margin: 26px auto 0; position: sticky; top: 74px; z-index: 30; }
+  .search-box { position: relative; }
+  .search-box input {
+    width: 100%; padding: 15px 52px 15px 18px;
+    font-family: 'Frank Ruhl Libre', serif; font-size: 1.35rem;
+    border: 1.5px solid var(--line); border-radius: 10px;
+    background: var(--paper); color: var(--text);
+    box-shadow: 0 8px 22px -14px rgba(23,35,61,.35);
+  }
+  .search-box input:focus { outline: none; border-color: var(--gold); }
+  .search-box .icon {
+    position: absolute; inset-inline-start: 16px; top: 50%; transform: translateY(-50%);
+    width: 22px; height: 22px; color: var(--muted); pointer-events: none;
+  }
+  .search-box .clear {
+    position: absolute; inset-inline-end: 12px; top: 50%; transform: translateY(-50%);
+    width: 30px; height: 30px; border: none; background: transparent; cursor: pointer;
+    color: var(--muted); font-size: 1.4rem; line-height: 1; display: none;
+  }
+  .search-box .clear:hover { color: var(--navy); }
+
+  .count-line { max-width: 640px; margin: 12px auto 0; color: var(--muted); font-size: .86rem; text-align: center; min-height: 1.2em; }
+
+  .results { max-width: 640px; margin: 14px auto 0; }
+  .entry {
+    background: var(--paper); border: 1px solid var(--line);
+    border-inline-start: 2px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 13px 18px; margin-bottom: 9px;
+    display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  }
+  .entry .yid {
+    font-family: 'Frank Ruhl Libre', serif; font-weight: 700;
+    font-size: 1.42rem; color: var(--navy);
+    flex: 0 0 auto; min-width: 120px;
+  }
+  .entry .heb {
+    font-family: 'Frank Ruhl Libre', serif; font-size: 1.12rem;
+    color: var(--text); flex: 1 1 200px; line-height: 1.6;
+  }
+  .entry mark { background: #f4ecd7; color: var(--gold-dark); border-radius: 3px; padding: 0 1px; }
+
+  .empty-state { max-width: 640px; margin: 26px auto 0; text-align: center; color: var(--muted); }
+  .empty-state .big { font-family: 'Frank Ruhl Libre', serif; font-size: 1.15rem; color: var(--navy); margin-bottom: 6px; }
+  .empty-state p { font-size: .92rem; }
+
+  .more-hint { text-align: center; color: var(--muted); font-size: .82rem; margin: 6px auto 0; max-width: 640px; }
+
+  @media (max-width: 640px) {
+    .search-wrap { top: 60px; }
+    .milon-head { padding: 28px 14px 4px; }
+    .entry { padding: 12px 15px; gap: 10px; }
+    .entry .yid { font-size: 1.34rem; min-width: 90px; }
+    .entry .heb { font-size: 1.08rem; }
+    .search-box input { font-size: 1.25rem; padding: 13px 46px 13px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <div class="links">
+    <a href="index.html">ראשי</a>
+    <a href="sichos.html">קריאת השיחות</a>
+    <a href="milon.html" class="active">מילון</a>
+    <a href="subscribe.html">הצטרפות לעדכונים</a>
+    <a href="donate.html">תרומה</a>
+  </div>
+</nav>
+
+<div class="milon-head">
+  <div class="bsd">ב״ה</div>
+  <h1>מילון אידיש–עברית</h1>
+  <div class="sub">הקלידו מילה באידיש — וקבלו את תרגומה ללשון הקודש</div>
+</div>
+
+<main style="padding-top:14px">
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="q" type="text" placeholder="למשל: אַ ביסל" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
+      <button class="clear" id="clear" aria-label="ניקוי">×</button>
+    </div>
+  </div>
+  <div class="count-line" id="count"></div>
+  <div class="results" id="results"></div>
+  <div class="more-hint" id="more"></div>
+  <div class="empty-state" id="empty">
+    <div class="big">מילון אידיש–עברית לספר השיחות</div>
+    <p>הקלידו מילה באידיש בתיבת החיפוש למעלה.<br>אפשר להקליד גם בלי ניקוד — המילון ימצא לבד.</p>
+  </div>
+</main>
+
+<nav class="bottomnav">
+  <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>ראשי</span></a>
+  <a href="sichos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/></svg><span>קריאה</span></a>
+  <a href="milon.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/></svg><span>מילון</span></a>
+  <a href="subscribe.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10 21a2 2 0 004 0"/></svg><span>עדכונים</span></a>
+  <a href="donate.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 000-7.8z"/></svg><span>תרומה</span></a>
+</nav>
+
+<script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
+<script>
+  // החלת צבעים ומותג מההגדרות (כמו בשאר העמודים)
+  if (typeof SITE !== 'undefined' && SITE) {
+    const rt = document.documentElement.style;
+    const darkMode = matchMedia('(prefers-color-scheme: dark)').matches;
+    if (!darkMode && SITE.colorNavy) rt.setProperty('--navy', SITE.colorNavy);
+    if (!darkMode && SITE.colorGold) rt.setProperty('--gold', SITE.colorGold);
+    if (!darkMode && SITE.colorCream) rt.setProperty('--cream', SITE.colorCream);
+    if (SITE.brand) document.querySelectorAll('.brand').forEach(e => e.textContent = SITE.brand);
+    if (SITE.customCss) { const st = document.createElement('style'); st.textContent = SITE.customCss; document.head.appendChild(st); }
+  }
+</script>
+<script>
+  // ===== לוגיקת המילון =====
+  (function () {
+    const MAX_SHOW = 80;
+    const qEl = document.getElementById('q');
+    const clearEl = document.getElementById('clear');
+    const resEl = document.getElementById('results');
+    const countEl = document.getElementById('count');
+    const emptyEl = document.getElementById('empty');
+    const moreEl = document.getElementById('more');
+
+    let DATA = [];          // {key, yid, heb}
+    let loaded = false;
+
+    // נירמול זהה ל-make_milon2.py — כדי שהקלט יתאים למפתחות שבקובץ
+    function stripNikud(s) {
+      let out = '';
+      for (const c of s) { const o = c.codePointAt(0); if (!(o >= 0x5B0 && o <= 0x5C7)) out += c; }
+      return out;
+    }
+    function normalize(s) {
+      s = stripNikud(s);
+      s = s.replace(/ײ/g, 'יי').replace(/ױ/g, 'וי').replace(/װ/g, 'וו');
+      for (const ch of ['׳', '״', "'", '"', '­', '-', '־', ' ']) s = s.split(ch).join('');
+      s = s.replace(/עה/g, 'ע');
+      if (s.endsWith('ען')) s = s.slice(0, -2) + 'ן';
+      if (s.endsWith('יג')) s = s.slice(0, -1) + 'ק';
+      return s;
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function render() {
+      const raw = qEl.value.trim();
+      clearEl.style.display = raw ? 'block' : 'none';
+      if (!raw) {
+        resEl.innerHTML = ''; countEl.textContent = ''; moreEl.textContent = '';
+        emptyEl.style.display = 'block';
+        return;
+      }
+      emptyEl.style.display = 'none';
+      if (!loaded) { countEl.textContent = 'טוען מילון…'; return; }
+
+      const q = normalize(raw);
+      if (!q) { resEl.innerHTML = ''; countEl.textContent = ''; return; }
+
+      const starts = [], contains = [];
+      for (const e of DATA) {
+        const p = e.key.indexOf(q);
+        if (p === 0) starts.push(e);
+        else if (p > 0) contains.push(e);
+      }
+      starts.sort((a, b) => a.key.length - b.key.length || a.key.localeCompare(b.key));
+      contains.sort((a, b) => a.key.localeCompare(b.key));
+      const all = starts.concat(contains);
+      const total = all.length;
+      const show = all.slice(0, MAX_SHOW);
+
+      if (total === 0) {
+        resEl.innerHTML = '';
+        countEl.innerHTML = 'לא נמצאה מילה מתאימה. נסו כתיב אחר, או בלי ניקוד.';
+        moreEl.textContent = '';
+        return;
+      }
+      countEl.textContent = total === 1 ? 'נמצאה מילה אחת' : ('נמצאו ' + total + ' מילים');
+      resEl.innerHTML = show.map(e =>
+        '<div class="entry"><span class="yid">' + escapeHtml(e.yid) +
+        '</span><span class="heb">' + escapeHtml(e.heb) + '</span></div>'
+      ).join('');
+      moreEl.textContent = total > MAX_SHOW ? ('מוצגות ' + MAX_SHOW + ' הראשונות — הקלידו עוד אותיות לצמצום') : '';
+    }
+
+    // טעינת קובץ המילון
+    fetch('milon2.txt?v=' + Date.now())
+      .then(r => r.text())
+      .then(txt => {
+        const lines = txt.split('\n');
+        for (const line of lines) {
+          if (!line) continue;
+          const i1 = line.indexOf('|');
+          if (i1 < 0) continue;
+          const i2 = line.indexOf('|', i1 + 1);
+          if (i2 < 0) continue;
+          DATA.push({ key: line.slice(0, i1), yid: line.slice(i1 + 1, i2), heb: line.slice(i2 + 1) });
+        }
+        loaded = true;
+        render();
+      })
+      .catch(() => { countEl.textContent = 'שגיאה בטעינת המילון. נסו לרענן את העמוד.'; });
+
+    let t = null;
+    qEl.addEventListener('input', () => { clearTimeout(t); t = setTimeout(render, 90); });
+    clearEl.addEventListener('click', () => { qEl.value = ''; qEl.focus(); render(); });
+    // מיקוד אוטומטי במחשב (לא בטלפון כדי לא לפתוח מקלדת מיד)
+    if (!matchMedia('(max-width: 640px)').matches) qEl.focus();
+  })();
+</script>
+<script>
+  // פס גלילה עדין
+  (function () {
+    const bar = document.createElement('div'); bar.id = 'scroll-progress'; document.body.appendChild(bar);
+    addEventListener('scroll', () => {
+      const h = document.documentElement;
+      bar.style.width = (h.scrollTop / ((h.scrollHeight - h.clientHeight) || 1) * 100) + '%';
+    }, { passive: true });
+  })();
+  document.body.classList.add('page-in');
+</script>
+<script src="install.js" defer></script>
+</body>
+</html>
