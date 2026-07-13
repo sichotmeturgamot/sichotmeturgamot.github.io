@@ -232,6 +232,40 @@ input.en { direction: ltr; text-align: left; }
   .bottomnav a.active { color: #e8d9b0; }
 }
 
+/* ===== "עוד" bottom sheet ===== */
+.more-backdrop {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(20,28,45,.5);
+  opacity: 0; visibility: hidden; transition: opacity .2s;
+}
+.more-backdrop.show { opacity: 1; visibility: visible; }
+.more-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
+  background: var(--paper);
+  border-top: 2px solid var(--gold);
+  border-radius: 18px 18px 0 0;
+  padding: 8px 16px calc(18px + env(safe-area-inset-bottom));
+  transform: translateY(100%); transition: transform .24s ease;
+  max-width: 520px; margin: 0 auto;
+  box-shadow: 0 -12px 30px -14px rgba(20,28,45,.4);
+}
+.more-sheet.show { transform: translateY(0); }
+.more-grip { width: 44px; height: 4px; background: var(--line-soft); border-radius: 3px; margin: 6px auto 12px; }
+.more-title { font-family: 'Frank Ruhl Libre', serif; color: var(--navy); font-size: 1.05rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+.more-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 10px; color: var(--text); text-decoration: none;
+  border-bottom: 1px solid var(--line); border-radius: 8px;
+}
+.more-item:last-child { border-bottom: none; }
+.more-item svg { width: 23px; height: 23px; stroke: var(--gold-dark); flex: 0 0 auto; }
+.more-item span { font-size: .98rem; }
+.more-item.more-active { background: var(--cream); }
+.more-item.more-active span { font-weight: 500; color: var(--navy); }
+.more-badge { margin-inline-start: auto; font-size: .72rem; color: var(--gold-dark); background: #f4ecd7; padding: 2px 10px; border-radius: 999px; }
+/* "עוד" רק במובייל — במחשב הכל בתפריט העליון */
+@media (min-width: 641px) { .more-backdrop, .more-sheet { display: none !important; } }
+
 /* ===== Touch feedback ===== */
 .btn:active { transform: scale(.97); }
 .year-chip:active:not(.empty) { transform: scale(.96); }
