@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<script>window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__bipEvent=e;});</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>פידבק והצעות — ספר השיחות</title>
+<meta name="description" content="שליחת פידבק, הצעות ותיקונים לאתר ספר השיחות המתורגם ללשון הקודש">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="analytics.js"></script>
+<script src="notify.js"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a2942">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ספר השיחות">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  .fb-head { text-align: center; padding: 40px 20px 6px; }
+  .fb-head .bsd { font-size: .72rem; letter-spacing: .3em; color: var(--gold); margin-bottom: 14px; }
+  .fb-head h1 { font-size: clamp(1.8rem, 4.6vw, 2.4rem); line-height: 1.25; }
+  .fb-head h1::before { content: ""; display: block; width: 60px; height: 1px; background: var(--gold); margin: 0 auto 20px; }
+  .fb-head .sub { font-family: 'Frank Ruhl Libre', serif; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.15rem); margin-top: 10px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 6px; }
+  .chip {
+    cursor: pointer; font-size: .9rem; padding: 7px 15px;
+    border: 1px solid var(--line); border-radius: 999px;
+    color: var(--navy); background: var(--paper); transition: background .15s, color .15s, border-color .15s;
+  }
+  .chip:hover { border-color: var(--gold); }
+  .chip.on { background: var(--navy); color: var(--cream); border-color: var(--navy); }
+
+  #fb-send { width: 100%; margin-top: 14px; font-size: 1rem; padding: 13px; }
+  .fb-done { display: none; text-align: center; padding: 34px 22px; }
+  .fb-done .ok { width: 66px; height: 66px; border-radius: 50%; background: #e8efe4; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  .fb-done .ok svg { width: 34px; height: 34px; stroke: var(--green); }
+  .fb-done h2 { font-size: 1.4rem; margin-bottom: 6px; }
+  .fb-done p { color: var(--muted); font-family: 'Frank Ruhl Libre', serif; }
+  #fb-err { display: none; color: var(--red); font-size: .9rem; text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <div class="links">
+    <a href="index.html">ראשי</a>
+    <a href="sichos.html">קריאת השיחות</a>
+    <a href="milon.html">מילון</a>
+    <a href="subscribe.html">הצטרפות לעדכונים</a>
+    <a href="donate.html">תרומה</a>
+    <a href="feedback.html" class="active">פידבק</a>
+  </div>
+</nav>
+
+<div class="fb-head">
+  <div class="bsd">ב״ה</div>
+  <h1>נשמח לשמוע ממכם</h1>
+  <div class="sub">הצעה, תיקון, או כל מילה טובה — כאן.</div>
+</div>
+
+<main style="max-width:620px;padding-top:20px">
+  <div class="card" id="fb-card">
+    <form id="fb-form" novalidate>
+      <label for="fb-name">שם (רשות)</label>
+      <input id="fb-name" name="שם" type="text" placeholder="איך לקרוא לכם" autocomplete="name">
+
+      <label style="margin-top:14px">סוג הפנייה</label>
+      <div class="chips" id="fb-chips">
+        <span class="chip">הצעה לשיפור</span>
+        <span class="chip">תיקון / שגיאה</span>
+        <span class="chip">תודה</span>
+        <span class="chip">אחר</span>
+      </div>
+      <input type="hidden" id="fb-cat" name="סוג הפנייה">
+
+      <label for="fb-msg" style="margin-top:12px">ההודעה</label>
+      <textarea id="fb-msg" name="הודעה" rows="5" placeholder="כתבו כאן…" required></textarea>
+
+      <button type="submit" class="btn btn-navy" id="fb-send">שליחה</button>
+      <div id="fb-err">אירעה תקלה בשליחה. נסו שוב בעוד רגע, או כתבו לנו למייל.</div>
+    </form>
+  </div>
+
+  <div class="card fb-done" id="fb-done">
+    <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <h2>ההודעה נשלחה</h2>
+    <p>תודה רבה על הפנייה — כל מילה חשובה.</p>
+  </div>
+</main>
+
+<nav class="bottomnav">
+  <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>ראשי</span></a>
+  <a href="sichos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/></svg><span>קריאה</span></a>
+  <a href="milon.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/></svg><span>מילון</span></a>
+  <a href="subscribe.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10 21a2 2 0 004 0"/></svg><span>עדכונים</span></a>
+  <a href="#more" id="more-tab" class="active"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
+</nav>
+
+<script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
+<script>
+  if (typeof SITE !== 'undefined' && SITE) {
+    const rt = document.documentElement.style;
+    const darkMode = matchMedia('(prefers-color-scheme: dark)').matches;
+    if (!darkMode && SITE.colorNavy) rt.setProperty('--navy', SITE.colorNavy);
+    if (!darkMode && SITE.colorGold) rt.setProperty('--gold', SITE.colorGold);
+    if (!darkMode && SITE.colorCream) rt.setProperty('--cream', SITE.colorCream);
+    if (SITE.brand) document.querySelectorAll('.brand').forEach(e => e.textContent = SITE.brand);
+    if (SITE.customCss) { const st = document.createElement('style'); st.textContent = SITE.customCss; document.head.appendChild(st); }
+  }
+</script>
+<script>
+  // ===== טופס פידבק — נשלח ישירות למייל דרך FormSubmit =====
+  (function () {
+    const FORM_ENDPOINT = 'https://formsubmit.co/ajax/doviber@gmail.com';
+    const chips = document.querySelectorAll('#fb-chips .chip');
+    const catField = document.getElementById('fb-cat');
+    chips.forEach(c => c.addEventListener('click', () => {
+      chips.forEach(o => o.classList.remove('on'));
+      c.classList.add('on'); catField.value = c.textContent.trim();
+    }));
+
+    const form = document.getElementById('fb-form');
+    const err = document.getElementById('fb-err');
+    const sendBtn = document.getElementById('fb-send');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('fb-msg').value.trim();
+      if (!msg) { document.getElementById('fb-msg').focus(); return; }
+      err.style.display = 'none';
+      sendBtn.disabled = true; sendBtn.textContent = 'שולח…';
+
+      const payload = {
+        'שם': document.getElementById('fb-name').value.trim() || '(לא צויין)',
+        'סוג הפנייה': catField.value || '(לא צויין)',
+        'הודעה': msg,
+        '_subject': 'פידבק חדש מהאתר',
+        '_template': 'table',
+        '_captcha': 'false'
+      };
+      try {
+        const r = await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!r.ok) throw new Error('bad status');
+        document.getElementById('fb-card').style.display = 'none';
+        document.getElementById('fb-done').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (_) {
+        err.style.display = 'block';
+        sendBtn.disabled = false; sendBtn.textContent = 'שליחה';
+      }
+    });
+  })();
+</script>
+<script>
+  (function () {
+    const bar = document.createElement('div'); bar.id = 'scroll-progress'; document.body.appendChild(bar);
+    addEventListener('scroll', () => {
+      const h = document.documentElement;
+      bar.style.width = (h.scrollTop / ((h.scrollHeight - h.clientHeight) || 1) * 100) + '%';
+    }, { passive: true });
+  })();
+  document.body.classList.add('page-in');
+</script>
+<script src="morenav.js" defer></script>
+<script src="install.js" defer></script>
+</body>
+</html>
