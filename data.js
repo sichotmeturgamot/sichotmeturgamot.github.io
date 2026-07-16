@@ -113,6 +113,16 @@ const YEARS = [
         "sortDate": "08-15",
         "hebDate": "ט״ו ניסן",
         "addedAt": "2026-07-16"
+      },
+      {
+        "title": "ליל שביעי של פסח תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/shviei_shel_pesach_5707.pdf",
+        "pages": 7,
+        "count": 1,
+        "sortDate": "08-21",
+        "hebDate": "כ״א ניסן",
+        "addedAt": "2026-07-16"
       }
     ]
   },
