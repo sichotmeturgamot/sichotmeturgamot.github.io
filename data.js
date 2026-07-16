@@ -103,6 +103,16 @@ const YEARS = [
         "sortDate": "08-14",
         "hebDate": "י״ד ניסן",
         "addedAt": "2026-07-16"
+      },
+      {
+        "title": "ליל ב' דלג הפסח תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/leyl_b_pesach_5707.pdf",
+        "pages": 4,
+        "count": 1,
+        "sortDate": "08-15",
+        "hebDate": "ט״ו ניסן",
+        "addedAt": "2026-07-16"
       }
     ]
   },
