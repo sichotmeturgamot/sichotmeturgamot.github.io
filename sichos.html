@@ -96,6 +96,12 @@
   const grid = document.getElementById('years-grid');
   const panel = document.getElementById('year-panel');
 
+  // מעקב קריאה: אילו שיחות כבר נקראו (נשמר בדפדפן של הגולש בלבד)
+  let READ = {};
+  try { READ = JSON.parse(localStorage.getItem('sichos-read') || '{}'); } catch (e) {}
+  const isRead = s => !!READ[s.file];
+  const BOOKMARK = '<span class="read-mark" title="נקראה"><svg viewBox="0 0 12 16" fill="currentColor"><path d="M0 0h12v16l-6-4-6 4z"/></svg></span>';
+
   // הסרגל נצמד בדיוק מתחת לתפריט העליון — בכל גודל מסך
   const fitRail = () => {
     const nav = document.querySelector('.topnav');
@@ -112,6 +118,15 @@
     b.textContent = name;
     if (has) {
       b.onclick = () => selectYear(name, b);
+      // פס דקיק בתחתית הצ'יפ — כמה מהשנה כבר נקרא
+      const list = visible(y);
+      const readN = list.filter(isRead).length;
+      if (readN > 0) {
+        const p = document.createElement('span');
+        p.className = 'chip-prog';
+        p.style.width = Math.round(readN / list.length * 100) + '%';
+        b.appendChild(p);
+      }
     } else {
       b.disabled = true;
       b.title = 'טרם תורגם';
@@ -128,16 +143,22 @@
     if (window.scrollY > layoutTop) window.scrollTo({ top: Math.max(layoutTop, 0), behavior: 'smooth' });
     const y = findYear(name);
     const list = visible(y);
+    const readN = list.filter(isRead).length;
     panel.innerHTML = `
       <div class="year-panel-head">
         <h2>שנת ${y.year}</h2>
         <span class="badge ${y.complete ? 'done' : 'wip'}">${y.complete ? 'התרגום הושלם' : 'בתהליך תרגום'}</span>
         <span class="count-tag">${list.length} ${list.length === 1 ? 'קובץ' : 'קבצים'}</span>
+        ${readN > 0 ? `
+        <span class="read-progress" title="ההתקדמות שלך בשנה זו">
+          <span>קראת ${readN} מתוך ${list.length}</span>
+          <span class="track"><span class="fill" data-w="${Math.round(readN / list.length * 100)}"></span></span>
+        </span>` : ''}
       </div>
       ${list.map(s => `
-        <div class="sicha">
+        <div class="sicha${isRead(s) ? ' read' : ''}">
           <div class="sicha-info">
-            <h3>${s.title}</h3>
+            <h3>${s.title}${isRead(s) ? BOOKMARK : ''}</h3>
             <p>${s.subtitle || ''}</p>
             ${s.pages ? `<span class="pages">${s.pages} עמודים</span>` : ''}
           </div>
@@ -146,6 +167,9 @@
             <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה</a>
           </div>
         </div>`).join('')}`;
+    // פס ההתקדמות נמלא בהדרגה אחרי שהעמוד מצויר
+    const fill = panel.querySelector('.read-progress .fill');
+    if (fill) requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = fill.dataset.w + '%'; }));
   }
 
   // פתיחה אוטומטית של השנה האחרונה שיש בה תוכן
