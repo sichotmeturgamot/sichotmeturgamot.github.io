@@ -6,19 +6,19 @@
    ============================================================ */
 :root {
   /* שמות המשתנים נשמרו לתאימות עם admin ו-data.js:
-     --navy = דיו · --gold = אדום שערים · --cream = נייר */
+     --navy = דיו · --gold = כחול הדגשה · --cream = נייר */
   --navy: #1e1b16;
   --navy-light: #37322b;
-  --gold: #8e2a1d;
-  --gold-soft: #ab4a3a;
-  --gold-dark: #6e2015;
+  --gold: #1e4e8c;
+  --gold-soft: #4a76ac;
+  --gold-dark: #163a6b;
   --cream: #f2efe6;
   --paper: #fbfaf4;
   --line: #d5cfc0;
   --line-soft: #e4dfd3;
   --text: #232019;
   --muted: #79715f;
-  --red: #8e2a1d;
+  --red: #a33a34;
   --green: #3e5f39;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
