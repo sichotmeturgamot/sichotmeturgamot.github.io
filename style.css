@@ -311,6 +311,88 @@ body.page-in { animation: pageIn .28s ease; }
 .years-rail .year-chip { padding: 8px 6px; font-size: .98rem; }
 .sichos-area { flex: 1; min-width: 0; }
 
+/* ===== מעקב קריאה: סימנייה, המשך קריאה, התקדמות ===== */
+/* שיחה שנקראה — סימניית זהב קטנה ליד הכותרת */
+.read-mark {
+  display: inline-flex; align-items: center;
+  margin-inline-start: 8px; vertical-align: -2px;
+  color: var(--gold);
+}
+.read-mark svg { width: 13px; height: 17px; }
+.sicha.read { border-inline-start-color: var(--gold-soft); }
+.sicha.read .sicha-info h3 { color: var(--navy); }
+/* אנימציית "נכנס לסימנייה" עדינה */
+@keyframes markIn { from { opacity: 0; transform: translateY(-4px) scale(.7); } to { opacity: 1; transform: none; } }
+.read-mark { animation: markIn .45s cubic-bezier(.2,.9,.3,1.4) both; }
+
+/* התקדמות קריאה בכותרת השנה */
+.read-progress {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .8rem; color: var(--muted);
+}
+.read-progress .track {
+  width: 74px; height: 4px; border-radius: 3px;
+  background: var(--line-soft); overflow: hidden;
+}
+.read-progress .fill {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--gold-soft), var(--gold));
+  border-radius: 3px;
+  transition: width .8s cubic-bezier(.25,.8,.3,1);
+}
+
+/* פס התקדמות דקיק בתחתית צ'יפ שנה */
+.year-chip { position: relative; overflow: hidden; }
+.year-chip .chip-prog {
+  position: absolute; bottom: 0; inset-inline-start: 0;
+  height: 2px; background: var(--gold);
+  border-radius: 2px; opacity: .85;
+  transition: width .5s ease;
+}
+
+/* כרטיס "המשך קריאה" — סימנייה שמציצה מהספר */
+.resume-card {
+  position: relative;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 8px; padding: 22px 26px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  overflow: hidden;
+}
+.resume-card::before {
+  /* סרט סימנייה יורד מלמעלה */
+  content: ""; position: absolute; top: -2px; inset-inline-start: 24px;
+  width: 14px; height: 34px; background: var(--gold);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+}
+.resume-card .resume-info { flex: 1 1 240px; padding-inline-start: 34px; }
+.resume-card .eyebrow {
+  font-size: .72rem; letter-spacing: .22em; color: var(--gold-dark);
+  margin-bottom: 4px;
+}
+.resume-card h2 { font-size: 1.2rem; margin: 0; }
+.resume-card .resume-sub { color: var(--muted); font-size: .86rem; margin-top: 2px; }
+
+/* ===== מיקרו-אינטראקציות עדינות ===== */
+.card, .sicha, .resume-card {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+@media (hover: hover) {
+  .card:hover, .sicha:hover, .resume-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -16px rgba(23,35,61,.35);
+    border-color: var(--line-soft);
+  }
+  .sicha:hover { border-inline-start-color: var(--gold-dark); }
+}
+.btn { transition: background .18s, color .18s, border-color .18s, transform .12s ease, box-shadow .18s; }
+@media (hover: hover) {
+  .btn-navy:hover, .btn-gold:hover { box-shadow: 0 6px 16px -8px rgba(23,35,61,.5); }
+}
+/* מיקוד מקלדת ברור */
+a:focus-visible, button:focus-visible, .btn:focus-visible, .year-chip:focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px;
+}
+
 @media (max-width: 640px) {
   .read-layout { display: block; }
   .years-rail {

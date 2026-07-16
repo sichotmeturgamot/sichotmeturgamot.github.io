@@ -45,6 +45,15 @@
 <div class="stats" id="stats"></div>
 
 <main>
+  <div class="resume-card" id="resume-card" style="display:none">
+    <div class="resume-info">
+      <div class="eyebrow">המשך קריאה</div>
+      <h2 id="resume-title"></h2>
+      <div class="resume-sub">מהמקום שבו הפסקת</div>
+    </div>
+    <a class="btn btn-navy" id="resume-link" href="#">להמשך הקריאה</a>
+  </div>
+
   <div class="card">
     <p id="site-about1">שיחות כ״ק אדמו״ר מוהריי״צ, שנאמרו במקורן באידיש, מוגשות כאן מתורגמות ללשון הקודש.</p>
     <p style="margin-top:8px"><span id="site-about2-text">התרגום נמשך בעז״ה, ושיחות חדשות מתווספות מעת לעת.</span> <a href="subscribe.html" style="color:var(--gold)">הצטרפו לרשימת התפוצה</a> כדי לקבל עדכון על כל שיחה חדשה.</p>
@@ -114,6 +123,21 @@
     }, delay);
   });
 
+  // מעקב קריאה (נשמר בדפדפן של הגולש בלבד)
+  let READ = {}, LAST = null;
+  try {
+    READ = JSON.parse(localStorage.getItem('sichos-read') || '{}');
+    LAST = JSON.parse(localStorage.getItem('sichos-last') || 'null');
+  } catch (e) {}
+
+  // כרטיס "המשך קריאה" — מזמין לחזור לשיחה האחרונה שנפתחה
+  if (LAST && LAST.file && LAST.title) {
+    document.getElementById('resume-title').textContent = LAST.title;
+    document.getElementById('resume-link').href =
+      'read.html?file=' + encodeURIComponent(LAST.file) + '&title=' + encodeURIComponent(LAST.title);
+    document.getElementById('resume-card').style.display = 'flex';
+  }
+
   // נוספו לאחרונה — רק מה שהועלה בשבוע האחרון
   const all = [];
   YEARS.forEach((y, yi) => visible(y).forEach(s => all.push({ ...s, year: y.year, yi })));
@@ -124,10 +148,11 @@
     .slice(0, 5);
   if (latest.length) {
     document.getElementById('latest-card').style.display = 'block';
+    const mark = '<span class="read-mark" title="נקראה"><svg viewBox="0 0 12 16" fill="currentColor"><path d="M0 0h12v16l-6-4-6 4z"/></svg></span>';
     document.getElementById('latest').innerHTML = latest.map(s => `
-      <div class="sicha">
+      <div class="sicha${READ[s.file] ? ' read' : ''}">
         <div class="sicha-info">
-          <h3>${s.title}</h3>
+          <h3>${s.title}${READ[s.file] ? mark : ''}</h3>
           <p>${s.subtitle || ''}</p>
         </div>
         <div class="btns">

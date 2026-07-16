@@ -70,6 +70,14 @@
   } else {
     canInline = !/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
   }
+  // מעקב קריאה: זוכרים שהשיחה נקראה, ומהי האחרונה שנפתחה (נשמר רק בדפדפן של הגולש)
+  try {
+    var readSet = JSON.parse(localStorage.getItem('sichos-read') || '{}');
+    readSet[file] = Date.now();
+    localStorage.setItem('sichos-read', JSON.stringify(readSet));
+    localStorage.setItem('sichos-last', JSON.stringify({ file: file, title: title, at: Date.now() }));
+  } catch (e) {}
+
   var fullUrl = location.origin + '/' + file;
 
   if (!canInline) {
