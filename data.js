@@ -105,7 +105,7 @@ const YEARS = [
         "addedAt": "2026-07-16"
       },
       {
-        "title": "ליל ב' דלג הפסח תש\"ז",
+        "title": "ליל ב' דחג הפסח תש\"ז",
         "subtitle": "",
         "file": "pdfs/leyl_b_pesach_5707.pdf",
         "pages": 4,
