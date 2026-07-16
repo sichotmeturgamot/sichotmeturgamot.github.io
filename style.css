@@ -1,109 +1,145 @@
+/* ============================================================
+   ספר השיחות מתורגם ללה״ק — עיצוב "שער בלאט"
+   השראה: שערי ספרים ישנים — דיו שחור על נייר, מסגרות דפוס
+   כפולות, הדגשות באדום (דפוס שני צבעים), אות דוד של ספרים.
+   שמות המחלקות והמשתנים זהים לגרסה הקודמת — שום שינוי בקוד.
+   ============================================================ */
 :root {
-  --navy: #17233d;
-  --navy-light: #26324e;
-  --gold: #a9843c;
-  --gold-soft: #c2a05a;
-  --gold-dark: #856527;
-  --cream: #f6f1e6;
-  --paper: #fffdf9;
-  --line: #e5dcc6;
-  --line-soft: #e0d6bf;
-  --text: #2a2723;
-  --muted: #8a7d61;
-  --red: #a33a34;
-  --green: #3f6b3a;
+  /* שמות המשתנים נשמרו לתאימות עם admin ו-data.js:
+     --navy = דיו · --gold = אדום שערים · --cream = נייר */
+  --navy: #1e1b16;
+  --navy-light: #37322b;
+  --gold: #8e2a1d;
+  --gold-soft: #ab4a3a;
+  --gold-dark: #6e2015;
+  --cream: #f2efe6;
+  --paper: #fbfaf4;
+  --line: #d5cfc0;
+  --line-soft: #e4dfd3;
+  --text: #232019;
+  --muted: #79715f;
+  --red: #8e2a1d;
+  --green: #3e5f39;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Heebo', sans-serif;
+  font-family: 'David Libre', serif;
   background: var(--cream);
   color: var(--text);
-  line-height: 1.75;
+  line-height: 1.8;
   display: flex; flex-direction: column; min-height: 100vh;
 }
-h1, h2, h3 { font-family: 'Frank Ruhl Libre', serif; color: var(--navy); font-weight: 700; }
+h1, h2, h3 { font-family: 'David Libre', serif; color: var(--navy); font-weight: 700; }
 main { max-width: 860px; margin: 0 auto; padding: 44px 20px; width: 100%; flex: 1; }
 a { color: var(--gold-dark); text-decoration: none; }
 
-/* ===== Top navigation ===== */
+/* ===== תפריט עליון — שורת דפוס: נייר, דיו, קו כפול ===== */
 .topnav {
   position: sticky; top: 0; z-index: 50;
-  background: var(--navy);
+  background: var(--paper);
   display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
-  padding: 14px 26px;
-  border-bottom: 1px solid var(--gold);
+  padding: 13px 26px;
+  border-bottom: 3px double var(--navy);
 }
 .topnav .brand {
-  color: #e8d9b0; text-decoration: none;
-  font-family: 'Frank Ruhl Libre', serif; font-weight: 500; font-size: 1.12rem;
+  color: var(--navy); text-decoration: none;
+  font-family: 'David Libre', serif; font-weight: 700; font-size: 1.14rem;
   letter-spacing: .01em;
 }
-.topnav .links { display: flex; gap: 6px; margin-inline-start: auto; flex-wrap: wrap; }
+.topnav .links { display: flex; gap: 4px; margin-inline-start: auto; flex-wrap: wrap; }
 .topnav .links a {
-  color: #c9c2b2; text-decoration: none; font-size: .9rem;
-  padding: 4px 10px; border-bottom: 1.5px solid transparent;
+  color: var(--muted); text-decoration: none; font-size: .9rem;
+  font-family: 'Assistant', sans-serif; font-weight: 600;
+  padding: 4px 10px; border-bottom: 2px solid transparent;
   transition: color .15s, border-color .15s;
 }
-.topnav .links a:hover { color: #fff; }
-.topnav .links a.active { color: #e8d9b0; border-bottom-color: var(--gold); }
+.topnav .links a:hover { color: var(--navy); }
+.topnav .links a.active { color: var(--gold); border-bottom-color: var(--gold); }
 
-/* ===== Hero (index) ===== */
+/* ===== שער — הכותרת הראשית ממוסגרת כמו שער ספר ===== */
 .hero {
-  background: transparent; color: var(--text); text-align: center;
-  padding: 58px 22px 26px; position: relative;
+  background: var(--paper); color: var(--text); text-align: center;
+  width: min(92%, 720px);
+  margin: 38px auto 8px;
+  padding: 52px 28px 40px;
+  position: relative;
+  border: 1px solid var(--navy);
+}
+.hero::after {
+  /* המסגרת הפנימית של השער — קו כפול */
+  content: ""; position: absolute; inset: 6px;
+  border: 3px double var(--navy);
+  pointer-events: none;
 }
 .hero .bsd {
-  display: block; font-size: .72rem; letter-spacing: .3em;
-  color: var(--gold); margin-bottom: 18px;
+  display: block; font-size: .8rem; letter-spacing: .35em;
+  color: var(--gold); margin-bottom: 20px;
+  font-weight: 700;
 }
-.hero h1 { font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 700; color: var(--navy); line-height: 1.28; }
-.hero h1::before {
-  content: ""; display: block; width: 64px; height: 1px;
-  background: var(--gold); margin: 0 auto 24px;
+.hero h1 {
+  font-size: clamp(1.9rem, 4.6vw, 2.8rem); font-weight: 700;
+  color: var(--navy); line-height: 1.3;
 }
 .hero .sub {
-  font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--muted);
-  font-family: 'Frank Ruhl Libre', serif; margin-top: 14px;
+  font-size: clamp(1.02rem, 2.3vw, 1.25rem);
+  color: var(--gold);
+  font-family: 'David Libre', serif; margin-top: 14px;
 }
-.hero .actions { margin-top: 30px; display: flex; gap: 13px; justify-content: center; flex-wrap: wrap; }
+.hero .sub::before {
+  /* קו מפריד קצר בדיו — בין הכותרת לכיתוב, כמו בשער */
+  content: ""; display: block; width: 90px; height: 1px;
+  background: var(--navy); margin: 16px auto 14px;
+}
+.hero .actions {
+  margin-top: 28px; display: flex; gap: 12px;
+  justify-content: center; flex-wrap: wrap;
+  position: relative; z-index: 1;
+}
 
-/* ===== Stats ===== */
-.stats { display: flex; justify-content: center; flex-wrap: wrap; margin: 10px auto 0; padding: 0 16px; }
-.stat { background: transparent; padding: 6px 36px; text-align: center; min-width: 0; }
-.stat + .stat { border-inline-start: 1px solid var(--line-soft); }
-.stat b { display: block; font-size: 2rem; color: var(--navy); font-family: 'Frank Ruhl Libre', serif; font-weight: 700; }
-.stat span { font-size: .78rem; color: var(--muted); letter-spacing: .1em; }
+/* ===== שורת הקולופון — המספרים ===== */
+.stats { display: flex; justify-content: center; flex-wrap: wrap; margin: 22px auto 0; padding: 0 16px; }
+.stat { background: transparent; padding: 4px 36px; text-align: center; min-width: 0; }
+.stat + .stat { border-inline-start: 1px solid var(--line); }
+.stat b { display: block; font-size: 2rem; color: var(--navy); font-family: 'David Libre', serif; font-weight: 700; line-height: 1.3; }
+.stat span { font-size: .74rem; color: var(--muted); letter-spacing: .16em; font-family: 'Assistant', sans-serif; font-weight: 600; }
 
-/* ===== Buttons ===== */
+/* ===== כפתורים — חותם דפוס: ישרים, בלי עיגול ===== */
 .btn {
-  border: none; border-radius: 4px; padding: 11px 24px; font-size: .92rem;
-  font-family: 'Heebo', sans-serif; font-weight: 500; letter-spacing: .02em;
+  border: 1px solid var(--navy); border-radius: 0; padding: 10px 24px; font-size: .9rem;
+  font-family: 'Assistant', sans-serif; font-weight: 600; letter-spacing: .03em;
   cursor: pointer; text-decoration: none;
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  transition: background .18s, color .18s, border-color .18s;
+  transition: background .16s, color .16s, border-color .16s, transform .1s ease;
 }
-.btn-navy, .btn-gold { background: var(--navy); color: var(--cream); }
-.btn-navy:hover, .btn-gold:hover { background: var(--navy-light); }
-.btn-line, .btn-line-light { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); }
-.btn-line:hover, .btn-line-light:hover { background: rgba(23,35,61,.06); }
-.btn-sm { padding: 7px 16px; font-size: .86rem; }
+.btn-navy { background: var(--navy); color: var(--paper); }
+.btn-navy:hover { background: var(--navy-light); }
+.btn-gold { background: var(--gold); color: var(--paper); border-color: var(--gold-dark); }
+.btn-gold:hover { background: var(--gold-dark); }
+.btn-line, .btn-line-light { background: transparent; color: var(--navy); border: 1px solid var(--navy); }
+.btn-line:hover, .btn-line-light:hover { background: rgba(30,27,22,.06); }
+.btn-sm { padding: 6px 16px; font-size: .84rem; }
+.btn:active { transform: translateY(1px); }
 
-/* ===== Cards ===== */
+/* ===== גופי תוכן — עמוד מודפס: קו כפול עליון, בלי צל ===== */
 .card {
-  background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
-  padding: 26px 28px; margin-bottom: 20px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 3px double var(--navy);
+  border-radius: 0;
+  padding: 26px 30px; margin-bottom: 22px;
 }
 .card.center { text-align: center; }
-.card h2 { margin-bottom: 12px; font-size: 1.35rem; }
-.card p { font-family: 'Frank Ruhl Libre', serif; font-size: 1.04rem; line-height: 1.85; }
-.card p.muted { color: var(--muted); font-size: .95rem; font-family: 'Heebo', sans-serif; }
+.card h2 { margin-bottom: 12px; font-size: 1.3rem; }
+.card p { font-family: 'David Libre', serif; font-size: 1.05rem; line-height: 1.9; }
+.card p.muted { color: var(--muted); font-size: .95rem; font-family: 'Assistant', sans-serif; }
 
-/* section heading with rule */
+/* כותרת מדור עם קו — והסימן האדום של המדור */
 #latest-card h2 { display: flex; align-items: center; gap: 14px; }
-#latest-card h2::after { content: ""; flex: 1; height: 1px; background: var(--line-soft); }
+#latest-card h2::before { content: "❖"; color: var(--gold); font-size: .8em; }
+#latest-card h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
-/* ===== Years grid (sichos page) ===== */
+/* ===== רשת שנים (עמוד הקריאה) ===== */
 .years-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
@@ -111,106 +147,179 @@ a { color: var(--gold-dark); text-decoration: none; }
   margin-bottom: 28px;
 }
 .year-chip {
-  font-family: 'Frank Ruhl Libre', serif;
-  font-size: 1.02rem; font-weight: 500;
-  background: var(--paper); color: var(--navy);
-  border: 1px solid var(--line);
-  border-radius: 6px; padding: 9px 4px;
-  cursor: pointer; transition: border-color .15s, color .15s, background .15s;
+  font-family: 'David Libre', serif;
+  font-size: 1.04rem; font-weight: 500;
+  background: transparent; color: var(--navy);
+  border: none; border-bottom: 1px solid var(--line);
+  border-radius: 0; padding: 9px 10px;
+  text-align: center;
+  cursor: pointer; position: relative;
+  transition: color .15s, background .15s, border-color .15s;
 }
-.year-chip:hover:not(.empty) { border-color: var(--gold); color: var(--gold-dark); }
-.year-chip.active { background: var(--navy); color: #e8d9b0; border-color: var(--navy); }
+.year-chip:hover:not(.empty):not(.active) { color: var(--gold); background: var(--paper); }
+.year-chip.active {
+  background: var(--paper); color: var(--gold);
+  font-weight: 700;
+  border-bottom: 2px solid var(--gold);
+}
 .year-chip.empty {
-  background: transparent; color: #b9b09c;
-  border: 1px dashed #d8d2c2;
-  cursor: default; opacity: .7;
+  background: transparent; color: #b3ab99;
+  border-bottom: 1px dashed var(--line);
+  cursor: default; opacity: .65;
 }
 .year-panel-head {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  margin: 8px 0 16px;
+  margin: 8px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 3px double var(--navy);
 }
-.year-panel-head h2 { font-size: 1.5rem; }
-.badge { font-size: .76rem; padding: 3px 12px; border-radius: 999px; font-weight: 500; }
-.badge.done { background: #e8efe4; color: var(--green); }
-.badge.wip { background: #f4ecd7; color: var(--gold-dark); }
-.count-tag { font-size: .8rem; color: var(--muted); }
-.year-note { color: var(--muted); font-size: .88rem; margin-inline-start: auto; }
+.year-panel-head h2 { font-size: 1.45rem; }
+.badge { font-size: .74rem; padding: 2px 12px; border-radius: 0; font-weight: 600; font-family: 'Assistant', sans-serif; border: 1px solid currentColor; background: transparent; }
+.badge.done { color: var(--green); }
+.badge.wip { color: var(--gold-dark); }
+.count-tag { font-size: .8rem; color: var(--muted); font-family: 'Assistant', sans-serif; }
+.year-note { color: var(--muted); font-size: .88rem; margin-inline-start: auto; font-family: 'Assistant', sans-serif; }
 
+/* ===== שורת שיחה — כמו שורה בתוכן עניינים של ספר ===== */
 .sicha {
-  background: var(--paper); border: 1px solid var(--line);
-  border-inline-start: 2px solid var(--gold);
-  border-radius: 0 6px 6px 0;
-  padding: 16px 20px; margin-bottom: 11px;
+  background: transparent; border: none;
+  border-bottom: 1px dotted #b6ad9a;
+  border-radius: 0;
+  padding: 15px 6px; margin-bottom: 0;
   display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+  transition: background .18s;
 }
+.sicha:hover { background: var(--paper); }
 .sicha-info { flex: 1 1 300px; }
-.sicha-info h3 { font-family: 'Frank Ruhl Libre', serif; font-size: 1.14rem; font-weight: 500; margin-bottom: 3px; }
-.sicha-info p { color: var(--muted); font-size: .88rem; }
-.sicha-info .pages { font-size: .78rem; color: var(--muted); }
-.btns { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.sicha-info h3 { font-family: 'David Libre', serif; font-size: 1.16rem; font-weight: 500; margin-bottom: 2px; }
+.sicha-info p { color: var(--muted); font-size: .88rem; font-family: 'Assistant', sans-serif; }
+.sicha-info .pages { font-size: .78rem; color: var(--muted); font-family: 'Assistant', sans-serif; }
+.btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 
-/* ===== PDF viewer ===== */
-#viewer-wrap { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(20,28,45,.85); padding: 3vh 3vw; }
+/* ===== צפייה ב-PDF ===== */
+#viewer-wrap { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(24,21,16,.88); padding: 3vh 3vw; }
 #viewer-wrap.open { display: flex; flex-direction: column; }
 #viewer-bar { display: flex; align-items: center; justify-content: space-between; color: #fff; padding-bottom: 10px; gap: 10px; flex-wrap: wrap; }
-#viewer-title { font-family: 'Frank Ruhl Libre', serif; font-size: 1.05rem; }
-#viewer-close { background: var(--gold); color: var(--navy); font-weight: 700; }
-#viewer-frame { flex: 1; width: 100%; border: none; border-radius: 8px; background: #525659; }
+#viewer-title { font-family: 'David Libre', serif; font-size: 1.05rem; }
+#viewer-close { background: var(--gold); color: var(--paper); font-weight: 700; border-color: var(--gold-dark); }
+#viewer-frame { flex: 1; width: 100%; border: none; border-radius: 0; background: #525659; }
 
-/* ===== Forms ===== */
-label { display: block; font-size: .85rem; color: var(--muted); margin: 10px 0 3px; }
+/* ===== טפסים ===== */
+label { display: block; font-size: .85rem; color: var(--muted); margin: 10px 0 3px; font-family: 'Assistant', sans-serif; }
 input[type=text], input[type=password], input[type=number], input[type=date], textarea, select {
-  width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 6px;
-  font-family: 'Heebo', sans-serif; font-size: .95rem; background: var(--paper); color: var(--text);
+  width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 0;
+  font-family: 'Assistant', sans-serif; font-size: .95rem; background: var(--paper); color: var(--text);
 }
 input[type=text]:focus, input[type=password]:focus, input[type=number]:focus,
 input[type=date]:focus, textarea:focus, select:focus { outline: none; border-color: var(--gold); }
 input.en { direction: ltr; text-align: left; }
 .ltr { direction: ltr; unicode-bidi: embed; }
 
-/* ===== Mobile ===== */
+/* ===== מעקב קריאה: סימנייה אדומה, המשך קריאה, התקדמות ===== */
+.read-mark {
+  display: inline-flex; align-items: center;
+  margin-inline-start: 8px; vertical-align: -2px;
+  color: var(--gold);
+}
+.read-mark svg { width: 12px; height: 16px; }
+.sicha.read .sicha-info h3 { color: var(--navy); }
+@keyframes markIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.read-mark { animation: markIn .4s ease both; }
+
+.read-progress {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .78rem; color: var(--muted); font-family: 'Assistant', sans-serif;
+}
+.read-progress .track {
+  width: 74px; height: 3px;
+  background: var(--line); overflow: hidden;
+}
+.read-progress .fill {
+  display: block; height: 100%; width: 0;
+  background: var(--gold);
+  transition: width .8s cubic-bezier(.25,.8,.3,1);
+}
+
+/* פס דקיק בתחתית שנה שהתחלת לקרוא */
+.year-chip .chip-prog {
+  position: absolute; bottom: -1px; inset-inline-start: 0;
+  height: 2px; background: var(--gold);
+  pointer-events: none;
+  transition: width .5s ease;
+}
+
+/* כרטיס "המשך קריאה" — סימנייה אדומה יורדת מראש העמוד */
+.resume-card {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 3px double var(--navy);
+  border-radius: 0; padding: 22px 26px; margin-bottom: 22px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.resume-card::before {
+  content: ""; position: absolute; top: -3px; inset-inline-start: 26px;
+  width: 13px; height: 34px; background: var(--gold);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+}
+.resume-card .resume-info { flex: 1 1 240px; padding-inline-start: 34px; }
+.resume-card .eyebrow {
+  font-size: .72rem; letter-spacing: .24em; color: var(--gold);
+  font-family: 'Assistant', sans-serif; font-weight: 700;
+  margin-bottom: 4px;
+}
+.resume-card h2 { font-size: 1.2rem; margin: 0; }
+.resume-card .resume-sub { color: var(--muted); font-size: .85rem; margin-top: 2px; font-family: 'Assistant', sans-serif; }
+
+/* מיקוד מקלדת */
+a:focus-visible, button:focus-visible, .btn:focus-visible, .year-chip:focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 2px;
+}
+
+/* ===== מובייל ===== */
 @media (max-width: 640px) {
   .year-note { display: none; }
   .topnav { padding: 12px 14px; flex-direction: column; gap: 6px; align-items: center; }
   .topnav .links { margin-inline-start: 0; justify-content: center; }
-  .hero { padding: 40px 16px 20px; }
-  .hero .actions { flex-direction: column; align-items: stretch; padding: 0 12vw; }
-  .stat { padding: 6px 20px; }
+  .hero { padding: 38px 16px 30px; margin-top: 24px; }
+  .hero .actions { flex-direction: column; align-items: stretch; padding: 0 8vw; }
+  .stat { padding: 4px 20px; }
   .stat b { font-size: 1.6rem; }
   main { padding: 30px 14px; }
   .card { padding: 22px 20px; }
   .years-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
-  .year-chip { font-size: .95rem; padding: 8px 2px; }
-  .sicha { padding: 14px 16px; }
+  .year-chip { font-size: .98rem; padding: 8px 6px; }
+  .sicha { padding: 14px 6px; }
   .sicha .btns { width: 100%; }
   #viewer-wrap { padding: 0; }
   #viewer-bar { padding: 10px 12px 8px; }
   #viewer-frame { border-radius: 0; }
 }
 
-/* ===== Gentle entrance ===== */
+/* ===== כניסה עדינה ===== */
 @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-.hero h1 { animation: fadeUp .7s ease both; }
-.hero .sub { animation: fadeUp .7s ease .12s both; }
-.hero .actions { animation: fadeUp .7s ease .24s both; }
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.hero .bsd { animation: fadeUp .6s ease both; }
+.hero h1 { animation: fadeUp .7s ease .08s both; }
+.hero .sub { animation: fadeUp .7s ease .18s both; }
+.hero .actions { animation: fadeUp .7s ease .3s both; }
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .55s ease, transform .55s ease; }
 .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* ===== Scrolling polish ===== */
+/* ===== ליטוש גלילה ===== */
 #scroll-progress {
   position: fixed; top: 0; right: 0; height: 2px; width: 0;
-  background: var(--gold); opacity: .8;
+  background: var(--gold); opacity: .85;
   z-index: 200; transition: width .1s linear;
 }
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: var(--cream); }
-::-webkit-scrollbar-thumb { background: #cbc2ac; border-radius: 6px; border: 2px solid var(--cream); }
+::-webkit-scrollbar-thumb { background: #c6bfae; border-radius: 6px; border: 2px solid var(--cream); }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-/* ===== Bottom navigation (mobile) ===== */
+/* ===== ניווט תחתון (מובייל) ===== */
 .bottomnav { display: none; }
 @media (max-width: 640px) {
   .topnav { flex-direction: row; justify-content: center; }
@@ -218,180 +327,101 @@ input.en { direction: ltr; text-align: left; }
   body { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
   .bottomnav {
     display: flex; position: fixed; bottom: 0; right: 0; left: 0; z-index: 60;
-    background: var(--navy); border-top: 1px solid var(--gold);
+    background: var(--paper); border-top: 3px double var(--navy);
     justify-content: space-around;
     padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
   }
   .bottomnav a {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
-    color: rgba(255,255,255,.66); text-decoration: none;
-    font-size: .68rem; padding: 3px 12px;
+    color: var(--muted); text-decoration: none;
+    font-size: .68rem; font-family: 'Assistant', sans-serif; font-weight: 600;
+    padding: 3px 12px;
     transition: color .15s;
   }
   .bottomnav a svg { width: 21px; height: 21px; }
-  .bottomnav a.active { color: #e8d9b0; }
+  .bottomnav a.active { color: var(--gold); }
 }
 
-/* ===== "עוד" bottom sheet ===== */
+/* ===== יריעת "עוד" ===== */
 .more-backdrop {
   position: fixed; inset: 0; z-index: 80;
-  background: rgba(20,28,45,.5);
+  background: rgba(24,21,16,.5);
   opacity: 0; visibility: hidden; transition: opacity .2s;
 }
 .more-backdrop.show { opacity: 1; visibility: visible; }
 .more-sheet {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
   background: var(--paper);
-  border-top: 2px solid var(--gold);
-  border-radius: 18px 18px 0 0;
+  border-top: 3px double var(--navy);
+  border-radius: 14px 14px 0 0;
   padding: 8px 16px calc(18px + env(safe-area-inset-bottom));
   transform: translateY(100%); transition: transform .24s ease;
   max-width: 520px; margin: 0 auto;
-  box-shadow: 0 -12px 30px -14px rgba(20,28,45,.4);
+  box-shadow: 0 -12px 30px -14px rgba(24,21,16,.4);
 }
 .more-sheet.show { transform: translateY(0); }
-.more-grip { width: 44px; height: 4px; background: var(--line-soft); border-radius: 3px; margin: 6px auto 12px; }
-.more-title { font-family: 'Frank Ruhl Libre', serif; color: var(--navy); font-size: 1.05rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+.more-grip { width: 44px; height: 4px; background: var(--line); border-radius: 3px; margin: 6px auto 12px; }
+.more-title { font-family: 'David Libre', serif; color: var(--navy); font-size: 1.05rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
 .more-item {
   display: flex; align-items: center; gap: 14px;
   padding: 14px 10px; color: var(--text); text-decoration: none;
-  border-bottom: 1px solid var(--line); border-radius: 8px;
+  border-bottom: 1px dotted #b6ad9a;
+  font-family: 'Assistant', sans-serif;
 }
 .more-item:last-child { border-bottom: none; }
-.more-item svg { width: 23px; height: 23px; stroke: var(--gold-dark); flex: 0 0 auto; }
+.more-item svg { width: 23px; height: 23px; stroke: var(--gold); flex: 0 0 auto; }
 .more-item span { font-size: .98rem; }
 .more-item.more-active { background: var(--cream); }
-.more-item.more-active span { font-weight: 500; color: var(--navy); }
-.more-badge { margin-inline-start: auto; font-size: .72rem; color: var(--gold-dark); background: #f4ecd7; padding: 2px 10px; border-radius: 999px; }
-/* "עוד" רק במובייל — במחשב הכל בתפריט העליון */
+.more-item.more-active span { font-weight: 600; color: var(--navy); }
+.more-badge { margin-inline-start: auto; font-size: .72rem; color: var(--gold); border: 1px solid var(--gold); padding: 1px 10px; }
 @media (min-width: 641px) { .more-backdrop, .more-sheet { display: none !important; } }
 
-/* ===== Touch feedback ===== */
-.btn:active { transform: scale(.97); }
-.year-chip:active:not(.empty) { transform: scale(.96); }
+/* ===== משוב מגע ===== */
+.year-chip:active:not(.empty) { background: var(--line-soft); }
 
-/* ===== Soft page-in ===== */
+/* ===== כניסת עמוד רכה ===== */
 @keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
 body.page-in { animation: pageIn .28s ease; }
 
-/* ===== Install & share ===== */
+/* ===== התקנה ושיתוף ===== */
 .install-fab { position: fixed; inset-inline-start: 18px; bottom: 20px; z-index: 70; display: flex; align-items: center; gap: 8px; }
 .install-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--navy); color: #e8d9b0; border: 1px solid var(--gold);
-  border-radius: 6px; padding: 9px 15px;
-  font-family: 'Heebo', sans-serif; font-size: .85rem; font-weight: 500;
+  background: var(--navy); color: var(--paper); border: 1px solid var(--navy);
+  border-radius: 0; padding: 9px 15px;
+  font-family: 'Assistant', sans-serif; font-size: .85rem; font-weight: 600;
   cursor: pointer; transition: background .18s;
 }
 .install-btn:hover { background: var(--navy-light); }
-.install-btn:active { transform: scale(.96); }
-.install-btn.share { padding: 9px; background: #ffffff; color: var(--navy); border-color: var(--gold); }
+.install-btn:active { transform: translateY(1px); }
+.install-btn.share { padding: 9px; background: var(--paper); color: var(--navy); border-color: var(--navy); }
 @media (max-width: 640px) { .install-fab { bottom: 80px; inset-inline-start: 12px; } .install-btn { padding: 8px 13px; font-size: .8rem; } .install-btn.share { padding: 8px; } }
 
-.pwa-toast { position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 18px); background: var(--navy); color: var(--cream); padding: 12px 20px; border-radius: 8px; font-family: 'Heebo', sans-serif; font-size: .9rem; z-index: 300; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; }
+.pwa-toast { position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 18px); background: var(--navy); color: var(--paper); padding: 12px 20px; border-radius: 0; font-family: 'Assistant', sans-serif; font-size: .9rem; z-index: 300; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; }
 .pwa-toast.show { opacity: 1; transform: translate(-50%, 0); }
-.pwa-modal { position: fixed; inset: 0; z-index: 400; background: rgba(20,28,45,.55); display: flex; align-items: center; justify-content: center; padding: 20px; }
-.pwa-modal-box { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 28px 24px; max-width: 340px; text-align: center; box-shadow: 0 20px 50px rgba(23,35,61,.25); font-family: 'Heebo', sans-serif; }
+.pwa-modal { position: fixed; inset: 0; z-index: 400; background: rgba(24,21,16,.55); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.pwa-modal-box { background: var(--paper); border: 1px solid var(--navy); border-radius: 0; padding: 28px 24px; max-width: 340px; text-align: center; box-shadow: 0 20px 50px rgba(24,21,16,.3); font-family: 'Assistant', sans-serif; }
 .pwa-modal-icon { font-size: 2.2rem; margin-bottom: 6px; }
 .pwa-modal-box h3 { margin: 0 0 10px; color: var(--navy); }
 .pwa-modal-box p { color: var(--text); line-height: 1.7; margin-bottom: 18px; }
 
-/* ===== עמוד הקריאה: סרגל שנים קבוע + אזור שיחות גליל ===== */
+/* ===== עמוד הקריאה: סרגל שנים קבוע + אזור שיחות ===== */
 .read-main { max-width: 1060px; }
-.read-layout { display: flex; gap: 20px; align-items: flex-start; }
+.read-layout { display: flex; gap: 24px; align-items: flex-start; }
 .years-rail {
   flex: 0 0 118px;
   position: sticky; top: 66px;
   max-height: calc(100vh - 86px);
   overflow-y: auto;
-  display: flex; flex-direction: column; gap: 6px;
+  display: flex; flex-direction: column; gap: 0;
   padding: 2px;
   scrollbar-width: thin;
+  border-inline-end: 1px solid var(--line);
 }
-.years-rail .year-chip { padding: 8px 6px; font-size: .98rem; }
+.years-rail .year-chip { padding: 8px 10px; font-size: .98rem; text-align: start; border-bottom: none; }
+.years-rail .year-chip.active { border-bottom: none; border-inline-start: 3px solid var(--gold); padding-inline-start: 7px; }
+.years-rail .year-chip.empty { border-bottom: none; }
 .sichos-area { flex: 1; min-width: 0; }
-
-/* ===== מעקב קריאה: סימנייה, המשך קריאה, התקדמות ===== */
-/* שיחה שנקראה — סימניית זהב קטנה ליד הכותרת */
-.read-mark {
-  display: inline-flex; align-items: center;
-  margin-inline-start: 8px; vertical-align: -2px;
-  color: var(--gold);
-}
-.read-mark svg { width: 13px; height: 17px; }
-.sicha.read { border-inline-start-color: var(--gold-soft); }
-.sicha.read .sicha-info h3 { color: var(--navy); }
-/* אנימציית "נכנס לסימנייה" עדינה */
-@keyframes markIn { from { opacity: 0; transform: translateY(-4px) scale(.7); } to { opacity: 1; transform: none; } }
-.read-mark { animation: markIn .45s cubic-bezier(.2,.9,.3,1.4) both; }
-
-/* התקדמות קריאה בכותרת השנה */
-.read-progress {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: .8rem; color: var(--muted);
-}
-.read-progress .track {
-  width: 74px; height: 4px; border-radius: 3px;
-  background: var(--line-soft); overflow: hidden;
-}
-.read-progress .fill {
-  display: block; height: 100%; width: 0;
-  background: linear-gradient(90deg, var(--gold-soft), var(--gold));
-  border-radius: 3px;
-  transition: width .8s cubic-bezier(.25,.8,.3,1);
-}
-
-/* פס התקדמות דקיק בתחתית צ'יפ שנה */
-.year-chip { position: relative; overflow: hidden; }
-.year-chip .chip-prog {
-  position: absolute; bottom: 0; inset-inline-start: 0;
-  height: 2px; background: var(--gold);
-  border-radius: 2px; opacity: .85;
-  transition: width .5s ease;
-}
-
-/* כרטיס "המשך קריאה" — סימנייה שמציצה מהספר */
-.resume-card {
-  position: relative;
-  background: var(--paper); border: 1px solid var(--line);
-  border-radius: 8px; padding: 22px 26px; margin-bottom: 20px;
-  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-  overflow: hidden;
-}
-.resume-card::before {
-  /* סרט סימנייה יורד מלמעלה */
-  content: ""; position: absolute; top: -2px; inset-inline-start: 24px;
-  width: 14px; height: 34px; background: var(--gold);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
-}
-.resume-card .resume-info { flex: 1 1 240px; padding-inline-start: 34px; }
-.resume-card .eyebrow {
-  font-size: .72rem; letter-spacing: .22em; color: var(--gold-dark);
-  margin-bottom: 4px;
-}
-.resume-card h2 { font-size: 1.2rem; margin: 0; }
-.resume-card .resume-sub { color: var(--muted); font-size: .86rem; margin-top: 2px; }
-
-/* ===== מיקרו-אינטראקציות עדינות ===== */
-.card, .sicha, .resume-card {
-  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
-}
-@media (hover: hover) {
-  .card:hover, .sicha:hover, .resume-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px -16px rgba(23,35,61,.35);
-    border-color: var(--line-soft);
-  }
-  .sicha:hover { border-inline-start-color: var(--gold-dark); }
-}
-.btn { transition: background .18s, color .18s, border-color .18s, transform .12s ease, box-shadow .18s; }
-@media (hover: hover) {
-  .btn-navy:hover, .btn-gold:hover { box-shadow: 0 6px 16px -8px rgba(23,35,61,.5); }
-}
-/* מיקוד מקלדת ברור */
-a:focus-visible, button:focus-visible, .btn:focus-visible, .year-chip:focus-visible {
-  outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px;
-}
 
 @media (max-width: 640px) {
   .read-layout { display: block; }
@@ -404,8 +434,10 @@ a:focus-visible, button:focus-visible, .btn:focus-visible, .year-chip:focus-visi
     padding: 8px 2px;
     margin: 0 -12px 10px;
     padding-inline-start: 12px; padding-inline-end: 12px;
-    box-shadow: 0 6px 12px -8px rgba(26,41,66,.25);
+    border-inline-end: none;
+    border-bottom: 1px solid var(--line);
   }
-  .years-rail .year-chip { flex: 0 0 auto; padding: 12px 18px; font-size: 1.12rem; }
+  .years-rail .year-chip { flex: 0 0 auto; padding: 12px 18px; font-size: 1.12rem; text-align: center; }
+  .years-rail .year-chip.active { border-inline-start: none; border-bottom: 2px solid var(--gold); padding-inline-start: 18px; }
   .years-rail::-webkit-scrollbar { display: none; }
 }
