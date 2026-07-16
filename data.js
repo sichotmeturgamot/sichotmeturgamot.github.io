@@ -93,6 +93,16 @@ const YEARS = [
         "sortDate": "06-14",
         "hebDate": "י״ד אדר",
         "addedAt": "2026-07-06"
+      },
+      {
+        "title": "סדר הראשון של חג הפסח תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/Seder_reshon_chag_hpesach_5707.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "08-14",
+        "hebDate": "י״ד ניסן",
+        "addedAt": "2026-07-16"
       }
     ]
   },
