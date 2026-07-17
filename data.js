@@ -123,6 +123,16 @@ const YEARS = [
         "sortDate": "08-21",
         "hebDate": "כ״א ניסן",
         "addedAt": "2026-07-16"
+      },
+      {
+        "title": "אחרון של פסח תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/achron_shel_pesach_5707.pdf",
+        "pages": 10,
+        "count": 1,
+        "sortDate": "08-21",
+        "hebDate": "כ״א ניסן",
+        "addedAt": "2026-07-17"
       }
     ]
   },
