@@ -29,7 +29,7 @@ const YEARS = [
     "sichos": [
       {
         "title": "ספר השיחות תש\"ו",
-        "subtitle": "על ספר השיחות תש\"ו מתורגם ללה\"ק עם מפתחות",
+        "subtitle": "כל ספר השיחות תש\"ו מתורגם ללה\"ק עם מפתחות",
         "file": "pdfs/Sefer_hasichot_5706.pdf",
         "pages": 44,
         "count": 29,
