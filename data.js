@@ -133,6 +133,16 @@ const YEARS = [
         "sortDate": "08-21",
         "hebDate": "כ״א ניסן",
         "addedAt": "2026-07-17"
+      },
+      {
+        "title": "שיחת ליל א' דחג השבועות תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/Leyl_a_shavuot_5707.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "10-06",
+        "hebDate": "ו׳ סיון",
+        "addedAt": "2026-07-24"
       }
     ]
   },
