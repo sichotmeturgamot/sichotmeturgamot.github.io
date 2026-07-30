@@ -135,6 +135,16 @@ const YEARS = [
         "addedAt": "2026-07-17"
       },
       {
+        "title": "ל\"ג בעומר תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/lag_baomer_5707.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "09-18",
+        "hebDate": "י״ח אייר",
+        "addedAt": "2026-07-30"
+      },
+      {
         "title": "שיחת ליל א' דחג השבועות תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_a_shavuot_5707.pdf",
