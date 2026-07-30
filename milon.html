@@ -65,6 +65,20 @@
     color: var(--text); flex: 1 1 200px; line-height: 1.6;
   }
   .entry mark { background: #f4ecd7; color: var(--gold-dark); border-radius: 3px; padding: 0 1px; }
+  .entry .heb.en { direction: ltr; text-align: left; font-family: 'Heebo', sans-serif; font-size: 1.04rem; }
+
+  .lang-toggle {
+    display: flex; margin: 12px auto 0; max-width: 240px;
+    border: 1.5px solid var(--line); border-radius: 999px;
+    overflow: hidden; background: var(--paper);
+  }
+  .lang-btn {
+    flex: 1; border: none; background: transparent; cursor: pointer;
+    font-family: 'Heebo', sans-serif; font-size: .92rem; padding: 8px 0;
+    color: var(--muted); transition: background .15s, color .15s;
+  }
+  .lang-btn.on { background: var(--navy); color: var(--cream); font-weight: 500; }
+  .lang-btn:not(.on):hover { color: var(--navy); }
 
   .empty-state { max-width: 640px; margin: 26px auto 0; text-align: center; color: var(--muted); }
   .empty-state .big { font-family: 'Frank Ruhl Libre', serif; font-size: 1.15rem; color: var(--navy); margin-bottom: 6px; }
@@ -98,8 +112,8 @@
 
 <div class="milon-head">
   <div class="bsd">ב״ה</div>
-  <h1>מילון אידיש–עברית</h1>
-  <div class="sub">הקלידו מילה באידיש — וקבלו את תרגומה ללשון הקודש</div>
+  <h1 id="milon-title">מילון אידיש–עברית</h1>
+  <div class="sub" id="milon-sub">הקלידו מילה באידיש — וקבלו את תרגומה ללשון הקודש</div>
 </div>
 
 <main style="padding-top:14px">
@@ -108,6 +122,10 @@
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <input id="q" type="text" placeholder="חיפוש מילה באידיש…" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
       <button class="clear" id="clear" aria-label="ניקוי">×</button>
+    </div>
+    <div class="lang-toggle" id="lang-toggle" role="tablist" aria-label="שפת התרגום">
+      <button class="lang-btn on" data-lang="he" type="button">עברית</button>
+      <button class="lang-btn" data-lang="en" type="button">English</button>
     </div>
   </div>
   <div class="count-line" id="count"></div>
@@ -151,8 +169,11 @@
     const emptyEl = document.getElementById('empty');
     const moreEl = document.getElementById('more');
 
-    let DATA = [];          // {key, yid, heb}
+    let DATA = [];          // {key, yid, heb, en}
     let loaded = false;
+    let lang = 'he';
+    try { lang = localStorage.getItem('milon-lang') || 'he'; } catch (_) {}
+    if (lang !== 'en') lang = 'he';
 
     // נירמול זהה ל-make_milon2.py — כדי שהקלט יתאים למפתחות שבקובץ
     function stripNikud(s) {
@@ -207,15 +228,18 @@
         return;
       }
       countEl.textContent = total === 1 ? 'נמצאה מילה אחת' : ('נמצאו ' + total + ' מילים');
-      resEl.innerHTML = show.map(e =>
-        '<div class="entry"><span class="yid">' + escapeHtml(e.yid) +
-        '</span><span class="heb">' + escapeHtml(e.heb) + '</span></div>'
-      ).join('');
+      const en = (lang === 'en');
+      resEl.innerHTML = show.map(e => {
+        const trans = en ? (e.en || '—') : e.heb;
+        return '<div class="entry"><span class="yid">' + escapeHtml(e.yid) +
+          '</span><span class="heb' + (en ? ' en' : '') + '"' + (en ? ' dir="ltr"' : '') + '>' +
+          escapeHtml(trans) + '</span></div>';
+      }).join('');
       moreEl.textContent = total > MAX_SHOW ? ('מוצגות ' + MAX_SHOW + ' הראשונות — הקלידו עוד אותיות לצמצום') : '';
     }
 
-    // טעינת קובץ המילון
-    fetch('milon2.txt?v=' + Date.now())
+    // טעינת קובץ המילון (מבנה: יידיש|עברית|אנגלית) — המפתח לחיפוש מחושב מהיידיש
+    fetch('milon_en.txt?v=' + Date.now())
       .then(r => r.text())
       .then(txt => {
         const lines = txt.split('\n');
@@ -224,13 +248,38 @@
           const i1 = line.indexOf('|');
           if (i1 < 0) continue;
           const i2 = line.indexOf('|', i1 + 1);
-          if (i2 < 0) continue;
-          DATA.push({ key: line.slice(0, i1), yid: line.slice(i1 + 1, i2), heb: line.slice(i2 + 1) });
+          const yid = line.slice(0, i1);
+          const heb = i2 < 0 ? line.slice(i1 + 1) : line.slice(i1 + 1, i2);
+          const en = i2 < 0 ? '' : line.slice(i2 + 1);
+          DATA.push({ key: normalize(yid), yid: yid, heb: heb, en: en });
         }
         loaded = true;
         render();
       })
       .catch(() => { countEl.textContent = 'שגיאה בטעינת המילון. נסו לרענן את העמוד.'; });
+
+    // ===== מתג שפת התרגום: עברית / English =====
+    const titleEl = document.getElementById('milon-title');
+    const subEl = document.getElementById('milon-sub');
+    function applyLang() {
+      document.querySelectorAll('#lang-toggle .lang-btn').forEach(b =>
+        b.classList.toggle('on', b.dataset.lang === lang));
+      if (lang === 'en') {
+        titleEl.textContent = 'מילון אידיש–אנגלית';
+        subEl.textContent = 'הקלידו מילה באידיש — וקבלו את תרגומה לאנגלית';
+      } else {
+        titleEl.textContent = 'מילון אידיש–עברית';
+        subEl.textContent = 'הקלידו מילה באידיש — וקבלו את תרגומה ללשון הקודש';
+      }
+    }
+    document.querySelectorAll('#lang-toggle .lang-btn').forEach(b =>
+      b.addEventListener('click', () => {
+        lang = b.dataset.lang === 'en' ? 'en' : 'he';
+        try { localStorage.setItem('milon-lang', lang); } catch (_) {}
+        applyLang();
+        render();
+      }));
+    applyLang();
 
     let t = null;
     qEl.addEventListener('input', () => { clearTimeout(t); t = setTimeout(render, 90); });
