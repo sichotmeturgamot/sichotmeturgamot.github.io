@@ -166,6 +166,16 @@ const YEARS = [
         "sortDate": "03-26",
         "hebDate": "כ״ו כסלו",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "פורים תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Purim_5706.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "06-14",
+        "hebDate": "י״ד אדר",
+        "addedAt": "2026-08-02"
       }
     ]
   },
