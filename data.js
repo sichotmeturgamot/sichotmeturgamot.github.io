@@ -156,6 +156,16 @@ const YEARS = [
         "sortDate": "03-20",
         "hebDate": "כ׳ כסלו",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ליל ש\"פ וישב, כ\"ו כסלו, שבת חנוכה תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Leil_Shabbos_Vayeishev_26_Kislev_Chanukah_5706.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "03-26",
+        "hebDate": "כ״ו כסלו",
+        "addedAt": "2026-08-02"
       }
     ]
   },
