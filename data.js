@@ -306,6 +306,16 @@ const YEARS = [
         "sortDate": "11-12",
         "hebDate": "י״ב תמוז",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "עש\"ק פ' שופטים, כ\"ו מנחם־אב תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Erev_Shabbos_Shoftim_26_Menachem_Av_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "12-26",
+        "hebDate": "כ״ו אב",
+        "addedAt": "2026-08-02"
       }
     ]
   },
