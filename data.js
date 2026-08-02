@@ -186,6 +186,16 @@ const YEARS = [
         "sortDate": "06-14",
         "hebDate": "י״ד אדר",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "יום א' דחג הפסח תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Yom_Alef_Pesach_5706.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "08-15",
+        "hebDate": "ט״ו ניסן",
+        "addedAt": "2026-08-02"
       }
     ]
   },
