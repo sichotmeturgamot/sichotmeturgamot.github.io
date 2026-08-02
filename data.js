@@ -36,6 +36,16 @@ const YEARS = [
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-07-03"
+      },
+      {
+        "title": "יב תשרי תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/12_Tishrei.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-12",
+        "hebDate": "י״ב תשרי",
+        "addedAt": "2026-08-02"
       }
     ]
   },
