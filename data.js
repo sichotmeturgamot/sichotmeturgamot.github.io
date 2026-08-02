@@ -236,6 +236,16 @@ const YEARS = [
         "sortDate": "08-20",
         "hebDate": "כ׳ ניסן",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ליל אחרון של פסח תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/21_Leil_Acharon_shel_Pesach_5706.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "08-22",
+        "hebDate": "כ״ב ניסן",
+        "addedAt": "2026-08-02"
       }
     ]
   },
