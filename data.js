@@ -316,6 +316,16 @@ const YEARS = [
         "sortDate": "12-26",
         "hebDate": "כ״ו אב",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ה' אלול תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/5_Elul_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "13-05",
+        "hebDate": "ה׳ אלול",
+        "addedAt": "2026-08-02"
       }
     ]
   },
