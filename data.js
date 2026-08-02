@@ -49,7 +49,7 @@ const YEARS = [
       },
       {
         "title": "יב תשרי תש\"ו",
-        "subtitle": "",
+        "subtitle": "להבחורים קודם נסיעתם לשיקגו",
         "file": "pdfs/12_Tishrei.pdf",
         "pages": 1,
         "count": 1,
