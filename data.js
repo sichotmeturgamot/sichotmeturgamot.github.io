@@ -146,6 +146,16 @@ const YEARS = [
         "sortDate": "03-19",
         "hebDate": "י״ט כסלו",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "כ' כסלו תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/20_Kislev_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "03-20",
+        "hebDate": "כ׳ כסלו",
+        "addedAt": "2026-08-02"
       }
     ]
   },
