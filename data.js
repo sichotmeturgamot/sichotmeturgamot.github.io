@@ -116,6 +116,16 @@ const YEARS = [
         "sortDate": "02-05",
         "hebDate": "ה׳ מרחשון",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ליל ש\"פ לך",
+        "subtitle": "",
+        "file": "pdfs/Leil_Shabbos_Lech_Lecha_5706.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "02-12",
+        "hebDate": "י״ב מרחשון",
+        "addedAt": "2026-08-02"
       }
     ]
   },
