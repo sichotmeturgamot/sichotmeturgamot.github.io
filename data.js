@@ -38,16 +38,6 @@ const YEARS = [
         "addedAt": "2026-07-03"
       },
       {
-        "title": "סדר הראשון של חג הפסח תש\"ו",
-        "subtitle": "",
-        "file": "pdfs/Seder_Rishon_Pesach_5706.pdf",
-        "pages": 1,
-        "count": 1,
-        "sortDate": "01-01",
-        "hebDate": "א׳ תשרי",
-        "addedAt": "2026-08-02"
-      },
-      {
         "title": "יב תשרי תש\"ו",
         "subtitle": "",
         "file": "pdfs/12_Tishrei.pdf",
@@ -185,6 +175,16 @@ const YEARS = [
         "count": 1,
         "sortDate": "06-14",
         "hebDate": "י״ד אדר",
+        "addedAt": "2026-08-02"
+      },
+      {
+        "title": "סדר הראשון של חג הפסח תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Seder_Rishon_Pesach_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "08-14",
+        "hebDate": "י״ד ניסן",
         "addedAt": "2026-08-02"
       },
       {
