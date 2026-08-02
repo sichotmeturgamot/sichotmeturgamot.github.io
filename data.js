@@ -296,6 +296,16 @@ const YEARS = [
         "sortDate": "10-21",
         "hebDate": "כ״א סיון",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "י\"ב תמוז תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/12_Tammuz_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "11-12",
+        "hebDate": "י״ב תמוז",
+        "addedAt": "2026-08-02"
       }
     ]
   },
