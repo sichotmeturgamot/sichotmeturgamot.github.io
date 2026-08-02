@@ -196,6 +196,16 @@ const YEARS = [
         "sortDate": "08-15",
         "hebDate": "ט״ו ניסן",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "סדר השני של חג הפסח תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Seder_Sheni_Pesach_5706.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "08-16",
+        "hebDate": "ט״ז ניסן",
+        "addedAt": "2026-08-02"
       }
     ]
   },
