@@ -56,6 +56,16 @@ const YEARS = [
         "sortDate": "01-14",
         "hebDate": "י״ד תשרי",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "יום א' דחג הסוכות תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Yom_Alef_Sukkos_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-15",
+        "hebDate": "ט״ו תשרי",
+        "addedAt": "2026-08-02"
       }
     ]
   },
