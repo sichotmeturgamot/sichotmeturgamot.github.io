@@ -28,16 +28,6 @@ const YEARS = [
     "complete": true,
     "sichos": [
       {
-        "title": "ספר השיחות תש\"ו",
-        "subtitle": "כל ספר השיחות תש\"ו מתורגם ללה\"ק עם מפתחות",
-        "file": "pdfs/Sefer_hasichot_5706.pdf",
-        "pages": 44,
-        "count": 29,
-        "sortDate": "01-01",
-        "hebDate": "א׳ תשרי",
-        "addedAt": "2026-07-03"
-      },
-      {
         "title": "יב תשרי תש\"ו",
         "subtitle": "להבחורים קודם נסיעתם לשיקגו",
         "file": "pdfs/12_Tishrei.pdf",
