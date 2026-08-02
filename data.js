@@ -38,6 +38,16 @@ const YEARS = [
         "addedAt": "2026-07-03"
       },
       {
+        "title": "ליל שביעי של פסח תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Leil_Shvii_shel_Pesach_5706.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי",
+        "addedAt": "2026-08-02"
+      },
+      {
         "title": "יב תשרי תש\"ו",
         "subtitle": "",
         "file": "pdfs/12_Tishrei.pdf",
