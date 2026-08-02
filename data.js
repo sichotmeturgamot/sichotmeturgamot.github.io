@@ -106,6 +106,16 @@ const YEARS = [
         "sortDate": "01-23",
         "hebDate": "כ״ג תשרי",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ש\"פ נח בסעודת הלילה",
+        "subtitle": "",
+        "file": "pdfs/Leil_Shabbos_Noach_5706.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "02-05",
+        "hebDate": "ה׳ מרחשון",
+        "addedAt": "2026-08-02"
       }
     ]
   },
