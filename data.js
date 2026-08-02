@@ -96,6 +96,16 @@ const YEARS = [
         "sortDate": "01-22",
         "hebDate": "כ״ב תשרי",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ליל שמחת תורה תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Leil_Simchas_Torah_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-23",
+        "hebDate": "כ״ג תשרי",
+        "addedAt": "2026-08-02"
       }
     ]
   },
