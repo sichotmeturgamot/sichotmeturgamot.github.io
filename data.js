@@ -216,6 +216,16 @@ const YEARS = [
         "sortDate": "08-20",
         "hebDate": "כ׳ ניסן",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ד' דחוה\"מ פסח תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Daled_Chol_HaMoed_Pesach_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "08-20",
+        "hebDate": "כ׳ ניסן",
+        "addedAt": "2026-08-02"
       }
     ]
   },
