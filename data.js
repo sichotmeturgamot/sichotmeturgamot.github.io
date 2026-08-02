@@ -246,6 +246,16 @@ const YEARS = [
         "sortDate": "08-22",
         "hebDate": "כ״ב ניסן",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "כ\"ח ניסן תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/28_Nissan_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "08-28",
+        "hebDate": "כ״ח ניסן",
+        "addedAt": "2026-08-02"
       }
     ]
   },
