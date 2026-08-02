@@ -136,6 +136,16 @@ const YEARS = [
         "sortDate": "02-20",
         "hebDate": "כ׳ מרחשון",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ש\"פ וישלח, י\"ט כסלו תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Shabbos_Vayishlach_19_Kislev_5706.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "03-19",
+        "hebDate": "י״ט כסלו",
+        "addedAt": "2026-08-02"
       }
     ]
   },
