@@ -206,6 +206,16 @@ const YEARS = [
         "sortDate": "08-16",
         "hebDate": "ט״ז ניסן",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "שבת חוה\"מ פסח תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Shabbos_Chol_HaMoed_Pesach_5706.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "08-20",
+        "hebDate": "כ׳ ניסן",
+        "addedAt": "2026-08-02"
       }
     ]
   },
