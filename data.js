@@ -276,6 +276,16 @@ const YEARS = [
         "sortDate": "10-06",
         "hebDate": "ו׳ סיון",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "יום ב' דחג השבועות תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Yom_Beis_Shavuos_5706.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "10-07",
+        "hebDate": "ז׳ סיון",
+        "addedAt": "2026-08-02"
       }
     ]
   },
