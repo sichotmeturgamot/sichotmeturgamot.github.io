@@ -256,6 +256,16 @@ const YEARS = [
         "sortDate": "08-28",
         "hebDate": "כ״ח ניסן",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ליל א' דחג השבועות תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Leil_Alef_Shavuos_5706.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "10-05",
+        "hebDate": "ה׳ סיון",
+        "addedAt": "2026-08-02"
       }
     ]
   },
