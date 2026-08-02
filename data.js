@@ -126,6 +126,16 @@ const YEARS = [
         "sortDate": "02-12",
         "hebDate": "י״ב מרחשון",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ליל ש\"פ וירא, כ' מר־חשון תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/Leil_Shabbos_Vayeira_20_MarCheshvan_5706.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "02-20",
+        "hebDate": "כ׳ מרחשון",
+        "addedAt": "2026-08-02"
       }
     ]
   },
