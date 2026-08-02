@@ -286,6 +286,16 @@ const YEARS = [
         "sortDate": "10-07",
         "hebDate": "ז׳ סיון",
         "addedAt": "2026-08-02"
+      },
+      {
+        "title": "כ\"א סיון תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/21_Sivan_5706.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "10-21",
+        "hebDate": "כ״א סיון",
+        "addedAt": "2026-08-02"
       }
     ]
   },
