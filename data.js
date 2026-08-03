@@ -435,6 +435,17 @@ const YEARS = [
         "addedAt": "2026-07-24"
       },
       {
+        "title": "יום ו' עש\"ק י\"ג אלול תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/yom_6_erev_ahbis_13_elul_5707.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "13-13",
+        "hebDate": "י״ג אלול",
+        "addedAt": "2026-08-03",
+        "hasPage": true
+      },
+      {
         "title": "ש\"פ נצבים תש\"ז",
         "subtitle": "רשימה",
         "file": "pdfs/shbat_nitsavim_5707.pdf",
