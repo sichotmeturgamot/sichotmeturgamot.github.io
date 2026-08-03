@@ -457,6 +457,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "ר\"ד ח\"י אלול תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/rd_chy_elul_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "13-18",
+        "hebDate": "י״ח אלול",
+        "addedAt": "2026-08-03",
+        "hasPage": true
+      },
+      {
         "title": "ש\"פ נצבים תש\"ז",
         "subtitle": "רשימה",
         "file": "pdfs/shbes_nitsavim_5707.pdf",
