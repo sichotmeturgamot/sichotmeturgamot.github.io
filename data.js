@@ -435,7 +435,7 @@ const YEARS = [
         "addedAt": "2026-07-24"
       },
       {
-        "title": "יום ו' עש\"ק י\"ג אלול תש\"ז",
+        "title": "יום ו' ערב ש\"ק י\"ג אלול תש\"ז",
         "subtitle": "",
         "file": "pdfs/yom_6_erev_ahbis_13_elul_5707.pdf",
         "pages": 2,
