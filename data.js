@@ -448,7 +448,7 @@ const YEARS = [
       {
         "title": "ש\"פ נצבים תש\"ז",
         "subtitle": "רשימה",
-        "file": "pdfs/shbat_nitsavim_5707.pdf",
+        "file": "pdfs/shbes_nitsavim_5707.pdf",
         "pages": 3,
         "count": 1,
         "sortDate": "13-28",
