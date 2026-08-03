@@ -315,6 +315,132 @@ function watchDeploy(sha) {
 }
 const dataEntry = () => ({ path: 'data.js', mode: '100644', type: 'blob', content: serialize() });
 
+/* ============================================================
+   דפי נחיתה לשיחות (SEO) + sitemap — נוצרים אוטומטית מאחורי הקלעים
+   כל שיחה מקבלת עמוד סטטי sichos/NAME.html שגוגל יכול לאנדקס,
+   בעוד הגולש הרגיל ממשיך ללחוץ "קריאה" ולפתוח את ה-PDF כרגיל.
+   ============================================================ */
+function siteBase() {
+  const repo = (cfg.repo || '').toLowerCase();
+  if (repo.endsWith('.github.io')) return 'https://' + repo;
+  return 'https://' + (cfg.owner || '').toLowerCase() + '.github.io/' + cfg.repo;
+}
+function sichaSlug(file) { return String(file).replace(/^pdfs\//, '').replace(/\.pdf$/i, ''); }
+function sichaPagePath(file) { return 'sichos/' + sichaSlug(file) + '.html'; }
+
+function renderSichaPage(s, yearName) {
+  const base = siteBase();
+  const slug = sichaSlug(s.file);
+  const url = base + '/sichos/' + slug + '.html';
+  const title = s.title || '';
+  const sub = (s.subtitle || '').trim();
+  const desc = (sub ? sub + ' ' : '') + 'מתוך ספר השיחות ' + yearName + ', מתורגם ללשון הקודש מאידיש.';
+  const readUrl = '/read.html?file=' + encodeURIComponent(s.file) + '&title=' + encodeURIComponent(title);
+  const pdfUrl = '/' + s.file;
+  const meta = [];
+  if (s.hebDate) meta.push('<span>' + esc(s.hebDate) + '</span>');
+  if (s.pages) meta.push('<span>' + s.pages + ' עמודים</span>');
+  const ld = JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Article',
+    headline: title, description: desc, inLanguage: 'he',
+    url: url, isPartOf: 'ספר השיחות ' + yearName,
+    publisher: { '@type': 'Organization', name: 'ספר השיחות מתורגם ללה״ק', url: base + '/' }
+  }).replace(/</g, '\\u003c');
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(title)} — ספר השיחות מתורגם ללה״ק</title>
+<meta name="description" content="${esc(desc)}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${url}">
+<meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
+<meta property="og:locale" content="he_IL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<script type="application/ld+json">
+${ld}
+<\/script>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Heebo',sans-serif; background:#faf7f0; color:#2a2a2a; line-height:1.7; min-height:100vh; display:flex; flex-direction:column; }
+  h1 { font-family:'Frank Ruhl Libre',serif; color:#1a2942; }
+  .topbar { background:#1a2942; border-bottom:3px solid #b8933e; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar .brand { color:#fff; font-family:'Frank Ruhl Libre',serif; font-size:1.15rem; }
+  .topbar a { color:#fff; text-decoration:none; font-size:.85rem; border:1px solid rgba(255,255,255,.5); border-radius:8px; padding:6px 14px; }
+  main { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 16px; }
+  .card { background:#fff; border:1px solid #e8e2d4; border-radius:16px; max-width:620px; width:100%; padding:34px 30px; text-align:center; box-shadow:0 6px 30px rgba(26,41,66,.08); }
+  .year-badge { display:inline-block; background:#f4efe3; color:#93690f; font-size:.9rem; border-radius:99px; padding:4px 16px; margin-bottom:16px; }
+  .card h1 { font-size:1.9rem; line-height:1.35; margin-bottom:12px; }
+  .meta { color:#6b6b6b; font-size:.95rem; margin-bottom:20px; }
+  .meta span + span::before { content:' · '; }
+  .desc { font-size:1.05rem; color:#3a3a3a; margin-bottom:28px; }
+  .actions { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  .btn { text-decoration:none; border-radius:10px; padding:12px 26px; font-family:'Heebo',sans-serif; font-size:1rem; font-weight:500; display:inline-flex; align-items:center; gap:8px; border:1.5px solid transparent; }
+  .btn-read { background:#b8933e; color:#fff; }
+  .btn-dl { background:#1a2942; color:#fff; }
+  .btn-site { background:transparent; color:#1a2942; border-color:#1a2942; }
+  .btn:hover { opacity:.9; }
+  footer { text-align:center; padding:22px 16px; color:#8a857a; font-size:.82rem; }
+  footer a { color:#b8933e; text-decoration:none; }
+  @media (max-width:480px) { .card h1 { font-size:1.5rem; } .btn { padding:11px 20px; font-size:.95rem; } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="brand">ספר השיחות מתורגם ללה״ק</span>
+  <a href="/index.html">לאתר ←</a>
+</div>
+<main>
+  <article class="card">
+    <span class="year-badge">שנת ${esc(yearName)}</span>
+    <h1>${esc(title)}</h1>
+    <div class="meta">${meta.join('')}</div>
+    <p class="desc">${esc(desc)}</p>
+    <div class="actions">
+      <a class="btn btn-read" href="${readUrl}">קריאת השיחה</a>
+      <a class="btn btn-dl" href="${pdfUrl}" download>הורדה כ־PDF</a>
+      <a class="btn btn-site" href="/index.html">לכל השיחות</a>
+    </div>
+  </article>
+</main>
+<footer>ספר השיחות מתורגם ללשון הקודש · <a href="/index.html">לעמוד הבית</a></footer>
+</body>
+</html>
+`;
+}
+function pageEntry(s, yearName) {
+  return { path: sichaPagePath(s.file), mode: '100644', type: 'blob', content: renderSichaPage(s, yearName) };
+}
+function pageDeleteEntry(file) {
+  return { path: sichaPagePath(file), mode: '100644', type: 'blob', sha: null };
+}
+function renderSitemap() {
+  const base = siteBase();
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = [
+    { loc: base + '/', pri: '1.0' },
+    { loc: base + '/sichos.html', pri: '0.7' },
+    { loc: base + '/subscribe.html', pri: '0.6' },
+    { loc: base + '/donate.html', pri: '0.5' }
+  ];
+  data.YEARS.forEach(y => y.sichos.forEach(s => {
+    if (s.hasPage && !s.hidden) urls.push({ loc: base + '/sichos/' + sichaSlug(s.file) + '.html', pri: '0.8' });
+  }));
+  const body = urls.map(u => '  <url>\n    <loc>' + u.loc + '</loc>\n    <lastmod>' + today + '</lastmod>\n    <priority>' + u.pri + '</priority>\n  </url>').join('\n');
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + '\n</urlset>\n';
+}
+function sitemapEntry() {
+  return { path: 'sitemap.xml', mode: '100644', type: 'blob', content: renderSitemap() };
+}
+
 /* ---------- save data.js ---------- */
 function serialize() {
   return `/* קובץ זה נערך אוטומטית דרך עמוד הניהול (admin.html) — אפשר גם לערוך ידנית */
@@ -471,12 +597,13 @@ async function saveSicha() {
         setStatus('מעלה קובץ מעודכן…', 'busy');
         extra.push({ path: old.file, mode: '100644', type: 'blob', sha: await createBlob(await readB64(fileInput)) });
       }
+      entry.hasPage = true;
       // remove from old spot, insert to (possibly new) year
       data.YEARS[editing.yi].sichos.splice(editing.si, 1);
       data.YEARS[yi].sichos.push(entry);
       sortYear(yi);
       setStatus('שומר…', 'busy');
-      await gitCommit([...extra, dataEntry()], 'עריכת שיחה: ' + title);
+      await gitCommit([...extra, pageEntry(entry, data.YEARS[yi].year), sitemapEntry(), dataEntry()], 'עריכת שיחה: ' + title);
     } else {
       let name = $('s-filename').value.trim();
       if (!fileInput) return setStatus('חסר קובץ PDF', 'err');
@@ -485,12 +612,18 @@ async function saveSicha() {
       if (!name.toLowerCase().endsWith('.pdf')) name += '.pdf';
       entry.file = 'pdfs/' + name;
       entry.addedAt = new Date().toISOString().slice(0, 10);
+      entry.hasPage = true;
       setStatus('מעלה קובץ PDF…', 'busy');
       const blobSha = await createBlob(await readB64(fileInput));
       data.YEARS[yi].sichos.push(entry);
       sortYear(yi);
       setStatus('שומר…', 'busy');
-      await gitCommit([{ path: entry.file, mode: '100644', type: 'blob', sha: blobSha }, dataEntry()], 'הוספת שיחה: ' + title);
+      await gitCommit([
+        { path: entry.file, mode: '100644', type: 'blob', sha: blobSha },
+        pageEntry(entry, data.YEARS[yi].year),
+        sitemapEntry(),
+        dataEntry()
+      ], 'הוספת שיחה: ' + title);
     }
     $('s-filename').disabled = false;
     dlg('dlg-sicha').close();
@@ -503,8 +636,11 @@ async function removeSicha(yi, si) {
   if (!confirm(`למחוק את "${s.title}"?\nגם קובץ ה-PDF יימחק מהאתר.\n(ניתן לשחזר דרך היסטוריית השינויים)`)) return;
   try {
     setStatus('מוחק…', 'busy');
+    const delEntries = [{ path: s.file, mode: '100644', type: 'blob', sha: null }];
+    if (s.hasPage) delEntries.push(pageDeleteEntry(s.file));
     data.YEARS[yi].sichos.splice(si, 1);
-    await gitCommit([{ path: s.file, mode: '100644', type: 'blob', sha: null }, dataEntry()], 'מחיקת שיחה: ' + s.title);
+    delEntries.push(sitemapEntry(), dataEntry());
+    await gitCommit(delEntries, 'מחיקת שיחה: ' + s.title);
     render(); setStatus('נמחק', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
@@ -521,11 +657,16 @@ async function renameSicha(yi, si) {
     if (!blobSha) throw new Error('הקובץ המקורי לא נמצא: ' + s.file);
     const oldPath = s.file;
     s.file = 'pdfs/' + name;
-    await gitCommit([
+    const renEntries = [
       { path: s.file, mode: '100644', type: 'blob', sha: blobSha },
-      { path: oldPath, mode: '100644', type: 'blob', sha: null },
-      dataEntry()
-    ], 'שינוי שם קובץ: ' + s.title);
+      { path: oldPath, mode: '100644', type: 'blob', sha: null }
+    ];
+    if (s.hasPage) {
+      const yi2 = data.YEARS.findIndex(y => y.sichos.includes(s));
+      renEntries.push(pageDeleteEntry(oldPath), pageEntry(s, data.YEARS[yi2].year), sitemapEntry());
+    }
+    renEntries.push(dataEntry());
+    await gitCommit(renEntries, 'שינוי שם קובץ: ' + s.title);
     render(); setStatus('שם הקובץ שונה', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
@@ -548,7 +689,7 @@ async function toggleHidden(yi, si) {
   if (!s.hidden) delete s.hidden;
   try {
     setStatus('שומר…', 'busy');
-    await commitData((s.hidden ? 'הסתרת' : 'הצגת') + ' שיחה: ' + s.title);
+    await gitCommit([sitemapEntry(), dataEntry()], (s.hidden ? 'הסתרת' : 'הצגת') + ' שיחה: ' + s.title);
     render(); setStatus('נשמר', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
