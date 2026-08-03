@@ -5,7 +5,7 @@
   var items = [
     { href: 'subscribe.html', label: 'הצטרפות לעדכונים', icon: '<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10 21a2 2 0 004 0"/>' },
     { href: 'donate.html',   label: 'תרומה',        icon: '<path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 000-7.8z"/>' },
-    { href: 'feedback.html', label: 'פידבק',         icon: '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>', badge: 'חדש' },
+    { href: 'feedback.html', label: 'פידבק',         icon: '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>' },
     { href: '#share',        label: 'שיתוף והתקנה',  icon: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>', share: true }
   ];
 
