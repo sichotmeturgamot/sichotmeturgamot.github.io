@@ -435,6 +435,17 @@ const YEARS = [
         "addedAt": "2026-07-24"
       },
       {
+        "title": "ג' אלול תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/3_elul_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "13-03",
+        "hebDate": "ג׳ אלול",
+        "addedAt": "2026-08-03",
+        "hasPage": true
+      },
+      {
         "title": "יום ו' ערב ש\"ק י\"ג אלול תש\"ז",
         "subtitle": "",
         "file": "pdfs/yom_6_erev_ahbis_13_elul_5707.pdf",
