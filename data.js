@@ -218,19 +218,19 @@ const YEARS = [
         "addedAt": "2026-08-02"
       },
       {
-        "title": "ליל אחרון של פסח תש\"ו",
-        "subtitle": "",
-        "file": "pdfs/21_Leil_Acharon_shel_Pesach_5706.pdf",
-        "pages": 2,
-        "count": 1,
-        "sortDate": "08-22",
-        "hebDate": "כ״ב ניסן",
-        "addedAt": "2026-08-02"
-      },
-      {
         "title": "ליל שביעי של פסח תש\"ו",
         "subtitle": "",
         "file": "pdfs/Leil_Shvii_shel_Pesach_5706.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "08-21",
+        "hebDate": "כ״א ניסן",
+        "addedAt": "2026-08-02"
+      },
+      {
+        "title": "ליל אחרון של פסח תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/21_Leil_Acharon_shel_Pesach_5706.pdf",
         "pages": 2,
         "count": 1,
         "sortDate": "08-22",
