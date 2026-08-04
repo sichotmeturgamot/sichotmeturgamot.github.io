@@ -635,16 +635,16 @@ async function saveSicha() {
       entry.file = 'pdfs/' + name;
       entry.addedAt = new Date().toISOString().slice(0, 10);
       entry.hasPage = true;
+      setStatus('מעלה קובץ PDF…', 'busy');
+      const blobSha = await createBlob(await readB64(fileInput));
       data.YEARS[yi].sichos.push(entry);
       sortYear(yi);
-      // שלב 1: קודם יוצרים את דף השיחה החדש באתר (קומיט נפרד — כך רואים מיד שהמבנה השתנה)
-      setStatus('שלב 1/2 — יוצר דף שיחה חדש באתר…', 'busy');
-      await gitCommit([pageEntry(entry, data.YEARS[yi].year)], 'יצירת דף שיחה: ' + title);
-      // שלב 2: ואז מעלים את קובץ ה-PDF, ומעדכנים את רשימת השיחות ואת מפת האתר
-      setStatus('שלב 2/2 — מעלה את קובץ ה-PDF…', 'busy');
-      const blobSha = await createBlob(await readB64(fileInput));
+      setStatus('שומר…', 'busy');
+      // הכל בקומיט אחד — קובץ ה-PDF, דף הנחיתה, מפת האתר ורשימת השיחות.
+      // קומיט יחיד = פרסום אמין (שני קומיטים מהירים ברצף גורמים לכשל פריסה ב-GitHub Pages).
       await gitCommit([
         { path: entry.file, mode: '100644', type: 'blob', sha: blobSha },
+        pageEntry(entry, data.YEARS[yi].year),
         sitemapEntry(),
         dataEntry()
       ], 'הוספת שיחה: ' + title);
