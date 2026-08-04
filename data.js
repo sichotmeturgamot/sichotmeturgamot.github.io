@@ -475,6 +475,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "אור לט\"ו מנחם אב תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/or_15_av_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "12-14",
+        "hebDate": "י״ד אב",
+        "addedAt": "2026-08-04",
+        "hasPage": true
+      },
+      {
         "title": "ג' אלול תש\"ז",
         "subtitle": "",
         "file": "pdfs/3_elul_5707.pdf",
