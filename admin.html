@@ -85,6 +85,7 @@
       <button class="btn btn-gold" onclick="openAddSicha()">＋ הוספת שיחה חדשה</button>
       <button class="btn btn-line" onclick="addYear()">＋ הוספת שנה</button>
       <button class="btn btn-line" onclick="loadAll()">↻ רענון</button>
+      <button class="btn btn-line" onclick="generateAllPages()">🗺️ בנה דפים + מפת אתר</button>
       <a class="btn btn-line" id="history-link" target="_blank" rel="noopener">🕘 היסטוריית שינויים</a>
       <a class="btn btn-line" href="index.html" target="_blank">👁 צפייה באתר</a>
       <button class="btn btn-danger" onclick="logout()" style="margin-inline-start:auto">יציאה</button>
@@ -339,7 +340,7 @@ function renderSichaPage(s, yearName) {
   const pdfUrl = '/' + s.file;
   const meta = [];
   if (s.hebDate) meta.push('<span>' + esc(s.hebDate) + '</span>');
-  if (s.pages) meta.push('<span>' + s.pages + ' עמודים</span>');
+  if (s.pages) meta.push('<span>' + s.pages + (s.pages == 1 ? ' עמוד' : ' עמודים') + '</span>');
   const ld = JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Article',
     headline: title, description: desc, inLanguage: 'he',
@@ -441,6 +442,26 @@ function sitemapEntry() {
   return { path: 'sitemap.xml', mode: '100644', type: 'blob', content: renderSitemap() };
 }
 
+/* בונה/מרענן דף נחיתה לכל השיחות (למעט מוסתרות) ומעדכן את מפת האתר — בקומיט אחד */
+async function generateAllPages() {
+  if (!confirm('לבנות דף נחיתה לכל השיחות באתר (למעט מוסתרות) ולעדכן את מפת האתר?\n\nפעולה אחת. שיחות שכבר יש להן דף — הדף פשוט יתרענן.')) return;
+  try {
+    setStatus('בונה דפים לכל השיחות…', 'busy');
+    const entries = [];
+    let n = 0;
+    data.YEARS.forEach(y => y.sichos.forEach(s => {
+      if (s.hidden) return;
+      s.hasPage = true;
+      entries.push(pageEntry(s, y.year));
+      n++;
+    }));
+    entries.push(sitemapEntry(), dataEntry());
+    await gitCommit(entries, 'בניית דפי נחיתה לכל השיחות (' + n + ') + עדכון מפת אתר');
+    render();
+    setStatus('נבנו ' + n + ' דפים, ומפת האתר עודכנה ✓', 'ok');
+  } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
+}
+
 /* ---------- save data.js ---------- */
 function serialize() {
   return `/* קובץ זה נערך אוטומטית דרך עמוד הניהול (admin.html) — אפשר גם לערוך ידנית */
@@ -534,6 +555,7 @@ function render() {
             <b>${esc(s.title)}</b> ${s.hidden ? '<span class="hidden-tag">מוסתר</span>' : ''}
             <small>${esc(s.subtitle || '')}</small>
             <span class="file">${esc(s.file)}${s.pages ? ' · ' + s.pages + ' עמ׳' : ''}${s.hebDate ? ' · ' + s.hebDate : ''}</span>
+            ${s.hasPage ? `<a class="file" style="color:var(--green)" href="${siteBase()}/sichos/${sichaSlug(s.file)}.html" target="_blank" rel="noopener" title="פתיחת דף השיחה לגוגל">🔗 /sichos/${sichaSlug(s.file)}.html</a>` : '<span class="file" style="color:#b03030">↩ אין דף עדיין — לחץ "בנה דפים"</span>'}
           </div>
           <div class="icons">
             <button title="עריכה" onclick="openEditSicha(${yi},${si})">✏️</button>
@@ -613,22 +635,29 @@ async function saveSicha() {
       entry.file = 'pdfs/' + name;
       entry.addedAt = new Date().toISOString().slice(0, 10);
       entry.hasPage = true;
-      setStatus('מעלה קובץ PDF…', 'busy');
-      const blobSha = await createBlob(await readB64(fileInput));
       data.YEARS[yi].sichos.push(entry);
       sortYear(yi);
-      setStatus('שומר…', 'busy');
+      // שלב 1: קודם יוצרים את דף השיחה החדש באתר (קומיט נפרד — כך רואים מיד שהמבנה השתנה)
+      setStatus('שלב 1/2 — יוצר דף שיחה חדש באתר…', 'busy');
+      await gitCommit([pageEntry(entry, data.YEARS[yi].year)], 'יצירת דף שיחה: ' + title);
+      // שלב 2: ואז מעלים את קובץ ה-PDF, ומעדכנים את רשימת השיחות ואת מפת האתר
+      setStatus('שלב 2/2 — מעלה את קובץ ה-PDF…', 'busy');
+      const blobSha = await createBlob(await readB64(fileInput));
       await gitCommit([
         { path: entry.file, mode: '100644', type: 'blob', sha: blobSha },
-        pageEntry(entry, data.YEARS[yi].year),
         sitemapEntry(),
         dataEntry()
       ], 'הוספת שיחה: ' + title);
+      window.__lastPageUrl = siteBase() + '/sichos/' + sichaSlug(entry.file) + '.html';
     }
     $('s-filename').disabled = false;
     dlg('dlg-sicha').close();
     render();
     setStatus('נשמר! האתר יתעדכן תוך כדקה', 'ok');
+    if (window.__lastPageUrl) {
+      alert('✓ נוצר דף חדש לשיחה זו באתר, בכתובת:\n\n' + window.__lastPageUrl + '\n\nאפשר לפתוח אותה בדפדפן בעוד כ-1-2 דקות כדי לוודא שהמבנה השתנה.');
+      window.__lastPageUrl = null;
+    }
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
 async function removeSicha(yi, si) {
@@ -797,7 +826,7 @@ function logout() {
   location.reload();
 }
 /* מנעול פעולות: פעולה אחת בכל רגע, וסנכרון מחדש בסיום */
-['saveSicha', 'removeSicha', 'renameSicha', 'toggleHidden', 'addYear', 'saveYear', 'removeYear', 'moveYear', 'saveSettings', 'saveSite'].forEach(name => {
+['saveSicha', 'removeSicha', 'renameSicha', 'toggleHidden', 'addYear', 'saveYear', 'removeYear', 'moveYear', 'saveSettings', 'saveSite', 'generateAllPages'].forEach(name => {
   const orig = window[name];
   window[name] = async function (...args) {
     if (window.__busyOp) { setStatus('פעולה קודמת עדיין מתבצעת — המתן מספר שניות', 'err'); return; }
