@@ -694,6 +694,17 @@ async function renameSicha(yi, si) {
       const yi2 = data.YEARS.findIndex(y => y.sichos.includes(s));
       renEntries.push(pageDeleteEntry(oldPath), pageEntry(s, data.YEARS[yi2].year), sitemapEntry());
     }
+    // עדכון קישורי המפתח (search.html) לשם הקובץ החדש — כדי שלא יישברו
+    try {
+      const sf = await gh(repoPath('contents/search.html?ref=' + cfg.branch));
+      const oldBase = oldPath.replace(/^pdfs\//, '');
+      const newBase = s.file.replace(/^pdfs\//, '');
+      let html = dec(sf.content);
+      if (html.indexOf('pdfs%2F' + oldBase) >= 0 || html.indexOf('pdfs/' + oldBase) >= 0) {
+        html = html.split('pdfs%2F' + oldBase).join('pdfs%2F' + newBase).split('pdfs/' + oldBase).join('pdfs/' + newBase);
+        renEntries.push({ path: 'search.html', mode: '100644', type: 'blob', content: html });
+      }
+    } catch (e) { /* אם אין search.html — מתעלמים */ }
     renEntries.push(dataEntry());
     await gitCommit(renEntries, 'שינוי שם קובץ: ' + s.title);
     render(); setStatus('שם הקובץ שונה', 'ok');

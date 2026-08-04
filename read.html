@@ -34,6 +34,7 @@
 
 <div class="bar">
   <span class="title" id="title">טוען…</span>
+  <span id="pagebadge" style="display:none; background:#b8933e; color:#fff; font-size:.8rem; border-radius:8px; padding:4px 10px; white-space:nowrap;">עמוד <span id="pagenum"></span></span>
   <a id="dl" download>הורדה ⬇</a>
   <a class="line" href="index.html">לאתר</a>
 </div>
@@ -46,7 +47,12 @@
   var params = new URLSearchParams(location.search);
   var file = params.get('file') || '';
   var title = params.get('title') || 'קריאת השיחה';
+  var page = (params.get('page') || '').replace(/[^0-9]/g, '');
   document.getElementById('title').textContent = title;
+  if (page) {
+    document.getElementById('pagenum').textContent = page;
+    document.getElementById('pagebadge').style.display = 'inline-block';
+  }
   document.title = title + ' — ספר השיחות מתורגם ללה״ק';
   var dl = document.getElementById('dl');
   dl.href = file;
@@ -82,7 +88,7 @@
 
   if (!canInline) {
     // בטלפון: תצוגה דרך שירות של גוגל (הדפדפן בטלפון לא מציג PDF בעצמו)
-    frame.src = 'https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(fullUrl);
+    frame.src = 'https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(fullUrl) + (page ? '#:0.page.' + (parseInt(page, 10) - 1) : '');
     // אם התצוגה לא נטענה תוך 8 שניות — ניסיון רענון אוטומטי (קורה לפעמים בשירות של גוגל)
     var loaded = false;
     frame.addEventListener('load', function () { loaded = true; });
@@ -96,8 +102,8 @@
       }
     }, 16000);
   } else {
-    // במחשב: הדפדפן מציג PDF מצוין בעצמו
-    frame.src = file + '#toolbar=1';
+    // במחשב: הדפדפן מציג PDF מצוין בעצמו — ואם התבקש עמוד מסוים, קופצים אליו
+    frame.src = file + '#' + (page ? 'page=' + page + '&' : '') + 'toolbar=1';
   }
 })();
 </script>

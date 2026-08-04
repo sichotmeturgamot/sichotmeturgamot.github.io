@@ -38,6 +38,15 @@
   .search-box .clear:hover { color: var(--navy); }
 
   .count-line { max-width: 640px; margin: 12px auto 0; color: var(--muted); font-size: .86rem; text-align: center; min-height: 1.2em; }
+  .az-bar { text-align: center; margin: 12px auto 0; max-width: 640px; }
+  .az-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--navy); font-family: 'Frank Ruhl Libre', serif; font-size: 1rem; padding: 8px 22px; border-radius: 99px; cursor: pointer; transition: background .15s, color .15s; }
+  .az-btn.on, .az-btn:hover { background: var(--gold); color: #fff; }
+  .azlist { max-width: 760px; margin: 18px auto 0; padding: 0 16px; }
+  .az-group { margin-bottom: 20px; }
+  .az-letter { font-family: 'Frank Ruhl Libre', serif; color: var(--gold); font-size: 1.35rem; border-bottom: 1px solid var(--line, #e3dccd); padding-bottom: 4px; margin-bottom: 10px; }
+  .az-items { display: flex; flex-wrap: wrap; gap: 8px; }
+  .az-item { background: var(--paper); border: 1px solid var(--line, #e3dccd); border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: 1rem; color: var(--text); }
+  .az-item:hover { border-color: var(--gold); color: var(--navy); }
 
   /* היסטוריית חיפושים */
   .history { max-width: 640px; margin: 20px auto 0; }
@@ -92,9 +101,11 @@
       <input id="q" type="text" placeholder="חיפוש נושא, שם או מקום…" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
       <button class="clear" id="clear" aria-label="ניקוי">×</button>
     </div>
+    <div class="az-bar"><button type="button" id="az-toggle" class="az-btn">כל הערכים לפי א״ב</button></div>
   </div>
   <div class="count-line" id="count"></div>
   <div class="history" id="history"></div>
+  <div class="azlist" id="azlist"></div>
   <div class="results" id="results"></div>
 </main>
 
@@ -193,7 +204,7 @@ function cardContent(r, tt){
       '<p>'+hl(r.desc, tt)+'</p>'+
       (r.excerpt ? '<div class="excerpt">'+hl(r.excerpt, tt)+'</div>' : '')+
       '<div class="meta-line"><span class="pages">עמוד '+r.page+'</span></div>'+
-    '</div><div class="btns"><a class="btn btn-navy btn-sm" href="'+r.url+'" target="_blank" rel="noopener">'+esc(r.sichah)+'</a></div></div>';
+    '</div><div class="btns"><a class="btn btn-navy btn-sm" href="'+(r.url + (r.page ? '&page='+r.page : ''))+'" target="_blank" rel="noopener">'+esc(r.sichah)+'</a></div></div>';
 }
 function cardRef(r, tt){
   const clar = r.clar ? ' <span class="clar">('+hl(r.clar, tt)+')</span>' : '';
@@ -227,7 +238,38 @@ function render(){
   if(rows.length){ const topName = rows[0].topic; saveTimer = setTimeout(()=>storeHist(topName, true), 700); }
 }
 
-q.addEventListener('input', render);
+// ---- רשימת כל הערכים לפי א״ב ----
+const azToggle = document.getElementById('az-toggle');
+const azEl = document.getElementById('azlist');
+azEl.style.display = 'none';
+let azOpen = false;
+function heFirst(s){ const c = normalize(s).charAt(0); return /[א-ת]/.test(c) ? c : '#'; }
+function buildAZ(){
+  const seen = new Set(), items = [];
+  for(const e of DATA){ const k = normalize(e.topic); if(seen.has(k)) continue; seen.add(k); items.push(e.topic); }
+  items.sort((a,b) => normalize(a).localeCompare(normalize(b), 'he'));
+  const groups = {};
+  for(const name of items){ const L = heFirst(name); (groups[L] = groups[L] || []).push(name); }
+  const letters = Object.keys(groups).sort((a,b) => a==='#' ? 1 : b==='#' ? -1 : a.localeCompare(b, 'he'));
+  return letters.map(L =>
+    '<div class="az-group"><div class="az-letter">'+esc(L)+'</div><div class="az-items">'+
+    groups[L].map(n => '<span class="az-item" data-t="'+esc(n)+'">'+esc(n)+'</span>').join('')+
+    '</div></div>').join('');
+}
+function renderAZ(){
+  if(!azEl.innerHTML) azEl.innerHTML = buildAZ();
+  azEl.style.display = 'block';
+  azEl.querySelectorAll('.az-item').forEach(it => it.onclick = () => { q.value = it.dataset.t; closeAZ(); render(); q.focus(); });
+}
+function closeAZ(){ azOpen = false; azToggle.classList.remove('on'); azEl.style.display = 'none'; }
+azToggle.addEventListener('click', () => {
+  azOpen = !azOpen;
+  azToggle.classList.toggle('on', azOpen);
+  if(azOpen){ q.value=''; results.innerHTML=''; countEl.textContent=''; clearEl.style.display='none'; historyEl.innerHTML=''; renderAZ(); }
+  else closeAZ();
+});
+
+q.addEventListener('input', () => { if(azOpen) closeAZ(); render(); });
 results.addEventListener('click', e => {   // לחיצה על תוצאה — שומרת מיד את הערך שנבחר
   if(e.target.closest('a.btn')){ const card = e.target.closest('.result'); if(card && card.dataset.topic) storeHist(card.dataset.topic, false); }
 });
