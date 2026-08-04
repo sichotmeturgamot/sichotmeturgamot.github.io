@@ -48,9 +48,10 @@
   var file = params.get('file') || '';
   var title = params.get('title') || 'קריאת השיחה';
   var page = (params.get('page') || '').replace(/[^0-9]/g, '');
+  var disp = (params.get('disp') || '').replace(/[^0-9]/g, '');
   document.getElementById('title').textContent = title;
-  if (page) {
-    document.getElementById('pagenum').textContent = page;
+  if (page || disp) {
+    document.getElementById('pagenum').textContent = disp || page;   // בתגית: העמוד המודפס
     document.getElementById('pagebadge').style.display = 'inline-block';
   }
   document.title = title + ' — ספר השיחות מתורגם ללה״ק';
