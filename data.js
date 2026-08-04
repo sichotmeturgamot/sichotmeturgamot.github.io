@@ -35,7 +35,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "01-12",
         "hebDate": "י״ב תשרי",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל א' דחג הסוכות תש\"ו",
@@ -45,7 +46,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "01-14",
         "hebDate": "י״ד תשרי",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "יום א' דחג הסוכות תש\"ו",
@@ -55,7 +57,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "01-15",
         "hebDate": "ט״ו תשרי",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "יום ב' דחג הסוכות תש\"ו",
@@ -65,7 +68,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "01-16",
         "hebDate": "ט״ז תשרי",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "יום שבת חוה\"מ סוכות תש\"ו",
@@ -75,7 +79,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "01-17",
         "hebDate": "י״ז תשרי",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל שמיני עצרת תש\"ו",
@@ -85,7 +90,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "01-22",
         "hebDate": "כ״ב תשרי",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל שמחת תורה תש\"ו",
@@ -95,7 +101,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "01-23",
         "hebDate": "כ״ג תשרי",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ש\"פ נח בסעודת הלילה",
@@ -105,7 +112,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "02-05",
         "hebDate": "ה׳ מרחשון",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל ש\"פ לך",
@@ -115,7 +123,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "02-12",
         "hebDate": "י״ב מרחשון",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל ש\"פ וירא, כ' מר־חשון תש\"ו",
@@ -125,7 +134,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "02-20",
         "hebDate": "כ׳ מרחשון",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ש\"פ וישלח, י\"ט כסלו תש\"ו",
@@ -135,7 +145,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "03-19",
         "hebDate": "י״ט כסלו",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "כ' כסלו תש\"ו",
@@ -145,7 +156,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "03-20",
         "hebDate": "כ׳ כסלו",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל ש\"פ וישב, כ\"ו כסלו, שבת חנוכה תש\"ו",
@@ -155,7 +167,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "03-26",
         "hebDate": "כ״ו כסלו",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "פורים תש\"ו",
@@ -165,7 +178,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "06-14",
         "hebDate": "י״ד אדר",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "סדר הראשון של חג הפסח תש\"ו",
@@ -175,7 +189,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-14",
         "hebDate": "י״ד ניסן",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "יום א' דחג הפסח תש\"ו",
@@ -185,7 +200,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-15",
         "hebDate": "ט״ו ניסן",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "סדר השני של חג הפסח תש\"ו",
@@ -195,7 +211,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-16",
         "hebDate": "ט״ז ניסן",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "שבת חוה\"מ פסח תש\"ו",
@@ -205,7 +222,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-20",
         "hebDate": "כ׳ ניסן",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ד' דחוה\"מ פסח תש\"ו",
@@ -215,7 +233,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-20",
         "hebDate": "כ׳ ניסן",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל שביעי של פסח תש\"ו",
@@ -225,7 +244,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-21",
         "hebDate": "כ״א ניסן",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל אחרון של פסח תש\"ו",
@@ -235,7 +255,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-22",
         "hebDate": "כ״ב ניסן",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "כ\"ח ניסן תש\"ו",
@@ -245,7 +266,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-28",
         "hebDate": "כ״ח ניסן",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ליל א' דחג השבועות תש\"ו",
@@ -255,7 +277,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "10-05",
         "hebDate": "ה׳ סיון",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "יום א' דחג השבועות תש\"ו",
@@ -265,7 +288,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "10-06",
         "hebDate": "ו׳ סיון",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "יום ב' דחג השבועות תש\"ו",
@@ -275,7 +299,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "10-07",
         "hebDate": "ז׳ סיון",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "כ\"א סיון תש\"ו",
@@ -285,7 +310,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "10-21",
         "hebDate": "כ״א סיון",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "י\"ב תמוז תש\"ו",
@@ -295,7 +321,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "11-12",
         "hebDate": "י״ב תמוז",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "עש\"ק פ' שופטים, כ\"ו מנחם־אב תש\"ו",
@@ -305,7 +332,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "12-26",
         "hebDate": "כ״ו אב",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       },
       {
         "title": "ה' אלול תש\"ו",
@@ -315,7 +343,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "13-05",
         "hebDate": "ה׳ אלול",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       }
     ]
   },
@@ -332,7 +361,8 @@ const YEARS = [
         "count": 17,
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
-        "addedAt": "2026-07-03"
+        "addedAt": "2026-07-03",
+        "hasPage": true
       },
       {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
@@ -342,7 +372,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "02-01",
         "hebDate": "א׳ מרחשון",
-        "addedAt": "2026-07-05"
+        "addedAt": "2026-07-05",
+        "hasPage": true
       },
       {
         "title": "ש\"פ נח, בדר\"ח מר־חשון בסעודת היום תש\"ז",
@@ -352,7 +383,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "02-01",
         "hebDate": "א׳ מרחשון",
-        "addedAt": "2026-07-03"
+        "addedAt": "2026-07-03",
+        "hasPage": true
       },
       {
         "title": "שיחת י\"ט כסלו תש\"ז",
@@ -362,7 +394,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "03-19",
         "hebDate": "י״ט כסלו",
-        "addedAt": "2026-07-10"
+        "addedAt": "2026-07-10",
+        "hasPage": true
       },
       {
         "title": "שיחת פורים תש\"ז",
@@ -372,7 +405,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "06-14",
         "hebDate": "י״ד אדר",
-        "addedAt": "2026-07-06"
+        "addedAt": "2026-07-06",
+        "hasPage": true
       },
       {
         "title": "סדר הראשון של חג הפסח תש\"ז",
@@ -382,7 +416,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-14",
         "hebDate": "י״ד ניסן",
-        "addedAt": "2026-07-16"
+        "addedAt": "2026-07-16",
+        "hasPage": true
       },
       {
         "title": "ליל ב' דחג הפסח תש\"ז",
@@ -392,7 +427,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-15",
         "hebDate": "ט״ו ניסן",
-        "addedAt": "2026-07-16"
+        "addedAt": "2026-07-16",
+        "hasPage": true
       },
       {
         "title": "ליל שביעי של פסח תש\"ז",
@@ -402,7 +438,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-21",
         "hebDate": "כ״א ניסן",
-        "addedAt": "2026-07-16"
+        "addedAt": "2026-07-16",
+        "hasPage": true
       },
       {
         "title": "אחרון של פסח תש\"ז",
@@ -412,7 +449,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "08-21",
         "hebDate": "כ״א ניסן",
-        "addedAt": "2026-07-17"
+        "addedAt": "2026-07-17",
+        "hasPage": true
       },
       {
         "title": "ל\"ג בעומר תש\"ז",
@@ -422,7 +460,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "09-18",
         "hebDate": "י״ח אייר",
-        "addedAt": "2026-07-30"
+        "addedAt": "2026-07-30",
+        "hasPage": true
       },
       {
         "title": "שיחת ליל א' דחג השבועות תש\"ז",
@@ -432,7 +471,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "10-06",
         "hebDate": "ו׳ סיון",
-        "addedAt": "2026-07-24"
+        "addedAt": "2026-07-24",
+        "hasPage": true
       },
       {
         "title": "ג' אלול תש\"ז",
@@ -475,7 +515,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "13-28",
         "hebDate": "כ״ח אלול",
-        "addedAt": "2026-08-02"
+        "addedAt": "2026-08-02",
+        "hasPage": true
       }
     ]
   },
@@ -492,7 +533,8 @@ const YEARS = [
         "count": 1,
         "sortDate": "03-19",
         "hebDate": "י״ט כסלו",
-        "addedAt": "2026-07-06"
+        "addedAt": "2026-07-06",
+        "hasPage": true
       }
     ]
   }
