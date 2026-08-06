@@ -430,7 +430,7 @@ const YEARS = [
       },
       {
         "title": "ערב יום כיפור תש\"ז",
-        "subtitle": "בוקר",
+        "subtitle": "בבוקר",
         "file": "pdfs/erv_yom_kipur_5707_boker.pdf",
         "count": 1,
         "sortDate": "01-09",
