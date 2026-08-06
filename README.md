@@ -20,4 +20,4 @@
 **התחברות (חד פעמי):** צור מפתח גישה ב-GitHub:
 Settings ‏> Developer settings ‏> Fine-grained tokens ‏> Generate new token.
 בחר גישה רק למאגר של האתר, ותן ל-Contents הרשאת Read and write.
-הזזן בעמוד הניהול את שם המשתמש, שם המאגר והמפתח — ו
+הזן בעמוד הניהול את שם המשתמש, שם המאגר והמפתח — ו
