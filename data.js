@@ -449,7 +449,7 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ליל שבת קודש חול המועד סוכות תש\"ז",
+        "title": "ליל ש\"ק חול המועד סוכות תש\"ז",
         "subtitle": "",
         "file": "pdfs/leyl_sabos_kodesh_chol_hamoed_sukosh_5707.pdf",
         "pages": 2,
