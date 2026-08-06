@@ -601,6 +601,17 @@ const YEARS = [
     "complete": false,
     "sichos": [
       {
+        "title": "ערב יום הכיפורים תש\"ז בבוקר",
+        "subtitle": "",
+        "file": "pdfs/erv_yom_kipur_boker_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-09",
+        "hebDate": "ט׳ תשרי",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
         "title": "י\"ט כסלו תרצ\"ח",
         "subtitle": "",
         "file": "pdfs/19_Kislev_5698.pdf",
