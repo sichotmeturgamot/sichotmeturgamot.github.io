@@ -303,6 +303,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "יום ב' דחג השבועות תש\"ז בסעודה",
+        "subtitle": "",
+        "file": "pdfs/yom_2_shavuot_5707.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "10-07",
+        "hebDate": "ז׳ סיון",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
         "title": "כ\"א סיון תש\"ו",
         "subtitle": "",
         "file": "pdfs/21_Sivan_5706.pdf",
@@ -472,17 +483,6 @@ const YEARS = [
         "sortDate": "10-06",
         "hebDate": "ו׳ סיון",
         "addedAt": "2026-07-24",
-        "hasPage": true
-      },
-      {
-        "title": "יום ב' דחג השבועות תש\"ז בסעודה",
-        "subtitle": "",
-        "file": "pdfs/yom_2_shavuot_5707.pdf",
-        "pages": 3,
-        "count": 1,
-        "sortDate": "10-07",
-        "hebDate": "ז׳ סיון",
-        "addedAt": "2026-08-06",
         "hasPage": true
       },
       {
