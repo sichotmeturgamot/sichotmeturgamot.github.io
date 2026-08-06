@@ -379,6 +379,7 @@ const YEARS = [
         "title": "אחר תפילת ערבית בליל א' דראש השנה תש''ז",
         "subtitle": "מה שאמר לרמ''ש שיחי'",
         "file": "pdfs/leyl_1_rosh_hashana_5707_laramash.pdf",
+        "pages": 1,
         "count": 1,
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
