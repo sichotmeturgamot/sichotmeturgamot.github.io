@@ -418,10 +418,9 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ערב יום הכיפורים תש\"ז",
-        "subtitle": "אחר חצות",
-        "file": "pdfs/erev_yom_kipur_5707_achar_chazot.pdf",
-        "pages": 1,
+        "title": "ערב יום כיפור תש\"ז",
+        "subtitle": "בבוקר",
+        "file": "pdfs/erv_yom_kipur_5707_boker.pdf",
         "count": 1,
         "sortDate": "01-09",
         "hebDate": "ט׳ תשרי",
@@ -429,9 +428,10 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ערב יום כיפור תש\"ז",
-        "subtitle": "בבוקר",
-        "file": "pdfs/erv_yom_kipur_5707_boker.pdf",
+        "title": "ערב יום הכיפורים תש\"ז",
+        "subtitle": "אחר חצות",
+        "file": "pdfs/erev_yom_kipur_5707_achar_chazot.pdf",
+        "pages": 1,
         "count": 1,
         "sortDate": "01-09",
         "hebDate": "ט׳ תשרי",
