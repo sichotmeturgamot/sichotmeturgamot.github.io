@@ -365,6 +365,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "שיחות ערב ראש השנה תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/erev_rosh_hashava_5707.pdf",
+        "pages": 1,
+        "count": 2,
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
