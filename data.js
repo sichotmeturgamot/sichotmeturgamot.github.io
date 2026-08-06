@@ -442,6 +442,7 @@ const YEARS = [
         "title": "ליל ב' דחג הסוכות תש\"ז",
         "subtitle": "",
         "file": "pdfs/leyl_2_sukos_5707.pdf",
+        "pages": 2,
         "count": 1,
         "sortDate": "01-15",
         "hebDate": "ט״ו תשרי",
