@@ -376,6 +376,16 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "אחר תפילת ערבית בליל א' דראש השנה תש''ז",
+        "subtitle": "מה שאמר לרמ''ש שיחי'",
+        "file": "pdfs/leyl_1_rosh_hashana_5707_laramash.pdf",
+        "count": 1,
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
