@@ -350,7 +350,7 @@ const YEARS = [
   },
   {
     "year": "תש״ז",
-    "note": "בתהליך תרגום",
+    "note": "תורגם במלואו",
     "complete": true,
     "sichos": [
       {
