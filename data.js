@@ -351,7 +351,7 @@ const YEARS = [
   {
     "year": "תש״ז",
     "note": "בתהליך תרגום",
-    "complete": false,
+    "complete": true,
     "sichos": [
       {
         "title": "שיחות תשרי - תש\"ז",
