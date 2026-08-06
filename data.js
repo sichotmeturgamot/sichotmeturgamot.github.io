@@ -449,6 +449,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "לי שבת קודש חול המועד סוכות תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/leyl_sabos_kodesh_chol_hamoed_sukosh_5707.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-17",
+        "hebDate": "י״ז תשרי",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
