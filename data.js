@@ -397,6 +397,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "ליל ז' תשרי תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/leyl_7_tishrey_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-07",
+        "hebDate": "ז׳ תשרי",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
