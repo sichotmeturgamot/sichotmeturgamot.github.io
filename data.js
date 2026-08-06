@@ -386,16 +386,6 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ערב יום כיפור תש\"ז",
-        "subtitle": "בוקר",
-        "file": "pdfs/erv_yom_kipur_5707_boker.pdf",
-        "count": 1,
-        "sortDate": "01-01",
-        "hebDate": "א׳ תשרי",
-        "addedAt": "2026-08-06",
-        "hasPage": true
-      },
-      {
         "title": "ליל שבת ומוצאי שבת תשובה תש''ז",
         "subtitle": "",
         "file": "pdfs/shbos_tshuva_5707.pdf",
@@ -432,6 +422,16 @@ const YEARS = [
         "subtitle": "אחר חצות",
         "file": "pdfs/erev_yom_kipur_5707_achar_chazot.pdf",
         "pages": 1,
+        "count": 1,
+        "sortDate": "01-09",
+        "hebDate": "ט׳ תשרי",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
+        "title": "ערב יום כיפור תש\"ז",
+        "subtitle": "בוקר",
+        "file": "pdfs/erv_yom_kipur_5707_boker.pdf",
         "count": 1,
         "sortDate": "01-09",
         "hebDate": "ט׳ תשרי",
