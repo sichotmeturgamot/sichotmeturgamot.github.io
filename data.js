@@ -408,6 +408,16 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "אור לערב יום הכיפורים תש\"ז",
+        "subtitle": "",
+        "file": "pdfs/or_lerev_yom_kipur_5707.pdf",
+        "count": 1,
+        "sortDate": "01-08",
+        "hebDate": "ח׳ תשרי",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
