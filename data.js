@@ -508,8 +508,8 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ר\"ד ח\"י אלול תש\"ז",
-        "subtitle": "",
+        "title": "ח\"י אלול תש\"ז",
+        "subtitle": "ר\"ד",
         "file": "pdfs/rd_chy_elul_5707.pdf",
         "pages": 1,
         "count": 1,
