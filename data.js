@@ -412,6 +412,7 @@ const YEARS = [
         "title": "אור לערב יום הכיפורים תש\"ז",
         "subtitle": "",
         "file": "pdfs/or_lerev_yom_kipur_5707.pdf",
+        "pages": 1,
         "count": 1,
         "sortDate": "01-08",
         "hebDate": "ח׳ תשרי",
