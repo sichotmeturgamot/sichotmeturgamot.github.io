@@ -386,6 +386,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "ליל שבת ומוצאי שבת תשובה תש''ז",
+        "subtitle": "",
+        "file": "pdfs/shbos_tshuva_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-05",
+        "hebDate": "ה׳ תשרי",
+        "addedAt": "2026-08-06",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
