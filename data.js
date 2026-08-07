@@ -431,8 +431,8 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ערב יום כיפור תש\"ז בבוקר",
-        "subtitle": "",
+        "title": "ערב יום כיפור תש\"ז",
+        "subtitle": "בבוקר",
         "file": "pdfs/erv_yom_kipur_5707_boker.pdf",
         "pages": 1,
         "count": 1,
