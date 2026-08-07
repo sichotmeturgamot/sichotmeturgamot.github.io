@@ -497,6 +497,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "יום שמחת תורה תש\"ז",
+        "subtitle": "בעת ההקפות",
+        "file": "pdfs/yom_simcha_tora_beet_hhkofos_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-23",
+        "hebDate": "כ״ג תשרי",
+        "addedAt": "2026-08-07",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
