@@ -519,6 +519,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "יום שבת קודש בראשית תש\"ז",
+        "subtitle": "בסעודה",
+        "file": "pdfs/shabos_breshit_5707.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-25",
+        "hebDate": "כ״ה תשרי",
+        "addedAt": "2026-08-07",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
