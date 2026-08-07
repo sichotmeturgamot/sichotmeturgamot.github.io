@@ -486,6 +486,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "ליל שמחת תורה תש\"ז",
+        "subtitle": "קודם אתה הראת",
+        "file": "pdfs/leyk_simchas_tora_ata_horeso_5707.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-22",
+        "hebDate": "כ״ב תשרי",
+        "addedAt": "2026-08-07",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
