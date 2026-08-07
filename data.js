@@ -475,6 +475,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "ליל שמחת תורה תש\"ז",
+        "subtitle": "בעת הקידוש קודם הקפות",
+        "file": "pdfs/ley_simchat_tora_kodem_hakafot_5707.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "01-21",
+        "hebDate": "כ״א תשרי",
+        "addedAt": "2026-08-07",
+        "hasPage": true
+      },
+      {
         "title": "משיחת ליל ש\"ק נח, בדר\"ח מר־חשון, תש\"ז",
         "subtitle": "",
         "file": "pdfs/Leyl_nuach_5707.pdf",
