@@ -362,7 +362,8 @@ const YEARS = [
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-07-03",
-        "hasPage": true
+        "hasPage": true,
+        "hidden": true
       },
       {
         "title": "שיחות ערב ראש השנה תש\"ז",
