@@ -409,3 +409,18 @@ a:focus-visible, button:focus-visible, .btn:focus-visible, .year-chip:focus-visi
   .years-rail .year-chip { flex: 0 0 auto; padding: 12px 18px; font-size: 1.12rem; }
   .years-rail::-webkit-scrollbar { display: none; }
 }
+
+/* ===== עמוד הקריאה — פריסה מחודשת: מתג שנה/חודש + רצועת צ'יפים אופקית ===== */
+.read-layout { display: block; }
+.read-controls { display: flex; justify-content: center; margin: 2px 0 16px; }
+.read-controls .seg-toggle { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--paper); }
+.read-controls .seg-btn { border: none; background: transparent; cursor: pointer; font-family: 'Heebo', sans-serif; font-size: .95rem; padding: 9px 28px; color: var(--muted); transition: background .15s, color .15s; }
+.read-controls .seg-btn + .seg-btn { border-inline-start: 1.5px solid var(--line); }
+.read-controls .seg-btn.on { background: var(--navy); color: var(--cream); font-weight: 500; }
+.read-controls .seg-btn:not(.on):hover { color: var(--navy); }
+.chip-strip { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 0 auto 22px; max-width: 920px; }
+.chip-strip .year-chip { flex: 0 0 auto; padding: 8px 16px; font-size: .98rem; }
+.full-year { text-align: center; margin: 0 0 20px; }
+.btn-fullyear { display: inline-block; background: var(--gold); color: #fff; border: none; border-radius: 8px; padding: 11px 24px; font-family: 'Heebo', sans-serif; font-size: .98rem; text-decoration: none; transition: opacity .15s; }
+.btn-fullyear:hover { opacity: .9; }
+.yr-tag { font-family: 'Heebo', sans-serif; font-size: .72rem; font-weight: 500; color: var(--navy); background: var(--cream); border: 1px solid var(--line); border-radius: 99px; padding: 1px 9px; margin-inline-start: 8px; vertical-align: middle; }
