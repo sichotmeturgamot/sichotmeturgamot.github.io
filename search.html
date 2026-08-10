@@ -47,6 +47,8 @@
   .az-items { display: flex; flex-wrap: wrap; gap: 8px; }
   .az-item { background: var(--paper); border: 1px solid var(--line, #e3dccd); border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: 1rem; color: var(--text); }
   .az-item:hover { border-color: var(--gold); color: var(--navy); }
+  .q-show { background: transparent; border: none; color: var(--gold); cursor: pointer; font-size: .9rem; padding: 4px 0; font-family: 'Heebo', sans-serif; }
+  .q-show:hover { text-decoration: underline; }
 
   /* היסטוריית חיפושים */
   .history { max-width: 640px; margin: 20px auto 0; }
@@ -101,7 +103,7 @@
       <input id="q" type="text" placeholder="חיפוש נושא, שם או מקום…" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
       <button class="clear" id="clear" aria-label="ניקוי">×</button>
     </div>
-    <div class="az-bar"><button type="button" id="az-toggle" class="az-btn">כל הערכים לפי א״ב</button></div>
+    <div class="az-bar"><button type="button" id="az-toggle" class="az-btn">כל הערכים לפי א״ב</button> <button type="button" id="quotes-toggle" class="az-btn">הסתר ציטוטים</button></div>
   </div>
   <div class="count-line" id="count"></div>
   <div class="history" id="history"></div>
@@ -122,6 +124,8 @@
 const DATA = MAFTEACH;
 const TAG = { n: "שם", m: "מקום" };
 const HKEY = "mafteach-history";
+let showQuotes = true;
+try { showQuotes = localStorage.getItem('mafteach-quotes') !== '0'; } catch (_) {}
 
 const results = document.getElementById('results');
 const q = document.getElementById('q');
@@ -203,7 +207,7 @@ function cardContent(r, tt){
   return '<div class="sicha result" data-topic="'+esc(r.topic)+'"><div class="sicha-info">'+
       '<div class="topic-line"><h3>'+hl(r.topic, tt)+'</h3></div>'+
       '<p>'+hl(r.desc, tt)+'</p>'+
-      (r.excerpt ? '<div class="excerpt">'+hl(r.excerpt, tt)+'</div>' : '')+
+      (r.excerpt ? (showQuotes ? '<div class="excerpt">'+hl(r.excerpt, tt)+'</div>' : '<button type="button" class="q-show">הצג ציטוט ▾</button><div class="excerpt" style="display:none">'+hl(r.excerpt, tt)+'</div>') : '')+
       '<div class="meta-line"><span class="pages">עמוד '+r.page+'</span></div>'+
     '</div><div class="btns"><a class="btn btn-navy btn-sm" href="'+(r.url + '&disp='+r.page + (r.pdfpage ? '&page='+r.pdfpage : ''))+'">'+esc(r.sichah)+'</a></div></div>';
 }
@@ -270,8 +274,21 @@ azToggle.addEventListener('click', () => {
   else closeAZ();
 });
 
+// ---- מתג כללי: הצגת/הסתרת ציטוטים ----
+const quotesToggle = document.getElementById('quotes-toggle');
+function applyQuotesLabel(){ quotesToggle.textContent = showQuotes ? 'הסתר ציטוטים' : 'הצג ציטוטים'; quotesToggle.classList.toggle('on', !showQuotes); }
+applyQuotesLabel();
+quotesToggle.addEventListener('click', () => {
+  showQuotes = !showQuotes;
+  try { localStorage.setItem('mafteach-quotes', showQuotes ? '1' : '0'); } catch (_) {}
+  applyQuotesLabel();
+  if(q.value.trim()) render();
+});
+
 q.addEventListener('input', () => { if(azOpen) closeAZ(); render(); });
 results.addEventListener('click', e => {   // לחיצה על תוצאה — שומרת מיד את הערך שנבחר
+  const qs = e.target.closest('.q-show');   // פתיחת ציטוט של ערך ספציפי (כשהציטוטים מוסתרים)
+  if(qs){ const ex = qs.nextElementSibling; if(ex){ ex.style.display = 'block'; qs.style.display = 'none'; } return; }
   if(e.target.closest('a.btn')){ const card = e.target.closest('.result'); if(card && card.dataset.topic) storeHist(card.dataset.topic, false); try{ sessionStorage.setItem('mafteach-return', q.value); }catch(_){} }
 });
 clearEl.addEventListener('click', ()=>{ q.value=''; q.focus(); render(); });
