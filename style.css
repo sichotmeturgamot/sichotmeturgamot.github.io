@@ -418,8 +418,18 @@ a:focus-visible, button:focus-visible, .btn:focus-visible, .year-chip:focus-visi
 .read-controls .seg-btn + .seg-btn { border-inline-start: 1.5px solid var(--line); }
 .read-controls .seg-btn.on { background: var(--navy); color: var(--cream); font-weight: 500; }
 .read-controls .seg-btn:not(.on):hover { color: var(--navy); }
-.chip-strip { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 0 auto 22px; max-width: 920px; }
-.chip-strip .year-chip { flex: 0 0 auto; padding: 8px 16px; font-size: .98rem; }
+.read-body { display: flex; gap: 20px; align-items: flex-start; }
+/* מחשב: רצועת השנים/חודשים היא עמודה נגללת מלמעלה למטה */
+.chip-strip { flex: 0 0 132px; display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; max-height: calc(100vh - 120px); overflow-y: auto; position: sticky; top: 80px; padding: 2px; scrollbar-width: thin; }
+.chip-strip .year-chip { flex: 0 0 auto; padding: 8px 10px; font-size: .98rem; }
+.sichos-area { flex: 1; min-width: 0; }
+/* טלפון: אותה רצועה נגללת מצד לצד */
+@media (max-width: 640px) {
+  .read-body { display: block; }
+  .chip-strip { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; max-height: none; position: static; margin-bottom: 18px; -webkit-overflow-scrolling: touch; }
+  .chip-strip .year-chip { padding: 10px 16px; font-size: 1.08rem; }
+  .chip-strip::-webkit-scrollbar { display: none; }
+}
 .full-year { text-align: center; margin: 0 0 20px; }
 .btn-fullyear { display: inline-block; background: var(--gold); color: #fff; border: none; border-radius: 8px; padding: 11px 24px; font-family: 'Heebo', sans-serif; font-size: .98rem; text-decoration: none; transition: opacity .15s; }
 .btn-fullyear:hover { opacity: .9; }
