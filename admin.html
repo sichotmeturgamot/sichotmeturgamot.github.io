@@ -173,6 +173,13 @@
     <label>שם השנה</label><input type="text" id="y-name">
     <label>הערה (מוצגת ליד השנה)</label><input type="text" id="y-note">
     <label style="display:flex;align-items:center;gap:6px;margin-top:8px"><input type="checkbox" id="y-complete" style="width:auto"> התרגום לשנה זו הושלם</label>
+    <hr style="border:none;border-top:1px solid #e8e2d4;margin:14px 0">
+    <label>קובץ השנה המלא (PDF) — יופיע כפתור הורדה בראש השנה בעמוד הקריאה</label>
+    <div id="y-fullcur" style="font-size:.8rem;color:var(--muted);margin-bottom:4px"></div>
+    <label>שם קובץ באנגלית (בלי רווחים)</label>
+    <input type="text" id="y-fullname" class="en" placeholder="sefer-hasichos-5706.pdf">
+    <label>בחירת קובץ ה-PDF המלא (השאר ריק כדי לשמור את הקיים)</label>
+    <input type="file" id="y-fullfile" accept="application/pdf">
     <div class="dlg-btns">
       <button class="btn btn-main" onclick="saveYear()">שמירה</button>
       <button class="btn btn-line" onclick="dlg('dlg-year').close()">ביטול</button>
@@ -749,14 +756,34 @@ function openEditYear(yi) {
   editingYear = yi;
   const y = data.YEARS[yi];
   $('y-name').value = y.year; $('y-note').value = y.note || ''; $('y-complete').checked = !!y.complete;
+  $('y-fullname').value = y.fullFile ? y.fullFile.replace(/^pdfs\//, '') : '';
+  $('y-fullfile').value = '';
+  $('y-fullcur').textContent = y.fullFile ? ('קובץ נוכחי: ' + y.fullFile) : 'טרם הועלה קובץ שנה מלא';
   dlg('dlg-year').showModal();
 }
 async function saveYear() {
   const y = data.YEARS[editingYear];
   y.year = $('y-name').value.trim(); y.note = $('y-note').value.trim(); y.complete = $('y-complete').checked;
+  // קובץ השנה המלא
+  const fullInput = $('y-fullfile').files[0];
+  let fullName = $('y-fullname').value.trim();
+  if (fullName && !/^[A-Za-z0-9._-]+$/.test(fullName)) return setStatus('שם קובץ השנה המלא חייב להיות באנגלית, בלי רווחים', 'err');
+  if (fullName && !fullName.toLowerCase().endsWith('.pdf')) fullName += '.pdf';
+  const entries = [];
   try {
+    if (fullInput) {
+      if (!fullName) return setStatus('חסר שם קובץ באנגלית לקובץ השנה המלא', 'err');
+      y.fullFile = 'pdfs/' + fullName;
+      setStatus('מעלה קובץ שנה מלא…', 'busy');
+      entries.push({ path: y.fullFile, mode: '100644', type: 'blob', sha: await createBlob(await readB64(fullInput)) });
+    } else if (fullName) {
+      y.fullFile = 'pdfs/' + fullName;   // קישור לקובץ קיים בלי העלאה מחדש
+    } else {
+      delete y.fullFile;                 // רוקן את השם — הסרת הכפתור
+    }
+    entries.push(dataEntry());
     setStatus('שומר…', 'busy');
-    await commitData('עריכת שנה: ' + y.year);
+    await gitCommit(entries, 'עריכת שנה: ' + y.year);
     dlg('dlg-year').close(); render(); setStatus('נשמר', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }

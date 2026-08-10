@@ -35,7 +35,13 @@
     <h1 style="font-size:1.9rem;margin-top:4px">קריאת השיחות</h1>
   </div>
   <div class="read-layout">
-    <div class="years-rail" id="years-grid"></div>
+    <div class="read-controls">
+      <div class="seg-toggle">
+        <button class="seg-btn on" id="mode-year" type="button">לפי שנה</button>
+        <button class="seg-btn" id="mode-month" type="button">לפי חודש</button>
+      </div>
+    </div>
+    <div class="chip-strip" id="years-grid"></div>
     <div class="sichos-area" id="year-panel"></div>
   </div>
 </main>
@@ -86,6 +92,10 @@
     "תר״צ","תרצ״א","תרצ״ב","תרצ״ג","תרצ״ד","תרצ״ה","תרצ״ו","תרצ״ז","תרח״צ","תרצ״ט",
     "ה'ש״ת","תש״א","תש״ב","תש״ג","תש״ד","תש״ה","תש״ו","תש״ז","תש״ח","תש״ט","ה'שי״ת"];
 
+  // חודשי השנה — הקוד תואם ל-sortDate ("MM-DD")
+  const MONTHS = [["01","תשרי"],["02","מרחשון"],["03","כסלו"],["04","טבת"],["05","שבט"],["06","אדר"],["07","אדר ב׳"],["08","ניסן"],["09","אייר"],["10","סיון"],["11","תמוז"],["12","אב"],["13","אלול"]];
+  let mode = 'year';
+
   const norm = s => { s = String(s).replace(/[״"׳']/g, '').replace('תרחצ', 'תרצח'); return s === 'השת' ? 'תש' : s; };
   const findYear = name => YEARS.find(y => norm(y.year) === norm(name));
   const visible = y => y.sichos
@@ -102,43 +112,80 @@
   const isRead = s => !!READ[s.file];
   const BOOKMARK = '<span class="read-mark" title="נקראה"><svg viewBox="0 0 12 16" fill="currentColor"><path d="M0 0h12v16l-6-4-6 4z"/></svg></span>';
 
-  // הסרגל נצמד בדיוק מתחת לתפריט העליון — בכל גודל מסך
-  const fitRail = () => {
-    const nav = document.querySelector('.topnav');
-    if (nav) grid.style.top = (nav.offsetHeight + (innerWidth <= 640 ? 0 : 12)) + 'px';
-  };
-  fitRail();
-  addEventListener('resize', fitRail);
+  // כרטיס שיחה בודד (משמש בתצוגת שנה ובתצוגת חודש). yearName מוצג רק בתצוגת חודש.
+  function sichaCard(s, yearName) {
+    return `
+      <div class="sicha${isRead(s) ? ' read' : ''}">
+        <div class="sicha-info">
+          <h3>${s.title}${isRead(s) ? BOOKMARK : ''}${yearName ? ` <span class="yr-tag">${yearName}</span>` : ''}</h3>
+          <p>${s.subtitle || ''}</p>
+          ${s.pages ? `<span class="pages">${s.pages} עמודים</span>` : ''}
+        </div>
+        <div class="btns">
+          <a class="btn btn-navy btn-sm" href="read.html?file=${encodeURIComponent(s.file)}&title=${encodeURIComponent(s.title)}">לקריאה</a>
+          <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה</a>
+        </div>
+      </div>`;
+  }
 
-  ALL_YEARS.forEach(name => {
-    const y = findYear(name);
-    const has = y && visible(y).length > 0;
-    const b = document.createElement('button');
-    b.className = 'year-chip' + (has ? '' : ' empty');
-    b.textContent = name;
-    if (has) {
-      b.onclick = () => selectYear(name, b);
-      // פס דקיק בתחתית הצ'יפ — כמה מהשנה כבר נקרא
-      const list = visible(y);
-      const readN = list.filter(isRead).length;
-      if (readN > 0) {
-        const p = document.createElement('span');
-        p.className = 'chip-prog';
-        p.style.width = Math.round(readN / list.length * 100) + '%';
-        b.appendChild(p);
-      }
+  // אילו חודשים יש בהם שיחות (מכל השנים)
+  function monthHasContent(code) {
+    return YEARS.some(y => visible(y).some(s => (s.sortDate || '').slice(0, 2) === code));
+  }
+  // כל שיחות החודש מכל השנים, ממוינות לפי היום בחודש ואז לפי שנה
+  function monthSichos(code) {
+    const out = [];
+    YEARS.forEach(y => visible(y).forEach(s => {
+      if ((s.sortDate || '').slice(0, 2) === code) out.push({ s, year: y.year });
+    }));
+    const yi = n => { const i = ALL_YEARS.findIndex(a => norm(a) === norm(n)); return i < 0 ? 999 : i; };
+    out.sort((a, b) =>
+      (a.s.sortDate || '').slice(3).localeCompare((b.s.sortDate || '').slice(3)) ||
+      yi(a.year) - yi(b.year));
+    return out;
+  }
+
+  // בניית רצועת הצ'יפים — שנים או חודשים, לפי המצב
+  function buildStrip() {
+    grid.innerHTML = '';
+    if (mode === 'year') {
+      ALL_YEARS.forEach(name => {
+        const y = findYear(name);
+        const has = y && visible(y).length > 0;
+        const b = document.createElement('button');
+        b.className = 'year-chip' + (has ? '' : ' empty');
+        b.textContent = name;
+        if (has) {
+          b.onclick = () => selectYear(name, b);
+          const list = visible(y);
+          const readN = list.filter(isRead).length;
+          if (readN > 0) {
+            const p = document.createElement('span');
+            p.className = 'chip-prog';
+            p.style.width = Math.round(readN / list.length * 100) + '%';
+            b.appendChild(p);
+          }
+        } else { b.disabled = true; b.title = 'טרם תורגם'; }
+        grid.appendChild(b);
+      });
     } else {
-      b.disabled = true;
-      b.title = 'טרם תורגם';
+      MONTHS.forEach(([code, name]) => {
+        const has = monthHasContent(code);
+        const b = document.createElement('button');
+        b.className = 'year-chip' + (has ? '' : ' empty');
+        b.textContent = name;
+        if (has) b.onclick = () => selectMonth(code, name, b);
+        else { b.disabled = true; b.title = 'אין שיחות בחודש זה'; }
+        grid.appendChild(b);
+      });
     }
-    grid.appendChild(b);
-  });
+  }
 
   function selectYear(name, btn) {
     document.querySelectorAll('.year-chip.active').forEach(el => el.classList.remove('active'));
-    btn.classList.add('active');
-    // הצ'יפ הנבחר נכנס לטווח הראייה בסרגל, והרשימה חוזרת לראש
-    btn.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    if (btn) btn.classList.add('active');
+    // הצ'יפ הנבחר נכנס לטווח הראייה, והרשימה חוזרת לראש
+    if (btn) btn.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
     const layoutTop = document.querySelector('.read-layout').offsetTop - 70;
     if (window.scrollY > layoutTop) window.scrollTo({ top: Math.max(layoutTop, 0), behavior: 'smooth' });
     const y = findYear(name);
@@ -155,26 +202,43 @@
           <span class="track"><span class="fill" data-w="${Math.round(readN / list.length * 100)}"></span></span>
         </span>` : ''}
       </div>
-      ${list.map(s => `
-        <div class="sicha${isRead(s) ? ' read' : ''}">
-          <div class="sicha-info">
-            <h3>${s.title}${isRead(s) ? BOOKMARK : ''}</h3>
-            <p>${s.subtitle || ''}</p>
-            ${s.pages ? `<span class="pages">${s.pages} עמודים</span>` : ''}
-          </div>
-          <div class="btns">
-            <a class="btn btn-navy btn-sm" href="read.html?file=${encodeURIComponent(s.file)}&title=${encodeURIComponent(s.title)}">לקריאה</a>
-            <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה</a>
-          </div>
-        </div>`).join('')}`;
+      ${y.fullFile ? `<div class="full-year"><a class="btn-fullyear" href="${y.fullFile}" download>⬇ הורדת ספר השיחות ${y.year} — הקובץ המלא</a></div>` : ''}
+      ${list.map(s => sichaCard(s)).join('')}`;
     // פס ההתקדמות נמלא בהדרגה אחרי שהעמוד מצויר
     const fill = panel.querySelector('.read-progress .fill');
     if (fill) requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = fill.dataset.w + '%'; }));
   }
 
-  // פתיחה אוטומטית של השנה האחרונה שיש בה תוכן
-  const withContent = [...grid.querySelectorAll('.year-chip:not(.empty)')];
-  if (withContent.length) withContent[withContent.length - 1].click();
+  function selectMonth(code, name, btn) {
+    document.querySelectorAll('.year-chip.active').forEach(el => el.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (btn) btn.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    const layoutTop = document.querySelector('.read-layout').offsetTop - 70;
+    if (window.scrollY > layoutTop) window.scrollTo({ top: Math.max(layoutTop, 0), behavior: 'smooth' });
+    const items = monthSichos(code);
+    panel.innerHTML = `
+      <div class="year-panel-head">
+        <h2>חודש ${name}</h2>
+        <span class="count-tag">${items.length} ${items.length === 1 ? 'שיחה' : 'שיחות'} · מכל השנים</span>
+      </div>
+      ${items.map(it => sichaCard(it.s, it.year)).join('')}`;
+  }
+
+  // מתג שנה / חודש
+  function setMode(m) {
+    mode = m;
+    document.getElementById('mode-year').classList.toggle('on', m === 'year');
+    document.getElementById('mode-month').classList.toggle('on', m === 'month');
+    buildStrip();
+    panel.innerHTML = '';
+    const chips = [...grid.querySelectorAll('.year-chip:not(.empty)')];
+    // בתצוגת שנה — נפתחת השנה האחרונה שיש בה תוכן; בתצוגת חודש — החודש הראשון שיש בו תוכן
+    const chip = mode === 'year' ? chips[chips.length - 1] : chips[0];
+    if (chip) chip.click();
+  }
+  document.getElementById('mode-year').addEventListener('click', () => setMode('year'));
+  document.getElementById('mode-month').addEventListener('click', () => setMode('month'));
+  setMode('year');
 
   function openViewer(file, title) {
     document.getElementById('viewer-title').textContent = title;
@@ -226,7 +290,7 @@
       const v = document.getElementById('viewer-wrap');
       if (v && v.classList.contains('open')) { x0 = null; return; }
       // החלקה על סרגל השנים גוללת את הסרגל בלבד — לא מחליפה עמוד
-      if (e.target.closest('.years-rail')) { x0 = null; return; }
+      if (e.target.closest('.chip-strip')) { x0 = null; return; }
       x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
     }, { passive: true });
     addEventListener('touchend', e => {
