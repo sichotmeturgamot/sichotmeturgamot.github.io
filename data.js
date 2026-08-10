@@ -346,7 +346,8 @@ const YEARS = [
         "addedAt": "2026-08-02",
         "hasPage": true
       }
-    ]
+    ],
+    "fullFile": "pdfs/Sefer_hasicos_5706.pdf"
   },
   {
     "year": "תש״ז",
