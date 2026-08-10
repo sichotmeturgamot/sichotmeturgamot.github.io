@@ -38,9 +38,12 @@
   .search-box .clear:hover { color: var(--navy); }
 
   .count-line { max-width: 640px; margin: 12px auto 0; color: var(--muted); font-size: .86rem; text-align: center; min-height: 1.2em; }
-  .az-bar { text-align: center; margin: 12px auto 0; max-width: 640px; }
-  .az-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--navy); font-family: 'Frank Ruhl Libre', serif; font-size: 1rem; padding: 8px 22px; border-radius: 99px; cursor: pointer; transition: background .15s, color .15s; }
-  .az-btn.on, .az-btn:hover { background: var(--gold); color: #fff; }
+  .seg-bar { text-align: center; margin: 14px auto 0; }
+  .seg-toggle { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--paper); }
+  .seg-btn { border: none; background: transparent; cursor: pointer; font-family: 'Heebo', sans-serif; font-size: .92rem; padding: 8px 18px; color: var(--muted); transition: background .15s, color .15s; }
+  .seg-btn + .seg-btn { border-inline-start: 1.5px solid var(--line); }
+  .seg-btn.on { background: var(--navy); color: var(--cream); font-weight: 500; }
+  .seg-btn:not(.on):hover { color: var(--navy); }
   .azlist { max-width: 760px; margin: 18px auto 0; padding: 0 16px; }
   .az-group { margin-bottom: 20px; }
   .az-letter { font-family: 'Frank Ruhl Libre', serif; color: var(--gold); font-size: 1.35rem; border-bottom: 1px solid var(--line, #e3dccd); padding-bottom: 4px; margin-bottom: 10px; }
@@ -103,7 +106,7 @@
       <input id="q" type="text" placeholder="חיפוש נושא, שם או מקום…" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
       <button class="clear" id="clear" aria-label="ניקוי">×</button>
     </div>
-    <div class="az-bar"><button type="button" id="az-toggle" class="az-btn">כל הערכים לפי א״ב</button> <button type="button" id="quotes-toggle" class="az-btn">הסתר ציטוטים</button></div>
+    <div class="seg-bar"><div class="seg-toggle"><button type="button" id="az-toggle" class="seg-btn">כל הערכים לפי א״ב</button><button type="button" id="quotes-toggle" class="seg-btn">הסתר ציטוטים</button></div></div>
   </div>
   <div class="count-line" id="count"></div>
   <div class="history" id="history"></div>
@@ -266,10 +269,11 @@ function renderAZ(){
   azEl.style.display = 'block';
   azEl.querySelectorAll('.az-item').forEach(it => it.onclick = () => { q.value = it.dataset.t; closeAZ(); render(); q.focus(); });
 }
-function closeAZ(){ azOpen = false; azToggle.classList.remove('on'); azEl.style.display = 'none'; }
+function closeAZ(){ azOpen = false; azToggle.classList.remove('on'); azToggle.textContent = 'כל הערכים לפי א״ב'; azEl.style.display = 'none'; }
 azToggle.addEventListener('click', () => {
   azOpen = !azOpen;
   azToggle.classList.toggle('on', azOpen);
+  azToggle.textContent = azOpen ? 'הסתר את הרשימה' : 'כל הערכים לפי א״ב';
   if(azOpen){ q.value=''; results.innerHTML=''; countEl.textContent=''; clearEl.style.display='none'; historyEl.innerHTML=''; renderAZ(); }
   else closeAZ();
 });
@@ -287,8 +291,8 @@ quotesToggle.addEventListener('click', () => {
 
 q.addEventListener('input', () => { if(azOpen) closeAZ(); render(); });
 results.addEventListener('click', e => {   // לחיצה על תוצאה — שומרת מיד את הערך שנבחר
-  const qs = e.target.closest('.q-show');   // פתיחת ציטוט של ערך ספציפי (כשהציטוטים מוסתרים)
-  if(qs){ const ex = qs.nextElementSibling; if(ex){ ex.style.display = 'block'; qs.style.display = 'none'; } return; }
+  const qs = e.target.closest('.q-show');   // הצגה/הסתרה של ציטוט לערך ספציפי (כשהציטוטים מוסתרים)
+  if(qs){ const ex = qs.nextElementSibling; if(ex){ const hidden = ex.style.display === 'none'; ex.style.display = hidden ? 'block' : 'none'; qs.textContent = hidden ? 'הסתר ציטוט ▴' : 'הצג ציטוט ▾'; } return; }
   if(e.target.closest('a.btn')){ const card = e.target.closest('.result'); if(card && card.dataset.topic) storeHist(card.dataset.topic, false); try{ sessionStorage.setItem('mafteach-return', q.value); }catch(_){} }
 });
 clearEl.addEventListener('click', ()=>{ q.value=''; q.focus(); render(); });
