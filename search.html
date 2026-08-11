@@ -180,6 +180,7 @@ const q = document.getElementById('q');
 const countEl = document.getElementById('count');
 const historyEl = document.getElementById('history');
 const clearEl = document.getElementById('clear');
+const maamar = document.querySelector('.mafteach-maamar');
 
 // ---- נרמול: הסרת ניקוד, גרשיים, מקף, פיסוק, ואיחוד אותיות סופיות ----
 function normalize(s){
@@ -273,6 +274,7 @@ let saveTimer = null, lastAuto = null;
 function render(){
   const raw = q.value.trim();
   clearEl.style.display = raw ? 'block' : 'none';
+  if(maamar) maamar.style.display = raw ? 'none' : '';   // המאמר מוצג רק כשאין חיפוש פעיל
   if(!raw){ clearTimeout(saveTimer); lastAuto=null; results.innerHTML=''; countEl.textContent=''; renderHistory(); return; }
   historyEl.innerHTML='';
   const nq = normalize(raw), nqNS = NS(nq);
@@ -314,12 +316,12 @@ function renderAZ(){
   azEl.style.display = 'block';
   azEl.querySelectorAll('.az-item').forEach(it => it.onclick = () => { q.value = it.dataset.t; closeAZ(); render(); q.focus(); });
 }
-function closeAZ(){ azOpen = false; azToggle.classList.remove('on'); azToggle.textContent = 'כל הערכים לפי א״ב'; azEl.style.display = 'none'; }
+function closeAZ(){ azOpen = false; azToggle.classList.remove('on'); azToggle.textContent = 'כל הערכים לפי א״ב'; azEl.style.display = 'none'; if(maamar && !q.value.trim()) maamar.style.display = ''; }
 azToggle.addEventListener('click', () => {
   azOpen = !azOpen;
   azToggle.classList.toggle('on', azOpen);
   azToggle.textContent = azOpen ? 'הסתר את הרשימה' : 'כל הערכים לפי א״ב';
-  if(azOpen){ q.value=''; results.innerHTML=''; countEl.textContent=''; clearEl.style.display='none'; historyEl.innerHTML=''; renderAZ(); }
+  if(azOpen){ q.value=''; results.innerHTML=''; countEl.textContent=''; clearEl.style.display='none'; historyEl.innerHTML=''; if(maamar) maamar.style.display='none'; renderAZ(); }
   else closeAZ();
 });
 
