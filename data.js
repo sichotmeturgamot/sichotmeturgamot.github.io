@@ -707,7 +707,8 @@ const YEARS = [
         "addedAt": "2026-08-02",
         "hasPage": true
       }
-    ]
+    ],
+    "fullFile": "pdfs/sefer_hasichos_5707.pdf"
   },
   {
     "year": "תרצ\"ח",
