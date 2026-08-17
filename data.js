@@ -327,7 +327,7 @@ const YEARS = [
       {
         "title": "עש\"ק פ' ראה, כ\"ו מנחם־אב תש\"ו",
         "subtitle": "",
-        "file": "pdfs/Erev_Shabbos_Shoftim_26_Menachem_Av_5706.pdf",
+        "file": "pdfs/Erev_Shabbos_ree_26_Menachem_Av_5706.pdf",
         "pages": 1,
         "count": 1,
         "sortDate": "12-26",
