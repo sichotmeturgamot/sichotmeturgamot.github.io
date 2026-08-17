@@ -325,7 +325,7 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "עש\"ק פ' שופטים, כ\"ו מנחם־אב תש\"ו",
+        "title": "עש\"ק פ' ראה, כ\"ו מנחם־אב תש\"ו",
         "subtitle": "",
         "file": "pdfs/Erev_Shabbos_Shoftim_26_Menachem_Av_5706.pdf",
         "pages": 1,
