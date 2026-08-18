@@ -42,7 +42,7 @@ const YEARS = [
         "title": "ליל א' דחג הסוכות תש\"ו",
         "subtitle": "",
         "file": "pdfs/Leil_Alef_Sukkos_5706.pdf",
-        "pages": 1,
+        "pages": 9,
         "count": 1,
         "sortDate": "01-14",
         "hebDate": "י״ד תשרי",
