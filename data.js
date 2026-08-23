@@ -727,11 +727,5 @@ const YEARS = [
         "hasPage": true
       }
     ]
-  },
-  {
-    "year": "תש\"ח",
-    "note": "בתהליך תרגום",
-    "complete": false,
-    "sichos": []
   }
 ];
