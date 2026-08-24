@@ -83,17 +83,6 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "יום שבת חוה\"מ סוכות תש\"ו",
-        "subtitle": "",
-        "file": "pdfs/Shabbos_Chol_HaMoed_Sukkos_5706.pdf",
-        "pages": 1,
-        "count": 1,
-        "sortDate": "01-17",
-        "hebDate": "י״ז תשרי",
-        "addedAt": "2026-08-02",
-        "hasPage": true
-      },
-      {
         "title": "ליל שמיני עצרת תש\"ו",
         "subtitle": "",
         "file": "pdfs/Leil_Shmini_Atzeres_5706.pdf",
