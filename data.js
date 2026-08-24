@@ -753,8 +753,7 @@ const YEARS = [
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-08-13",
-        "hasPage": true,
-        "hidden": true
+        "hasPage": true
       }
     ]
   }
