@@ -75,7 +75,7 @@ const YEARS = [
         "title": "יום ב' דחג הסוכות תש\"ו",
         "subtitle": "",
         "file": "pdfs/Yom_Beis_Sukkos_5706.pdf",
-        "pages": 1,
+        "pages": 5,
         "count": 1,
         "sortDate": "01-16",
         "hebDate": "ט״ז תשרי",
