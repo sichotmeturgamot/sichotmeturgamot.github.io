@@ -61,6 +61,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "ליל ב' דחג הסוכות תש\"ו",
+        "subtitle": "",
+        "file": "pdfs/leil_2_sukot_5706.pdf",
+        "pages": 5,
+        "count": 1,
+        "sortDate": "01-15",
+        "hebDate": "ט״ו תשרי",
+        "addedAt": "2026-08-24",
+        "hasPage": true
+      },
+      {
         "title": "יום ב' דחג הסוכות תש\"ו",
         "subtitle": "",
         "file": "pdfs/Yom_Beis_Sukkos_5706.pdf",
