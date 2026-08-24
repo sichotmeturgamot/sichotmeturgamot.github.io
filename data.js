@@ -53,7 +53,7 @@ const YEARS = [
         "title": "יום א' דחג הסוכות תש\"ו",
         "subtitle": "",
         "file": "pdfs/Yom_Alef_Sukkos_5706.pdf",
-        "pages": 1,
+        "pages": 6,
         "count": 1,
         "sortDate": "01-15",
         "hebDate": "ט״ו תשרי",
