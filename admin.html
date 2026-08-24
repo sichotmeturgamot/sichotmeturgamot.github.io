@@ -62,6 +62,14 @@
   .mf-types label { display:flex; align-items:center; gap:6px; padding:7px 16px; border:1.5px solid #d8d2c2; border-radius:8px; cursor:pointer; font-size:.92rem; color:#2a2a2a; margin:0; }
   .mf-types label:has(input:checked) { background:var(--navy); color:#fff; border-color:var(--navy); }
   .mf-types input { width:auto; }
+  .mf-topic-wrap { position:relative; }
+  .mf-sug { position:absolute; left:0; right:0; top:100%; background:var(--paper); border:1.5px solid var(--gold); border-top:none; border-radius:0 0 10px 10px; max-height:240px; overflow-y:auto; z-index:60; display:none; box-shadow:0 8px 22px rgba(0,0,0,.14); }
+  .mf-sug.show { display:block; }
+  .mf-sug-item { padding:9px 12px; cursor:pointer; border-bottom:1px solid #f0ead9; font-size:.95rem; display:flex; align-items:baseline; gap:6px; }
+  .mf-sug-item:last-child { border-bottom:none; }
+  .mf-sug-item:hover { background:#f5f0e4; }
+  .mf-sug-item .sc { color:var(--muted); font-size:.85rem; }
+  .mf-sug-item .st { font-size:.7rem; color:#8a7a52; background:#efe9db; border-radius:99px; padding:1px 8px; margin-inline-start:auto; }
 </style>
 </head>
 <body>
@@ -126,7 +134,11 @@
         <label><input type="radio" name="mf-type" value="m"> מקום</label>
       </div>
       <label>ערך (נושא / שם / מקום)</label>
-      <input type="text" id="mf-topic" placeholder="לדוגמה: אהבת ישראל">
+      <div class="mf-topic-wrap">
+        <input type="text" id="mf-topic" placeholder="לדוגמה: אהבת ישראל" autocomplete="off">
+        <div class="mf-sug" id="mf-sug"></div>
+      </div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:3px">תוך כדי הקלדה יוצגו ערכים קיימים דומים — לחץ על אחד כדי להשתמש באותו שם (למניעת כפילויות).</div>
       <label>הבהרה (אופציונלי — בעיקר לשמות, למשל תואר)</label>
       <input type="text" id="mf-clar" placeholder='למשל: אדמו״ר הזקן'>
       <label>תמצית (תיאור קצר)</label>
@@ -145,6 +157,22 @@
         <button class="btn btn-main" onclick="mfSave()">הוסף למפתח</button>
         <button class="btn btn-line" onclick="mfClear()">ניקוי טופס</button>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>עריכת ערך קיים (בכל המופעים)</h2>
+      <p style="font-size:.85rem;color:var(--muted)">הקש שם של ערך קיים ובחר אותו מהרשימה — יוצגו הפרטים, ותוכל לשנות את השם או להוסיף/לערוך הבהרה. השינוי יחול על <b>כל המופעים</b> של אותו ערך במפתח.</p>
+      <label>ערך קיים</label>
+      <div class="mf-topic-wrap">
+        <input type="text" id="mf-old" placeholder="הקש שם קיים, למשל: דבורה לאה" autocomplete="off">
+        <div class="mf-sug" id="mf-sug-old"></div>
+      </div>
+      <div id="mf-edit-info" style="font-size:.82rem;color:var(--gold);margin-top:5px"></div>
+      <label>שם חדש</label>
+      <input type="text" id="mf-new-topic" placeholder="השם המעודכן">
+      <label>הבהרה</label>
+      <input type="text" id="mf-new-clar" placeholder="(אופציונלי) למשל: אשת ר׳ …">
+      <div class="dlg-btns"><button class="btn btn-main" onclick="mfEditSave()">שמור שינויים בכל המופעים</button></div>
     </div>
     </div><!-- /atab-mafteach -->
 
@@ -939,6 +967,7 @@ document.querySelectorAll('.adm-tab').forEach(btn => {
     btn.classList.add('on');
     const p = $('atab-' + btn.dataset.atab);
     if (p) p.classList.add('on');
+    if (btn.dataset.atab === 'mafteach') mfLoadData();
   });
 });
 
@@ -993,10 +1022,114 @@ async function mfSave() {
     }});
     setStatus('הערך «' + topic + '» נוסף למפתח ✓ (יופיע באתר תוך כדקה)', 'ok');
     mfClear();
+    mfData = null; // רענון רשימת ההצעות בפעם הבאה
   } catch (err) {
     setStatus('שגיאה: ' + err.message, 'err');
   }
 }
+
+/* ---------- מפתחות: השלמה אוטומטית + עריכת ערך קיים ---------- */
+let mfData = null, mfLoading = false;
+function mfEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function mfNorm(s){
+  return String(s||'').replace(/[֑-ׇ]/g,'').replace(/['"׳״‘’“”]/g,'')
+    .replace(/[‎‏]/g,'').replace(/[־–—-]/g,'').replace(/[.,:;!?()\[\]\/]/g,'')
+    .replace(/ך/g,'כ').replace(/ם/g,'מ').replace(/ן/g,'נ').replace(/ף/g,'פ').replace(/ץ/g,'צ')
+    .replace(/\s+/g,' ').trim();
+}
+function mfTypeName(t){ return t==='n' ? 'שם' : t==='m' ? 'מקום' : 'ענין'; }
+async function mfLoadData(force){
+  if (mfData && !force) return mfData;
+  if (!cfg || !cfg.token || mfLoading) return mfData;
+  mfLoading = true;
+  try {
+    const f = await gh(repoPath(`contents/mafteach.js?ref=${cfg.branch}`));
+    const text = dec(f.content);
+    mfData = JSON.parse(text.slice(text.indexOf('['), text.lastIndexOf(']') + 1));
+  } catch (_) { /* יישאר כפי שהיה */ }
+  mfLoading = false;
+  return mfData;
+}
+function mfAttachSug(inputId, sugId, onPick){
+  const input = $(inputId), sug = $(sugId);
+  if (!input || !sug) return;
+  input.addEventListener('input', async () => {
+    const q = mfNorm(input.value);
+    if (q.length < 1) { sug.classList.remove('show'); return; }
+    const data = await mfLoadData();
+    if (!data) { sug.classList.remove('show'); return; }
+    const seen = new Set(), matches = [];
+    for (const en of data) {
+      if (!en.topic) continue;
+      const nt = mfNorm(en.topic), key = nt + '|' + mfNorm(en.clar || '');
+      if (nt.indexOf(q) >= 0 && !seen.has(key)) { seen.add(key); matches.push(en); if (matches.length >= 12) break; }
+    }
+    if (!matches.length) { sug.classList.remove('show'); return; }
+    sug.innerHTML = matches.map(en =>
+      `<div class="mf-sug-item" data-topic="${mfEsc(en.topic)}" data-clar="${mfEsc(en.clar||'')}" data-t="${mfEsc(en.t||'i')}">${mfEsc(en.topic)}${en.clar?` <span class="sc">(${mfEsc(en.clar)})</span>`:''}<span class="st">${mfTypeName(en.t)}</span></div>`
+    ).join('');
+    sug.classList.add('show');
+    sug.querySelectorAll('.mf-sug-item').forEach(it => it.addEventListener('click', () => { onPick(it.dataset); sug.classList.remove('show'); }));
+  });
+}
+async function mfEditPick(d){
+  $('mf-old').value = d.topic;
+  $('mf-new-topic').value = d.topic;
+  $('mf-new-clar').value = d.clar || '';
+  const data = await mfLoadData();
+  const rows = data ? data.filter(r => r.topic === d.topic) : [];
+  const types = [...new Set(rows.map(r => mfTypeName(r.t)))].join(', ');
+  const info = $('mf-edit-info');
+  if (info) info.textContent = rows.length ? `נמצאו ${rows.length} מופעים (${types}).` : '';
+}
+async function mfEditSave(){
+  if (!cfg || !cfg.token) { setStatus('התחבר קודם (בעמוד ההתחברות)', 'err'); return; }
+  const oldT = $('mf-old').value.trim();
+  const newT = $('mf-new-topic').value.trim();
+  const newC = $('mf-new-clar').value.trim();
+  if (!oldT) { setStatus('בחר ערך קיים לעריכה', 'err'); return; }
+  if (!newT) { setStatus('השם החדש ריק', 'err'); return; }
+  try {
+    setStatus('טוען…', 'busy');
+    const f = await gh(repoPath(`contents/mafteach.js?ref=${cfg.branch}`));
+    const text = dec(f.content);
+    const b = text.indexOf('['), e = text.lastIndexOf(']');
+    const head = text.slice(0, b), tail = text.slice(e + 1);
+    const arr = JSON.parse(text.slice(b, e + 1));
+    const count = arr.filter(r => r.topic === oldT).length;
+    if (!count) { setStatus('לא נמצא ערך בשם «' + oldT + '»', 'err'); return; }
+    const parts = [];
+    if (newT !== oldT) parts.push('שם → «' + newT + '»');
+    parts.push(newC ? ('הבהרה → «' + newC + '»') : 'ללא הבהרה');
+    if (!confirm(`נמצאו ${count} מופעים של «${oldT}».\nלבצע בכל המופעים: ${parts.join(' · ')}?`)) { setStatus('בוטל'); return; }
+    let n = 0;
+    for (const r of arr) {
+      if (r.topic === oldT) { r.topic = newT; if (newC) r.clar = newC; else delete r.clar; n++; }
+    }
+    const out = head + JSON.stringify(arr) + tail;
+    await gh(repoPath('contents/mafteach.js'), { method: 'PUT', body: {
+      message: 'עריכת ערך במפתח: ' + oldT + ' → ' + newT + ' (' + n + ' מופעים)',
+      content: enc(out), branch: cfg.branch, sha: f.sha
+    }});
+    setStatus('עודכנו ' + n + ' מופעים ✓ (יופיע באתר תוך כדקה)', 'ok');
+    mfData = null;
+    $('mf-old').value = ''; $('mf-new-topic').value = ''; $('mf-new-clar').value = '';
+    const info = $('mf-edit-info'); if (info) info.textContent = '';
+  } catch (err) {
+    setStatus('שגיאה: ' + err.message, 'err');
+  }
+}
+mfAttachSug('mf-topic', 'mf-sug', d => {
+  $('mf-topic').value = d.topic;
+  if (d.clar) $('mf-clar').value = d.clar;
+  const r = document.querySelector(`input[name="mf-type"][value="${d.t}"]`); if (r) r.checked = true;
+});
+mfAttachSug('mf-old', 'mf-sug-old', mfEditPick);
+document.addEventListener('click', ev => {
+  if (!ev.target.closest('.mf-topic-wrap')) {
+    ['mf-sug', 'mf-sug-old'].forEach(id => { const s = $(id); if (s) s.classList.remove('show'); });
+  }
+});
 
 (function init() {
   const saved = localStorage.getItem('sichos-admin');
