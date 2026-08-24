@@ -170,6 +170,71 @@
 <script src="mafteach.js"></script>
 <script>
 const DATA = MAFTEACH;
+// ---- מפתח מיון כרונולוגי לפי תאריך השיחה ----
+function chronoNum(l){
+  var GEM={'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,'ל':30};
+  function gval(t){var s=0;for(var i=0;i<t.length;i++){if(GEM[t[i]]!=null)s+=GEM[t[i]];}return s;}
+  var YM={'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9};
+  var y=5706, my;
+  if(l.indexOf('שי"ת')>=0) y=5710;
+  else if((my=l.match(/תש["'׳״]?([אבגדהוזחט])(?![א-ת])/))) y=5700+YM[my[1]];
+  var L=l.replace(/^אור ל/,'');
+  var isLil = L.indexOf('ליל')>=0 || L.indexOf('לילה')>=0 || L.indexOf('סדר הראשון')>=0;
+  var isYom = L.indexOf('יום')>=0;
+  var off = isLil?0.0:(isYom?0.5:0.25);
+  function festN(){
+    var m=L.match(/(?:ליל|יום)\s+([אבגדה])["'׳״]/);
+    if(m) return GEM[m[1]];
+    if(L.indexOf('סדר השני')>=0 || L.indexOf("ליל ב'")>=0 || L.indexOf("יום ב'")>=0) return 2;
+    return 1;
+  }
+  var MONTHS=[['תשרי',1],['כסלו',3],['טבת',4],['שבט',5],['אדר',6],['ניסן',7],['אייר',8],['סיון',9],['תמוז',10],['אלול',12],['אב',11],['חשון',2]];
+  var TOK="([אבגדהוזחטיכל](?:[\"'׳״]?[אבגדהוזחטיכל])*)";
+  function dbm(){
+    for(var i=0;i<MONTHS.length;i++){
+      var mn=MONTHS[i][0], mo=MONTHS[i][1], pat=mn;
+      if(mo===11) pat="(?:מנחם[־ ]?)?אב";
+      if(mo===2)  pat="(?:מר[־ ]?)?חשון";
+      var re=new RegExp(TOK+"[\"'׳״]?\\s+"+pat+"(?![א-ת])");
+      var m=L.match(re);
+      if(m){ var d=gval(m[1]); if(d>=1&&d<=30) return [mo,d]; }
+    }
+    return null;
+  }
+  function K(mo,d){ return y*100000 + mo*1000 + Math.round(d*10); }
+  if(L.indexOf('שמחת תורה')>=0||L.indexOf('שמח"ת')>=0) return K(1, 23.0+(isYom?0.5:0.0));
+  if(L.indexOf('שמיני עצרת')>=0||L.indexOf('שמע"צ')>=0) return K(1,22.0+off);
+  if(L.indexOf('בראשית')>=0) return K(1,27.0);
+  if(L.indexOf('חול המועד סוכות')>=0||L.indexOf('חוה"מ סוכות')>=0) return K(1,17.0+off);
+  if(L.indexOf('סוכות')>=0) return K(1,15.0+(festN()-1)+off);
+  if(L.indexOf('יום הכיפורים')>=0||L.indexOf('יוה"כ')>=0) return K(1,10.0);
+  if(L.indexOf('ראש השנה')>=0) return K(1,1.0);
+  if(L.indexOf('תשובה')>=0) return K(1,6.0);
+  var d1=dbm(); if(d1&&d1[0]===1) return K(1,d1[1]);
+  if(L.indexOf('חנוכה')>=0||L.indexOf('וישב')>=0) return K(3,26.0);
+  if(L.indexOf('וישלח')>=0) return K(3,19.0);
+  if(/(^|[ "])נח([ "]|$)/.test(L)) return K(2,3.0);
+  if(/(^|[ "])לך([ "]|$)/.test(L)) return K(2,10.0);
+  if(L.indexOf('וירא')>=0) return K(2,20.0);
+  if(L.indexOf('פורים')>=0||L.indexOf('תצוה')>=0||L.indexOf('זכור')>=0) return K(6,14.0);
+  if(L.indexOf('אחרון של פסח')>=0||L.indexOf('אחש"פ')>=0) return K(7,22.0);
+  if(L.indexOf('שביעי של פסח')>=0) return K(7,21.0);
+  if(L.indexOf('דחג הפסח')>=0||L.indexOf('סדר')>=0) return K(7,15.0+(festN()-1)+off);
+  if(L.indexOf('פסח')>=0){ var dp=dbm(); return (dp&&dp[0]===7)?K(7,dp[1]):K(7,17.0); }
+  if(L.indexOf('ל"ג בעומר')>=0) return K(8,18.0);
+  if(L.indexOf('שבועות')>=0) return K(9,6.0+(festN()-1)+off);
+  if(L.indexOf('נצבים')>=0) return K(12,25.0);
+  if(L.indexOf('שופטים')>=0) return K(11,26.0);
+  if(d1) return K(d1[0],d1[1]);
+  if(/(^|[ ־])אב([ "]|$)/.test(L)||L.indexOf('מנחם')>=0) return K(11,15.0);
+  return K(99,20.0);
+}
+
+function entryChrono(e){
+  if('sources' in e){ var m=Infinity; for(var i=0;i<e.sources.length;i++){ var v=chronoNum(e.sources[i].s); if(v<m)m=v; } return m; }
+  return chronoNum(e.sichah||'');
+}
+
 const TAG = { n: "שם", m: "מקום" };
 const HKEY = "mafteach-history";
 let showQuotes = true;
@@ -263,7 +328,8 @@ function cardContent(r, tt){
 function cardRef(r, tt){
   const clar = r.clar ? ' <span class="clar">('+hl(r.clar, tt)+')</span>' : '';
   const tag = TAG[r.t] ? ' <span class="tag">'+TAG[r.t]+'</span>' : '';
-  const btns = r.sources.map(s => '<a class="btn btn-navy btn-sm" href="'+(s.u + '&disp='+s.dp + (s.pg ? '&page='+s.pg : ''))+'">'+esc(s.s)+'</a>').join('');
+  const srcs = r.sources.slice().sort((a,b) => chronoNum(a.s) - chronoNum(b.s));
+  const btns = srcs.map(s => '<a class="btn btn-navy btn-sm" href="'+(s.u + '&disp='+s.dp + (s.pg ? '&page='+s.pg : ''))+'">'+esc(s.s)+'</a>').join('');
   return '<div class="sicha result" data-topic="'+esc(r.topic)+'"><div class="sicha-info">'+
       '<div class="topic-line"><h3>'+hl(r.topic, tt)+'</h3>'+clar+tag+'</div>'+
       '<div class="src-btns">'+btns+'</div>'+
@@ -283,8 +349,11 @@ function render(){
   for(const e of DATA){ const sc = scoreEntry(e, nq, nqNS); if(sc>0) scored.push({ e, sc }); }
   // אם יש התאמה בשם/תיאור הערך (דירוג 2 ומעלה) — מציגים רק אותן, בלי התאמות ציטוט בלבד (דירוג 1).
   // חיפוש בתוך הציטוט נשאר כברירת מחדל רק כשאין אף ערך שמתאים לשם/תיאור.
-  if(scored.some(x => x.sc >= 2)) scored = scored.filter(x => x.sc >= 2);
-  scored.sort((a,b) => b.sc - a.sc);
+  const entryMatch = scored.some(x => x.sc >= 2);
+  if(entryMatch) scored = scored.filter(x => x.sc >= 2);
+  // ערך אמיתי (שם/מקום/מושג) — מיון כרונולוגי; תוצאת ציטוט-בלבד — לפי רלוונטיות
+  if(entryMatch) scored.sort((a,b) => entryChrono(a.e) - entryChrono(b.e) || (b.sc - a.sc));
+  else scored.sort((a,b) => b.sc - a.sc);
   const rows = scored.map(x => x.e);
   countEl.textContent = rows.length ? (rows.length + (rows.length===1 ? ' תוצאה' : ' תוצאות')) : 'לא נמצאו תוצאות';
   results.innerHTML = rows.map(r => ('sources' in r) ? cardRef(r, raw) : cardContent(r, raw)).join('');
