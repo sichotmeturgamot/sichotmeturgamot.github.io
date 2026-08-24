@@ -53,6 +53,15 @@
   .help a { color:var(--gold); }
   code { background:#f0ead9; padding:1px 5px; border-radius:4px; font-size:.85em; direction:ltr; unicode-bidi:embed; }
   .top-actions { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .adm-tabs { display:flex; gap:5px; background:var(--paper); border:1px solid #e8e2d4; border-radius:12px; padding:5px; margin-bottom:18px; flex-wrap:wrap; }
+  .adm-tab { flex:1 1 auto; border:none; background:transparent; color:var(--muted); font-family:'Heebo'; font-size:.95rem; padding:10px 14px; border-radius:8px; cursor:pointer; white-space:nowrap; }
+  .adm-tab:hover { background:#f4efe3; }
+  .adm-tab.on { background:var(--navy); color:#fff; font-weight:700; }
+  .adm-panel { display:none; } .adm-panel.on { display:block; }
+  .mf-types { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+  .mf-types label { display:flex; align-items:center; gap:6px; padding:7px 16px; border:1.5px solid #d8d2c2; border-radius:8px; cursor:pointer; font-size:.92rem; color:#2a2a2a; margin:0; }
+  .mf-types label:has(input:checked) { background:var(--navy); color:#fff; border-color:var(--navy); }
+  .mf-types input { width:auto; }
 </style>
 </head>
 <body>
@@ -91,12 +100,55 @@
       <button class="btn btn-danger" onclick="logout()" style="margin-inline-start:auto">יציאה</button>
     </div>
 
+    <div class="adm-tabs">
+      <button type="button" class="adm-tab on" data-atab="sichos">שיחות</button>
+      <button type="button" class="adm-tab" data-atab="mafteach">מפתחות</button>
+      <button type="button" class="adm-tab" data-atab="settings">הגדרות</button>
+      <button type="button" class="adm-tab" data-atab="design">עיצוב</button>
+    </div>
+
+    <div class="adm-panel on" id="atab-sichos">
     <div class="card">
       <h2>השיחות באתר</h2>
       <p style="font-size:.85rem;color:var(--muted)">כל שינוי נשמר מיד ומופיע באתר תוך כדקה. חיצים משנים סדר, 👁 מסתיר/מציג שיחה בלי למחוק.</p>
       <div id="years-admin"></div>
     </div>
+    </div><!-- /atab-sichos -->
 
+    <div class="adm-panel" id="atab-mafteach">
+    <div class="card">
+      <h2>מפתחות — יצירת ערך חדש</h2>
+      <p style="font-size:.85rem;color:var(--muted)">מלא את הפרטים ולחץ «הוסף למפתח». הערך יתווסף ל-<code>mafteach.js</code> ויופיע באתר תוך כדקה. הנתונים הקיימים נשמרים — הכלי מושך את הקובץ, מוסיף את הערך, ושומר (בלי לדרוס כלום).</p>
+      <label>קטגוריה</label>
+      <div class="mf-types">
+        <label><input type="radio" name="mf-type" value="i" checked> ענין</label>
+        <label><input type="radio" name="mf-type" value="n"> שם</label>
+        <label><input type="radio" name="mf-type" value="m"> מקום</label>
+      </div>
+      <label>ערך (נושא / שם / מקום)</label>
+      <input type="text" id="mf-topic" placeholder="לדוגמה: אהבת ישראל">
+      <label>הבהרה (אופציונלי — בעיקר לשמות, למשל תואר)</label>
+      <input type="text" id="mf-clar" placeholder='למשל: אדמו״ר הזקן'>
+      <label>תמצית (תיאור קצר)</label>
+      <input type="text" id="mf-desc">
+      <label>ציטוט מלא</label>
+      <textarea id="mf-excerpt" rows="5" placeholder="העתק את הציטוט המלא מהשיחה…"></textarea>
+      <label>שם השיחה / מקור</label>
+      <input type="text" id="mf-sichah" placeholder='למשל: ליל ז׳ תשרי תש״ז'>
+      <div class="row">
+        <div><label>עמוד בספר</label><input type="number" id="mf-page" min="1"></div>
+        <div><label>עמוד ב-PDF (אופציונלי)</label><input type="number" id="mf-pdfpage" min="1"></div>
+      </div>
+      <label>קישור לשיחה</label>
+      <input type="text" id="mf-url" class="en" placeholder="https://sichotmeturgamot.github.io/read.html?...">
+      <div class="dlg-btns">
+        <button class="btn btn-main" onclick="mfSave()">הוסף למפתח</button>
+        <button class="btn btn-line" onclick="mfClear()">ניקוי טופס</button>
+      </div>
+    </div>
+    </div><!-- /atab-mafteach -->
+
+    <div class="adm-panel" id="atab-settings">
     <div class="card">
       <h2>הגדרות כלליות</h2>
       <label>קישור לטופס רשימת התפוצה במייל (Google Forms)</label>
@@ -109,7 +161,9 @@
       </div>
       <div class="dlg-btns"><button class="btn btn-main" onclick="saveSettings()">שמירת הגדרות</button></div>
     </div>
+    </div><!-- /atab-settings -->
 
+    <div class="adm-panel" id="atab-design">
     <div class="card">
       <h2>טקסטים ועיצוב</h2>
       <p style="font-size:.85rem;color:var(--muted)">כאן עורכים את הכיתוב והצבעים של האתר. שינויים מופיעים באתר תוך כדקה.</p>
@@ -138,6 +192,7 @@
       <textarea id="t-customCss" rows="3" class="en" placeholder=".hero { padding: 40px; }"></textarea>
       <div class="dlg-btns"><button class="btn btn-main" onclick="saveSite()">שמירת טקסטים ועיצוב</button></div>
     </div>
+    </div><!-- /atab-design -->
   </div>
 
   <!-- ===== דיאלוג הוספת/עריכת שיחה ===== -->
@@ -875,6 +930,73 @@ function logout() {
     finally { window.__busyOp = false; }
   };
 });
+
+/* ---------- טאבּים ---------- */
+document.querySelectorAll('.adm-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('on'));
+    document.querySelectorAll('.adm-panel').forEach(p => p.classList.remove('on'));
+    btn.classList.add('on');
+    const p = $('atab-' + btn.dataset.atab);
+    if (p) p.classList.add('on');
+  });
+});
+
+/* ---------- מפתחות: הוספת ערך ל-mafteach.js ---------- */
+function mfClear() {
+  ['mf-topic','mf-clar','mf-desc','mf-excerpt','mf-sichah','mf-page','mf-pdfpage','mf-url'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+  const r = document.querySelector('input[name="mf-type"][value="i"]'); if (r) r.checked = true;
+}
+async function mfSave() {
+  if (!cfg || !cfg.token) { setStatus('התחבר קודם (בעמוד ההתחברות)', 'err'); return; }
+  const topic = $('mf-topic').value.trim();
+  if (!topic) { setStatus('חסר ערך (נושא/שם/מקום)', 'err'); return; }
+  const t = (document.querySelector('input[name="mf-type"]:checked') || {}).value || 'i';
+  const num = v => v ? parseInt(v, 10) : undefined;
+  const page = num($('mf-page').value), pdfpage = num($('mf-pdfpage').value);
+  const sichah = $('mf-sichah').value.trim(), url = $('mf-url').value.trim();
+  const clar = $('mf-clar').value.trim(), desc = $('mf-desc').value.trim(), excerpt = $('mf-excerpt').value.trim();
+  let entry;
+  if (t === 'i') {
+    entry = { t: 'i', topic };
+    if (desc) entry.desc = desc;
+    if (page) entry.page = page;
+    if (sichah) entry.sichah = sichah;
+    if (excerpt) entry.excerpt = excerpt;
+    if (url) entry.url = url;
+    if (pdfpage) entry.pdfpage = pdfpage;
+  } else {
+    entry = { t, topic };
+    if (clar) entry.clar = clar;
+    const src = {};
+    if (sichah) src.s = sichah;
+    if (url) src.u = url;
+    if (page) src.dp = page;
+    if (pdfpage) src.pg = pdfpage;
+    if (Object.keys(src).length) entry.sources = [src];
+    if (excerpt) entry.excerpt = excerpt;
+    if (desc) entry.desc = desc;
+  }
+  try {
+    setStatus('שומר למפתח…', 'busy');
+    const f = await gh(repoPath(`contents/mafteach.js?ref=${cfg.branch}`));
+    const text = dec(f.content);
+    const b = text.indexOf('['), e = text.lastIndexOf(']');
+    if (b < 0 || e < 0) throw new Error('לא נמצא מערך במפתח');
+    const head = text.slice(0, b), tail = text.slice(e + 1);
+    const arr = JSON.parse(text.slice(b, e + 1));
+    arr.push(entry);
+    const out = head + JSON.stringify(arr) + tail;
+    await gh(repoPath('contents/mafteach.js'), { method: 'PUT', body: {
+      message: 'הוספת ערך למפתח: ' + topic,
+      content: enc(out), branch: cfg.branch, sha: f.sha
+    }});
+    setStatus('הערך «' + topic + '» נוסף למפתח ✓ (יופיע באתר תוך כדקה)', 'ok');
+    mfClear();
+  } catch (err) {
+    setStatus('שגיאה: ' + err.message, 'err');
+  }
+}
 
 (function init() {
   const saved = localStorage.getItem('sichos-admin');
