@@ -181,8 +181,10 @@
       <h2>הגדרות כלליות</h2>
       <label>קישור לטופס רשימת התפוצה במייל (Google Forms)</label>
       <input type="text" id="set-mailing" class="en">
-      <label>קישור הצטרפות לקבוצת/ערוץ וואטסאפ (השאר ריק אם אין)</label>
+      <label>קישור לקבוצת העדכונים בוואטסאפ — הקבוצה השקטה (השאר ריק אם אין)</label>
       <input type="text" id="set-whatsapp" class="en">
+      <label>קישור לקבוצת הדיונים בוואטסאפ — הקבוצה הפעילה (השאר ריק אם אין)</label>
+      <input type="text" id="set-whatsapp-discuss" class="en">
       <div class="row">
         <div><label>אימייל ליצירת קשר / תרומות</label><input type="text" id="set-email" class="en"></div>
         <div><label>מספר טלפון לביט</label><input type="text" id="set-bit" class="en"></div>
@@ -352,7 +354,7 @@ async function loadAll() {
   const f = await gh(repoPath(`contents/data.js?ref=${cfg.branch}`));
   dataSha = f.sha;
   const code = dec(f.content);
-  data = new Function(code + ';return {MAILING_LIST_URL, WHATSAPP_URL: (typeof WHATSAPP_URL === "undefined" ? "" : WHATSAPP_URL), SITE: (typeof SITE === "undefined" ? {} : SITE), DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
+  data = new Function(code + ';return {MAILING_LIST_URL, WHATSAPP_URL: (typeof WHATSAPP_URL === "undefined" ? "" : WHATSAPP_URL), WHATSAPP_DISCUSS_URL: (typeof WHATSAPP_DISCUSS_URL === "undefined" ? "" : WHATSAPP_DISCUSS_URL), SITE: (typeof SITE === "undefined" ? {} : SITE), DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
   render();
   setStatus('הנתונים נטענו', 'ok');
 }
@@ -560,6 +562,7 @@ function serialize() {
 
 const MAILING_LIST_URL = ${JSON.stringify(data.MAILING_LIST_URL)};
 const WHATSAPP_URL = ${JSON.stringify(data.WHATSAPP_URL || '')};
+const WHATSAPP_DISCUSS_URL = ${JSON.stringify(data.WHATSAPP_DISCUSS_URL || '')};
 const DONATE_EMAIL = ${JSON.stringify(data.DONATE_EMAIL)};
 const DONATE_BIT_PHONE = ${JSON.stringify(data.DONATE_BIT_PHONE)};
 
@@ -607,6 +610,7 @@ async function renameFile(oldPath, newPath, message) {
 function render() {
   $('set-mailing').value = data.MAILING_LIST_URL;
   $('set-whatsapp').value = data.WHATSAPP_URL || '';
+  $('set-whatsapp-discuss').value = data.WHATSAPP_DISCUSS_URL || '';
   $('set-email').value = data.DONATE_EMAIL;
   $('set-bit').value = data.DONATE_BIT_PHONE;
   const S = data.SITE || {};
@@ -912,6 +916,7 @@ async function saveSite() {
 async function saveSettings() {
   data.MAILING_LIST_URL = $('set-mailing').value.trim();
   data.WHATSAPP_URL = $('set-whatsapp').value.trim();
+  data.WHATSAPP_DISCUSS_URL = $('set-whatsapp-discuss').value.trim();
   data.DONATE_EMAIL = $('set-email').value.trim();
   data.DONATE_BIT_PHONE = $('set-bit').value.trim();
   try { setStatus('שומר…', 'busy'); await commitData('עדכון הגדרות'); setStatus('ההגדרות נשמרו', 'ok'); }
