@@ -744,6 +744,17 @@ const YEARS = [
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-08-13",
         "hasPage": true
+      },
+      {
+        "title": "ערב ראש השנה, והנהדות בסעודות ראש השנה",
+        "subtitle": "",
+        "file": "pdfs/erev_rosh_hashana_vhanhagot_5708.pdf",
+        "pages": 1,
+        "count": 3,
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי",
+        "addedAt": "2026-08-31",
+        "hasPage": true
       }
     ]
   }
