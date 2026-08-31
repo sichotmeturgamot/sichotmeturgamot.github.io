@@ -746,11 +746,22 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ערב ראש השנה, והנהגות בסעודות ראש השנה",
+        "title": "ערב ראש השנה, והנהדות בסעודות ראש השנה",
         "subtitle": "",
         "file": "pdfs/erev_rosh_hashana_vhanhagot_5708.pdf",
         "pages": 1,
         "count": 3,
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי",
+        "addedAt": "2026-08-31",
+        "hasPage": true
+      },
+      {
+        "title": "סעודת ליל ב' דר\"ה תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/seudat_leyl_2_rosh_hashana_5708.pdf",
+        "pages": 2,
+        "count": 1,
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-08-31",
