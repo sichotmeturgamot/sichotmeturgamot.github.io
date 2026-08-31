@@ -746,7 +746,7 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ערב ראש השנה, והנהדות בסעודות ראש השנה",
+        "title": "ערב ראש השנה, והנהגות בסעודות ראש השנה",
         "subtitle": "",
         "file": "pdfs/erev_rosh_hashana_vhanhagot_5708.pdf",
         "pages": 1,
