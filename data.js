@@ -778,6 +778,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "משיחות תשרי תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/tishrey_5708.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-03",
+        "hebDate": "ג׳ תשרי",
+        "addedAt": "2026-09-02",
+        "hasPage": true
+      },
+      {
         "title": "שיחת ד' תשרי תש\"ח",
         "subtitle": "שיחה לפני קבוצת רבנים ועסקנים, בקשר ליובל להתייסדות תומכי־תמימים.",
         "file": "pdfs/4_tishrey_5708.pdf",
