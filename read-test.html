@@ -132,7 +132,11 @@ async function start(){
       url: file,
       cMapUrl: PDFJS_BASE + 'cmaps/',
       cMapPacked: true,
-      standardFontDataUrl: PDFJS_BASE + 'standard_fonts/'
+      standardFontDataUrl: PDFJS_BASE + 'standard_fonts/',
+      // ציור האותיות ישירות מהגופן המוטמע בקובץ — במקום הזרקה לדפדפן.
+      // זה מה שמתקן את פיזור האותיות בעברית בטלפון (ספארי/אייפון).
+      disableFontFace: true,
+      useSystemFonts: false
     });
     pdfDoc = await task.promise;
     $('msg').style.display = 'none';
