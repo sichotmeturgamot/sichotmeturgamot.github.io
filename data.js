@@ -777,6 +777,17 @@ const YEARS = [
         "hebDate": "ד׳ תשרי",
         "addedAt": "2026-09-02",
         "hasPage": true
+      },
+      {
+        "title": "שיחות ערב יום הכיפורים תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/erev_yom_kipur_5708.pdf",
+        "pages": 1,
+        "count": 2,
+        "sortDate": "01-09",
+        "hebDate": "ט׳ תשרי",
+        "addedAt": "2026-09-02",
+        "hasPage": true
       }
     ]
   }
