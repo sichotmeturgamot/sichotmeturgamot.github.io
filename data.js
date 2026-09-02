@@ -766,6 +766,17 @@ const YEARS = [
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-08-31",
         "hasPage": true
+      },
+      {
+        "title": "שיחת ד' תשרי תש\"ח",
+        "subtitle": "שיחה לפני קבוצת רבנים ועסקנים, בקשר ליובל להתייסדות תומכי־תמימים.",
+        "file": "pdfs/4_tishrey_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-04",
+        "hebDate": "ד׳ תשרי",
+        "addedAt": "2026-09-02",
+        "hasPage": true
       }
     ]
   }
