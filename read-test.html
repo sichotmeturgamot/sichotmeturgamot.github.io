@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>בדיקת קריאה — ספר השיחות מתורגם ללה״ק</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #525659; font-family: 'Heebo', sans-serif; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* סרגל עליון */
+  .bar {
+    background: #1a2942; color: #fff;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-bottom: 2px solid #b8933e; flex: 0 0 auto;
+  }
+  .bar .title {
+    font-family: 'Frank Ruhl Libre', serif; font-size: 1rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
+  }
+  .bar a {
+    color: #fff; text-decoration: none; font-size: .85rem;
+    background: #b8933e; border-radius: 8px; padding: 6px 14px; white-space: nowrap;
+  }
+  .bar a.line { background: transparent; border: 1px solid rgba(255,255,255,.55); }
+
+  /* אזור הצגת העמוד */
+  #viewer { flex: 1 1 auto; overflow: auto; display: flex; justify-content: center; padding: 14px 8px 80px; -webkit-overflow-scrolling: touch; }
+  #canvas { background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,.4); max-width: 100%; height: auto; }
+
+  #msg { color: #fff; text-align: center; padding: 60px 20px; font-size: 1.05rem; margin: auto; }
+  #msg a { color: #d4b56a; }
+
+  /* סרגל תחתון: ניווט עמודים + זום */
+  .controls {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #1a2942; border-top: 2px solid #b8933e;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 8px 10px; flex: 0 0 auto;
+  }
+  .controls button {
+    background: #b8933e; color: #fff; border: none; border-radius: 8px;
+    font-size: 1.1rem; font-family: 'Heebo', sans-serif;
+    width: 44px; height: 40px; cursor: pointer; line-height: 1;
+  }
+  .controls button:disabled { opacity: .35; cursor: default; }
+  .controls .pageinfo {
+    color: #fff; font-size: .95rem; min-width: 96px; text-align: center;
+    background: rgba(255,255,255,.08); border-radius: 8px; padding: 8px 6px;
+  }
+  .controls .sep { width: 1px; height: 26px; background: rgba(255,255,255,.25); margin: 0 4px; }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="title" id="title">טוען…</span>
+  <a id="dl" download>הורדה ⬇</a>
+  <a class="line" href="index.html">לאתר</a>
+</div>
+
+<div id="viewer">
+  <canvas id="canvas"></canvas>
+</div>
+<div id="msg" style="display:none"></div>
+
+<div class="controls" id="controls" style="display:none">
+  <button id="zoomOut" title="הקטנה">−</button>
+  <button id="zoomIn" title="הגדלה">+</button>
+  <span class="sep"></span>
+  <button id="prev" title="הקודם">▶</button>
+  <span class="pageinfo" id="pageinfo">— / —</span>
+  <button id="next" title="הבא">◀</button>
+</div>
+
+<script type="module">
+import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.min.mjs';
+
+const PDFJS_BASE = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/';
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + 'build/pdf.worker.min.mjs';
+
+const params = new URLSearchParams(location.search);
+const file  = params.get('file') || '';
+const title = params.get('title') || 'קריאת השיחה';
+const startPage = parseInt((params.get('page') || '').replace(/[^0-9]/g, ''), 10) || 1;
+
+const $ = id => document.getElementById(id);
+$('title').textContent = title;
+document.title = title + ' — ספר השיחות מתורגם ללה״ק';
+$('dl').href = file;
+
+const canvas = $('canvas');
+const ctx = canvas.getContext('2d');
+const viewer = $('viewer');
+
+function showError(html){
+  canvas.style.display = 'none';
+  $('controls').style.display = 'none';
+  $('msg').style.display = 'block';
+  $('msg').innerHTML = html;
+}
+
+// הגנה: מציגים רק קבצי PDF מתוך האתר עצמו
+if (!file || file.indexOf('//') !== -1 || file.indexOf('..') !== -1 || !/\.pdf$/i.test(file)) {
+  showError('לא נמצא קובץ להצגה.');
+} else {
+  start();
+}
+
+// מעקב קריאה (נשמר רק בדפדפן של הגולש)
+try {
+  const readSet = JSON.parse(localStorage.getItem('sichos-read') || '{}');
+  readSet[file] = Date.now();
+  localStorage.setItem('sichos-read', JSON.stringify(readSet));
+  localStorage.setItem('sichos-last', JSON.stringify({ file: file, title: title, at: Date.now() }));
+} catch (e) {}
+
+let pdfDoc = null;
+let pageNum = 1;
+let userScale = 1;          // מכפיל זום ידני (הבסיס הוא התאמה לרוחב)
+let rendering = false;
+let pendingPage = null;
+
+async function start(){
+  $('msg').style.display = 'block';
+  $('msg').textContent = 'טוען את השיחה…';
+  try {
+    const task = pdfjsLib.getDocument({
+      url: file,
+      cMapUrl: PDFJS_BASE + 'cmaps/',
+      cMapPacked: true,
+      standardFontDataUrl: PDFJS_BASE + 'standard_fonts/'
+    });
+    pdfDoc = await task.promise;
+    $('msg').style.display = 'none';
+    $('controls').style.display = 'flex';
+
+    // עמוד התחלה: מהתגית ?page, או העמוד האחרון שנקרא בקובץ הזה
+    let saved = 0;
+    try {
+      const lp = JSON.parse(localStorage.getItem('sichos-lastpage') || '{}');
+      saved = parseInt(lp[file], 10) || 0;
+    } catch(e){}
+    pageNum = Math.min(Math.max(startPage > 1 ? startPage : (saved || 1), 1), pdfDoc.numPages);
+
+    renderPage(pageNum);
+  } catch (err) {
+    showError('לא ניתן להציג את הקובץ כרגע. אפשר <a href="' + file + '">להוריד אותו ישירות</a>.<br><small style="opacity:.6">' + (err && err.message ? err.message : '') + '</small>');
+  }
+}
+
+async function renderPage(n){
+  if (!pdfDoc) return;
+  if (rendering) { pendingPage = n; return; }
+  rendering = true;
+
+  const page = await pdfDoc.getPage(n);
+
+  // התאמה לרוחב האזור הזמין, כפול הזום הידני
+  const dpr = window.devicePixelRatio || 1;
+  const avail = viewer.clientWidth - 16;
+  const base = page.getViewport({ scale: 1 });
+  const fitScale = avail / base.width;
+  const scale = fitScale * userScale;
+  const viewport = page.getViewport({ scale: scale * dpr });
+
+  canvas.width  = viewport.width;
+  canvas.height = viewport.height;
+  canvas.style.width  = (viewport.width / dpr) + 'px';
+  canvas.style.height = (viewport.height / dpr) + 'px';
+
+  await page.render({ canvasContext: ctx, viewport }).promise;
+
+  $('pageinfo').textContent = n + ' / ' + pdfDoc.numPages;
+  $('prev').disabled = (n <= 1);
+  $('next').disabled = (n >= pdfDoc.numPages);
+  viewer.scrollTop = 0;
+
+  // זכירת העמוד האחרון בקובץ הזה
+  try {
+    const lp = JSON.parse(localStorage.getItem('sichos-lastpage') || '{}');
+    lp[file] = n; localStorage.setItem('sichos-lastpage', JSON.stringify(lp));
+  } catch(e){}
+
+  rendering = false;
+  if (pendingPage !== null) { const p = pendingPage; pendingPage = null; renderPage(p); }
+}
+
+function go(delta){
+  const n = Math.min(Math.max(pageNum + delta, 1), pdfDoc.numPages);
+  if (n !== pageNum) { pageNum = n; renderPage(n); }
+}
+function zoom(f){
+  userScale = Math.min(Math.max(userScale * f, 0.5), 4);
+  renderPage(pageNum);
+}
+
+$('prev').addEventListener('click', () => go(-1));
+$('next').addEventListener('click', () => go(1));
+$('zoomIn').addEventListener('click', () => zoom(1.25));
+$('zoomOut').addEventListener('click', () => zoom(0.8));
+
+// רספונסיביות: ציור מחדש בסיבוב מסך / שינוי גודל
+let rt;
+window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => renderPage(pageNum), 200); });
+</script>
+</body>
+</html>
