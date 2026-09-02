@@ -767,6 +767,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "סעודת יום ב' דראש השנה תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/yom_2_rosh_hashana_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-02",
+        "hebDate": "ב׳ תשרי",
+        "addedAt": "2026-09-02",
+        "hasPage": true
+      },
+      {
         "title": "שיחת ד' תשרי תש\"ח",
         "subtitle": "שיחה לפני קבוצת רבנים ועסקנים, בקשר ליובל להתייסדות תומכי־תמימים.",
         "file": "pdfs/4_tishrey_5708.pdf",
