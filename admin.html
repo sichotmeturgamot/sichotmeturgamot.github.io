@@ -70,6 +70,18 @@
   .mf-sug-item:hover { background:#f5f0e4; }
   .mf-sug-item .sc { color:var(--muted); font-size:.85rem; }
   .mf-sug-item .st { font-size:.7rem; color:#8a7a52; background:#efe9db; border-radius:99px; padding:1px 8px; margin-inline-start:auto; }
+  /* טאבים לשנים בעמוד השיחות */
+  .year-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; padding-bottom:4px; }
+  .year-tab {
+    border:1.5px solid #d8d2c2; background:var(--paper); color:var(--navy);
+    font-family:'Heebo'; font-size:.9rem; padding:8px 14px; border-radius:99px;
+    cursor:pointer; white-space:nowrap; transition:background .15s, color .15s, border-color .15s;
+  }
+  .year-tab:hover { background:#f4efe3; border-color:var(--gold); }
+  .year-tab.on { background:var(--navy); color:#fff; border-color:var(--navy); font-weight:700; }
+  .year-tab .cnt { font-size:.75rem; opacity:.75; margin-inline-start:4px; }
+  .year-panel { display:none; }
+  .year-panel.on { display:block; }
 </style>
 </head>
 <body>
@@ -118,7 +130,8 @@
     <div class="adm-panel on" id="atab-sichos">
     <div class="card">
       <h2>השיחות באתר</h2>
-      <p style="font-size:.85rem;color:var(--muted)">כל שינוי נשמר מיד ומופיע באתר תוך כדקה. חיצים משנים סדר, 👁 מסתיר/מציג שיחה בלי למחוק.</p>
+      <p style="font-size:.85rem;color:var(--muted)">בחר שנה בטאבים למעלה. כל שינוי נשמר מיד ומופיע באתר תוך כדקה. חיצים משנים סדר שנים, 👁 מסתיר/מציג שיחה בלי למחוק.</p>
+      <div id="year-tabs" class="year-tabs"></div>
       <div id="years-admin"></div>
     </div>
     </div><!-- /atab-sichos -->
@@ -181,10 +194,8 @@
       <h2>הגדרות כלליות</h2>
       <label>קישור לטופס רשימת התפוצה במייל (Google Forms)</label>
       <input type="text" id="set-mailing" class="en">
-      <label>קישור לקבוצת העדכונים בוואטסאפ — הקבוצה השקטה (השאר ריק אם אין)</label>
+      <label>קישור הצטרפות לקבוצת/ערוץ וואטסאפ (השאר ריק אם אין)</label>
       <input type="text" id="set-whatsapp" class="en">
-      <label>קישור לקבוצת הדיונים בוואטסאפ — הקבוצה הפעילה (השאר ריק אם אין)</label>
-      <input type="text" id="set-whatsapp-discuss" class="en">
       <div class="row">
         <div><label>אימייל ליצירת קשר / תרומות</label><input type="text" id="set-email" class="en"></div>
         <div><label>מספר טלפון לביט</label><input type="text" id="set-bit" class="en"></div>
@@ -282,6 +293,7 @@ let data = null;         // {MAILING_LIST_URL, DONATE_EMAIL, DONATE_BIT_PHONE, Y
 let dataSha = null;      // sha of data.js
 let editing = null;      // {yi, si} when editing an existing sicha
 let editingYear = null;  // yi when editing a year
+let selectedYear = 0;    // אינדקס השנה הנבחרת בטאבים
 
 const $ = id => document.getElementById(id);
 
@@ -354,7 +366,7 @@ async function loadAll() {
   const f = await gh(repoPath(`contents/data.js?ref=${cfg.branch}`));
   dataSha = f.sha;
   const code = dec(f.content);
-  data = new Function(code + ';return {MAILING_LIST_URL, WHATSAPP_URL: (typeof WHATSAPP_URL === "undefined" ? "" : WHATSAPP_URL), WHATSAPP_DISCUSS_URL: (typeof WHATSAPP_DISCUSS_URL === "undefined" ? "" : WHATSAPP_DISCUSS_URL), SITE: (typeof SITE === "undefined" ? {} : SITE), DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
+  data = new Function(code + ';return {MAILING_LIST_URL, WHATSAPP_URL: (typeof WHATSAPP_URL === "undefined" ? "" : WHATSAPP_URL), SITE: (typeof SITE === "undefined" ? {} : SITE), DONATE_EMAIL, DONATE_BIT_PHONE, YEARS};')();
   render();
   setStatus('הנתונים נטענו', 'ok');
 }
@@ -562,7 +574,6 @@ function serialize() {
 
 const MAILING_LIST_URL = ${JSON.stringify(data.MAILING_LIST_URL)};
 const WHATSAPP_URL = ${JSON.stringify(data.WHATSAPP_URL || '')};
-const WHATSAPP_DISCUSS_URL = ${JSON.stringify(data.WHATSAPP_DISCUSS_URL || '')};
 const DONATE_EMAIL = ${JSON.stringify(data.DONATE_EMAIL)};
 const DONATE_BIT_PHONE = ${JSON.stringify(data.DONATE_BIT_PHONE)};
 
@@ -610,7 +621,6 @@ async function renameFile(oldPath, newPath, message) {
 function render() {
   $('set-mailing').value = data.MAILING_LIST_URL;
   $('set-whatsapp').value = data.WHATSAPP_URL || '';
-  $('set-whatsapp-discuss').value = data.WHATSAPP_DISCUSS_URL || '';
   $('set-email').value = data.DONATE_EMAIL;
   $('set-bit').value = data.DONATE_BIT_PHONE;
   const S = data.SITE || {};
@@ -628,42 +638,72 @@ function render() {
   $('t-customCss').value = S.customCss || '';
   $('history-link').href = `https://github.com/${cfg.owner}/${cfg.repo}/commits/${cfg.branch}`;
 
+  // שמירת אינדקס השנה הנבחרת בטווח תקין
+  if (!data.YEARS.length) selectedYear = 0;
+  else if (selectedYear >= data.YEARS.length) selectedYear = data.YEARS.length - 1;
+  else if (selectedYear < 0) selectedYear = 0;
+
+  // טאבים לשנים
+  const tabs = $('year-tabs');
+  tabs.innerHTML = data.YEARS.map((y, yi) => {
+    const n = (y.sichos || []).length;
+    return `<button type="button" class="year-tab${yi === selectedYear ? ' on' : ''}" data-yi="${yi}" onclick="selectYear(${yi})">
+      ${esc(y.year)}<span class="cnt">(${n})</span>
+    </button>`;
+  }).join('');
+
+  // תוכן השנה הנבחרת בלבד
+  renderYearContent(selectedYear);
+}
+function renderYearContent(yi) {
   const root = $('years-admin');
   root.innerHTML = '';
-  data.YEARS.forEach((y, yi) => {
-    const block = document.createElement('div');
-    block.className = 'year-block';
-    block.innerHTML = `
-      <div class="year-head">
-        <h3>שנת ${esc(y.year)}</h3>
-        <span style="font-size:.8rem;color:${y.complete ? 'var(--green)' : '#93690f'}">${y.complete ? '✔ הושלם' : '⏳ בתהליך'}</span>
-        <span style="font-size:.8rem;color:var(--muted)">${esc(y.note || '')}</span>
-        <span class="icons" style="margin-inline-start:auto">
-          <button title="הזז שנה למעלה" onclick="moveYear(${yi},-1)">↑</button>
-          <button title="הזז שנה למטה" onclick="moveYear(${yi},1)">↓</button>
-          <button title="עריכת שנה" onclick="openEditYear(${yi})">✏️</button>
-          <button title="מחיקת שנה" onclick="removeYear(${yi})">🗑️</button>
-        </span>
-      </div>
-      ${y.sichos.map((s, si) => `
-        <div class="sicha-row">
-          <div class="info">
-            <b>${esc(s.title)}</b> ${s.hidden ? '<span class="hidden-tag">מוסתר</span>' : ''}
-            <small>${esc(s.subtitle || '')}</small>
-            <span class="file">${esc(s.file)}${s.pages ? ' · ' + s.pages + ' עמ׳' : ''}${s.hebDate ? ' · ' + s.hebDate : ''}</span>
-            ${s.hasPage ? `<a class="file" style="color:var(--green)" href="${siteBase()}/sichos/${sichaSlug(s.file)}.html" target="_blank" rel="noopener" title="פתיחת דף השיחה לגוגל">🔗 /sichos/${sichaSlug(s.file)}.html</a>` : '<span class="file" style="color:#b03030">↩ אין דף עדיין — לחץ "בנה דפים"</span>'}
-          </div>
-          <div class="icons">
-            <button title="עריכה" onclick="openEditSicha(${yi},${si})">✏️</button>
-            <button title="שינוי שם קובץ" onclick="renameSicha(${yi},${si})">📄</button>
-            <button title="החלפת קובץ PDF (גרסה מתוקנת)" onclick="replacePdf(${yi},${si})">🔄</button>
-            <button title="${s.hidden ? 'הצגה באתר' : 'הסתרה מהאתר'}" onclick="toggleHidden(${yi},${si})">👁</button>
-            <button title="מחיקה" onclick="removeSicha(${yi},${si})">🗑️</button>
-          </div>
-        </div>`).join('')}
-    `;
-    root.appendChild(block);
+  if (!data || !data.YEARS.length) {
+    root.innerHTML = '<p style="color:var(--muted);padding:12px 0">אין שנים עדיין — לחץ «הוספת שנה».</p>';
+    return;
+  }
+  if (yi < 0 || yi >= data.YEARS.length) yi = 0;
+  const y = data.YEARS[yi];
+  const block = document.createElement('div');
+  block.className = 'year-block year-panel on';
+  block.innerHTML = `
+    <div class="year-head">
+      <h3>שנת ${esc(y.year)}</h3>
+      <span style="font-size:.8rem;color:${y.complete ? 'var(--green)' : '#93690f'}">${y.complete ? '✔ הושלם' : '⏳ בתהליך'}</span>
+      <span style="font-size:.8rem;color:var(--muted)">${esc(y.note || '')}</span>
+      <span class="icons" style="margin-inline-start:auto">
+        <button title="הזז שנה למעלה" onclick="moveYear(${yi},-1)">↑</button>
+        <button title="הזז שנה למטה" onclick="moveYear(${yi},1)">↓</button>
+        <button title="עריכת שנה" onclick="openEditYear(${yi})">✏️</button>
+        <button title="מחיקת שנה" onclick="removeYear(${yi})">🗑️</button>
+      </span>
+    </div>
+    ${y.sichos.length === 0 ? '<div class="sicha-row" style="color:var(--muted)">אין שיחות בשנה זו עדיין.</div>' : ''}
+    ${y.sichos.map((s, si) => `
+      <div class="sicha-row">
+        <div class="info">
+          <b>${esc(s.title)}</b> ${s.hidden ? '<span class="hidden-tag">מוסתר</span>' : ''}
+          <small>${esc(s.subtitle || '')}</small>
+          <span class="file">${esc(s.file)}${s.pages ? ' · ' + s.pages + ' עמ׳' : ''}${s.hebDate ? ' · ' + s.hebDate : ''}</span>
+          ${s.hasPage ? `<a class="file" style="color:var(--green)" href="${siteBase()}/sichos/${sichaSlug(s.file)}.html" target="_blank" rel="noopener" title="פתיחת דף השיחה לגוגל">🔗 /sichos/${sichaSlug(s.file)}.html</a>` : '<span class="file" style="color:#b03030">↩ אין דף עדיין — לחץ "בנה דפים"</span>'}
+        </div>
+        <div class="icons">
+          <button title="עריכה" onclick="openEditSicha(${yi},${si})">✏️</button>
+          <button title="שינוי שם קובץ" onclick="renameSicha(${yi},${si})">📄</button>
+          <button title="החלפת קובץ PDF (גרסה מתוקנת)" onclick="replacePdf(${yi},${si})">🔄</button>
+          <button title="${s.hidden ? 'הצגה באתר' : 'הסתרה מהאתר'}" onclick="toggleHidden(${yi},${si})">👁</button>
+          <button title="מחיקה" onclick="removeSicha(${yi},${si})">🗑️</button>
+        </div>
+      </div>`).join('')}
+  `;
+  root.appendChild(block);
+}
+function selectYear(yi) {
+  selectedYear = yi;
+  document.querySelectorAll('.year-tab').forEach(t => {
+    t.classList.toggle('on', +t.dataset.yi === yi);
   });
+  renderYearContent(yi);
 }
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -674,7 +714,9 @@ function fillYearSelect(sel) {
 function openAddSicha() {
   editing = null;
   $('dlg-sicha-title').textContent = 'הוספת שיחה חדשה';
-  fillYearSelect(data.YEARS.length - 1);
+  // ברירת מחדל: השנה הנוכחית שבטאב (או האחרונה אם אין)
+  const defYi = data.YEARS.length ? Math.min(selectedYear, data.YEARS.length - 1) : 0;
+  fillYearSelect(defYi);
   $('s-title').value = ''; $('s-subtitle').value = ''; $('s-pages').value = ''; $('s-count').value = '1'; $('s-filename').value = ''; $('s-file').value = ''; setHebDate({});
   $('s-file-label').textContent = 'קובץ PDF';
   dlg('dlg-sicha').showModal();
@@ -748,6 +790,7 @@ async function saveSicha() {
     }
     $('s-filename').disabled = false;
     dlg('dlg-sicha').close();
+    selectedYear = yi; // הצגת השנה שאליה נשמרה השיחה
     render();
     setStatus('נשמר! האתר יתעדכן תוך כדקה', 'ok');
     if (window.__lastPageUrl) {
@@ -838,6 +881,7 @@ async function addYear() {
   const name = prompt('שם השנה (למשל: תש״ח):');
   if (!name) return;
   data.YEARS.push({ year: name.trim(), note: 'בתהליך תרגום', complete: false, sichos: [] });
+  selectedYear = data.YEARS.length - 1; // מעבר אוטומטי לשנה החדשה
   try { setStatus('שומר…', 'busy'); await commitData('הוספת שנה: ' + name); render(); setStatus('נוספה שנת ' + name, 'ok'); }
   catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
@@ -881,6 +925,8 @@ async function removeYear(yi) {
   if (y.sichos.length) return setStatus('לא ניתן למחוק שנה שיש בה שיחות — מחק/העבר אותן קודם', 'err');
   if (!confirm(`למחוק את שנת ${y.year}?`)) return;
   data.YEARS.splice(yi, 1);
+  if (selectedYear >= data.YEARS.length) selectedYear = Math.max(0, data.YEARS.length - 1);
+  else if (selectedYear > yi) selectedYear--;
   try { setStatus('שומר…', 'busy'); await commitData('מחיקת שנה: ' + y.year); render(); setStatus('נמחק', 'ok'); }
   catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
@@ -888,6 +934,9 @@ async function moveYear(yi, dir) {
   const j = yi + dir;
   if (j < 0 || j >= data.YEARS.length) return;
   [data.YEARS[yi], data.YEARS[j]] = [data.YEARS[j], data.YEARS[yi]];
+  // שמירת הבחירה על אותה שנה אחרי ההחלפה
+  if (selectedYear === yi) selectedYear = j;
+  else if (selectedYear === j) selectedYear = yi;
   try { setStatus('שומר…', 'busy'); await commitData('שינוי סדר שנים'); render(); setStatus('נשמר', 'ok'); }
   catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
@@ -916,7 +965,6 @@ async function saveSite() {
 async function saveSettings() {
   data.MAILING_LIST_URL = $('set-mailing').value.trim();
   data.WHATSAPP_URL = $('set-whatsapp').value.trim();
-  data.WHATSAPP_DISCUSS_URL = $('set-whatsapp-discuss').value.trim();
   data.DONATE_EMAIL = $('set-email').value.trim();
   data.DONATE_BIT_PHONE = $('set-bit').value.trim();
   try { setStatus('שומר…', 'busy'); await commitData('עדכון הגדרות'); setStatus('ההגדרות נשמרו', 'ok'); }
