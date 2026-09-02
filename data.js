@@ -2,7 +2,6 @@
 
 const MAILING_LIST_URL = "https://forms.gle/um92g7TAt2EwwKuM7";
 const WHATSAPP_URL = "https://chat.whatsapp.com/HidWyvYZFgB4PfMxdsGvoo";
-const WHATSAPP_DISCUSS_URL = "https://chat.whatsapp.com/KBz6bo9kL4QIj2IPXQcBGS?s=cl&p=a&ilr=0";
 const DONATE_EMAIL = "doviber@gmail.com";
 const DONATE_BIT_PHONE = "058-516-6540";
 
@@ -757,11 +756,11 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ערב ראש השנה, והנהגות בסעודות ראש השנה תש\"ח",
+        "title": "סעודת ליל ב'דראש השנה תש\"ח",
         "subtitle": "",
         "file": "pdfs/seudat_leyl_2_rosh_hashana_5708.pdf",
-        "pages": 1,
-        "count": 3,
+        "pages": 2,
+        "count": 1,
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-08-31",
