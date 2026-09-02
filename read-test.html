@@ -121,8 +121,7 @@ try {
 let pdfDoc = null;
 let pageNum = 1;
 let userScale = 1;          // מכפיל זום ידני (הבסיס הוא התאמה לרוחב)
-let rendering = false;
-let pendingPage = null;
+let renderTask = null;      // משימת הציור הנוכחית — לביטול לפני ציור חדש
 
 async function start(){
   $('msg').style.display = 'block';
@@ -156,27 +155,45 @@ async function start(){
   }
 }
 
+// גבולות בטוחים לקנבס באייפון — מעבר להם ספארי "מקטין בכוח" וגורם למריחה
+const MAX_SIDE = 4000;
+const MAX_AREA = 16 * 1024 * 1024;
+
 async function renderPage(n){
   if (!pdfDoc) return;
-  if (rendering) { pendingPage = n; return; }
-  rendering = true;
+  // ביטול ציור קודם שעדיין רץ (חשוב בזום/דפדוף מהיר — מונע מריחה)
+  if (renderTask) { try { renderTask.cancel(); } catch(e){} renderTask = null; }
 
   const page = await pdfDoc.getPage(n);
-
-  // התאמה לרוחב האזור הזמין, כפול הזום הידני
   const dpr = window.devicePixelRatio || 1;
-  const avail = viewer.clientWidth - 16;
+  const avail = Math.max(viewer.clientWidth - 16, 100);
   const base = page.getViewport({ scale: 1 });
-  const fitScale = avail / base.width;
-  const scale = fitScale * userScale;
-  const viewport = page.getViewport({ scale: scale * dpr });
 
-  canvas.width  = viewport.width;
-  canvas.height = viewport.height;
-  canvas.style.width  = (viewport.width / dpr) + 'px';
-  canvas.style.height = (viewport.height / dpr) + 'px';
+  const fitScale = avail / base.width;      // התאמה לרוחב המסך
+  const cssScale = fitScale * userScale;    // הגודל בפועל על המסך
 
-  await page.render({ canvasContext: ctx, viewport }).promise;
+  // רזולוציית הציור = גודל התצוגה × צפיפות הפיקסלים, מוגבל לגבולות האייפון
+  let renderScale = cssScale * dpr;
+  let w = base.width * renderScale, h = base.height * renderScale;
+  const clamp = Math.min(MAX_SIDE / w, MAX_SIDE / h, Math.sqrt(MAX_AREA / (w * h)), 1);
+  renderScale *= clamp;
+
+  const viewport = page.getViewport({ scale: renderScale });
+  // גודל הציור (פנימי) וגודל התצוגה (CSS) נקבעים יחד, רגע לפני הציור
+  canvas.width  = Math.floor(viewport.width);
+  canvas.height = Math.floor(viewport.height);
+  canvas.style.width  = (base.width  * cssScale) + 'px';
+  canvas.style.height = (base.height * cssScale) + 'px';
+
+  const task = page.render({ canvasContext: ctx, viewport });
+  renderTask = task;
+  try {
+    await task.promise;
+  } catch (e) {
+    if (e && e.name === 'RenderingCancelledException') return;  // בוטל לטובת ציור חדש — לא שגיאה
+    throw e;
+  }
+  renderTask = null;
 
   $('pageinfo').textContent = n + ' / ' + pdfDoc.numPages;
   $('prev').disabled = (n <= 1);
@@ -188,9 +205,6 @@ async function renderPage(n){
     const lp = JSON.parse(localStorage.getItem('sichos-lastpage') || '{}');
     lp[file] = n; localStorage.setItem('sichos-lastpage', JSON.stringify(lp));
   } catch(e){}
-
-  rendering = false;
-  if (pendingPage !== null) { const p = pendingPage; pendingPage = null; renderPage(p); }
 }
 
 function go(delta){
