@@ -155,9 +155,12 @@ async function start(){
   }
 }
 
-// גבולות בטוחים לקנבס באייפון — מעבר להם ספארי "מקטין בכוח" וגורם למריחה
-const MAX_SIDE = 4000;
-const MAX_AREA = 16 * 1024 * 1024;
+// גבולות גודל הקנבס. אייפון (ספארי) מגביל נמוך ומקטין בכוח מעבר לזה = מריחה;
+// אנדרואיד/כרום מסוגל להרבה יותר, אז נותנים לו תקרה גבוהה כדי שהזום יישאר חד.
+const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const MAX_SIDE = IS_IOS ? 4000 : 8192;
+const MAX_AREA = (IS_IOS ? 16 : 60) * 1024 * 1024;
 
 async function renderPage(n){
   if (!pdfDoc) return;
