@@ -756,7 +756,7 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "סעודת ליל ב'דראש השנה תש\"ח",
+        "title": "סעודת ליל ב' דראש השנה תש\"ח",
         "subtitle": "",
         "file": "pdfs/seudat_leyl_2_rosh_hashana_5708.pdf",
         "pages": 2,
