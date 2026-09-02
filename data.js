@@ -809,6 +809,17 @@ const YEARS = [
         "hebDate": "ט׳ תשרי",
         "addedAt": "2026-09-02",
         "hasPage": true
+      },
+      {
+        "title": "יום א' דחג הסוכות תש''ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/yom_1_sukot_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-15",
+        "hebDate": "ט״ו תשרי",
+        "addedAt": "2026-09-02",
+        "hasPage": true
       }
     ]
   }
