@@ -295,7 +295,7 @@
 <script>
   // החלקה בטלפון בין עמודי האתר
   (function () {
-    const pages = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html'];
+    const pages = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html', 'about.html'];
     const cur = location.pathname.split('/').pop() || 'index.html';
     if (!pages.includes(cur)) return;
     // טעינה מוקדמת של שאר העמודים — מעבר מהיר
@@ -333,7 +333,7 @@
   // מעברי עמוד רכים + פרלקסה
   (function () {
     document.body.classList.add('page-in');
-    const inner = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html', 'help.html', 'admin.html'];
+    const inner = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html', 'help.html', 'admin.html', 'about.html', 'feedback.html', 'milon.html'];
     document.addEventListener('click', e => {
       const a = e.target.closest('a');
       if (!a || a.target === '_blank' || a.hasAttribute('download')) return;

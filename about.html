@@ -41,23 +41,28 @@
 </nav>
 
 <main>
-  <div class="card" style="max-width:640px;margin:30px auto">
-    <div class="center" style="font-size:1.6rem;margin-bottom:8px;color:var(--gold)">✦</div>
-    <h2 class="center">אודות האתר</h2>
+  <style>
+    .about-page p { text-align: justify; text-align-last: start; margin: 0 0 12px; }
+    .about-page h2 { text-align: center; }
+  </style>
+  <div class="card about-page" style="margin:30px auto">
+    <div style="font-size:1.6rem;margin-bottom:8px;color:var(--gold)">✦</div>
+    <h2>אודות האתר</h2>
     <p>שיחותיו הקדושות של כ״ק אדמו״ר מוהריי״צ מליובאוויטש נאמרו במקורן באידיש. כאן הן מוגשות מתורגמות ללשון הקודש, לקריאה נוחה במחשב ובטלפון.</p>
     <p>התרגום נמשך בעז״ה. שיחות חדשות מתווספות מעת לעת, לפי שנה ולפי מועד.</p>
     <p style="font-weight:700;color:var(--navy)">השיחות מתורגמות ברשות הוצאת ספרים קה״ת.</p>
   </div>
 
-  <div class="card" style="max-width:640px;margin:18px auto">
+  <div class="card about-page" style="margin:18px auto">
     <h2>מה יש באתר</h2>
     <p><a href="sichos.html" style="color:var(--gold)">קריאת השיחות</a> — לפי שנה, עם אפשרות להמשיך מהמקום שבו הפסקת, להעתיק ציטוט, ולהוריד את הקובץ.</p>
     <p><a href="milon.html" style="color:var(--gold)">מילון אידיש–עברית</a> — למילים שנשארו באידיש בתוך התרגום.</p>
+    <p>מפתח ענינים, שמות ומקומות — לחיפוש נושא, שם או מקום בתוך השיחות שכבר תורגמו.</p>
     <p><a href="subscribe.html" style="color:var(--gold)">עדכונים</a> — הודעה במייל או בקבוצה כשעולה שיחה חדשה.</p>
     <p><a href="donate.html" style="color:var(--gold)">תרומה</a> — סיוע בהמשך התרגום, ההדפסה וההפצה.</p>
   </div>
 
-  <div class="card center" style="max-width:640px;margin:18px auto">
+  <div class="card about-page" style="margin:18px auto">
     <h2>יצירת קשר</h2>
     <p class="muted" style="margin-bottom:16px">הערות, הצעות ותיקונים יתקבלו בברכה.</p>
     <a class="btn btn-navy" href="feedback.html">לשליחת פידבק</a>
@@ -102,6 +107,38 @@
     });
     hook();
     new MutationObserver(hook).observe(document.body, { childList: true, subtree: true });
+  })();
+</script>
+<script>
+  (function () {
+    const pages = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html', 'about.html'];
+    const cur = location.pathname.split('/').pop() || 'index.html';
+    if (!pages.includes(cur)) return;
+    pages.filter(p => p !== cur).forEach(p => {
+      const l = document.createElement('link'); l.rel = 'prefetch'; l.href = p; document.head.appendChild(l);
+    });
+    let x0 = null, y0 = null, t0 = 0;
+    addEventListener('touchstart', e => {
+      const v = document.getElementById('viewer-wrap');
+      if (v && v.classList.contains('open')) { x0 = null; return; }
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
+    }, { passive: true });
+    addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      const dy = e.changedTouches[0].clientY - y0;
+      const dt = Date.now() - t0;
+      x0 = null;
+      if (dt > 600 || Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      const i = pages.indexOf(cur);
+      const next = dx > 0 ? i + 1 : i - 1;
+      if (next >= 0 && next < pages.length) {
+        document.body.style.transition = 'transform .12s ease, opacity .12s';
+        document.body.style.transform = 'translateX(' + (dx > 0 ? '40px' : '-40px') + ')';
+        document.body.style.opacity = '0.4';
+        location.href = pages[next];
+      }
+    }, { passive: true });
   })();
 </script>
 <script>
