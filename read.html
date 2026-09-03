@@ -342,7 +342,9 @@ async function start(){
       textLayer.textDivs.forEach((div,i)=>{
         const it=items[i]; if(!it||!it.str||!it.str.trim()) return;
         const top=base.height-it.transform[5], fh=it.height, s=it.str.trim();
-        const isRef = /^[\d]{1,3}$/.test(s);              // מספר בודד = הפניה/מספר עמוד
+        const prev = items[i-1];                          // הבחנה בין הפניה (כתב עילי) למספר רגיל בגוף
+        const raised = prev && it.transform[5] > prev.transform[5] + (prev.height||fh)*0.12;
+        const isRef = /^[\d]{1,3}$/.test(s) && (fh < bodySize-1 || raised);  // הפניה = מספר קטן או מורם
         const isHeader = top < 68;                        // כותרת רצה בשוליים העליונים (חוזרת בכל דף)
         // החרגה: כותרת עליונה, מספר-הפניה, סימן זעיר, או כל מה שמתחת לשורת הגוף האחרונה (הערות)
         const isFootnote = isHeader || isRef || (fh>0 && fh<=9) || (top > bodyBottom + 4);
