@@ -11,6 +11,7 @@
     ['search.html',    'מפתחות'],
     ['subscribe.html', 'הצטרפות לעדכונים'],
     ['donate.html',    'תרומה'],
+    ['about.html',     'אודות'],
     ['feedback.html',  'פידבק']
   ];
   var linksHtml = links.map(function (l) {
