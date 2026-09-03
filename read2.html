@@ -210,18 +210,17 @@
 /**
  * קורא שיחות — PDF.js + בחירת ציטוט בהקשה
  *
- * דורש בשורש האתר:
- *   /pdfjs/pdf.mjs
- *   /pdfjs/pdf.worker.mjs
- *   /pdfjs/cmaps/
- *   /pdfjs/standard_fonts/
+ * גרסה זו טוענת PDF.js מ־CDN (jsDelivr) — מספיק להעלות רק את הקובץ הזה.
  *
  * URL:
  *   read.html?file=pdfs/NAME.pdf&title=כותרת&page=3
  */
 
-import * as pdfjsLib from '/pdfjs/pdf.mjs';
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.mjs';
+// PDF.js מ־CDN — לא דורש תיקיית pdfjs/ באתר.
+// אחרי שהכל יציב אפשר לחזור לנתיבים מקומיים /pdfjs/...
+const PDFJS_CDN = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/';
+import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_CDN + 'build/pdf.worker.min.mjs';
 
 const params = new URLSearchParams(location.search);
 const file = params.get('file') || '';
@@ -625,10 +624,9 @@ async function start() {
   try {
     const pdf = await pdfjsLib.getDocument({
       url: file,
-      cMapUrl: '/pdfjs/cmaps/',
+      cMapUrl: PDFJS_CDN + 'cmaps/',
       cMapPacked: true,
-      standardFontDataUrl: '/pdfjs/standard_fonts/',
-      // לא מכבים font face כברירת מחדל — דיוק יישור textLayer
+      standardFontDataUrl: PDFJS_CDN + 'standard_fonts/',
     }).promise;
 
     $('msg').style.display = 'none';
