@@ -41,3 +41,45 @@
   if (!bn) { bn = document.createElement('nav'); bn.className = 'bottomnav'; document.body.appendChild(bn); }
   bn.innerHTML = bHtml;
 })();
+
+  // חזרה אחורה במחשב + תיקון עמוד שנשמר שקוף אחרי מעבר
+  (function () {
+    function sameSiteRef() {
+      try {
+        if (!document.referrer) return false;
+        var u = new URL(document.referrer);
+        return u.origin === location.origin;
+      } catch (e) { return false; }
+    }
+    window.sichosGoBack = function (fallback) {
+      if (sameSiteRef() && history.length > 1) history.back();
+      else location.href = fallback || 'index.html';
+    };
+
+    addEventListener('pageshow', function () {
+      document.body.style.opacity = '';
+      document.body.style.transform = '';
+    });
+
+    var page = (location.pathname.split('/').pop() || 'index.html');
+    var top = document.querySelector('.topnav');
+    if (!top) return;
+    if (page === 'index.html' && !sameSiteRef()) return;
+
+    if (!document.getElementById('sichos-back-style')) {
+      var st = document.createElement('style');
+      st.id = 'sichos-back-style';
+      st.textContent = '.topnav .back-btn{display:none;align-items:center;gap:4px;margin-inline-end:10px;color:inherit;text-decoration:none;font-size:.92rem;opacity:.85;background:none;border:0;cursor:pointer;font-family:inherit;padding:4px 0}' +
+        '@media (min-width:901px){.topnav .back-btn{display:inline-flex}}' +
+        '.topnav .back-btn:hover{opacity:1}';
+      document.head.appendChild(st);
+    }
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'back-btn';
+    btn.setAttribute('aria-label', 'חזרה');
+    btn.innerHTML = '<span aria-hidden="true">→</span> חזור';
+    btn.addEventListener('click', function () { window.sichosGoBack(page === 'read.html' ? 'sichos.html' : 'index.html'); });
+    top.insertBefore(btn, top.firstChild);
+  })();
+

@@ -82,6 +82,7 @@
 <body>
 
 <div class="bar">
+  <button type="button" id="back-btn" class="line" style="color:#fff;background:transparent;border:1px solid rgba(255,255,255,.55);border-radius:8px;padding:6px 14px;font:inherit;cursor:pointer">→ חזור</button>
   <span class="title" id="title">טוען…</span>
   <a id="dl" download>הורדה ⬇</a>
   <a class="line" href="index.html">לאתר</a>
@@ -375,6 +376,16 @@ async function start(){
     showError('לא ניתן להציג את הקובץ כרגע. אפשר <a href="'+file+'">להוריד אותו ישירות</a>.<br><small style="opacity:.6">'+(err&&err.message?err.message:'')+'</small>');
   }
 }
+</script>
+<script>
+(function(){
+  function sameSite(){ try{ return !!(document.referrer && new URL(document.referrer).origin===location.origin); }catch(e){ return false; } }
+  document.getElementById('back-btn').addEventListener('click', function(){
+    if (sameSite() && history.length>1) history.back();
+    else location.href = 'sichos.html';
+  });
+  addEventListener('pageshow', function(){ document.body.style.opacity=''; document.body.style.transform=''; });
+})();
 </script>
 </body>
 </html>
