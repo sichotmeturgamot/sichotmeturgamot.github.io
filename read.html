@@ -289,7 +289,7 @@ async function start(){
 
       const pageEl=document.createElement('div'); pageEl.className='page'; pageEl.dataset.page=n; pageEl.dataset.bw=base.width;
 
-      let rs=(baseW/base.width)*dpr*2.5;   // רזולוציית רינדור (פי-2.5 מצפיפות המסך = חד יותר)
+      let rs=(baseW/base.width)*dpr*3.5;   // רזולוציית רינדור (פי-3.5 מצפיפות המסך = חד יותר)
       let w=base.width*rs, h=base.height*rs;
       rs*=Math.min(MAX_SIDE/w, MAX_SIDE/h, Math.sqrt(MAX_AREA/(w*h)), 1);
       const vp=page.getViewport({scale:rs});
