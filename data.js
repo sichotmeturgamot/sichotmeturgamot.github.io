@@ -820,6 +820,17 @@ const YEARS = [
         "hebDate": "ט״ו תשרי",
         "addedAt": "2026-09-02",
         "hasPage": true
+      },
+      {
+        "title": "ליל הושענה רבה תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/hoshana_raba_5708.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-22",
+        "hebDate": "כ״ב תשרי",
+        "addedAt": "2026-09-03",
+        "hasPage": true
       }
     ]
   }
