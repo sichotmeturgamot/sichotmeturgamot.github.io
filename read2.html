@@ -167,11 +167,20 @@ function onWordTap(idx){
   highlight();
   citeBtn.classList.toggle('show', focus!=null);
 }
-inner.addEventListener('click', e=>{
+// זיהוי הקשה אמין במגע: pointerdown+pointerup על אותה מילה, בלי תזוזה משמעותית
+let pd = null;
+inner.addEventListener('pointerdown', e=>{
+  pd = { w: e.target.closest('.w'), x: e.clientX, y: e.clientY };
+}, {passive:true});
+inner.addEventListener('pointerup', e=>{
+  if (!pd) return;
   const w = e.target.closest('.w');
-  if (w){ onWordTap(parseInt(w.dataset.idx,10)); }
-  else if (!e.target.closest('#cite')) { clearSel(); }   // הקשה מחוץ למילים — איפוס
-});
+  const moved = Math.hypot(e.clientX - pd.x, e.clientY - pd.y);
+  if (moved > 12){ pd = null; return; }          // תזוזה = גלילה, לא הקשה
+  if (w && w === pd.w){ onWordTap(parseInt(w.dataset.idx,10)); }
+  else if (!w && !e.target.closest('#cite')){ clearSel(); }
+  pd = null;
+}, {passive:true});
 
 function currentCitation(){
   if (anchor===null || focus===null) return null;
