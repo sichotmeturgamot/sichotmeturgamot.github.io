@@ -87,7 +87,7 @@
   <a class="line" href="index.html">לאתר</a>
 </div>
 
-<div id="hint">לציטוט: הקישו על המילה הראשונה ואז על האחרונה • להגדלה: צביטה <span style="opacity:.6">· גרסה 7</span></div>
+<div id="hint">לציטוט: הקישו על המילה הראשונה ואז על האחרונה • להגדלה: צביטה <span style="opacity:.6">· גרסה 8</span></div>
 
 <div id="viewer"><div id="pagesInner"></div></div>
 <div id="msg" style="display:none"></div>
@@ -299,18 +299,24 @@ async function start(){
 
       // חלוקה למילים + החרגת הערות שוליים
       const items = tc.items;
-      // גודל גוף הטקסט = הגובה הנפוץ ביותר (מבין הגדולים). הערות שוליים קטנות ממנו.
-      const hc={}; let total=0;
-      items.forEach(it=>{ if(it.str&&it.str.trim()){ total++; const h=Math.round(it.height); hc[h]=(hc[h]||0)+1; } });
-      let bodySize=0; const need=Math.max(5, total*0.06);
-      for (const h in hc){ if (hc[h]>=need && (+h)>bodySize) bodySize=+h; }
+      // גודל גוף הטקסט = הגובה השכיח ביותר באזור העליון (70%). הערות (בתחתית) לא נספרות,
+      // וכותרת גדולה לא משתלטת (בוחרים לפי כמות, לא לפי הגובה הגדול).
+      const hc={};
+      items.forEach(it=>{ if(it.str&&it.str.trim()){ const top=base.height-it.transform[5]; if(top < base.height*0.7){ const h=Math.round(it.height); hc[h]=(hc[h]||0)+1; } } });
+      let bodySize=0, bestC=0;
+      for (const h in hc){ if (hc[h]>bestC){ bestC=hc[h]; bodySize=+h; } }
       if (!bodySize) bodySize=14;
+
+      // תחתית הגוף = השורה הנמוכה ביותר בגודל גוף הטקסט. כל מה שמתחתיה = הערות שוליים.
+      let bodyBottom=0;
+      items.forEach(it=>{ if(it.str&&it.str.trim() && Math.round(it.height)===bodySize){ const t=base.height-it.transform[5]; if(t>bodyBottom) bodyBottom=t; } });
 
       textLayer.textDivs.forEach((div,i)=>{
         const it=items[i]; if(!it||!it.str||!it.str.trim()) return;
         const top=base.height-it.transform[5], fh=it.height, s=it.str.trim();
         const isRef = /^[\d]{1,3}$/.test(s);              // מספר בודד = הפניה/מספר עמוד
-        const isFootnote = (fh>0 && fh < bodySize-1) || isRef || (fh>0 && fh<=9);  // הערות קטנות מהגוף
+        // הערה: מספר-הפניה, סימן זעיר, או כל מה שמתחת לשורת הגוף האחרונה (אזור ההערות)
+        const isFootnote = isRef || (fh>0 && fh<=9) || (top > bodyBottom + 4);
         if (isFootnote){ div.classList.add('fn'); return; }
         const ix = it.transform[4], ixe = ix + (it.width||0);
         buildWords(div, n, top, fh, n*100000+i, ix, ixe);
