@@ -2,18 +2,19 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<!-- מאפשר צביטה להגדלה (pinch-zoom) של הדפדפן -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- מבטלים זום של הדפדפן — אנחנו מטפלים בצביטה בעצמנו כדי שרק המסמך יוגדל -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>קריאה — ספר השיחות מתורגם ללה״ק</title>
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #525659; font-family: 'Heebo', sans-serif; }
+  html, body { height: 100%; }
+  body { background: #525659; font-family: 'Heebo', sans-serif; display: flex; flex-direction: column; overflow: hidden; }
 
-  /* סרגל עליון */
+  /* סרגל עליון — קבוע בגודלו, לא מושפע מהצביטה */
   .bar {
-    position: sticky; top: 0; z-index: 10;
+    flex: 0 0 auto;
     background: #1a2942; color: #fff;
     display: flex; align-items: center; gap: 10px;
     padding: 10px 14px; border-bottom: 2px solid #b8933e;
@@ -28,16 +29,24 @@
   }
   .bar a.line { background: transparent; border: 1px solid rgba(255,255,255,.55); }
 
-  #hint { color: #cfd3da; text-align: center; font-size: .8rem; padding: 10px 20px 0; }
+  #hint { flex: 0 0 auto; color: #cfd3da; text-align: center; font-size: .78rem; padding: 8px 20px; }
 
-  /* העמודים — זה מתחת לזה, מותאמים לרוחב */
-  #pages { padding: 12px 8px 28px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
-  #pages canvas {
+  /* אזור הגלילה של המסמך */
+  #viewer {
+    flex: 1 1 auto; overflow: auto; direction: ltr;
+    touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch;
+  }
+  /* מיכל העמודים — הרוחב שלו נקבע ע"י הצביטה (JS) */
+  #pagesInner {
+    margin: 0 auto; padding: 12px 0 28px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  #pagesInner canvas {
+    width: 100%; height: auto; display: block;
     background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,.4);
-    width: 100%; max-width: 820px; height: auto; display: block;
   }
 
-  #msg { color: #fff; text-align: center; padding: 60px 20px; font-size: 1.05rem; }
+  #msg { color: #fff; text-align: center; padding: 60px 20px; font-size: 1.05rem; margin: auto; }
   #msg a { color: #d4b56a; }
 </style>
 </head>
@@ -49,8 +58,11 @@
   <a class="line" href="index.html">לאתר</a>
 </div>
 
-<div id="hint">להגדלה — צביטה עם שתי אצבעות</div>
-<div id="pages"></div>
+<div id="hint">להגדלה — צביטה עם שתי אצבעות (הכפתורים למעלה נשארים קבועים)</div>
+
+<div id="viewer">
+  <div id="pagesInner"></div>
+</div>
 <div id="msg" style="display:none"></div>
 
 <script type="module">
@@ -65,18 +77,19 @@ const title = params.get('title') || 'קריאת השיחה';
 const startPage = parseInt((params.get('page') || '').replace(/[^0-9]/g, ''), 10) || 0;
 
 const $ = id => document.getElementById(id);
+const viewer = $('viewer');
+const inner  = $('pagesInner');
 $('title').textContent = title;
 document.title = title + ' — ספר השיחות מתורגם ללה״ק';
 $('dl').href = file;
 
 function showError(html){
-  $('pages').style.display = 'none';
+  viewer.style.display = 'none';
   $('hint').style.display = 'none';
   $('msg').style.display = 'block';
   $('msg').innerHTML = html;
 }
 
-// הגנה: מציגים רק קבצי PDF מתוך האתר עצמו
 if (!file || file.indexOf('//') !== -1 || file.indexOf('..') !== -1 || !/\.pdf$/i.test(file)) {
   showError('לא נמצא קובץ להצגה.');
 } else {
@@ -97,47 +110,91 @@ const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
 const MAX_SIDE = IS_IOS ? 4000 : 8192;
 const MAX_AREA = (IS_IOS ? 16 : 60) * 1024 * 1024;
 
+// --- זום (צביטה) ---
+let baseW = 300;              // רוחב התצוגה הבסיסי (התאמה לרוחב)
+let Z = 1;                    // מכפיל הזום הנוכחי
+const MINZ = 1, MAXZ = 4;
+
+function applyZoom(){ inner.style.width = (baseW * Z) + 'px'; }
+function clamp(v, a, b){ return Math.min(Math.max(v, a), b); }
+
+function setZoom(z, focalX, focalY){
+  z = clamp(z, MINZ, MAXZ);
+  const rect = viewer.getBoundingClientRect();
+  const cxIn = viewer.scrollLeft + (focalX - rect.left);
+  const cyIn = viewer.scrollTop  + (focalY - rect.top);
+  const scale = z / Z;
+  Z = z;
+  applyZoom();
+  viewer.scrollLeft = cxIn * scale - (focalX - rect.left);
+  viewer.scrollTop  = cyIn * scale - (focalY - rect.top);
+}
+
+function distOf(e){
+  const dx = e.touches[0].clientX - e.touches[1].clientX;
+  const dy = e.touches[0].clientY - e.touches[1].clientY;
+  return Math.hypot(dx, dy);
+}
+function midOf(e){
+  return { x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+           y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
+}
+
+let pinch = null;
+viewer.addEventListener('touchstart', e => {
+  if (e.touches.length === 2){ pinch = { d0: distOf(e), z0: Z }; e.preventDefault(); }
+}, { passive: false });
+viewer.addEventListener('touchmove', e => {
+  if (pinch && e.touches.length === 2){
+    e.preventDefault();
+    const m = midOf(e);
+    setZoom(pinch.z0 * distOf(e) / pinch.d0, m.x, m.y);
+  }
+}, { passive: false });
+viewer.addEventListener('touchend', e => { if (e.touches.length < 2) pinch = null; }, { passive: true });
+
+// זום גם בגלגלת עם Ctrl (במחשב)
+viewer.addEventListener('wheel', e => {
+  if (e.ctrlKey){ e.preventDefault(); setZoom(Z * (e.deltaY < 0 ? 1.1 : 0.9), e.clientX, e.clientY); }
+}, { passive: false });
+
 async function start(){
   $('msg').style.display = 'block';
   $('msg').textContent = 'טוען את השיחה…';
   try {
     const task = pdfjsLib.getDocument({
       url: file,
-      // ציור האותיות ישירות מהגופן המוטמע — מתקן את פיזור העברית בטלפון
-      disableFontFace: true,
+      disableFontFace: true,   // ציור מהגופן המוטמע — מתקן פיזור עברית בטלפון
       useSystemFonts: false
     });
     const pdf = await task.promise;
     $('msg').style.display = 'none';
 
     const dpr = window.devicePixelRatio || 1;
-    // רוחב התצוגה של כל עמוד (מותאם לרוחב, עד 820px)
-    const availCss = Math.min($('pages').clientWidth - 16, 820);
+    baseW = Math.max(viewer.clientWidth - 16, 100);   // רוחב בסיס = התאמה לרוחב המסך
+    applyZoom();
 
     let target = null;
     for (let n = 1; n <= pdf.numPages; n++){
       const page = await pdf.getPage(n);
       const base = page.getViewport({ scale: 1 });
 
-      const fitScale = availCss / base.width;
-      // מרנדרים בפי-2 מצפיפות המסך — כדי שגם בצביטה להגדלה הטקסט יישאר חד
-      let renderScale = fitScale * dpr * 2;
+      // מרנדרים בפי-2 מצפיפות המסך — כדי שגם בהגדלה חזקה הטקסט יישאר חד
+      let renderScale = (baseW / base.width) * dpr * 2;
       let w = base.width * renderScale, h = base.height * renderScale;
-      const clamp = Math.min(MAX_SIDE / w, MAX_SIDE / h, Math.sqrt(MAX_AREA / (w * h)), 1);
-      renderScale *= clamp;
+      const clampF = Math.min(MAX_SIDE / w, MAX_SIDE / h, Math.sqrt(MAX_AREA / (w * h)), 1);
+      renderScale *= clampF;
 
       const vp = page.getViewport({ scale: renderScale });
       const canvas = document.createElement('canvas');
       canvas.width  = Math.floor(vp.width);
       canvas.height = Math.floor(vp.height);
-      // התצוגה מותאמת לרוחב (ה-CSS מטפל); הצביטה של הדפדפן מגדילה בלי לאבד חדות
-      $('pages').appendChild(canvas);
+      inner.appendChild(canvas);
       await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
 
       if (startPage && n === startPage) target = canvas;
     }
 
-    // אם התבקש עמוד מסוים (קישור ממפתח) — גוללים אליו
     if (target) target.scrollIntoView({ block: 'start' });
   } catch (err) {
     showError('לא ניתן להציג את הקובץ כרגע. אפשר <a href="' + file + '">להוריד אותו ישירות</a>.<br><small style="opacity:.6">' + (err && err.message ? err.message : '') + '</small>');
