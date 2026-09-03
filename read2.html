@@ -87,7 +87,7 @@
   <a class="line" href="index.html">לאתר</a>
 </div>
 
-<div id="hint">לציטוט: הקישו על המילה הראשונה ואז על האחרונה • להגדלה: צביטה <span style="opacity:.6">· גרסה 9</span></div>
+<div id="hint">לציטוט: הקישו על המילה הראשונה ואז על האחרונה • להגדלה: צביטה <span style="opacity:.6">· גרסה 10</span></div>
 
 <div id="viewer"><div id="pagesInner"></div></div>
 <div id="msg" style="display:none"></div>
@@ -279,7 +279,7 @@ async function start(){
 
       const pageEl=document.createElement('div'); pageEl.className='page'; pageEl.dataset.page=n; pageEl.dataset.bw=base.width;
 
-      let rs=(baseW/base.width)*dpr*2;
+      let rs=(baseW/base.width)*dpr*2.5;   // רזולוציית רינדור (פי-2.5 מצפיפות המסך = חד יותר)
       let w=base.width*rs, h=base.height*rs;
       rs*=Math.min(MAX_SIDE/w, MAX_SIDE/h, Math.sqrt(MAX_AREA/(w*h)), 1);
       const vp=page.getViewport({scale:rs});
