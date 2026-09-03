@@ -26,35 +26,37 @@
   }
   .bar a.line { background: transparent; border: 1px solid rgba(255,255,255,.55); }
 
-  #hint { flex: 0 0 auto; color: #cfd3da; text-align: center; font-size: .78rem; padding: 8px 20px; }
+  #hint { flex: 0 0 auto; color: #cfd3da; text-align: center; font-size: .78rem; padding: 8px 16px; line-height: 1.4; }
 
   #viewer {
     flex: 1 1 auto; overflow: auto; direction: ltr;
     touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch;
   }
-  #pagesInner {
-    margin: 0 auto; padding: 12px 0 90px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-  }
+  #pagesInner { margin: 0 auto; padding: 12px 0 96px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .page { position: relative; width: 100%; }
-  .page canvas {
-    width: 100%; height: auto; display: block;
-    background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,.4); position: relative; z-index: 1;
-  }
+  .page canvas { width: 100%; height: auto; display: block; background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,.4); position: relative; z-index: 1; }
 
-  /* שכבת הטקסט השקופה לסימון */
+  /* שכבת טקסט — בחירה רגילה מבוטלת; בוחרים בהקשה על מילים */
   .textLayer {
-    position: absolute; inset: 0; overflow: clip; opacity: 1;
-    line-height: 1; text-align: initial; text-size-adjust: none;
-    forced-color-adjust: none; transform-origin: 0 0; z-index: 2; caret-color: transparent;
+    position: absolute; inset: 0; overflow: clip; opacity: 1; line-height: 1;
+    text-align: initial; text-size-adjust: none; forced-color-adjust: none;
+    transform-origin: 0 0; z-index: 2;
+    user-select: none; -webkit-user-select: none;
   }
   .textLayer :is(span, br) {
-    color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0 0;
+    color: transparent; position: absolute; white-space: pre; transform-origin: 0 0;
   }
   .textLayer span.markedContent { top: 0; height: 0; }
-  ::selection { background: rgba(184,147,62,.40); }
+  /* מילה הניתנת להקשה */
+  .textLayer span.w {
+    position: static; white-space: pre; color: transparent;
+    pointer-events: auto; cursor: pointer; border-radius: 3px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .textLayer span.w.sel { background: rgba(184,147,62,.45); }
+  .textLayer span.w.anchor { background: rgba(184,147,62,.65); }
 
-  /* כפתור העתקת ציטוט */
+  /* כפתור העתקה + טוסט */
   #cite {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 60;
     background: #b8933e; color: #fff; border: none; border-radius: 26px;
@@ -62,12 +64,10 @@
     box-shadow: 0 6px 20px rgba(0,0,0,.45); display: none; cursor: pointer;
   }
   #cite.show { display: block; }
-
   #toast {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 70;
     background: #1a2942; color: #fff; border: 1px solid #b8933e; border-radius: 24px;
-    padding: 12px 22px; font-size: .95rem; box-shadow: 0 6px 20px rgba(0,0,0,.45);
-    display: none;
+    padding: 12px 22px; font-size: .95rem; box-shadow: 0 6px 20px rgba(0,0,0,.45); display: none;
   }
   #toast.show { display: block; }
 
@@ -83,11 +83,9 @@
   <a class="line" href="index.html">לאתר</a>
 </div>
 
-<div id="hint">להגדלה — צביטה • לציטוט — סמנו טקסט ולחצו "העתק ציטוט"</div>
+<div id="hint">לציטוט: הקישו על המילה הראשונה ואז על האחרונה • להגדלה: צביטה</div>
 
-<div id="viewer">
-  <div id="pagesInner"></div>
-</div>
+<div id="viewer"><div id="pagesInner"></div></div>
 <div id="msg" style="display:none"></div>
 
 <button id="cite">📋 העתק ציטוט</button>
@@ -95,168 +93,181 @@
 
 <script type="module">
 import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.min.mjs';
-
 const PDFJS_BASE = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/';
 pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + 'build/pdf.worker.min.mjs';
 
 const params = new URLSearchParams(location.search);
 const file  = params.get('file') || '';
 const title = params.get('title') || 'קריאת השיחה';
-const startPage = parseInt((params.get('page') || '').replace(/[^0-9]/g, ''), 10) || 0;
+const startPage = parseInt((params.get('page') || '').replace(/[^0-9]/g,''),10) || 0;
 
 const $ = id => document.getElementById(id);
-const viewer = $('viewer');
-const inner  = $('pagesInner');
+const viewer = $('viewer'), inner = $('pagesInner'), citeBtn = $('cite'), toastEl = $('toast');
 $('title').textContent = title;
 document.title = title + ' — ספר השיחות מתורגם ללה״ק';
 $('dl').href = file;
 
-function showError(html){
-  viewer.style.display = 'none'; $('hint').style.display = 'none';
-  $('msg').style.display = 'block'; $('msg').innerHTML = html;
-}
-
-if (!file || file.indexOf('//') !== -1 || file.indexOf('..') !== -1 || !/\.pdf$/i.test(file)) {
-  showError('לא נמצא קובץ להצגה.');
-} else { start(); }
+function showError(html){ viewer.style.display='none'; $('hint').style.display='none'; $('msg').style.display='block'; $('msg').innerHTML=html; }
+if (!file || file.indexOf('//')!==-1 || file.indexOf('..')!==-1 || !/\.pdf$/i.test(file)) showError('לא נמצא קובץ להצגה.'); else start();
 
 try {
-  const readSet = JSON.parse(localStorage.getItem('sichos-read') || '{}');
-  readSet[file] = Date.now();
-  localStorage.setItem('sichos-read', JSON.stringify(readSet));
-  localStorage.setItem('sichos-last', JSON.stringify({ file: file, title: title, at: Date.now() }));
-} catch (e) {}
+  const rs = JSON.parse(localStorage.getItem('sichos-read')||'{}'); rs[file]=Date.now();
+  localStorage.setItem('sichos-read', JSON.stringify(rs));
+  localStorage.setItem('sichos-last', JSON.stringify({file, title, at:Date.now()}));
+} catch(e){}
 
-const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
-               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
 const MAX_SIDE = IS_IOS ? 4000 : 8192;
 const MAX_AREA = (IS_IOS ? 16 : 60) * 1024 * 1024;
 
-// --- זום (צביטה) ---
-let baseW = 300, Z = 1;
-const MINZ = 1, MAXZ = 4;
-const clamp = (v,a,b) => Math.min(Math.max(v,a),b);
-
+// ---------- זום (צביטה) ----------
+let baseW = 300, Z = 1; const MINZ=1, MAXZ=4;
+const clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
 function applyZoom(){
-  inner.style.width = (baseW * Z) + 'px';
-  document.querySelectorAll('.page').forEach(p => {
-    const tl = p.querySelector('.textLayer');
-    const bw = parseFloat(p.dataset.bw);
-    if (tl && bw) tl.style.setProperty('--scale-factor', (baseW * Z) / bw);
+  inner.style.width = (baseW*Z)+'px';
+  document.querySelectorAll('.page').forEach(p=>{
+    const tl=p.querySelector('.textLayer'), bw=parseFloat(p.dataset.bw);
+    if(tl&&bw) tl.style.setProperty('--scale-factor',(baseW*Z)/bw);
   });
 }
-function setZoom(z, fx, fy){
-  z = clamp(z, MINZ, MAXZ);
-  const rect = viewer.getBoundingClientRect();
-  const cx = viewer.scrollLeft + (fx - rect.left);
-  const cy = viewer.scrollTop  + (fy - rect.top);
-  const s = z / Z; Z = z; applyZoom();
-  viewer.scrollLeft = cx * s - (fx - rect.left);
-  viewer.scrollTop  = cy * s - (fy - rect.top);
+function setZoom(z,fx,fy){
+  z=clamp(z,MINZ,MAXZ);
+  const r=viewer.getBoundingClientRect();
+  const cx=viewer.scrollLeft+(fx-r.left), cy=viewer.scrollTop+(fy-r.top), s=z/Z;
+  Z=z; applyZoom();
+  viewer.scrollLeft=cx*s-(fx-r.left); viewer.scrollTop=cy*s-(fy-r.top);
 }
-const distOf = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-const midOf  = e => ({ x:(e.touches[0].clientX+e.touches[1].clientX)/2, y:(e.touches[0].clientY+e.touches[1].clientY)/2 });
+const distOf=e=>Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+const midOf=e=>({x:(e.touches[0].clientX+e.touches[1].clientX)/2, y:(e.touches[0].clientY+e.touches[1].clientY)/2});
+let pinch=null;
+viewer.addEventListener('touchstart',e=>{ if(e.touches.length===2){ pinch={d0:distOf(e),z0:Z}; e.preventDefault(); } },{passive:false});
+viewer.addEventListener('touchmove', e=>{ if(pinch&&e.touches.length===2){ e.preventDefault(); const m=midOf(e); setZoom(pinch.z0*distOf(e)/pinch.d0,m.x,m.y);} },{passive:false});
+viewer.addEventListener('touchend',  e=>{ if(e.touches.length<2) pinch=null; },{passive:true});
+viewer.addEventListener('wheel',e=>{ if(e.ctrlKey){ e.preventDefault(); setZoom(Z*(e.deltaY<0?1.1:0.9),e.clientX,e.clientY);} },{passive:false});
 
-let pinch = null;
-viewer.addEventListener('touchstart', e => { if (e.touches.length===2){ pinch={d0:distOf(e), z0:Z}; e.preventDefault(); } }, {passive:false});
-viewer.addEventListener('touchmove',  e => { if (pinch && e.touches.length===2){ e.preventDefault(); const m=midOf(e); setZoom(pinch.z0*distOf(e)/pinch.d0, m.x, m.y); } }, {passive:false});
-viewer.addEventListener('touchend',   e => { if (e.touches.length<2) pinch=null; }, {passive:true});
-viewer.addEventListener('wheel', e => { if (e.ctrlKey){ e.preventDefault(); setZoom(Z*(e.deltaY<0?1.1:0.9), e.clientX, e.clientY); } }, {passive:false});
+// ---------- בחירת ציטוט בהקשה ----------
+const tokens = [];      // {el, page, text}
+let anchor = null, focus = null;
 
-// --- ציטוט ---
-const citeBtn = $('cite'), toastEl = $('toast');
-let lastSel = null, toastT = null;
+function cleanText(t){ return t.replace(/­/g,'').replace(/\s+/g,' ').trim(); }
 
-function cleanText(t){
-  return t.replace(/­/g, '')   // soft hyphen
-          .replace(/\s+/g, ' ')     // רווחים/שורות מרובים → רווח אחד
-          .trim();
+function highlight(){
+  const lo = Math.min(anchor, focus==null?anchor:focus);
+  const hi = Math.max(anchor, focus==null?anchor:focus);
+  tokens.forEach((t,i)=>{
+    t.el.classList.toggle('sel', focus!=null && i>=lo && i<=hi);
+    t.el.classList.toggle('anchor', focus==null && i===anchor);
+  });
 }
-function elOf(node){ return node && (node.nodeType===1 ? node : node.parentElement); }
-function readSelection(){
-  const sel = window.getSelection();
-  if (!sel || sel.isCollapsed) return null;
-  // הסימון חייב להיות בתוך שכבת הטקסט של שיחה (לא בכותרת/כפתורים)
-  const aEl = elOf(sel.anchorNode);
-  if (!aEl || !aEl.closest || !aEl.closest('.textLayer')) return null;
-  const text = cleanText(sel.toString());
-  if (text.length < 2) return null;
-  const pageEl = aEl.closest('.page');
-  return { text, page: pageEl ? pageEl.dataset.page : '' };
+function clearSel(){ anchor=null; focus=null; tokens.forEach(t=>t.el.classList.remove('sel','anchor')); citeBtn.classList.remove('show'); }
+
+function onWordTap(idx){
+  if (anchor===null || focus!==null){ anchor=idx; focus=null; }   // התחלה חדשה
+  else { focus=idx; }                                             // סוף
+  highlight();
+  citeBtn.classList.toggle('show', focus!=null);
 }
-let selTimer = null;
-document.addEventListener('selectionchange', () => {
-  clearTimeout(selTimer);
-  selTimer = setTimeout(() => {
-    const info = readSelection();
-    if (info){ lastSel = info; citeBtn.classList.add('show'); }
-    else { lastSel = null; citeBtn.classList.remove('show'); }
-  }, 80);
+inner.addEventListener('click', e=>{
+  const w = e.target.closest('.w');
+  if (w){ onWordTap(parseInt(w.dataset.idx,10)); }
+  else if (!e.target.closest('#cite')) { clearSel(); }   // הקשה מחוץ למילים — איפוס
 });
-function toast(t){
-  citeBtn.classList.remove('show');
-  toastEl.textContent = t; toastEl.classList.add('show');
-  clearTimeout(toastT); toastT = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+
+function currentCitation(){
+  if (anchor===null || focus===null) return null;
+  const lo=Math.min(anchor,focus), hi=Math.max(anchor,focus);
+  const text = cleanText(tokens.slice(lo,hi+1).map(t=>t.text).join(' '));
+  if (!text) return null;
+  const page = tokens[lo].page;
+  return '«'+text+'»\n\n'+title+(page?', עמ׳ '+page:'')+'\nספר השיחות מתורגם ללשון הקודש';
 }
-citeBtn.addEventListener('click', async () => {
-  const info = lastSel || readSelection();
-  if (!info) return;
-  const citation = '«' + info.text + '»\n\n' + title + (info.page ? ', עמ׳ ' + info.page : '') + '\nספר השיחות מתורגם ללשון הקודש';
-  try { await navigator.clipboard.writeText(citation); toast('הציטוט הועתק ✓'); }
-  catch (e) {
-    // גיבוי: בחירה זמנית בשדה טקסט
-    try { const ta=document.createElement('textarea'); ta.value=citation; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast('הציטוט הועתק ✓'); }
-    catch(e2){ toast('לא ניתן להעתיק במכשיר זה'); }
+function toast(t){ citeBtn.classList.remove('show'); toastEl.textContent=t; toastEl.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>toastEl.classList.remove('show'),2200); }
+citeBtn.addEventListener('click', async ()=>{
+  const c = currentCitation(); if(!c) return;
+  try { await navigator.clipboard.writeText(c); toast('הציטוט הועתק ✓'); }
+  catch(e){ try{ const ta=document.createElement('textarea'); ta.value=c; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast('הציטוט הועתק ✓'); }catch(e2){ toast('לא ניתן להעתיק במכשיר זה'); } }
+  clearSel();
+});
+
+// זיהוי גבול אזור ההערות בעמודה (הפער האנכי הגדול בחצי התחתון)
+function footnoteBoundary(tops, H){
+  const s = tops.slice().sort((a,b)=>a-b);
+  if (s.length<4) return Infinity;
+  const gaps=[]; for(let i=1;i<s.length;i++) gaps.push(s[i]-s[i-1]);
+  const med = gaps.slice().sort((a,b)=>a-b)[Math.floor(gaps.length/2)] || 15;
+  let boundary=Infinity, best=med*1.8;
+  for(let i=1;i<s.length;i++){ if(s[i]>H*0.5 && (s[i]-s[i-1])>best){ best=s[i]-s[i-1]; boundary=s[i]; } }
+  return boundary;
+}
+
+function buildWords(div, pageNum){
+  const text = div.textContent; div.textContent='';
+  for (const part of text.split(/(\s+)/)){
+    if (part==='' ) continue;
+    if (/^\s+$/.test(part)){ div.appendChild(document.createTextNode(part)); }
+    else {
+      const w=document.createElement('span'); w.className='w'; w.textContent=part; w.dataset.idx=tokens.length;
+      tokens.push({el:w, page:pageNum, text:part}); div.appendChild(w);
+    }
   }
-});
+}
 
 async function start(){
   $('msg').style.display='block'; $('msg').textContent='טוען את השיחה…';
   try {
     const pdf = await pdfjsLib.getDocument({ url:file, disableFontFace:true, useSystemFonts:false }).promise;
     $('msg').style.display='none';
-
     const dpr = window.devicePixelRatio || 1;
-    baseW = Math.max(viewer.clientWidth - 16, 100);
-    inner.style.width = (baseW * Z) + 'px';
+    baseW = Math.max(viewer.clientWidth-16, 100);
+    inner.style.width = (baseW*Z)+'px';
 
-    let target = null;
-    for (let n=1; n<=pdf.numPages; n++){
+    let target=null;
+    for (let n=1;n<=pdf.numPages;n++){
       const page = await pdf.getPage(n);
-      const base = page.getViewport({ scale: 1 });
+      const base = page.getViewport({scale:1});
+      const midX = base.width/2;
 
-      const pageEl = document.createElement('div');
-      pageEl.className = 'page';
-      pageEl.dataset.page = n;
-      pageEl.dataset.bw = base.width;
+      const pageEl=document.createElement('div'); pageEl.className='page'; pageEl.dataset.page=n; pageEl.dataset.bw=base.width;
 
-      // קנבס ברזולוציה גבוהה
-      let renderScale = (baseW / base.width) * dpr * 2;
-      let w = base.width*renderScale, h = base.height*renderScale;
-      renderScale *= Math.min(MAX_SIDE/w, MAX_SIDE/h, Math.sqrt(MAX_AREA/(w*h)), 1);
-      const vp = page.getViewport({ scale: renderScale });
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.floor(vp.width); canvas.height = Math.floor(vp.height);
+      let rs=(baseW/base.width)*dpr*2;
+      let w=base.width*rs, h=base.height*rs;
+      rs*=Math.min(MAX_SIDE/w, MAX_SIDE/h, Math.sqrt(MAX_AREA/(w*h)), 1);
+      const vp=page.getViewport({scale:rs});
+      const canvas=document.createElement('canvas'); canvas.width=Math.floor(vp.width); canvas.height=Math.floor(vp.height);
       pageEl.appendChild(canvas);
 
-      // שכבת טקסט לסימון
-      const tlDiv = document.createElement('div');
-      tlDiv.className = 'textLayer';
-      tlDiv.style.setProperty('--scale-factor', (baseW * Z) / base.width);
+      const tlDiv=document.createElement('div'); tlDiv.className='textLayer';
+      tlDiv.style.setProperty('--scale-factor',(baseW*Z)/base.width);
       pageEl.appendChild(tlDiv);
-
       inner.appendChild(pageEl);
 
-      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      await page.render({ canvasContext:canvas.getContext('2d'), viewport:vp }).promise;
 
-      const textContent = await page.getTextContent();
-      const textLayer = new pdfjsLib.TextLayer({ textContentSource: textContent, container: tlDiv, viewport: page.getViewport({ scale: 1 }) });
+      const tc = await page.getTextContent();
+      const textLayer = new pdfjsLib.TextLayer({ textContentSource:tc, container:tlDiv, viewport: page.getViewport({scale:1}) });
       await textLayer.render();
 
-      if (startPage && n===startPage) target = pageEl;
+      // חלוקה למילים + החרגת הערות שוליים
+      const items = tc.items;
+      const topsR=[], topsL=[];
+      items.forEach(it=>{ if(it.str&&it.str.trim()){ const top=base.height-it.transform[5]; (it.transform[4]>=midX?topsR:topsL).push(top); } });
+      const bR=footnoteBoundary(topsR, base.height), bL=footnoteBoundary(topsL, base.height);
+
+      textLayer.textDivs.forEach((div,i)=>{
+        const it=items[i]; if(!it||!it.str||!it.str.trim()) return;
+        const top=base.height-it.transform[5], x=it.transform[4], fh=it.height;
+        const bnd = x>=midX ? bR : bL;
+        const s = it.str.trim();
+        const isRef = /^[\d]{1,3}$/.test(s);   // מספר בודד בגוף = הפניה/מספר עמוד → החרגה
+        const isFootnote = (top>=bnd) || (fh>0 && fh<=9) || isRef;  // גוש הערות + מספרי הפניה
+        if (isFootnote){ div.classList.add('fn'); return; }
+        buildWords(div, n);
+      });
+
+      if (startPage && n===startPage) target=pageEl;
     }
-    if (target) target.scrollIntoView({ block:'start' });
-  } catch (err) {
+    if (target) target.scrollIntoView({block:'start'});
+  } catch(err){
     showError('לא ניתן להציג את הקובץ כרגע. אפשר <a href="'+file+'">להוריד אותו ישירות</a>.<br><small style="opacity:.6">'+(err&&err.message?err.message:'')+'</small>');
   }
 }
