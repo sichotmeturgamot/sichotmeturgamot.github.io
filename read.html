@@ -138,9 +138,30 @@ const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platf
 const MAX_SIDE = IS_IOS ? 4000 : 8192;
 const MAX_AREA = (IS_IOS ? 16 : 60) * 1024 * 1024;
 
-// ---------- זום (צביטה) ----------
-let baseW = 300, Z = 1; const MINZ=1, MAXZ=4;
+// ---------- זום (צביטה) + ציור מחדש ברזולוציה מתאימה ----------
+let baseW = 300, Z = 1, dpr = window.devicePixelRatio || 1;
+const MINZ=1, MAXZ=4;
 const clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
+const pageRecs = [];   // {page, canvas, base, task}
+
+// מצייר עמוד ברזולוציה של הרמה הנוכחית: גודל הקנבס = גודל התצוגה × צפיפות הפיקסלים (1:1 = חד)
+async function renderCanvas(rec){
+  const base = rec.base;
+  let rs = (baseW * Z * dpr) / base.width;
+  let w = base.width*rs, h = base.height*rs;
+  rs *= Math.min(MAX_SIDE/w, MAX_SIDE/h, Math.sqrt(MAX_AREA/(w*h)), 1);
+  const vp = rec.page.getViewport({scale:rs});
+  if (rec.task){ try{ rec.task.cancel(); }catch(e){} }
+  rec.canvas.width = Math.floor(vp.width);
+  rec.canvas.height = Math.floor(vp.height);
+  const task = rec.page.render({ canvasContext: rec.canvas.getContext('2d'), viewport: vp });
+  rec.task = task;
+  try { await task.promise; } catch(e){}
+  if (rec.task===task) rec.task=null;
+}
+let reT=null;
+function scheduleRerender(){ clearTimeout(reT); reT=setTimeout(()=>pageRecs.forEach(renderCanvas), 180); }
+
 function applyZoom(){
   inner.style.width = (baseW*Z)+'px';
   document.querySelectorAll('.page').forEach(p=>{
@@ -160,8 +181,8 @@ const midOf=e=>({x:(e.touches[0].clientX+e.touches[1].clientX)/2, y:(e.touches[0
 let pinch=null;
 viewer.addEventListener('touchstart',e=>{ if(e.touches.length===2){ pinch={d0:distOf(e),z0:Z}; e.preventDefault(); } },{passive:false});
 viewer.addEventListener('touchmove', e=>{ if(pinch&&e.touches.length===2){ e.preventDefault(); const m=midOf(e); setZoom(pinch.z0*distOf(e)/pinch.d0,m.x,m.y);} },{passive:false});
-viewer.addEventListener('touchend',  e=>{ if(e.touches.length<2) pinch=null; },{passive:true});
-viewer.addEventListener('wheel',e=>{ if(e.ctrlKey){ e.preventDefault(); setZoom(Z*(e.deltaY<0?1.1:0.9),e.clientX,e.clientY);} },{passive:false});
+viewer.addEventListener('touchend',  e=>{ if(e.touches.length<2 && pinch){ pinch=null; scheduleRerender(); } },{passive:true});
+viewer.addEventListener('wheel',e=>{ if(e.ctrlKey){ e.preventDefault(); setZoom(Z*(e.deltaY<0?1.1:0.9),e.clientX,e.clientY); scheduleRerender(); } },{passive:false});
 
 // ---------- בחירת ציטוט בהקשה ----------
 const tokens = [];      // {el, page, text}
@@ -277,7 +298,7 @@ async function start(){
   try {
     const pdf = await pdfjsLib.getDocument({ url:file, disableFontFace:true, useSystemFonts:false }).promise;
     $('msg').style.display='none';
-    const dpr = window.devicePixelRatio || 1;
+    dpr = window.devicePixelRatio || 1;
     baseW = Math.min(Math.max(viewer.clientWidth-16, 100), 820);  // רוחב קריאה נוח (במחשב לא נמתח לכל המסך)
     inner.style.width = (baseW*Z)+'px';
 
@@ -289,11 +310,7 @@ async function start(){
 
       const pageEl=document.createElement('div'); pageEl.className='page'; pageEl.dataset.page=n; pageEl.dataset.bw=base.width;
 
-      let rs=(baseW/base.width)*dpr*3.5;   // רזולוציית רינדור (פי-3.5 מצפיפות המסך = חד יותר)
-      let w=base.width*rs, h=base.height*rs;
-      rs*=Math.min(MAX_SIDE/w, MAX_SIDE/h, Math.sqrt(MAX_AREA/(w*h)), 1);
-      const vp=page.getViewport({scale:rs});
-      const canvas=document.createElement('canvas'); canvas.width=Math.floor(vp.width); canvas.height=Math.floor(vp.height);
+      const canvas=document.createElement('canvas');
       pageEl.appendChild(canvas);
 
       const tlDiv=document.createElement('div'); tlDiv.className='textLayer';
@@ -301,7 +318,8 @@ async function start(){
       pageEl.appendChild(tlDiv);
       inner.appendChild(pageEl);
 
-      await page.render({ canvasContext:canvas.getContext('2d'), viewport:vp }).promise;
+      const rec={page, canvas, base, task:null}; pageRecs.push(rec);
+      await renderCanvas(rec);   // ציור ראשוני ברזולוציה של הרמה הנוכחית (Z=1 = חד)
 
       const tc = await page.getTextContent();
       const textLayer = new pdfjsLib.TextLayer({ textContentSource:tc, container:tlDiv, viewport: page.getViewport({scale:1}) });
