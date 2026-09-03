@@ -2,7 +2,6 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<!-- מבטלים זום של הדפדפן — אנחנו מטפלים בצביטה בעצמנו כדי שרק המסמך יוגדל -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>קריאה — ספר השיחות מתורגם ללה״ק</title>
 <meta name="robots" content="noindex">
@@ -12,10 +11,8 @@
   html, body { height: 100%; }
   body { background: #525659; font-family: 'Heebo', sans-serif; display: flex; flex-direction: column; overflow: hidden; }
 
-  /* סרגל עליון — קבוע בגודלו, לא מושפע מהצביטה */
   .bar {
-    flex: 0 0 auto;
-    background: #1a2942; color: #fff;
+    flex: 0 0 auto; background: #1a2942; color: #fff;
     display: flex; align-items: center; gap: 10px;
     padding: 10px 14px; border-bottom: 2px solid #b8933e;
   }
@@ -31,20 +28,48 @@
 
   #hint { flex: 0 0 auto; color: #cfd3da; text-align: center; font-size: .78rem; padding: 8px 20px; }
 
-  /* אזור הגלילה של המסמך */
   #viewer {
     flex: 1 1 auto; overflow: auto; direction: ltr;
     touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch;
   }
-  /* מיכל העמודים — הרוחב שלו נקבע ע"י הצביטה (JS) */
   #pagesInner {
-    margin: 0 auto; padding: 12px 0 28px;
+    margin: 0 auto; padding: 12px 0 90px;
     display: flex; flex-direction: column; align-items: center; gap: 14px;
   }
-  #pagesInner canvas {
+  .page { position: relative; width: 100%; }
+  .page canvas {
     width: 100%; height: auto; display: block;
-    background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,.4);
+    background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,.4); position: relative; z-index: 1;
   }
+
+  /* שכבת הטקסט השקופה לסימון */
+  .textLayer {
+    position: absolute; inset: 0; overflow: clip; opacity: 1;
+    line-height: 1; text-align: initial; text-size-adjust: none;
+    forced-color-adjust: none; transform-origin: 0 0; z-index: 2; caret-color: transparent;
+  }
+  .textLayer :is(span, br) {
+    color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0 0;
+  }
+  .textLayer span.markedContent { top: 0; height: 0; }
+  ::selection { background: rgba(184,147,62,.40); }
+
+  /* כפתור העתקת ציטוט */
+  #cite {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 60;
+    background: #b8933e; color: #fff; border: none; border-radius: 26px;
+    padding: 13px 24px; font-size: .98rem; font-family: 'Heebo', sans-serif; font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0,0,0,.45); display: none; cursor: pointer;
+  }
+  #cite.show { display: block; }
+
+  #toast {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 70;
+    background: #1a2942; color: #fff; border: 1px solid #b8933e; border-radius: 24px;
+    padding: 12px 22px; font-size: .95rem; box-shadow: 0 6px 20px rgba(0,0,0,.45);
+    display: none;
+  }
+  #toast.show { display: block; }
 
   #msg { color: #fff; text-align: center; padding: 60px 20px; font-size: 1.05rem; margin: auto; }
   #msg a { color: #d4b56a; }
@@ -58,12 +83,15 @@
   <a class="line" href="index.html">לאתר</a>
 </div>
 
-<div id="hint">להגדלה — צביטה עם שתי אצבעות (הכפתורים למעלה נשארים קבועים)</div>
+<div id="hint">להגדלה — צביטה • לציטוט — סמנו טקסט ולחצו "העתק ציטוט"</div>
 
 <div id="viewer">
   <div id="pagesInner"></div>
 </div>
 <div id="msg" style="display:none"></div>
+
+<button id="cite">📋 העתק ציטוט</button>
+<div id="toast"></div>
 
 <script type="module">
 import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.min.mjs';
@@ -84,19 +112,14 @@ document.title = title + ' — ספר השיחות מתורגם ללה״ק';
 $('dl').href = file;
 
 function showError(html){
-  viewer.style.display = 'none';
-  $('hint').style.display = 'none';
-  $('msg').style.display = 'block';
-  $('msg').innerHTML = html;
+  viewer.style.display = 'none'; $('hint').style.display = 'none';
+  $('msg').style.display = 'block'; $('msg').innerHTML = html;
 }
 
 if (!file || file.indexOf('//') !== -1 || file.indexOf('..') !== -1 || !/\.pdf$/i.test(file)) {
   showError('לא נמצא קובץ להצגה.');
-} else {
-  start();
-}
+} else { start(); }
 
-// מעקב קריאה (נשמר רק בדפדפן של הגולש)
 try {
   const readSet = JSON.parse(localStorage.getItem('sichos-read') || '{}');
   readSet[file] = Date.now();
@@ -104,100 +127,137 @@ try {
   localStorage.setItem('sichos-last', JSON.stringify({ file: file, title: title, at: Date.now() }));
 } catch (e) {}
 
-// גבולות גודל קנבס בטוחים (אייפון מגביל נמוך; אנדרואיד גבוה)
 const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const MAX_SIDE = IS_IOS ? 4000 : 8192;
 const MAX_AREA = (IS_IOS ? 16 : 60) * 1024 * 1024;
 
 // --- זום (צביטה) ---
-let baseW = 300;              // רוחב התצוגה הבסיסי (התאמה לרוחב)
-let Z = 1;                    // מכפיל הזום הנוכחי
+let baseW = 300, Z = 1;
 const MINZ = 1, MAXZ = 4;
+const clamp = (v,a,b) => Math.min(Math.max(v,a),b);
 
-function applyZoom(){ inner.style.width = (baseW * Z) + 'px'; }
-function clamp(v, a, b){ return Math.min(Math.max(v, a), b); }
-
-function setZoom(z, focalX, focalY){
+function applyZoom(){
+  inner.style.width = (baseW * Z) + 'px';
+  document.querySelectorAll('.page').forEach(p => {
+    const tl = p.querySelector('.textLayer');
+    const bw = parseFloat(p.dataset.bw);
+    if (tl && bw) tl.style.setProperty('--scale-factor', (baseW * Z) / bw);
+  });
+}
+function setZoom(z, fx, fy){
   z = clamp(z, MINZ, MAXZ);
   const rect = viewer.getBoundingClientRect();
-  const cxIn = viewer.scrollLeft + (focalX - rect.left);
-  const cyIn = viewer.scrollTop  + (focalY - rect.top);
-  const scale = z / Z;
-  Z = z;
-  applyZoom();
-  viewer.scrollLeft = cxIn * scale - (focalX - rect.left);
-  viewer.scrollTop  = cyIn * scale - (focalY - rect.top);
+  const cx = viewer.scrollLeft + (fx - rect.left);
+  const cy = viewer.scrollTop  + (fy - rect.top);
+  const s = z / Z; Z = z; applyZoom();
+  viewer.scrollLeft = cx * s - (fx - rect.left);
+  viewer.scrollTop  = cy * s - (fy - rect.top);
 }
-
-function distOf(e){
-  const dx = e.touches[0].clientX - e.touches[1].clientX;
-  const dy = e.touches[0].clientY - e.touches[1].clientY;
-  return Math.hypot(dx, dy);
-}
-function midOf(e){
-  return { x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-           y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
-}
+const distOf = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+const midOf  = e => ({ x:(e.touches[0].clientX+e.touches[1].clientX)/2, y:(e.touches[0].clientY+e.touches[1].clientY)/2 });
 
 let pinch = null;
-viewer.addEventListener('touchstart', e => {
-  if (e.touches.length === 2){ pinch = { d0: distOf(e), z0: Z }; e.preventDefault(); }
-}, { passive: false });
-viewer.addEventListener('touchmove', e => {
-  if (pinch && e.touches.length === 2){
-    e.preventDefault();
-    const m = midOf(e);
-    setZoom(pinch.z0 * distOf(e) / pinch.d0, m.x, m.y);
-  }
-}, { passive: false });
-viewer.addEventListener('touchend', e => { if (e.touches.length < 2) pinch = null; }, { passive: true });
+viewer.addEventListener('touchstart', e => { if (e.touches.length===2){ pinch={d0:distOf(e), z0:Z}; e.preventDefault(); } }, {passive:false});
+viewer.addEventListener('touchmove',  e => { if (pinch && e.touches.length===2){ e.preventDefault(); const m=midOf(e); setZoom(pinch.z0*distOf(e)/pinch.d0, m.x, m.y); } }, {passive:false});
+viewer.addEventListener('touchend',   e => { if (e.touches.length<2) pinch=null; }, {passive:true});
+viewer.addEventListener('wheel', e => { if (e.ctrlKey){ e.preventDefault(); setZoom(Z*(e.deltaY<0?1.1:0.9), e.clientX, e.clientY); } }, {passive:false});
 
-// זום גם בגלגלת עם Ctrl (במחשב)
-viewer.addEventListener('wheel', e => {
-  if (e.ctrlKey){ e.preventDefault(); setZoom(Z * (e.deltaY < 0 ? 1.1 : 0.9), e.clientX, e.clientY); }
-}, { passive: false });
+// --- ציטוט ---
+const citeBtn = $('cite'), toastEl = $('toast');
+let lastSel = null, toastT = null;
+
+function cleanText(t){
+  return t.replace(/­/g, '')   // soft hyphen
+          .replace(/\s+/g, ' ')     // רווחים/שורות מרובים → רווח אחד
+          .trim();
+}
+function elOf(node){ return node && (node.nodeType===1 ? node : node.parentElement); }
+function readSelection(){
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return null;
+  // הסימון חייב להיות בתוך שכבת הטקסט של שיחה (לא בכותרת/כפתורים)
+  const aEl = elOf(sel.anchorNode);
+  if (!aEl || !aEl.closest || !aEl.closest('.textLayer')) return null;
+  const text = cleanText(sel.toString());
+  if (text.length < 2) return null;
+  const pageEl = aEl.closest('.page');
+  return { text, page: pageEl ? pageEl.dataset.page : '' };
+}
+let selTimer = null;
+document.addEventListener('selectionchange', () => {
+  clearTimeout(selTimer);
+  selTimer = setTimeout(() => {
+    const info = readSelection();
+    if (info){ lastSel = info; citeBtn.classList.add('show'); }
+    else { lastSel = null; citeBtn.classList.remove('show'); }
+  }, 80);
+});
+function toast(t){
+  citeBtn.classList.remove('show');
+  toastEl.textContent = t; toastEl.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+}
+citeBtn.addEventListener('click', async () => {
+  const info = lastSel || readSelection();
+  if (!info) return;
+  const citation = '«' + info.text + '»\n\n' + title + (info.page ? ', עמ׳ ' + info.page : '') + '\nספר השיחות מתורגם ללשון הקודש';
+  try { await navigator.clipboard.writeText(citation); toast('הציטוט הועתק ✓'); }
+  catch (e) {
+    // גיבוי: בחירה זמנית בשדה טקסט
+    try { const ta=document.createElement('textarea'); ta.value=citation; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast('הציטוט הועתק ✓'); }
+    catch(e2){ toast('לא ניתן להעתיק במכשיר זה'); }
+  }
+});
 
 async function start(){
-  $('msg').style.display = 'block';
-  $('msg').textContent = 'טוען את השיחה…';
+  $('msg').style.display='block'; $('msg').textContent='טוען את השיחה…';
   try {
-    const task = pdfjsLib.getDocument({
-      url: file,
-      disableFontFace: true,   // ציור מהגופן המוטמע — מתקן פיזור עברית בטלפון
-      useSystemFonts: false
-    });
-    const pdf = await task.promise;
-    $('msg').style.display = 'none';
+    const pdf = await pdfjsLib.getDocument({ url:file, disableFontFace:true, useSystemFonts:false }).promise;
+    $('msg').style.display='none';
 
     const dpr = window.devicePixelRatio || 1;
-    baseW = Math.max(viewer.clientWidth - 16, 100);   // רוחב בסיס = התאמה לרוחב המסך
-    applyZoom();
+    baseW = Math.max(viewer.clientWidth - 16, 100);
+    inner.style.width = (baseW * Z) + 'px';
 
     let target = null;
-    for (let n = 1; n <= pdf.numPages; n++){
+    for (let n=1; n<=pdf.numPages; n++){
       const page = await pdf.getPage(n);
       const base = page.getViewport({ scale: 1 });
 
-      // מרנדרים בפי-2 מצפיפות המסך — כדי שגם בהגדלה חזקה הטקסט יישאר חד
-      let renderScale = (baseW / base.width) * dpr * 2;
-      let w = base.width * renderScale, h = base.height * renderScale;
-      const clampF = Math.min(MAX_SIDE / w, MAX_SIDE / h, Math.sqrt(MAX_AREA / (w * h)), 1);
-      renderScale *= clampF;
+      const pageEl = document.createElement('div');
+      pageEl.className = 'page';
+      pageEl.dataset.page = n;
+      pageEl.dataset.bw = base.width;
 
+      // קנבס ברזולוציה גבוהה
+      let renderScale = (baseW / base.width) * dpr * 2;
+      let w = base.width*renderScale, h = base.height*renderScale;
+      renderScale *= Math.min(MAX_SIDE/w, MAX_SIDE/h, Math.sqrt(MAX_AREA/(w*h)), 1);
       const vp = page.getViewport({ scale: renderScale });
       const canvas = document.createElement('canvas');
-      canvas.width  = Math.floor(vp.width);
-      canvas.height = Math.floor(vp.height);
-      inner.appendChild(canvas);
+      canvas.width = Math.floor(vp.width); canvas.height = Math.floor(vp.height);
+      pageEl.appendChild(canvas);
+
+      // שכבת טקסט לסימון
+      const tlDiv = document.createElement('div');
+      tlDiv.className = 'textLayer';
+      tlDiv.style.setProperty('--scale-factor', (baseW * Z) / base.width);
+      pageEl.appendChild(tlDiv);
+
+      inner.appendChild(pageEl);
+
       await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
 
-      if (startPage && n === startPage) target = canvas;
-    }
+      const textContent = await page.getTextContent();
+      const textLayer = new pdfjsLib.TextLayer({ textContentSource: textContent, container: tlDiv, viewport: page.getViewport({ scale: 1 }) });
+      await textLayer.render();
 
-    if (target) target.scrollIntoView({ block: 'start' });
+      if (startPage && n===startPage) target = pageEl;
+    }
+    if (target) target.scrollIntoView({ block:'start' });
   } catch (err) {
-    showError('לא ניתן להציג את הקובץ כרגע. אפשר <a href="' + file + '">להוריד אותו ישירות</a>.<br><small style="opacity:.6">' + (err && err.message ? err.message : '') + '</small>');
+    showError('לא ניתן להציג את הקובץ כרגע. אפשר <a href="'+file+'">להוריד אותו ישירות</a>.<br><small style="opacity:.6">'+(err&&err.message?err.message:'')+'</small>');
   }
 }
 </script>
