@@ -822,6 +822,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "יום שמיני עצרת תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/shmini_azeret_5708.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "01-21",
+        "hebDate": "כ״א תשרי",
+        "addedAt": "2026-09-04",
+        "hasPage": true
+      },
+      {
         "title": "ליל הושענה רבה תש\"ח",
         "subtitle": "",
         "file": "pdfs/hoshana_raba_5708.pdf",
