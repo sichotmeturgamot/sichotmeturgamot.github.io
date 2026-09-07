@@ -822,6 +822,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "שבת חול המועד סוכות תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/shabat_chol_hamoed_sukot_5708.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "01-20",
+        "hebDate": "כ׳ תשרי",
+        "addedAt": "2026-09-07",
+        "hasPage": true
+      },
+      {
         "title": "יום שמיני עצרת תש\"ח",
         "subtitle": "בסעודה",
         "file": "pdfs/shmini_azeret_5708.pdf",
