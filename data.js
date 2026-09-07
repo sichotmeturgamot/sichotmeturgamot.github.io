@@ -825,7 +825,7 @@ const YEARS = [
         "title": "שבת חול המועד סוכות תש\"ח",
         "subtitle": "בסעודה",
         "file": "pdfs/shabat_chol_hamoed_sukot_5708.pdf",
-        "pages": 3,
+        "pages": 2,
         "count": 1,
         "sortDate": "01-20",
         "hebDate": "כ׳ תשרי",
