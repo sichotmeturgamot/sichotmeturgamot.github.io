@@ -855,6 +855,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "ליל שמחת תורה תש\"ח",
+        "subtitle": "קודם הקפות",
+        "file": "pdfs/leyl_simchat_tora_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-23",
+        "hebDate": "כ״ג תשרי",
+        "addedAt": "2026-09-08",
+        "hasPage": true
+      },
+      {
         "title": "שמחת תורה תש\"ח",
         "subtitle": "בסעודת היום",
         "file": "pdfs/simchat_tora_yom_5708.pdf",
