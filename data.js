@@ -825,7 +825,7 @@ const YEARS = [
         "title": "שבת חול המועד סוכות תש\"ח",
         "subtitle": "בסעודה",
         "file": "pdfs/shabat_chol_hamoed_sukot_5708.pdf",
-        "pages": 2,
+        "pages": 3,
         "count": 1,
         "sortDate": "01-20",
         "hebDate": "כ׳ תשרי",
@@ -852,6 +852,17 @@ const YEARS = [
         "sortDate": "01-22",
         "hebDate": "כ״ב תשרי",
         "addedAt": "2026-09-03",
+        "hasPage": true
+      },
+      {
+        "title": "שמחת תורה תש\"ח",
+        "subtitle": "בסעודת היום",
+        "file": "pdfs/simchat_tora_yom_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-25",
+        "hebDate": "כ״ה תשרי",
+        "addedAt": "2026-09-08",
         "hasPage": true
       }
     ]
