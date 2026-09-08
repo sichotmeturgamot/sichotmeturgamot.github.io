@@ -858,7 +858,7 @@ const YEARS = [
         "title": "ליל שמחת תורה תש\"ח",
         "subtitle": "קודם הקפות",
         "file": "pdfs/leyl_simchat_tora_5708.pdf",
-        "pages": 2,
+        "pages": 3,
         "count": 1,
         "sortDate": "01-23",
         "hebDate": "כ״ג תשרי",
