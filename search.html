@@ -322,7 +322,9 @@ function cardContent(r, tt){
       '<div class="topic-line"><h3>'+hl(r.topic, tt)+'</h3></div>'+
       '<p>'+hl(r.desc, tt)+'</p>'+
       (r.excerpt ? (showQuotes ? '<div class="excerpt">'+hl(r.excerpt, tt)+'</div>' : '<button type="button" class="q-show">הצג ציטוט ▾</button><div class="excerpt" style="display:none">'+hl(r.excerpt, tt)+'</div>') : '')+
-      (r.page ? '<div class="meta-line"><span class="pages">עמוד '+r.page+'</span></div>' : '')+
+      (r.page
+         ? '<div class="meta-line"><span class="pages">עמוד '+r.page+'</span></div>'
+         : (r.pdfpage ? '<div class="meta-line"><span class="pages">עמ\' '+r.pdfpage+' בשיחה</span></div>' : ''))+
     '</div><div class="btns"><a class="btn btn-navy btn-sm" href="'+(r.url + (r.page ? '&disp='+r.page : '') + (r.pdfpage ? '&page='+r.pdfpage : ''))+'">'+esc(r.sichah)+'</a></div></div>';
 }
 function cardRef(r, tt){
