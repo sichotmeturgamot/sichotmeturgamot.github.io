@@ -219,7 +219,7 @@
           <span class="track"><span class="fill" data-w="${Math.round(readN / list.length * 100)}"></span></span>
         </span>` : ''}
       </div>
-      ${y.fullFile ? `<div class="full-year"><a class="btn-fullyear" href="${y.fullFile}" download>⬇ הורדת ספר השיחות ${y.year} — הקובץ המלא</a></div>` : ''}
+      ${y.fullFile ? `<div class="full-year"><a class="btn-fullyear" href="${y.fullFile}" download>${y.fullTitle || ('⬇ הורדת ספר השיחות ' + y.year + ' — הקובץ המלא')}</a></div>` : ''}
       ${list.map(s => sichaCard(s)).join('')}`;
     // פס ההתקדמות נמלא בהדרגה אחרי שהעמוד מצויר
     const fill = panel.querySelector('.read-progress .fill');

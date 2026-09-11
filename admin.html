@@ -270,8 +270,10 @@
     <label>הערה (מוצגת ליד השנה)</label><input type="text" id="y-note">
     <label style="display:flex;align-items:center;gap:6px;margin-top:8px"><input type="checkbox" id="y-complete" style="width:auto"> התרגום לשנה זו הושלם</label>
     <hr style="border:none;border-top:1px solid #e8e2d4;margin:14px 0">
-    <label>קובץ השנה המלא (PDF) — יופיע כפתור הורדה בראש השנה בעמוד הקריאה</label>
+    <label>קובץ השנה המלא (PDF) — יופיע בראש השנה בעמוד הקריאה</label>
     <div id="y-fullcur" style="font-size:.8rem;color:var(--muted);margin-bottom:4px"></div>
+    <label>שם שיופיע בראש השנה (עברית)</label>
+    <input type="text" id="y-fulltitle" placeholder="לדוגמה: ספר השיחות תש״ו — הקובץ המלא">
     <label>שם קובץ באנגלית (בלי רווחים)</label>
     <input type="text" id="y-fullname" class="en" placeholder="sefer-hasichos-5706.pdf">
     <label>בחירת קובץ ה-PDF המלא (השאר ריק כדי לשמור את הקיים)</label>
@@ -889,6 +891,7 @@ function openEditYear(yi) {
   editingYear = yi;
   const y = data.YEARS[yi];
   $('y-name').value = y.year; $('y-note').value = y.note || ''; $('y-complete').checked = !!y.complete;
+  $('y-fulltitle').value = y.fullTitle || (y.fullFile ? ('ספר השיחות ' + y.year + ' — הקובץ המלא') : '');
   $('y-fullname').value = y.fullFile ? y.fullFile.replace(/^pdfs\//, '') : '';
   $('y-fullfile').value = '';
   $('y-fullcur').textContent = y.fullFile ? ('קובץ נוכחי: ' + y.fullFile) : 'טרם הועלה קובץ שנה מלא';
@@ -900,6 +903,7 @@ async function saveYear() {
   // קובץ השנה המלא
   const fullInput = $('y-fullfile').files[0];
   let fullName = $('y-fullname').value.trim();
+  const fullTitle = $('y-fulltitle').value.trim();
   if (fullName && !/^[A-Za-z0-9._-]+$/.test(fullName)) return setStatus('שם קובץ השנה המלא חייב להיות באנגלית, בלי רווחים', 'err');
   if (fullName && !fullName.toLowerCase().endsWith('.pdf')) fullName += '.pdf';
   const entries = [];
@@ -913,6 +917,11 @@ async function saveYear() {
       y.fullFile = 'pdfs/' + fullName;   // קישור לקובץ קיים בלי העלאה מחדש
     } else {
       delete y.fullFile;                 // רוקן את השם — הסרת הכפתור
+      delete y.fullTitle;
+    }
+    if (y.fullFile) {
+      if (fullTitle) y.fullTitle = fullTitle;
+      else delete y.fullTitle;
     }
     entries.push(dataEntry());
     setStatus('שומר…', 'busy');
