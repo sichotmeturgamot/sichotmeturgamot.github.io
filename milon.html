@@ -20,11 +20,9 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebPage","name":"מילון אידיש–עברית לספר השיחות","description":"מילון אידיש–עברית לספר השיחות של כ״ק אדמו״ר הריי״צ מליובאוויטש — תרגום מילים ומונחים מאידיש ללשון הקודש ולאנגלית.","inLanguage":"he","url":"https://sichotmeturgamot.github.io/milon.html","isPartOf":{"@type":"WebSite","name":"ספר השיחות מתורגם ללה״ק","url":"https://sichotmeturgamot.github.io/"}}
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css">
-<script src="analytics.js"></script>
-<script src="notify.js"></script>
+<script src="analytics.js" defer></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1a2942">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -165,7 +163,7 @@
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script>document.write('<script src="data.js?v=' + Date.now() + '"><\/script>');</script>
+<script src="data.js"></script>
 <script>
   // החלת צבעים ומותג מההגדרות (כמו בשאר העמודים)
   if (typeof SITE !== 'undefined' && SITE) {
@@ -259,7 +257,7 @@
     }
 
     // טעינת קובץ המילון (מבנה: יידיש|עברית|אנגלית) — המפתח לחיפוש מחושב מהיידיש
-    fetch('milon_en.txt?v=' + Date.now())
+    fetch('milon_en.txt')
       .then(r => r.text())
       .then(txt => {
         const lines = txt.split('\n');
