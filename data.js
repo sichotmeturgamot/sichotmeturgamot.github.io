@@ -876,6 +876,8 @@ const YEARS = [
         "addedAt": "2026-09-08",
         "hasPage": true
       }
-    ]
+    ],
+    "fullFile": "pdfs/Tishrey_5708.pdf",
+    "fullTitle": "שיחות תשרי תש\"ח - עם מ\"מ ומפתחות"
   }
 ];
