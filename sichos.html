@@ -219,20 +219,7 @@
           <span class="track"><span class="fill" data-w="${Math.round(readN / list.length * 100)}"></span></span>
         </span>` : ''}
       </div>
-      ${y.fullFile ? (() => {
-        const fullTitle = y.fullTitle || ('ספר השיחות ' + y.year + ' — הקובץ המלא');
-        return `<div class="full-year">
-          <div class="sicha">
-            <div class="sicha-info">
-              <h3>${fullTitle}</h3>
-            </div>
-            <div class="btns">
-              <a class="btn btn-navy btn-sm" href="read.html?file=${encodeURIComponent(y.fullFile)}&title=${encodeURIComponent(fullTitle)}">לקריאה</a>
-              <a class="btn btn-line btn-sm" href="${y.fullFile}" download>הורדה</a>
-            </div>
-          </div>
-        </div>`;
-      })() : ''}
+      ${y.fullFile ? `<div class="full-year"><a class="btn-fullyear" href="read.html?file=${encodeURIComponent(y.fullFile)}&title=${encodeURIComponent(y.fullTitle || ('ספר השיחות ' + y.year + ' — הקובץ המלא'))}">${y.fullTitle || ('ספר השיחות ' + y.year + ' — הקובץ המלא')}</a></div>` : ''}
       ${list.map(s => sichaCard(s)).join('')}`;
     // פס ההתקדמות נמלא בהדרגה אחרי שהעמוד מצויר
     const fill = panel.querySelector('.read-progress .fill');
