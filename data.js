@@ -858,7 +858,7 @@ const YEARS = [
         "title": "ליל שמחת תורה תש\"ח",
         "subtitle": "קודם הקפות",
         "file": "pdfs/leyl_simchat_tora_5708.pdf",
-        "pages": 3,
+        "pages": 2,
         "count": 1,
         "sortDate": "01-23",
         "hebDate": "כ״ג תשרי",
@@ -875,9 +875,18 @@ const YEARS = [
         "hebDate": "כ״ה תשרי",
         "addedAt": "2026-09-08",
         "hasPage": true
+      },
+      {
+        "title": "י\"ט מר־חשון תש\"ח",
+        "subtitle": "יחידות",
+        "file": "pdfs/19_cheshvan_5708.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "02-19",
+        "hebDate": "י״ט מרחשון",
+        "addedAt": "2026-09-14",
+        "hasPage": true
       }
-    ],
-    "fullFile": "pdfs/Tishrey_5708.pdf",
-    "fullTitle": "שיחות תשרי תש\"ח - עם מ\"מ ומפתחות"
+    ]
   }
 ];
