@@ -886,6 +886,17 @@ const YEARS = [
         "hebDate": "י״ט מרחשון",
         "addedAt": "2026-09-14",
         "hasPage": true
+      },
+      {
+        "title": "טבת תש\"ח",
+        "subtitle": "להת' הנוסעים לאירופא",
+        "file": "pdfs/tevet_5708.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "04-01",
+        "hebDate": "א׳ טבת",
+        "addedAt": "2026-09-15",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/Tishrey_5708.pdf",
