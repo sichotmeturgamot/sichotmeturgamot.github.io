@@ -889,6 +889,6 @@ const YEARS = [
       }
     ],
     "fullFile": "pdfs/Tishrey_5708.pdf",
-    "fullTitle": "שיחות תשרי תש\"ח עם מפתחות."
+    "fullTitle": "שיחות תשרי תש\"ח עם מפתחות"
   }
 ];
