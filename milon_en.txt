@@ -825,8 +825,7 @@
 אָנגעזאַפּט|רוויי, ספג, ספוג|saturated, soaked
 אָנגעזהען|בלט, נראה|prominent, esteemed
 אָנגעזוּפּט|שתוי, שיכור|drunk, tipsy
-אָנגעטאַָן|לבושים|dressed, clad
-אָנגעטאָן|מלובש, לבש, התלבש|dressed, put on
+אָנגעטאָן|מלובש, לבש, התלבש; לבושים|dressed, put on; clad
 אָנגעטאַפּט (האָט)|מישש|felt, touched
 אנגעטראפן|נתקל, פגש|encountered, met
 אַנגעלעגענהייטען|הזדמנות|matters, affairs
@@ -1050,7 +1049,7 @@
 אָפּצוּשטויסען|לבעוט-מעליהם|to repel, to push away
 אָפּקומען|לסבול, לכפר|to suffer, to atone
 אפקילן|לקרר, לצנן|to cool down
-אַָפּקלאַנג|תהודה, הד ביטוי|resonance, echo
+אָפּקלאַנג|תהודה, הד ביטוי|resonance, echo
 אָפרוּהען|לנוח, לָפוש|to rest, to relax
 אָפּרוען|לנוח|to rest
 אָפּרוען זיך|לנוח|to rest oneself
@@ -1855,8 +1854,7 @@
 גאַסט|אורח|guest
 גאַסן|רחובות|streets
 גאָפּל|מזלג|fork
-גאַָר|לגמרי|quite, entirely
-גאָר|מאד|very, quite
+גאָר|מאד, לגמרי|very, quite; entirely
 גארטיל|אבנט, חגורה (של תפילה)|gartel, prayer sash
 גאַרטל|חגורה, אבנט|belt, sash
 גאַרטל (דאַוונען)|אבנט לתפילה|prayer sash (gartel)
@@ -2124,7 +2122,6 @@
 געהרגט|הרגו|killed
 געוואוינט|גר|lived, dwelt
 געוואוינהייט|הרגל|habit, custom
-געוואַָוינט|גר|lived, dwelt
 געוואָוינט|הִתגוררו|dwelt, resided
 געוואונדערט|התפלא|wondered, was surprised
 געוואונטשן|איחל, בירך|wished, blessed
@@ -2338,7 +2335,7 @@
 גע'עצה'ט|יעץ|advised, counseled
 געערטע|נכבדים|honored ones
 געפאָדערט|דרש|demanded
-געפאַָלגט|ציית|obeyed
+געפאָלגט|ציית|obeyed
 געפאַלן|נפל|fell
 געפאַנגען|שבוי, אסור|captive, imprisoned
 געפאַנגענשאַפט|מאסר, שבי|captivity, imprisonment
@@ -2455,7 +2452,7 @@
 געשאַפט|יצר|created
 געשאַפן געוואָרן|נברא, נוצר|was created
 געשאַפען|נִברא|created
-געשאַָקלט|ניענע, הניד|shook, nodded
+געשאָקלט|ניענע, הניד|shook, nodded
 געשוואומען|שחה|swam
 געשוואָלן|נפוח|swollen
 געשווארן|נשבע|swore
@@ -2532,7 +2529,7 @@
 גראבע|גסים, גסות|coarse, crude
 גראבער|גס, עבה|coarse, thick
 גראָבקייט|גסות, גסות רוח|coarseness, rudeness
-גראַָד|למרות|even though; precisely
+גראָד|למרות|even though; precisely
 גראַדע|בדיוק|exactly, just
 גראָז|דשא, עשב|grass
 גראַנדיעזן|ענק|grand, immense
@@ -2633,7 +2630,6 @@
 דאַן|אז (בעבר)|then
 דאַנען|(מ)שם|from there, hence
 דאָנערשטאָג|יום חמישי|Thursday
-דאַָנערשטאָג|יום חמישי (בשבת)|Thursday
 דאָנערשטיק|יום חמישי|Thursday
 דאַנק|תודה|thanks
 דאַנקבאַר|אסיר תודה|grateful
@@ -2668,6 +2664,7 @@
 דאָקטוירים|רופאים|doctors
 דאָקטער|רופא|doctor
 דאַר|רזה, כחוש|thin, gaunt
+דאַרט|מרזה, נעשה כחוש|grows thin, wastes away
 דאָרט|שם|there
 דאָרט-דאָרט|שם שם|there and there
 דאָרטיקער|מקומיים|local, of that place
@@ -2675,7 +2672,7 @@
 דאָרטן אין הימל|שם בשמים|there in heaven
 דאַרען|להרזות|to grow thin
 דאַרער|כחוש, רזה|thin, gaunt
-דאַָרף|כפר|village
+דאָרף|כפר|village
 דאַרף|צריך|needs, must
 דאַרפט|צריכים (אתם)|(you) need
 דאַרפן|צריך, להזדקק|to need, must
@@ -3001,7 +2998,7 @@
 האפנונגען|תקוות|hopes
 האָפען|לקוות|to hope
 האָפענונג|תִקווה|hope
-האַָקען|וָוִים (לתליה)|hooks
+האָקען|וָוִים (לתליה)|hooks
 האָר|שיער|hair
 האַרבסט|סתיו|autumn
 האַרבּער|חמור, כבד, קשה|severe, harsh
@@ -3559,7 +3556,7 @@
 זאָרג|דאגה|worry, care
 זארגאן|ז'רגון (כינוי לאידיש)|jargon (nickname for Yiddish)
 זאָרגלאָז|חסר דאגה|carefree
-זאַָרגלאָזן|שְלֵוָה, שַאַנַנָה, נטולי דאגות|carefree, untroubled
+זאָרגלאָזן|שְלֵוָה, שַאַנַנָה, נטולי דאגות|carefree, untroubled
 זאָרגלאָזע|בלי-דאגות|carefree
 זאָרגן זיך|לדאוג|to worry
 זאָרגנוואָל|מלא דאגה|full of worry
@@ -4296,7 +4293,7 @@
 לשון קודש|לשון קדש|the holy tongue (Hebrew)
 לשונות|שפות|languages
 מאָג|מותר|is allowed, may
-מאַָגערע|דל, צנום, רזה כחוש|thin, lean
+מאָגערע|דל, צנום, רזה כחוש|thin, lean
 מאָדנע|מוזר|strange, odd
 מאָדנקייט|מוזרות|strangeness
 מאָדערן|מודרני|modern
@@ -4354,7 +4351,7 @@
 מאַנסביל|גבר|man, male
 מאַנסבילען|גברים, אנשים|men
 מאָנען|לתבוע, לדרוש|to demand
-מאַָס|מידה|measure
+מאָס|מידה|measure
 מאָסן|מידות|measures
 מאַסע|המון|mass, crowd
 מאסקווא|מוסקבה|Moscow
@@ -4914,7 +4911,7 @@
 פּאָלעס|כנפי בגדיהם|coattails, flaps
 פאָלק|אנשים|people, nation
 פאָלקאָם|לחלוטין, מושלם|completely, perfect
-פאַָלקס־העלד|גיבור עממי|folk hero
+פאָלקס־העלד|גיבור עממי|folk hero
 פאַלש|כוזב|false
 פאַלשן|שקרי, מזויף (מוטה)|false, forged (inflected)
 פאַלשע|כוזב|false
@@ -5092,8 +5089,7 @@
 פארוויינט|בכוי, נפוח מבכי|tear-stained
 פארוויינטע|ספוג דמעות, בכוי|tearful, tear-stained
 פאַרויכען|לעשן|to smoke
-פאַָרויס|קדימה, לפנים|forward, ahead
-פאָרויס|בראָש, קדימה|ahead, in front
+פאָרויס|בראש, קדימה, לפנים|ahead, in front; forward
 פאַרזאַמלונג|אסיפה, התכנסות|assembly, gathering
 פארזאמלען|לכנס, לאסוף|to assemble, to gather
 פאַרזאַמלען זיך|להתאסף|to assemble
@@ -5808,7 +5804,7 @@
 צוּערשט|דבר-ראשון|first of all
 צוּפאַל|מקרה|chance, coincidence
 צוּפּאַסען|להתאים|to fit, to adapt
-צוּפאַָרען|לנסוע|to drive up
+צוּפאָרען|לנסוע|to drive up
 צופוס|ברגל, הליכה|on foot
 צופיל|יותר מידי|too much
 צופירן|להוביל אל|to lead to
@@ -5983,7 +5979,7 @@
 קאמער|חדרון, תא|small room, chamber
 קאַמף|מאבק, מערכה|struggle, battle
 קאַמפ|מאבק|struggle
-קאַָמפּאַניע|חברה|company
+קאָמפּאַניע|חברה|company
 קאַמפט|נאבק|fights, struggles
 קאָמפּלימענט|מחמאה|compliment
 קאָמפּליצירט|מסובך|complicated
@@ -6004,7 +6000,7 @@
 קאַנצעלאַריע|לִשכָּה|office, chancellery
 קאָנצעפּט|קונספט|concept
 קאָנצעפּטן|קונספטים|concepts
-קאַָסט|עולה (כסף)|costs
+קאָסט|עולה (כסף)|costs
 קאָסטן|עלות, מחיר|cost
 קאַסירע|גזבר|treasurer, cashier
 קאָפּ|ראש; מוח, שכל|head; mind, brains, intellect
@@ -6027,6 +6023,7 @@
 קאַרטע|מרכבה|carriage
 קארלינער|מקרלין|of Karlin
 קארמען|להאכיל (בהמות)|to feed (animals)
+קאָרמעט|מפטם, מאכיל|feeds, fattens
 קאָרן|שיפון, דגן|rye, grain
 קאָרעטע|אבוס|manger, trough
 קאָרפּ|גוף|body
