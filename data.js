@@ -908,6 +908,17 @@ const YEARS = [
         "hebDate": "ט״ז אדר א׳",
         "addedAt": "2026-09-23",
         "hasPage": true
+      },
+      {
+        "title": "פורים תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/purim_5708.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "07-14",
+        "hebDate": "י״ד אדר ב׳",
+        "addedAt": "2026-09-23",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/Tishrey_5708.pdf",
