@@ -897,6 +897,17 @@ const YEARS = [
         "hebDate": "א׳ טבת",
         "addedAt": "2026-09-15",
         "hasPage": true
+      },
+      {
+        "title": "שיחת יום ה' ט\"ז אדר ראשון תש\"ח",
+        "subtitle": "ר\"ד מה שאמר כ\"ק אדמו\"ר שליט\"א להבע\"ב מעסקני הישיבה שנכנסו לחדרו",
+        "file": "pdfs/16_adar_a_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "06-16",
+        "hebDate": "ט״ז אדר א׳",
+        "addedAt": "2026-09-23",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/Tishrey_5708.pdf",
