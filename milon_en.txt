@@ -3604,7 +3604,7 @@
 זייען|לזרוע|to sow
 זייענדיג|בהיותו, בהיותי|being
 זייענדיק|בהיותו, בהיותי|being
-זייער|מאוד, הם|very; their
+זייער|מאוד; שלהם|very; their
 זייערע|שלהם|their
 זייערער|שלהם|theirs
 זייף|סבון|soap
@@ -3637,7 +3637,7 @@
 זיסע ווערטער|מילים מתוקות|sweet words
 זיסער|מתוק|sweet, sweeter
 זיסקייט|מתיקות|sweetness
-זיער|מאוד; שלהם (זייער)|very; their
+זיער|מאוד; שלהם|very; their
 זיפּ|נפּה|sieve
 זיפצן|להיאנח|to sigh
 זיץ|שב!|sit!
@@ -4534,7 +4534,7 @@
 נאהענט|קרוב|near, close
 נאָהענטע|קרובים, סמוכים|near, close
 נאָהענטער|קרוב|near, close
-נאהר|רק (נאר)|only
+נאהר|רק, אלא|only, but
 נאָז|אף|nose
 נאָטווענדיק|הכרחי|necessary
 נאָטווענדיקייט|הכרח|necessity
@@ -11367,3 +11367,157 @@
 פאַרחליפּעט זיך|נחנק (מבליעה חפוזה)|chokes, gulps down the wrong way
 זשובעט|מכרסם, מנקב|gnaws, bores a hole
 פאַרהאַמערטקייט|אטימות, סתימות|obtuseness, being sealed shut
+אָנשטעל|העמדת פנים|pretense
+ביידעל|סוכה קטנה, ביתן|little hut, booth
+גרינסען|ירקות|vegetables
+דערגעהן|לרדת לסוף, להשיג|to get to the bottom of, to reach
+ארבייטען|עבודות|jobs, labors
+געצענדינער|עובדי אלילים|idolaters
+שפיעלען|לשחק, למלא (תפקיד)|to play (a role)
+מענשעל|אדם פשוט, איש קטן|little man
+מיילער|פיות|mouths
+אונטערגעוואָקסען|גדלו|grew up
+דערשלאָגען|מדוכא|dejected, downcast
+אָפּגעשפּאָרטען|שנחסך (מוטה)|saved (inflected)
+ביסלאכווייז|לאט לאט|gradually
+אָנגעכאַפּט|תפס, נאחז|grabbed, seized
+באַגעהן|לעשות (עבירה, טעות)|to commit
+שמידען|נפחים|blacksmiths
+איבערגעקליבען|בירר, בחר|picked, was choosy
+סטרונעס|מיתרים|strings
+האלזען|לחבק|to embrace
+קאַטאָרגע|עבודת פרך (בגלות)|penal servitude
+אויעזד|מחוז|district
+לאַנקעס|אחו, כרי דשא|meadows
+שאָקעל|נענוע|shake (of the head)
+זודיגען|רותח (מוטה)|boiling (inflected)
+צאָהלט|שלמו!; משלם|pay!; pays
+פּינטעלאַך|נקודות (אותיות)|dots (letters)
+מאַלצייטען|סעודות|meals
+אוועקגעלאָזט זיך|יצא לדרך|set out
+קליינוואַרג|הקטנים (ילדים)|the little ones
+שטיבלאַך|חדרים קטנים, שטיבלך|little rooms, shtiblach
+אַרומצוקריגען זיך|להתקוטט|to quarrel
+דריטעל|שליש|a third
+שינדער|פושט עורות|skinner, knacker
+נאַטירלאַך|כמובן, באופן טבעי|naturally
+באַגעהט|עושה (עבירה)|commits
+סטראַשען|לאיים|to threaten
+געקאָרטשעט זיך|התפתל|writhed
+באַשולדיגט|האשים|accused
+פלאַקס|פשתן|flax
+גאָטס|של אלוקים|God's
+הילפלאָז|חסר ישע|helpless
+ישובניקעס|יישובניקים (יהודי הכפרים)|village Jews
+דאָרפסמענשען|אנשי כפר|villagers
+איבריגע|מיותר, נוסף (מוטה)|extra, superfluous (inflected)
+באַקענט זיך|הכיר, התוודע|got acquainted
+לומדישען|למדן (מוטה)|scholarly (inflected)
+נאַכטלעגער|לינת לילה|lodging for the night
+גוטהאַרציגקייט|טוב לב|kindheartedness
+מוהמע|דודה|aunt
+מומען|דודות; (לדודה)|aunts; (to the) aunt
+איבערלאָזענדיג|בהשאירו|leaving behind
+מערקווירדיגען|מופלא, יוצא דופן (מוטה)|remarkable (inflected)
+וואָלקענס|עננים|clouds
+אַנדערשוואו|במקום אחר|elsewhere
+באַצייכענט|סימן, כינה|designated, marked
+אָפּזאָגענדיג זיך|בוויתור|renouncing
+פאַרזאַמעלט|התאסף, כינס|gathered
+אויסגעוואַנדערט|היגר|emigrated
+באַשאַפער|בורא|creator
+געסעל|סמטה|alley
+פליסיגען|שוטף (מוטה)|fluent (inflected)
+אָנצוקומען|להזדקק ל־, להגיע|to depend on, to reach
+שוואַגערס|גיסים|brothers-in-law
+דריטען|שלישי (מוטה)|third (inflected)
+געצאָהלט|שילם|paid
+אויפגעגעבען|ויתר על|gave up
+שטאָטישער|עירוני|urban
+אויפהאַלט|שהייה|stay
+האָגעל|ברד|hail
+איינדרוקען|רשמים|impressions
+זוניגער|שטוף שמש|sunny
+שאפענדיג|ביוצרו|creating
+שטראָמט|זורם|streams
+באַדייטענדע|ניכר (מוטה)|considerable (inflected)
+האַלטענדיג|באחזו|holding
+איינטיילענדיג|בחלקו (מכות)|dealing out
+באוואַפענטע|חמושים|armed
+איינזעהענדיג|בהבינו|realizing
+אַרויסצוהעלפען|לעזור|to help out
+צווייפלען|לפקפק|to doubt
+פאָרכטיגער|ירא (גאָטס־פאָרכטיגער = ירא שמים)|fearing (God-fearing)
+איינפאַלען|לעלות בדעתו|to occur (to someone)
+צוגעשריבען|ייחסו|ascribed
+אויפפאָדערענדיג|בקוראו ל־|calling upon
+איבערגעהען|לעבור (לדת אחרת)|to go over, to convert
+אַלעמענס|של כולם|everyone's
+אַרומגעוואַנדערט|נדד|wandered about
+ענטזאָגט|ויתר, סירב|renounced
+געצאַצקעט זיך|התמוגג, התעסק בחיבה|fussed over
+יונגענמאַן|בחור|young man
+ליינגערער|ארוך יותר|longer
+צונאָמען|כינוי|nickname
+אינסעקטען|חרקים|insects
+אָפּגעזוכט|מצא (אחרי חיפוש)|found (after searching)
+אַוועקגעמאַכט|ביטל בהינף יד|dismissed
+באַלעסטיגט|הטריד|bothered
+אויסגעהן|לכלות, לגווע|to expire
+גראָזען|עשבים|grasses
+הונגערען|לרעוב|to hunger
+איבערצוריידען|לשוחח, לדון|to talk over
+צוריקגעהן|לחזור|to go back
+אָפּוואונדערען זיך|להתפעל|to admire
+צוריקגענומען זיך|חזר|returned
+געפרעהט זיך|שמח|rejoiced
+אַריינגעכאַפּט|חטף, ניצל (זמן)|snatched
+צוריקגעבראַכט|החזיר|brought back
+דורכגערעדט|דיבר, שוחח|talked through
+פאַרשוואונדענעם|הנעלם (מוטה)|vanished (inflected)
+אויסגעהאַדעוועט|גדל, גידל|raised, reared
+העלפענדיג|בעזרו|helping
+אַריינצוגעבען|להחדיר|to instill
+וואָנדערענדיגע|נודדים|wandering
+שלאָפענדיג|בישנו|sleeping
+באַווייבטער|נשוי|married man
+געוויינען|לבכות|to weep
+גענויער|מקרוב יותר|more closely
+אָפּגעשיקט|שלח|sent
+פריצישע|של הפריץ|of the squire
+אַרומגעזעהן זיך|הבחינו, התבוננו סביב|looked around, realized
+עהרליכער|ישר, ירא שמים|honest, pious
+פריהערדיגען|הקודם|the previous
+זעלביגען|אותו, אותם|the same (inflected)
+אַריינגעטהאָן|שָקוּע; הכניס|absorbed, immersed; put in
+פאַרטיעפט|שקוע, מעמיק|absorbed, deepened
+אַמאָליגען|של פעם, לשעבר|former (inflected)
+גוואלדיגען|אדיר, עצום|tremendous
+איינגעפיהרט|הנהיג (מנהג), הכניס|introduced, instituted
+ציהט|מושך|pulls
+פייערדיגע|לוהטת, נלהבים|fiery, ardent
+טיהר|דלת|door
+פאַרדיענט|הרוויח, ראוי|earned, deserved
+ביליגער|זול|cheaper
+באַריהמט|מפורסם; (זיך) מתפאר|famous; boasts
+פאַרדיענען|להרוויח, להיות ראוי|to earn, to deserve
+אָפּגעטהאָן|עשה, פעל|did, accomplished
+דורכגעפיהרט|בוצע|carried out
+טיעפקייט|עומק|depth
+אויסגעטהאָן|פשט בגדיו|undressed, took off (clothes)
+פריהלינג|אביב|spring
+פריהסטער|מוקדמים|early
+פאַרטיעפען|להעמיק|to deepen
+אויסגעפיהרט|ביצע; מבוצע|carried out, accomplished
+באַציהט|מתייחס|relates
+מיטגעפיהל|השתתפות, אמפתיה|sympathy
+אימיצען|מישהו|someone
+וועהטאָג|כאב|pain, ache
+וועניג|מעט, קצת, פחות|little, few
+שעהנקייט|יׂפי|beauty
+פויגעל|ציפור|bird
+שמייכעל|חיוך|smile
+שטעהען|לעמוד|to stand
+וועניגער|פחות|less, fewer
+דערזעלביגער|אותו אחד, אותו עצמו|the same one, the very same
+נייהען|לתפור|to sew
