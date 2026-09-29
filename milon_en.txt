@@ -6402,7 +6402,7 @@
 שאָדן|נזק, פגיעה|damage, harm
 שאַדעט|מזיק|harms
 שאָטן|צל|shadow
-שאָלעכץ|גלים, גלי ים|waves
+שאָלעכץ|קליפה|peel, rind, husk
 שאַנד|חרפה, בושה|shame, disgrace
 שאָסיי|כביש|highway
 שאָף|כבשה, צאן|sheep
@@ -6447,12 +6447,11 @@
 שווימט|שוחה (הוא)|(he) swims
 שווימסט|שוחה (אתה)|(you) swim
 שווימען|לשחות|to swim
-שוויעבּן|לרחץ|to bathe
 שוויצן|להזיע|to sweat
 שוועבּט|מרחף|hovers, floats
-שוועבן|משוטטת, נִשאת|to hover, to float
+שוועבן|לרחף, לשוט|to hover, to float
 שוועבעל|גפרור|match
-שוועבּען|לרחץ|to hover, to float
+שוועבּען|לרחף, לשוט|to hover, to float
 שוועל|מפתן, סַף|threshold
 שוועלן|להתנפח|to swell
 שוועסטער|אחות|sister
@@ -6491,7 +6490,7 @@
 שטאמען|לנבוע ממוצא, להשתלשל מ־|to stem from, to originate
 שטאנד|מעמד, מצב|status, condition
 שטאַפּל|שלב, מדרגה|stage, level
-שטאָפען|לדחוס, לממלא|to stuff, to fill
+שטאָפען|לדחוס, למלא|to stuff, to fill
 שטאָק|קומה|floor, story
 שטאַרב|מת (אני)|(I) die
 שטאַרבט|מת (הוא)|(he) dies
@@ -6511,7 +6510,7 @@
 שטודירן|ללמוד|to study
 שטודירנדיק|בלמדו|while studying
 שטויב|אבק|dust
-שטויסט|בועט|kicks, shoves
+שטויסט|דוחף, הודף|shoves, pushes
 שטויסן|לדחוף, להדוף|to push, to shove
 שטול|כיסא|chair
 שטונדן|שעות|hours
@@ -6553,7 +6552,7 @@
 שטים|קול|voice
 שטימוּנג|מצב-רוח|mood
 שטימע|קול|voice
-שטימען|קול|voices
+שטימען|להתאים, להסכים; קולות|to agree, to fit; voices
 שטיצן|לתמוך, לסייע|to support, to assist
 שטיצע|תמיכה, סיוע|support
 שטיצען|לתמוך, לסייע|to support, to assist
@@ -6591,11 +6590,11 @@
 שטער|הפרעה, מניעה (מן שטערן — להפריע)|disturbance, hindrance
 שטערונג|הפרעה|disturbance
 שטערונגען|הפרעות|disturbances
-שטערט|מפרי|disturbs, hinders
+שטערט|מפריע|disturbs, hinders
 שטערן (הימל)|כוכב|star
 שטערן (קאָפּ)|מצח|forehead
 שטערנס|כוכבים|stars
-שטערען|מפריעים|to disturb
+שטערען|להפריע|to disturb
 שטראַל|קרן|ray, beam
 שטראָם|פֶרֶץ, זֶרם|stream, current
 שטראָמען|זרמים|streams, currents
@@ -6616,9 +6615,9 @@
 שטריקלעך|חבלים דקים|strings
 שטרעבונג|שאיפה|aspiration, striving
 שטרעבט|שואף|strives
-שטרעבען|שואפים|to strive
+שטרעבען|לשאוף|to strive
 שטרענג|קפדני, חמור|strict, severe
-שטרענגע|חזקים|strict
+שטרענגע|קפדניים, חמורים|strict
 שטרענגער|קפדני, חמור|stricter
 שטרעקע|מרחק|distance, stretch
 שיידן|להפריד, להיפרד|to separate, to part
@@ -6629,30 +6628,29 @@
 שיינע|יפים|beautiful
 שיינעם|יפה (בנטייה)|beautiful (inflected)
 שיינען|לזרוח, להאיר|to shine
-שיינענדיקע|יָפֶה|shining, radiant
+שיינענדיקע|זורחים, מאירים|shining, radiant
 שיינער|יפה|beautiful
-שיינקייט|יׂפי|beauty
+שיינקייט|יופי|beauty
 שייער|אסם|barn
 שייערן|אסמים, גרנות|barns, granaries
 שיך|נעליים|shoes
 שיכלעך|נעליים|shoes
 שילדערן|לתאר|to depict, to describe
 שילער|תלמיד בית ספר|pupil, student
-שימלען|מעלים עובש|to grow moldy
+שימלען|להעלות עובש; מעלים עובש|to grow moldy
 שיסל|קערה|bowl
 שיסן|לירות|to shoot
 שיסעלע|קערית|little bowl
 שיער|כמעט|almost; measure
 שיף|אונייה, ספינה|ship
 שיפן|אוניות; לשלוח באונייה|ships; to ship
-שיק|שלח|send!
+שיק|שלח!|send!
 שיקט|שולח (הוא)|(he) sends
 שיקן|לשלוח|to send
 שיקן נאָך|לשלוח אחרי|to send for
 שיקסט|שולח (אתה)|(you) send
 שכל האנושי|השכל האנושי|the human intellect
 שכלדיק|שכלי|intellectual
-שכנסטער|הכי-יפה|nicest, most beautiful
 שכענישע|שכנים|neighbors
 שכרון|שכרות|drunkenness
 שלאָגן|להכות, להרביץ, לנגן|to hit, to beat
@@ -6678,10 +6676,10 @@
 שלעכסט|הגרוע ביותר, הכי רע|worst
 שלעסער|ארמונות; מנעולים|castles; locks
 שלעפּ|גורר (אני)|(I) drag
-שלעפּט|סחב|drags
+שלעפּט|גורר (הוא)|drags
 שלעפּן|לגרור|to drag
 שלעפּסט|גורר (אתה)|(you) drag
-שלערכסטע|רעות|worst
+שלעכטסטע|הגרועים ביותר|worst
 שמאָל|צר|narrow
 שמאָלן|צר (מוטה)|narrow (inflected)
 שמאָלע|צר|narrow
@@ -6719,7 +6717,7 @@
 שעדיגט|מזיק|harms
 שעהן|יפה|beautiful
 שעהן פּנים|פנים יפות|a beautiful face
-שעהנעם|יפה־יותר|more beautiful
+שעהנעם|יפה (מוטה)|beautiful (inflected)
 שעמט|מתבייש (שעמט זיך)|is ashamed
 שעמען|להִתבייש|to be ashamed
 שעמען זיך|להתבייש|to be ashamed
@@ -6736,7 +6734,7 @@
 שפּאַנען|למתוח, להדק|to stretch, to tighten
 שפּאַס|הלצה, לצון, צחוק|joke, fun
 שפּאַציר|טיול|walk, stroll
-שפּאַצירט|הליכה, טיול|strolls
+שפּאַצירט|טייל, הלך לטייל; מטייל|strolled; strolls
 שפּאַצירן|לטייל, לצעוד|to stroll, to walk
 שפּאַצירען|לטייל, לצעוד|to stroll, to walk
 שפּאָרן|לחסוך, לחוס|to save, to spare
@@ -6756,14 +6754,13 @@
 שפּיציק|חד|pointed, sharp
 שפיצלעך|תעלולים, מעשי קונדס|pranks, tricks
 שפּיצן|קצוות|tips, points
-שפּנען אויס|טוֹוִים|to spin out, to weave
+שפּינען אויס|לטוות; טווים|to spin out, to weave
 שפּעט|מאוחר|late
 שפּעטן|ללעוג|to mock
 שפּעטע|מאוחר|late
 שפּעטער|מאוחר-יותר|later
 שפעטערדיקע|הבאים|later, subsequent
 שפּעטערע|מאוחרים|later
-שפעם|בשפע|in abundance
 שפּראַך|שפה|language
 שפּראַכלעך|בלשוני|linguistic
 שפּראַכן|שפות|languages
@@ -10448,7 +10445,7 @@
 גענויטיקט|נאלץ, הוכרח; נזקק|compelled; needed
 איינצלנער|יחיד|single, individual
 אויסגעטיילטע|מיוחד, מובחן|distinguished
-שיינענדיגע|מאיר|shining
+שיינענדיגע|זורחים, מאירים|shining, radiant
 איינגעקריצטע|חקוק|engraved
 געוועלטיקן|לשלוט|to rule
 איינגעפאלן|עלה בדעתו|occurred (to one)
@@ -11507,7 +11504,7 @@
 אימיצען|מישהו|someone
 וועהטאָג|כאב|pain, ache
 וועניג|מעט, קצת, פחות|little, few
-שעהנקייט|יׂפי|beauty
+שעהנקייט|יופי|beauty
 פויגעל|ציפור|bird
 שמייכעל|חיוך|smile
 שטעהען|לעמוד|to stand
@@ -13678,7 +13675,7 @@
 פאַרשטאַנדין|הבין (צורה ישנה של פארשטאנען)|understood
 אָנגיקליבן|נאסף, הצטבר|gathered, accumulated
 לייכטין|להאיר|to shine, to illuminate
-שטערין|מפריעים|to disturb
+שטערין|להפריע|to disturb
 גיהאָפט|קיווה|hoped
 אַוועקגיגעבין|מסר, נתן|gave away, handed over
 אָנשעפּין|לשאוב, למלא|to draw (water), to fill
@@ -13865,7 +13862,7 @@
 ברענענדיקען|בוער (מוטה)|burning (inflected)
 אָפּגעפאָהרן|נִסע|departed, drove off
 אָפּגערייניגט|מנוקה, מטוהר|cleansed
-שוועבין|משוטטת, נִשאת|to hover, to float
+שוועבין|לרחף, לשוט|to hover, to float
 איבערגיגעבן|מסור; מסר|devoted; handed over
 אויגין|עיניים|eyes
 אַרויסדרייען|להתחמק|to wriggle out
@@ -14240,7 +14237,7 @@
 אונטער־וארפין|כפוף; להכניע|subject to; to subjugate
 ברייטין|רוחב; רחב|width, breadth; wide, broad
 פרומקאייט|אדיקות, יראת שמים|piety
-שיינקאייט|יׂפי|beauty
+שיינקאייט|יופי|beauty
 גידריקט|לחץ; העיק|pressed; oppressed
 גימערט|הוגדל, נתרבה|increased
 שיינהאייט|יופי|beauty
@@ -14382,7 +14379,7 @@
 שפרייט|מפוזר, מופץ|scattered, spread
 דאטום־ס|תאריך|date
 גילייבט|משובח|praised
-שרייבסטו|לכתוב|to write
+שרייבסטו|אתה כותב|you write
 איינגיארדעט|לסדר, לארגן|to arrange, to organize
 נאיעם|חדש|new (inflected)
 ערלייבין|להרשות|to permit
@@ -14397,10 +14394,10 @@
 טעלעגראממע|מברק|telegram
 טראכט־איבער|להרהר, לחשוב היטב|to ponder, to reconsider
 דאקטר|רופא|doctor
-שויצט|להזיע|to sweat
+שויצט|מזיע|sweats
 גידארף־ט|הוצרך, היה צריך|needed, had to
 טישעלע|שולחן קטן|little table
-שפארט|לחסוך, לחוס|to save, to spare
+שפארט|לוחץ, דוחק; (~ זיך אָן) נשען, נתקל|presses, pushes; (~ זיך אָן) leans against
 קאנסטו|לדעת, להיות ביכולת|to know, to be able
 צואוישין|בין|between, among
 אן־גיהייבין|להתחיל; התחיל|to begin; began
@@ -14439,7 +14436,7 @@
 בעזאנדער|במיוחד, בנפרד; מיוחד, נפרד|especially, particularly, separately; special, separate
 גישטאכין|דקר, עקץ; נדקר|stabbed, stung
 אוייס־פיהרליך|בפירוט|in detail
-שמייסט|להלקות, להצליף|to whip, to flog
+שמייסט|מלקה, מצליף|whips, flogs
 גיארדעט|סידר; מסודר|arranged
 גידרוקטין|מודפס|printed
 ויינקאייט|רכות|softness
