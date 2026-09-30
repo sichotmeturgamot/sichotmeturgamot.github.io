@@ -888,6 +888,17 @@ const YEARS = [
         "hasPage": true
       },
       {
+        "title": "י\"ט כסלו תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/19_kislev_5708.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "03-19",
+        "hebDate": "י״ט כסלו",
+        "addedAt": "2026-09-30",
+        "hasPage": true
+      },
+      {
         "title": "טבת תש\"ח",
         "subtitle": "להת' הנוסעים לאירופא",
         "file": "pdfs/tevet_5708.pdf",
