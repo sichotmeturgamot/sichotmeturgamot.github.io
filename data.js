@@ -932,7 +932,7 @@ const YEARS = [
         "hasPage": true
       }
     ],
-    "fullFile": "pdfs/Tishrey_5708.pdf",
-    "fullTitle": "שיחות תשרי תש\"ח עם מפתחות"
+    "fullFile": "pdfs/Choref_5708.pdf",
+    "fullTitle": "שיחות חורף תש\"ח"
   }
 ];
