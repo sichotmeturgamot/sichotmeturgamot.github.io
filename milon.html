@@ -5,7 +5,7 @@
 <script>window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__bipEvent=e;});</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>מילון אידיש–עברית לספר השיחות של אדמו״ר הריי״צ — תרגום מונחי חסידות ללשון הקודש</title>
-<meta name="description" content="מילון אידיש–עברית לספר השיחות של כ״ק אדמו״ר הריי״צ מליובאוויטש. חיפוש מהיר של מילים ומונחים חסידיים באידיש ותרגומם ללשון הקודש ולאנגלית — אלפי ערכים.">
+<meta name="description" content="מילון אידיש–עברית לספר השיחות של כ״ק אדמו״ר הריי״צ מליובאוויטש. חיפוש מהיר של מילים ומונחים חסידיים באידיש ותרגומם ללשון הקודש ולאנגלית — מעל 17,000 ערכים.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://sichotmeturgamot.github.io/milon.html">
 <meta property="og:type" content="website">
@@ -152,7 +152,8 @@
   <section style="max-width:620px;margin:36px auto 6px;padding:0 22px;line-height:1.65;font-size:.8rem;color:var(--muted);text-align:center">
     <h2 style="font-size:.92rem;font-weight:500;color:var(--muted);text-align:center;margin-bottom:8px">אודות המילון</h2>
     <p style="margin-bottom:7px">מילון אידיש–עברית זה נלווה ל<a href="sichos.html" style="color:var(--gold)">ספר השיחות</a> של כ״ק אדמו״ר הריי״צ מליובאוויטש — רבי יוסף יצחק שניאורסאהן — המתורגם ללשון הקודש. השיחות נאמרו במקורן באידיש, והמילון נועד לסייע להבין מילים, ביטויים ומונחים חסידיים המופיעים בהן.</p>
-    <p style="margin-bottom:7px">אפשר להקליד כל מילה באידיש, עם ניקוד או בלעדיו, ולקבל מיד את תרגומה ללשון הקודש — וגם לאנגלית. המילון כולל אלפי ערכים, והוא מתאים ללומדי חסידות, לדוברי עברית ואנגלית, ולכל המבקש להעמיק בשיחות אדמו״ר הריי״צ בשפת המקור.</p>
+    <p style="margin-bottom:7px">אפשר להקליד כל מילה באידיש, עם ניקוד או בלעדיו, ולקבל מיד את תרגומה ללשון הקודש — וגם לאנגלית. המילון כולל מעל 17,000 ערכים, והוא מתאים ללומדי חסידות, לדוברי עברית ואנגלית, ולכל המבקש להעמיק בשיחות אדמו״ר הריי״צ בשפת המקור.</p>
+    <p style="margin-bottom:7px">במילון הוכנסו גם מילים וביטויים ברוסית המשולבים בשיחות ובאגרות. מילים אלו כתובות באותיות עבריות כמו שהן מופיעות במקור, ומסומנות בסימן <b>(ר.)</b> לצד המילה.</p>
     <p>המילון הוא חלק מאתר <a href="index.html" style="color:var(--gold)">ספר השיחות מתורגם ללשון הקודש</a>, שבו מתפרסמות שיחותיו של הרבי הריי״צ מתורגמות מאידיש, לצד <a href="search.html" style="color:var(--gold)">מפתח ענינים, שמות ומקומות</a> לחיפוש בתוכן השיחות.</p>
   </section>
 </main>
@@ -203,6 +204,7 @@
     }
     function normalize(s) {
       s = stripNikud(s);
+      s = s.replace(/\(ר\.\)/g, '');   // סימון מילה רוסית — לא חלק מהמילה
       s = s.replace(/ײ/g, 'יי').replace(/ױ/g, 'וי').replace(/װ/g, 'וו');
       for (const ch of ['׳', '״', "'", '"', '­', '-', '־', ' ']) s = s.split(ch).join('');
       s = s.replace(/וו/g, 'ו');   // כתיב ישן: ו' אחת = וו (ועגין = וועגן)
