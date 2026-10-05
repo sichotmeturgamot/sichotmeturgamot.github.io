@@ -930,9 +930,20 @@ const YEARS = [
         "hebDate": "י״ד אדר ב׳",
         "addedAt": "2026-09-23",
         "hasPage": true
+      },
+      {
+        "title": "ב' ניסן תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/2_nisan_5708.pdf",
+        "pages": 7,
+        "count": 1,
+        "sortDate": "08-02",
+        "hebDate": "ב׳ ניסן",
+        "addedAt": "2026-10-05",
+        "hasPage": true
       }
     ],
-    "fullFile": "pdfs/Choref_5708.pdf",
-    "fullTitle": "שיחות חורף תש\"ח"
+    "fullFile": "pdfs/Tishrey_5708.pdf",
+    "fullTitle": "שיחות תשרי תש\"ח עם מפתחות"
   }
 ];
