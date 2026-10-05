@@ -708,7 +708,8 @@ const YEARS = [
         "hasPage": true
       }
     ],
-    "fullFile": "pdfs/sefer_hasichos_5707.pdf"
+    "fullFile": "pdfs/sefer_hasichos_5707.pdf",
+    "fullTitle": "ספר השיחות תש״ז — הקובץ המלא"
   },
   {
     "year": "תרצ\"ח",
