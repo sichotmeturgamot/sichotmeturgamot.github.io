@@ -80,6 +80,8 @@
   .result .tag { font-size: .72rem; font-family: 'Heebo', sans-serif; background: #efe9db; color: #8a7a52; border-radius: 999px; padding: 2px 10px; align-self: center; }
   .excerpt { margin: 9px 0 8px; color: var(--text); line-height: 1.75; border-inline-start: 3px solid var(--gold-light); padding-inline-start: 12px; }
   .meta-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .see-ref { margin-top: 6px; font-family: 'Frank Ruhl Libre', serif; }
+  .see-ref a { color: var(--navy, #1b2a4a); font-weight: 700; text-decoration: underline; cursor: pointer; }
   .src-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; width: 100%; }
   .src-btns .btn, .btns .btn { font-family: 'Frank Ruhl Libre', serif; }
   mark { background: var(--gold-light); color: var(--navy); border-radius: 3px; padding: 0 2px; }
@@ -326,6 +328,12 @@ function cardContent(r, tt){
          : (r.pdfpage ? '<div class="meta-line"><span class="pages">עמ\' '+r.pdfpage+' בשיחה</span></div>' : ''))+
     '</div><div class="btns"><a class="btn btn-navy btn-sm" href="'+(r.url + (r.page ? '&disp='+r.page : '') + (r.pdfpage ? '&page='+r.pdfpage : ''))+'">'+esc(r.sichah)+'</a></div></div>';
 }
+function cardSee(r, tt){   // ערך הפניה: "ד' מינים — ע"ע ארבעת המינים"
+  return '<div class="sicha result" data-topic="'+esc(r.topic)+'"><div class="sicha-info">'+
+      '<div class="topic-line"><h3>'+hl(r.topic, tt)+'</h3></div>'+
+      '<div class="see-ref">ע״ע <a class="see-link" data-see="'+esc(r.see)+'">'+esc(r.see)+'</a></div>'+
+    '</div></div>';
+}
 function cardRef(r, tt){
   const clar = r.clar ? ' <span class="clar">('+hl(r.clar, tt)+')</span>' : '';
   const tag = TAG[r.t] ? ' <span class="tag">'+TAG[r.t]+'</span>' : '';
@@ -355,9 +363,22 @@ function render(){
   // ערך אמיתי (שם/מקום/מושג) — מיון כרונולוגי; תוצאת ציטוט-בלבד — לפי רלוונטיות
   if(entryMatch) scored.sort((a,b) => entryChrono(a.e) - entryChrono(b.e) || (b.sc - a.sc));
   else scored.sort((a,b) => b.sc - a.sc);
-  const rows = scored.map(x => x.e);
+  // ערך הפניה (ע"ע) שמתאים בשמו — מציגים אותו ראשון, רק התאמות בשם הערך, ומצרפים אחריו את הערכים שהוא מפנה אליהם
+  if(scored.some(x => x.e.see && x.sc >= 5)){
+    scored = scored.filter(x => x.sc >= 5);
+    scored.sort((a,b) => (b.e.see ? 1 : 0) - (a.e.see ? 1 : 0));
+  }
+  let rows = scored.map(x => x.e);
+  if(rows.some(r => r.see)){
+    const out = [], seen = new Set();
+    for(const r of rows){
+      if(seen.has(r)) continue; seen.add(r); out.push(r);
+      if(r.see){ const tgt = normalize(r.see); for(const e of DATA){ if(!seen.has(e) && e._t === tgt){ seen.add(e); out.push(e); } } }
+    }
+    rows = out;
+  }
   countEl.textContent = rows.length ? (rows.length + (rows.length===1 ? ' תוצאה' : ' תוצאות')) : 'לא נמצאו תוצאות';
-  results.innerHTML = rows.map(r => ('sources' in r) ? cardRef(r, raw) : cardContent(r, raw)).join('');
+  results.innerHTML = rows.map(r => r.see ? cardSee(r, raw) : ('sources' in r) ? cardRef(r, raw) : cardContent(r, raw)).join('');
   // שמירה אוטומטית של הערך הראשון של התוצאה, לאחר שההקלדה נעצרת — ומחליפה את מה שנשמר קודם באותו חיפוש
   clearTimeout(saveTimer);
   if(rows.length){ const topName = rows[0].topic; saveTimer = setTimeout(()=>storeHist(topName, true), 700); }
@@ -408,6 +429,8 @@ quotesToggle.addEventListener('click', () => {
 
 q.addEventListener('input', () => { if(azOpen) closeAZ(); render(); });
 results.addEventListener('click', e => {   // לחיצה על תוצאה — שומרת מיד את הערך שנבחר
+  const sl = e.target.closest('.see-link');   // לחיצה על ע"ע — מעבר לערך המופנה
+  if(sl){ q.value = sl.dataset.see; render(); storeHist(sl.dataset.see, false); window.scrollTo({top:0, behavior:'smooth'}); return; }
   const qs = e.target.closest('.q-show');   // הצגה/הסתרה של ציטוט לערך ספציפי (כשהציטוטים מוסתרים)
   if(qs){ const ex = qs.nextElementSibling; if(ex){ const hidden = ex.style.display === 'none'; ex.style.display = hidden ? 'block' : 'none'; qs.textContent = hidden ? 'הסתר ציטוט ▴' : 'הצג ציטוט ▾'; } return; }
   if(e.target.closest('a.btn')){ const card = e.target.closest('.result'); if(card && card.dataset.topic) storeHist(card.dataset.topic, false); try{ sessionStorage.setItem('mafteach-return', q.value); }catch(_){} }
