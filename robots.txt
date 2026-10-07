@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sichotmeturgamot.github.io/sitemap.xml
+Sitemap: https://sichotmeturgamot.com/sitemap.xml
