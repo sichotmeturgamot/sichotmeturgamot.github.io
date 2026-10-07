@@ -942,6 +942,17 @@ const YEARS = [
         "hebDate": "ב׳ ניסן",
         "addedAt": "2026-10-05",
         "hasPage": true
+      },
+      {
+        "title": "סדר הראשון דחג הפסח תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/seder_1_pesach_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "08-14",
+        "hebDate": "י״ד ניסן",
+        "addedAt": "2026-10-07",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
