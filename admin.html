@@ -542,7 +542,13 @@ function renderSitemap() {
     { loc: base + '/donate.html', pri: '0.5' }
   ];
   data.YEARS.forEach(y => y.sichos.forEach(s => {
-    if (s.hasPage && !s.hidden) urls.push({ loc: base + '/sichos/' + sichaSlug(s.file) + '.html', pri: '0.8' });
+    if (s.hidden) return;
+    if (s.hasPage) urls.push({ loc: base + '/sichos/' + sichaSlug(s.file) + '.html', pri: '0.8' });
+    // קובץ ה-PDF עצמו — שם נמצא הטקסט המלא של השיחה, וגוגל יודע לאנדקס אותו
+    if (s.file && /\.pdf$/i.test(s.file)) {
+      const pdfPath = String(s.file).split('/').map(encodeURIComponent).join('/');
+      urls.push({ loc: base + '/' + pdfPath, pri: '0.7' });
+    }
   }));
   const body = urls.map(u => '  <url>\n    <loc>' + u.loc + '</loc>\n    <lastmod>' + today + '</lastmod>\n    <priority>' + u.pri + '</priority>\n  </url>').join('\n');
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + '\n</urlset>\n';
