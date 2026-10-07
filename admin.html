@@ -165,7 +165,7 @@
         <div><label>עמוד ב-PDF (אופציונלי)</label><input type="number" id="mf-pdfpage" min="1"></div>
       </div>
       <label>קישור לשיחה</label>
-      <input type="text" id="mf-url" class="en" placeholder="https://sichotmeturgamot.github.io/read.html?...">
+      <input type="text" id="mf-url" class="en" placeholder="https://sichotmeturgamot.com/read.html?...">
       <div class="dlg-btns">
         <button class="btn btn-main" onclick="mfSave()">הוסף למפתח</button>
         <button class="btn btn-line" onclick="mfClear()">ניקוי טופס</button>
@@ -429,6 +429,7 @@ const dataEntry = () => ({ path: 'data.js', mode: '100644', type: 'blob', conten
    ============================================================ */
 function siteBase() {
   const repo = (cfg.repo || '').toLowerCase();
+  if (repo === 'sichotmeturgamot.github.io') return 'https://sichotmeturgamot.com'; // דומיין קבוע
   if (repo.endsWith('.github.io')) return 'https://' + repo;
   return 'https://' + (cfg.owner || '').toLowerCase() + '.github.io/' + cfg.repo;
 }
