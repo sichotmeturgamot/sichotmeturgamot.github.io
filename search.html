@@ -111,7 +111,7 @@
 <div class="milon-head">
   <div class="bsd">ב״ה</div>
   <h1>חיפוש ערכים בשיחות</h1>
-  <div class="sub">מפתח ענינים, שמות ומקומות לשיחותיו של אדמו״ר הריי״צ המתורגמים ללה״ק</div>
+  <div class="sub">מפתח ענינים, שמות, מקומות ומוסדות לשיחותיו של אדמו״ר הריי״צ המתורגמים ללה״ק</div>
 </div>
 
 <main style="padding-top:14px">
@@ -236,7 +236,7 @@ function entryChrono(e){
   return chronoNum(e.sichah||'');
 }
 
-const TAG = { n: "שם", m: "מקום" };
+const TAG = { n: "שם", m: "מקום", o: "מוסד" };
 const HKEY = "mafteach-history";
 let showQuotes = true;
 try { showQuotes = localStorage.getItem('mafteach-quotes') !== '0'; } catch (_) {}
