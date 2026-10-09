@@ -60,7 +60,6 @@
   /* סינון לפי מפתח: ענינים / שמות / מקומות / מוסדות */
   .cat-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 680px; margin: 12px auto 0; padding: 0 8px; }
   .cat-btn { border: 1.5px solid var(--line); background: var(--paper); border-radius: 999px; padding: 6px 14px; font-family: 'Heebo', sans-serif; font-size: .9rem; color: var(--muted); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
-  .cat-btn .n { font-size: .74rem; opacity: .75; margin-inline-start: 4px; }
   .cat-btn.on { background: var(--navy); color: var(--cream); border-color: var(--navy); font-weight: 500; }
   .cat-btn:not(.on):hover { color: var(--navy); border-color: var(--gold); }
   .cat-hint { text-align: center; margin-top: 6px; font-size: .84rem; }
@@ -101,8 +100,7 @@
     /* בטלפון: שורה אחת נגללת במקום שתי שורות (אזור החיפוש נשאר צמוד למעלה) */
     .cat-bar { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; gap: 4px; margin-top: 10px; }
     .cat-bar::-webkit-scrollbar { display: none; }
-    .cat-btn { flex: 0 0 auto; padding: 5px 10px; font-size: .85rem; }
-    .cat-btn .n { display: none; }   /* בטלפון — בלי המספרים, כדי שכל הכפתורים ייכנסו בשורה; המספר מוצג מעל הרשימה */
+    .cat-btn { flex: 0 0 auto; padding: 5px 11px; font-size: .86rem; }
     .cat-btn:first-child { margin-inline-start: auto; }
     .cat-btn:last-child { margin-inline-end: auto; }
   }
@@ -450,12 +448,7 @@ azToggle.addEventListener('click', () => {
 
 // ---- כפתורי המפתחות ----
 const catBar = document.getElementById('cat-bar');
-function catCount(key){
-  const s = new Set();
-  for(const e of DATA){ if(key==='all' || e.t===key) s.add(e._t); }   // כמו ברשימת א״ב (כולל הפניות ע״ע)
-  return s.size;
-}
-catBar.innerHTML = CATS.map(([k,l]) => '<button type="button" class="cat-btn'+(k===cat?' on':'')+'" data-cat="'+k+'">'+l+'<span class="n">'+catCount(k)+'</span></button>').join('');
+catBar.innerHTML = CATS.map(([k,l]) => '<button type="button" class="cat-btn'+(k===cat?' on':'')+'" data-cat="'+k+'">'+l+'</button>').join('');
 function setCat(k){
   cat = k;
   try { sessionStorage.setItem('mafteach-cat', k); } catch (_) {}
