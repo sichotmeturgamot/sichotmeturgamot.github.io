@@ -57,6 +57,14 @@
   .seg-btn + .seg-btn { border-inline-start: 1.5px solid var(--line); }
   .seg-btn.on { background: var(--navy); color: var(--cream); font-weight: 500; }
   .seg-btn:not(.on):hover { color: var(--navy); }
+  /* סינון לפי מפתח: ענינים / שמות / מקומות / מוסדות */
+  .cat-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 680px; margin: 12px auto 0; padding: 0 8px; }
+  .cat-btn { border: 1.5px solid var(--line); background: var(--paper); border-radius: 999px; padding: 6px 14px; font-family: 'Heebo', sans-serif; font-size: .9rem; color: var(--muted); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+  .cat-btn .n { font-size: .74rem; opacity: .75; margin-inline-start: 4px; }
+  .cat-btn.on { background: var(--navy); color: var(--cream); border-color: var(--navy); font-weight: 500; }
+  .cat-btn:not(.on):hover { color: var(--navy); border-color: var(--gold); }
+  .cat-hint { text-align: center; margin-top: 6px; font-size: .84rem; }
+  .cat-hint a { color: var(--navy); text-decoration: underline; cursor: pointer; }
   .azlist { max-width: 760px; margin: 18px auto 0; padding: 0 16px; }
   .az-group { margin-bottom: 20px; }
   .az-letter { font-family: 'Frank Ruhl Libre', serif; color: var(--gold); font-size: 1.35rem; border-bottom: 1px solid var(--line, #e3dccd); padding-bottom: 4px; margin-bottom: 10px; }
@@ -90,6 +98,13 @@
     .search-wrap { top: 60px; }
     .milon-head { padding: 28px 14px 4px; }
     .search-box input { font-size: 1.25rem; padding: 13px 46px 13px 14px; }
+    /* בטלפון: שורה אחת נגללת במקום שתי שורות (אזור החיפוש נשאר צמוד למעלה) */
+    .cat-bar { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; gap: 4px; margin-top: 10px; }
+    .cat-bar::-webkit-scrollbar { display: none; }
+    .cat-btn { flex: 0 0 auto; padding: 5px 10px; font-size: .85rem; }
+    .cat-btn .n { display: none; }   /* בטלפון — בלי המספרים, כדי שכל הכפתורים ייכנסו בשורה; המספר מוצג מעל הרשימה */
+    .cat-btn:first-child { margin-inline-start: auto; }
+    .cat-btn:last-child { margin-inline-end: auto; }
   }
 </style>
 </head>
@@ -121,6 +136,7 @@
       <input id="q" type="text" placeholder="חיפוש נושא, שם או מקום…" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
       <button class="clear" id="clear" aria-label="ניקוי">×</button>
     </div>
+    <div class="cat-bar" id="cat-bar" role="group" aria-label="סינון לפי מפתח"></div>
     <div class="seg-bar"><div class="seg-toggle"><button type="button" id="az-toggle" class="seg-btn">כל הערכים לפי א״ב</button><button type="button" id="quotes-toggle" class="seg-btn">הסתר ציטוטים</button></div></div>
   </div>
   <div class="count-line" id="count"></div>
@@ -237,6 +253,12 @@ function entryChrono(e){
 }
 
 const TAG = { n: "שם", m: "מקום", o: "מוסד" };
+// ---- סינון לפי מפתח ----
+const CATS = [['all','הכל'], ['i','ענינים'], ['n','שמות'], ['m','מקומות'], ['o','מוסדות']];
+const CAT_LABEL = { i: 'מפתח הענינים', n: 'מפתח השמות', m: 'מפתח המקומות', o: 'מפתח המוסדות' };
+let cat = 'all';
+try { const c = sessionStorage.getItem('mafteach-cat'); if(c && CATS.some(x => x[0] === c)) cat = c; } catch (_) {}
+function inCat(e){ return cat === 'all' || e.t === cat; }
 const HKEY = "mafteach-history";
 let showQuotes = true;
 try { showQuotes = localStorage.getItem('mafteach-quotes') !== '0'; } catch (_) {}
@@ -350,12 +372,14 @@ function render(){
   const raw = q.value.trim();
   clearEl.style.display = raw ? 'block' : 'none';
   if(maamar) maamar.style.display = raw ? 'none' : '';   // המאמר מוצג רק כשאין חיפוש פעיל
-  if(!raw){ clearTimeout(saveTimer); lastAuto=null; results.innerHTML=''; countEl.textContent=''; renderHistory(); return; }
+  if(!raw){ clearTimeout(saveTimer); lastAuto=null; results.innerHTML=''; countEl.textContent='';
+    if(cat !== 'all'){ openAZ(); return; }       // מפתח מסוים נבחר — חוזרים לרשימת הערכים שלו
+    renderHistory(); return; }
   historyEl.innerHTML='';
   const nq = normalize(raw), nqNS = NS(nq);
   if(!nq){ results.innerHTML=''; countEl.textContent=''; return; }
   let scored = [];
-  for(const e of DATA){ const sc = scoreEntry(e, nq, nqNS); if(sc>0) scored.push({ e, sc }); }
+  for(const e of DATA){ if(!inCat(e)) continue; const sc = scoreEntry(e, nq, nqNS); if(sc>0) scored.push({ e, sc }); }
   // אם יש התאמה בשם/תיאור הערך (דירוג 2 ומעלה) — מציגים רק אותן, בלי התאמות ציטוט בלבד (דירוג 1).
   // חיפוש בתוך הציטוט נשאר כברירת מחדל רק כשאין אף ערך שמתאים לשם/תיאור.
   const entryMatch = scored.some(x => x.sc >= 2);
@@ -377,7 +401,9 @@ function render(){
     }
     rows = out;
   }
-  countEl.textContent = rows.length ? (rows.length + (rows.length===1 ? ' תוצאה' : ' תוצאות')) : 'לא נמצאו תוצאות';
+  countEl.textContent = rows.length ? (rows.length + (rows.length===1 ? ' תוצאה' : ' תוצאות') + (cat!=='all' ? ' ב' + CAT_LABEL[cat] : '')) : (cat!=='all' ? 'לא נמצאו תוצאות ב' + CAT_LABEL[cat] : 'לא נמצאו תוצאות');
+  if(!rows.length && cat!=='all' && DATA.some(e => scoreEntry(e, nq, nqNS) > 0))
+    countEl.innerHTML = esc(countEl.textContent) + '<div class="cat-hint"><a id="cat-all-link">הצג תוצאות בכל המפתחות</a></div>';
   results.innerHTML = rows.map(r => r.see ? cardSee(r, raw) : ('sources' in r) ? cardRef(r, raw) : cardContent(r, raw)).join('');
   // שמירה אוטומטית של הערך הראשון של התוצאה, לאחר שההקלדה נעצרת — ומחליפה את מה שנשמר קודם באותו חיפוש
   clearTimeout(saveTimer);
@@ -392,7 +418,7 @@ let azOpen = false;
 function heFirst(s){ const c = normalize(s).charAt(0); return /[א-ת]/.test(c) ? c : '#'; }
 function buildAZ(){
   const seen = new Set(), items = [];
-  for(const e of DATA){ const k = normalize(e.topic); if(seen.has(k)) continue; seen.add(k); items.push(e.topic); }
+  for(const e of DATA){ if(!inCat(e)) continue; const k = normalize(e.topic); if(seen.has(k)) continue; seen.add(k); items.push(e.topic); }
   items.sort((a,b) => normalize(a).localeCompare(normalize(b), 'he'));
   const groups = {};
   for(const name of items){ const L = heFirst(name); (groups[L] = groups[L] || []).push(name); }
@@ -403,18 +429,43 @@ function buildAZ(){
     '</div></div>').join('');
 }
 function renderAZ(){
-  if(!azEl.innerHTML) azEl.innerHTML = buildAZ();
+  azEl.innerHTML = buildAZ();
   azEl.style.display = 'block';
   azEl.querySelectorAll('.az-item').forEach(it => it.onclick = () => { q.value = it.dataset.t; closeAZ(); render(); q.focus(); });
 }
 function closeAZ(){ azOpen = false; azToggle.classList.remove('on'); azToggle.textContent = 'כל הערכים לפי א״ב'; azEl.style.display = 'none'; if(maamar && !q.value.trim()) maamar.style.display = ''; }
+function openAZ(){
+  azOpen = true;
+  azToggle.classList.add('on');
+  azToggle.textContent = 'הסתר את הרשימה';
+  q.value=''; results.innerHTML=''; clearEl.style.display='none'; historyEl.innerHTML=''; if(maamar) maamar.style.display='none';
+  renderAZ();
+  const n = azEl.querySelectorAll('.az-item').length;
+  countEl.textContent = (cat!=='all' ? CAT_LABEL[cat] + ' — ' : '') + n + ' ערכים';
+}
 azToggle.addEventListener('click', () => {
-  azOpen = !azOpen;
-  azToggle.classList.toggle('on', azOpen);
-  azToggle.textContent = azOpen ? 'הסתר את הרשימה' : 'כל הערכים לפי א״ב';
-  if(azOpen){ q.value=''; results.innerHTML=''; countEl.textContent=''; clearEl.style.display='none'; historyEl.innerHTML=''; if(maamar) maamar.style.display='none'; renderAZ(); }
-  else closeAZ();
+  if(!azOpen) openAZ();
+  else { closeAZ(); countEl.textContent=''; renderHistory(); }
 });
+
+// ---- כפתורי המפתחות ----
+const catBar = document.getElementById('cat-bar');
+function catCount(key){
+  const s = new Set();
+  for(const e of DATA){ if(key==='all' || e.t===key) s.add(e._t); }   // כמו ברשימת א״ב (כולל הפניות ע״ע)
+  return s.size;
+}
+catBar.innerHTML = CATS.map(([k,l]) => '<button type="button" class="cat-btn'+(k===cat?' on':'')+'" data-cat="'+k+'">'+l+'<span class="n">'+catCount(k)+'</span></button>').join('');
+function setCat(k){
+  cat = k;
+  try { sessionStorage.setItem('mafteach-cat', k); } catch (_) {}
+  catBar.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('on', b.dataset.cat === k));
+  if(q.value.trim()) render();                 // בחיפוש — מסננים את התוצאות
+  else if(k !== 'all' || azOpen) openAZ();      // בלי חיפוש — רשימת הערכים של המפתח שנבחר
+  else { closeAZ(); countEl.textContent=''; renderHistory(); }
+}
+catBar.addEventListener('click', e => { const b = e.target.closest('.cat-btn'); if(b) setCat(b.dataset.cat); });
+countEl.addEventListener('click', e => { if(e.target.id === 'cat-all-link') setCat('all'); });
 
 // ---- מתג כללי: הצגת/הסתרת ציטוטים ----
 const quotesToggle = document.getElementById('quotes-toggle');
@@ -438,6 +489,7 @@ results.addEventListener('click', e => {   // לחיצה על תוצאה — ש�
 clearEl.addEventListener('click', ()=>{ q.value=''; q.focus(); render(); });
 renderHistory();
 try{ var _r = sessionStorage.getItem('mafteach-return'); if(_r){ sessionStorage.removeItem('mafteach-return'); q.value=_r; render(); } }catch(_){}
+if(!q.value && cat !== 'all') openAZ();
 if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
 </script>
 <script src="nav.js"></script>
