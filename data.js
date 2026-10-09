@@ -953,6 +953,17 @@ const YEARS = [
         "hebDate": "י״ד ניסן",
         "addedAt": "2026-10-07",
         "hasPage": true
+      },
+      {
+        "title": "שיחת יום שבת קודש א' דחג הפסח תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/yom_1_pesach_5708.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "08-15",
+        "hebDate": "ט״ו ניסן",
+        "addedAt": "2026-10-09",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
