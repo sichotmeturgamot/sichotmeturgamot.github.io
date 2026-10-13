@@ -48,7 +48,7 @@
 אוועקגענומען|נלקח|taken away
 אַוועקגענומען געוואָרן|נלקח|was taken away
 אַוועקגעפאָרן|נסע משם|drove away, departed
-אַוועקגעפירט געוואָרען|הוסע|was led/taken away
+אַוועקגעפירט געוואָרן|הוסע|was led/taken away
 אַוועקגעשאָנקען|העניק- במתנה|gave as a gift, bestowed
 אַוועקגעשטעלט|העמיד, קבע|set up, placed, established
 אוועקווארפן|להשליך|to throw away
@@ -79,7 +79,6 @@
 אויגן|עיניים|eyes
 אויוון|תנור|oven, stove
 אויטאָמאָביל|מכונית|automobile
-אוייסענווייניג|בעל פה, מחוץ לפנים|by heart; on the outside
 אויך|גם, אף|also, too
 אויכעט|גם|also
 אוינטערהאַנדעלונגען|שיג ושיח, משא ומתן|negotiations
@@ -170,6 +169,7 @@
 אויסהערענדיק|תוך האזנה עד הסוף|while listening to the end
 אויסוואַל|בחירה, מבחר|choice, selection
 אויסוואַקסען|לצמוח|to grow up
+אויסוואַקסן|לצמוח|to grow up
 אויסוואשן|לשטוף, לרחוץ|to wash out
 אויסוויזן|להראות|to show
 אויסוויזן זיך|להיראות, להידמות|to seem, to appear
@@ -204,7 +204,6 @@
 אויסמיידן|להימנע מ־|to avoid
 אויסמישן|לערבב|to mix up
 אויסמעסטען|למדוד|to measure out
-אויסמערקזאַם|קשוב; תשומת לב|attentive; attention
 אויסמערקזאַם מאַכן|להסב תשומת לב|to draw attention
 זיין אויסן|להתכוון ל־, לחתור ל־|to be after, to aim at
 אויסנאַהם|יוצא מן הכלל, חריג|exception
@@ -220,7 +219,6 @@
 אויספאָרמירט|עוצב, עוצב מחדש|formed, reshaped
 אויספאָרשונג|חקירה|investigation, research
 אויספּאָרשונגס|חקירות|investigations
-אויספּיהערליך|בפרוטרוט|in detail
 אויספיהר|המסקנה, מסקנה, ביצוע|conclusion; execution
 אויספיהרליך|בפירוט, באריכות|in detail, at length
 אויספיהרען|לבצע|to carry out
@@ -241,7 +239,7 @@
 אויסצופּרובירן|לבחון, לנסות|to test, to try out
 אויסצורעכענען|לחשב|to calculate
 אויסצושטיין|להתמודד, לעמוד כנגד|to withstand, to endure
-אויסקוינפטן|מידע, בירורים|information, inquiries
+אויסקונפטן|מידע, ידיעות|information
 אויסקומען|להסתדר; להיאלץ|to manage, to get by; to have to
 אויסקוק|מראה|appearance, look
 אויסקלייבּען|לבחור, לברור|to choose, to select
@@ -321,13 +319,12 @@
 אויפטואונגען|פעולות, הישגים|accomplishments, achievements
 אויפטוען|חידושים|achievements, innovations
 אויפטראָג|שליחות, הוראה, מטלה|commission, assignment, instruction
-אויפטריכטיקן|כנה|sincere, upright
 אויפכאַפּן|לקלוט, להבין; להתעורר|to catch on, to grasp; to wake up (with a start)
 אויפלאָגן|לטעון|to load
 אויפלעבן|לחיות, להתחיות|to come to life, to revive
 אױפלעבן|לחיות, להתחיות|to come to life, to revive
 אויפמאַכן|לפתוח|to open up
-אויפמערקזאַם|מעירים (מסבים תשומת לב); קשוב|drawing attention; attentive
+אויפמערקזאַם|קשוב; תשומת לב; מסב תשומת לב|attentive; attention; drawing attention
 אויפמערקזאַמקייט|תשומת לב|attention
 אויפן|על ה־|on the
 אויפנאַם|קבלת פנים|reception, welcome
@@ -355,7 +352,6 @@
 אויפשטייען|להתעורר|to arise, to rise up
 אויפשטעלן|להקים, להעמיד|to set up, to erect
 אוּיפשרייבּן|להעלות על הכתב|to write down, to record
-אוישפּראַך|התבטאות, ביטוי|pronunciation, utterance
 אוך|גם, אף|also, too
 אוּם|ב...|at, on (temporal prefix)
 אומאָרדענונג|אי סדר|disorder
@@ -366,7 +362,7 @@
 אוּמבּעשרייבּליך|שאין לתארו, בלתי ניתן לתיאור|indescribable
 אומגיין|להסתובב, להתהלך|to go around, to wander
 אומגליק|אסון|misfortune, disaster
-אוּמגעאָכטערקייט|חי (לא מבושל)|rawness, uncooked state
+אומגעקאָכטערהייט|במצב לא מבושל (חי)|uncooked
 אוּמגעגאַנגען|התהלך, הסתובב|went around, wandered
 אומגעגנט|סביבה|surroundings, vicinity
 אוּמגעדולד|קוצר-רוח, כליון-עיניים|impatience
@@ -467,7 +463,6 @@
 איבּערגעבויט|בנה מחדש|rebuilt
 איבערגעבעטן|פייס|reconciled, appeased
 איבערגעבען|למסור; מסר|to hand over, to convey; handed over
-איבערגעגבנקייט|מסירות|devotion
 איבערגעגעבן|מסור; מסר|devoted; handed over
 איבערגעגעבנקייט|מסירות|devotion
 איבערגעגעבענער|מסור|devoted
@@ -511,6 +506,7 @@
 איבערמאָרגן|מחרתיים|the day after tomorrow
 איבערן|מעל ה־, על ה־|over the
 איבערנעמען|ליטול על עצמו|to take upon oneself
+איבערצונעמען|ליטול על עצמו|to take upon oneself
 איבערנעמען זיך|להתרגש|to be moved
 איבערפילט|מלא על גדותיו|overfilled, brimming
 איבערפרעגן|לתשאל|to question, to interrogate
@@ -577,7 +573,6 @@
 איידעם|חתן (בעל-הבת)|son-in-law
 איידעמס|חתנים|sons-in-law
 איידער|לפני|before, rather than
-אייוואָרצלונג|השתרשות|taking root, entrenchment
 אייז|קרח|ice
 אייזל|חמור|donkey
 אייזלען|חמורים|donkeys
@@ -608,7 +603,6 @@
 איינגעחזרט|שינן, חזר על תלמודו|reviewed, memorized
 איינגעטיילט|חילקו|divided, classified
 אַיינגעלאַדען|הזמין|invited
-איינגעמאָרגענט|סידרו|arranged, settled
 איינגעפירט|הנהיג (מנהג), הכניס|introduced, instituted
 איינגעפעסטיקטער|מבוסס|established, firmly set
 איינגעקויפט|קנה, ערך קניות|bought, did shopping
@@ -628,7 +622,7 @@
 איינהאלטן|לרסן, לעצור|to restrain, to hold back
 איינוואָהנער|תושבים|inhabitants, residents
 איינוואוינער|תושב|inhabitant, resident
-איינוואָרצלונג|השרשה|taking root, rooting
+איינוואָרצלונג|השרשה, השתרשות|taking root, rooting
 איינזאַם|בודד|lonely, solitary
 איינזען|תובנה; להבין, להכיר|insight; to realize
 איינטענה'ט|טוען, מתלונן|argues, complains
@@ -640,6 +634,7 @@
 אייניקעל|נכד|grandchild
 איינמאָל|פעם אחת|once
 אייננעמן|לכבוש; ליטול (תרופה)|to conquer; to take (medicine)
+אייננעמען|לכבוש; ליטול (תרופה)|to conquer; to take (medicine)
 איינס|אחד, דבר אחד|one, one thing
 איינע|אחת|one
 איינעם|אחד|one
@@ -668,7 +663,6 @@
 אייער|שלך, שלכם|your
 אייערנעכטן|שלשום|the day before yesterday
 אייערער|שלכם|yours
-אייר|שלך, שלכם|your
 אייראפא|אירופה|Europe
 אייראפע|אירופה|Europe
 איך|אני|I
@@ -722,7 +716,6 @@
 אינפל|השפעה|influence
 אינצווישן|בינתיים|meanwhile, in the meantime
 אינקוויזיציע|אינקוויזיציה|Inquisition
-אינרליכער|פנימי|inner, internal
 איער|שלך, שלכם|your
 איף|על, בשביל|on; for
 איצט|עכשיו, כרגע|now
@@ -782,7 +775,7 @@
 אַן אַנדער|אחר|another
 אָנבאָט|הצעה, בקשה|offer, proposal
 אָנבאָטנדיק|מציע, מגיש|offering
-אָנגורייטן|להכין|to prepare
+אָנגרייטען|להכין|to prepare
 אנגיהויבן|התחיל|began, started
 אנגיהייבין|התחיל|began
 אָנגיין|להסתדר, להמשיך|to manage, to go on
@@ -822,7 +815,7 @@
 אַנגעקומען|הגיע|arrived
 אנגעקומענע|שהגיעו|(those) who arrived
 אנגעקליבן|נאסף, הצטבר|gathered, accumulated
-אָנגערהאַלבּען|אחד וחצי|one and a half
+אָנדערהאַלבּען|אחד וחצי|one and a half
 אָנגערופען|נקרא, כונה; ענה, אמר|called, named; responded, said
 אנגערירט|נגע ב־; ריגש|touched (upon); moved
 אָנגעשטעלט געוואָרן|כֻּוַּן, הועמד|was appointed, was set
@@ -870,7 +863,7 @@
 אַנטוויקונג|התפתחות|development
 אנטוויקלט|מפותח|developed
 אַנטוויקלען|לפתח|to develop
-אַנטויש|מאוכזבים|disappointed
+אַנטויש|לאכזב|to disappoint
 אַנטוישונג|אכזבה|disappointment
 אַנטוישט|מאוכזב|disappointed
 אַנטזאַגט|סירב|refused, declined
@@ -955,6 +948,7 @@
 אָפּגעמעקט|מחק, מחוק|erased
 אָפּגענאַרט|רומה|deceived, tricked
 אָפּגעפאָרען|נסע|departed, drove off
+אָפּגעפאָרן|נסע|departed, drove off
 אָפּגעפּרעסטער|לחוץ, מדוכא|pressed, oppressed
 אָפּגעצויגען|נמשך, נסחב|drawn off, pulled away
 אפגעקילט|קירר; הצטנן|cooled; caught cold
@@ -1005,6 +999,7 @@
 אָפּמאַך|הסכם, חוזה|agreement, contract
 אָפּנאַרן|לרמות|to deceive, to cheat
 אָפען|פתוח|open
+אָפן|פתוח|open
 אפענע|פתוחה|open
 אָפענער|פתוח|open
 אָפּעראַציע|ניתוח, מבצע|operation, surgery
@@ -1096,17 +1091,19 @@
 אַרויסגעצייגט|הראה, ציין|showed, displayed
 אַרויסגעקומען|יצא|came out
 ארויסגערופען|עורר|evoked, called forth
+אַרויסגערופן|עורר|evoked, called forth
 אַרויסגעשטויסן|דחף החוצה, גירש; נדחף, גורש|pushed out, expelled
 אַרויסגעשטויסען|דחף החוצה, גירש; נדחף, גורש|pushed out, expelled
 ארויסוואַרפען|להשליך, להעיף|to throw out
 אַרוּיסווייזען|להראות|to show, to display
+אַרויסווייזן|להראות|to show, to display
 ארויסזאגען|להגות, לומר; להביע|to utter, to speak out; to express
 אַרויסזאָגען|להגות, לומר; להביע|to utter, to speak out; to express
 ארויסטראגן|לשאת החוצה; להוציא לפועל|to carry out
 ארויסטרייבן|לגרש|to drive out, to expel
 אַרויסנעמען|להוציא|to take out
 ארויספארן|לצאת בנסיעה|to set out, to drive off
-ארויספאָרענדיג|בנסעו (דרך יציאה)|while setting out
+ארויספאָרענדיג|בצאתו (לדרך)|departing, setting out
 אַרויסצודרייען|להתחמק|to wriggle out, to evade
 אַרויסצוּזאָגען|להוציא מהפה, להגיד|to utter, to say
 ארויסצוראטעווען|לחלץ|to rescue, to extricate
@@ -1185,7 +1182,6 @@
 אַריינגענומען|הוכנס, נקלט; נכלל|taken in, included
 אריינגעפאלן|נפל פנימה|fell in
 אריינגעפירט|הכניס|introduced, led in
-אַריינגעצוייגען|משך פנימה|drew in, pulled in
 אַריינגעקומען|נכנס|entered, came in
 אַריינגערופען|קרא פנימה|called in
 אריינגעשטעלט|הוכנס, הועמד בפנים|put in, placed inside
@@ -1363,7 +1359,7 @@
 באנעם|תפיסה, הבנה|grasp, comprehension
 בּאַנעמען|לתפוס|to grasp, to comprehend
 באנק|ספסל|bench
-בּאַפאַלן|להתנפל, להסתער, לתקוף|to attack, to fall upon
+בּאַפאַלן|להתנפל, להסתער, לתקוף, לפקוד|to attack, to fall upon, to overcome
 באַפעל|פקודה, צו|command, order
 בּאַפעלן|לפקד|to command, to order
 באַפעלקערונג|אוכלוסיה|population
@@ -1422,6 +1418,7 @@
 באַשטימט ווערן|להיקבע, להקבע|to be determined
 באַשטימטע|מסויים|certain, specific
 באשטימטען|מסוים, קבוע|certain, specific
+באַשטימטן|מסוים, קבוע|certain, specific
 בּאַשטימען|לקבוע, לחרוץ, להחליט|to determine, to decide, to set
 באַשיצט|הגן|protected
 בּאַשיצן|להגן|to protect, to defend
@@ -1468,10 +1465,11 @@
 ביטער|מר|bitter
 ביטערע|מרה, מרים|bitter
 בּיטערען|מר, קשה|bitter, harsh
+ביטערן|מר, קשה|bitter, harsh
 ביטערער|מר יותר|more bitter
 ביטערקייט|מרירות|bitterness
 ביי|אצל, ב-|at, by
-בייגטראָגן|תרם, הוסיף|contributed, added
+בייגעטראָגן|תרם, הוסיף|contributed, added
 בייגל|כעך|bagel
 בּייגעשטאַנען|עמד (בניסיון)|withstood, stood by
 ביידן|שניהם|both
@@ -1707,7 +1705,6 @@
 בּראַנד|שריפה|fire, blaze
 בראָנפן|יי"ש, משקה חריף|whiskey, liquor
 ברודער|אח|brother
-בּרוּט|לחם|bread
 ברויט|לחם|bread
 בּרום|נהמה, שאגה (של אריה)|roar, growl
 ברונעם|באר|well
@@ -2001,7 +1998,7 @@
 געהאָלפן|עזר|helped
 געהאָנגען|תלוי|hung
 געהאַנדעלט|נוהל, עסק|acted, dealt
-געהאַנדעלט האָט זיך|עסק ב-, נוהל|it was about, dealt with
+געהאַנדלט זיך|עסק ב-, דובר ב-|it was about, dealt with
 געהאָפט|קיווה|hoped
 געהארעוועט|עמל, עבד קשה, יגע|toiled, labored hard
 געהויבען|מורם, נעלה|elevated, lofty
@@ -2047,7 +2044,6 @@
 געוואָרפן|זרק, השליך|threw, cast
 געוואָרפען|זרק, השליך|threw, cast
 געוואַשן|רחץ|washed
-געווהענט|גרו|dwelt, lived
 געוויזן|הראה|showed
 געוויזען|הראה|showed
 געווייזט|הראה|showed
@@ -2079,6 +2075,7 @@
 געוועזן|היה|was
 געווען|היה|was
 געווענדט|כרוך, תלוי; פנה|dependent, bound up; turned (to)
+געוואָנדט|כרוך, תלוי; פנה|dependent, bound up; turned (to)
 זיך געווענדט צו|פנה אל|turned to, appealed to
 געווענדעט|כרוך, תלוי|dependent, bound up
 געווענליכער|רגיל|ordinary
@@ -2185,6 +2182,7 @@
 געלעגענהייט|הזדמנות|opportunity
 געלעגענהייטן|הזדמנויות|opportunities
 געלעגער|מיטה|bed, resting place
+גלעגער|מיטה|bed, resting place
 געלעכטער|צחוק|laughter
 געלעכטער מאַכן|ללעוג|to make fun, to mock
 געלעכצט|כמה, השתוקק|yearned, craved
@@ -2276,6 +2274,7 @@
 געצוואונגען|אילץ, נאלץ; כפוי|forced, compelled
 געצוואונגענע|כפוי, מאולץ, אנוס|forced, coerced
 געצויגען|משך|pulled, drew
+געצויגן|משך|pulled, drew
 געציגט|ביטא|expressed
 געציטערט|רעד|trembled
 געצייג|כלים, מכשירים|tools, instruments
@@ -2308,6 +2307,7 @@
 געקראגען|קיבל, השיג|received, obtained
 געקראָכען|זחל, טיפס|crawled, climbed
 געקרוינט|הוכתר, הכתיר|crowned
+געקריינטן|הוכתר, הכתיר|crowned
 געראָטן|מוצלח, ייעץ|well-turned-out; advised
 געראַטעוועט|ניצל, הציל|rescued, saved
 געראַנגעל|מאבק|struggle, wrestling
@@ -2328,7 +2328,6 @@
 געריכט|(בית) משפט; מכוון|court (of law); aimed, directed
 זיך גיריכט אויף|ציפה ל־|expected
 געריסן|קרע, נקרע|tore, was torn
-געריפענע|נקראים, קרויים|called, named
 גערירט|נגע; הוזז, ריגש, נגע ללב|touched; moved
 גערן|ברצון, בחפץ לב|gladly, willingly
 גערעגענט|ירד גשם|rained
@@ -2373,7 +2372,7 @@
 געשיכטלעך|היסטורי|historical
 געשיכטע|סיפור, היסטוריה, דברי הימים|story, history
 געשילדערט|תיאר|described, portrayed
-געשיקט|שלח|sent
+געשיקט|שלח; מיומן, זריז, מוכשר|sent; skillful, deft
 געשיקט געוואָרן|נשלח|was sent
 געשלאָגן|הוכה, היכה|beaten, struck
 געשלאסן|סגור; החלטי|closed; resolute
@@ -2567,10 +2566,9 @@
 דויערן|להימשך (בנוגע לזמן)|to last
 דוכט|נדמה|it seems
 דוכט זיך|נדמה, נראה|it seems
-דוּנט|נדמה|it seems
 דונער|רעם|thunder
 דוּנערדיגען|רועם|thundering
-דורגעטראָנטענע|סלולים|trodden, worn (paths)
+דורכגעטראָטענע|סלולים|trodden, worn (paths)
 דורך|דרך|through
 דורכאויס|לגמרי, לחלוטין|thoroughly, completely
 דורכגאנג|מעבר|passage, corridor
@@ -2695,7 +2693,7 @@
 דערוואַרטונג|ציפייה|expectation
 דערוואַרטן|לחכות, לצפות; מחכים, מצפים|to await, to expect
 דערוואַרטנדיק|בציפייה, מצפה|awaiting, expecting
-דערוויטנס|מרחוק|from afar
+דערווייטנס|מרחוק|from afar
 דערווייטערט|הרחיק|distanced, moved away
 דערווייטערן זיך|להתרחק|to move away, to distance oneself
 דערווייל|בינתיים, בתוך כך|meanwhile
@@ -2713,7 +2711,7 @@
 דערזען|ראה, הבחין|caught sight of, noticed
 דערזעענדיק|בראותו|upon seeing
 דעריבער|לכן|therefore
-דערכער|חוחים|thorns
+דערנער|חוחים|thorns
 דערלאזט|מרשה, נותן ל־|allows, permits
 דערלאזן|להניח ל־, להרשות, לאפשר|to allow, to permit
 דערלאנגט|מגיש, מושיט|hands, passes
@@ -2737,7 +2735,7 @@
 דערנומען|קלט, חש|perceived, sensed
 דערנידעריקן|להשפיל|to humiliate, to degrade
 דערנעמט|קולט, תופס|grasps, is moved
-דערנעמן|לתפוס, לקלוט|to grasp, to be moved
+דערנעמן|לתפוס, לקלוט; לחדור, להגיע (עד)|to grasp, to be moved; to reach, to penetrate
 דערנענטערן|לקרב|to bring closer
 דערנענטערן זיך|להתקרב|to draw near
 דערנעענטערונג|התקרבות|drawing near, approach
@@ -2794,7 +2792,7 @@
 דרויסענדיגער|חיצוני|outer
 דרויסענדיקע|חיצוניים|external
 גרונדן|יסודות|foundations
-דרוסען|החוצה|outside
+דרויסען|החוצה|outside
 דרוקן|להדפיס|to print
 דרוקעריי|בית דפוס|printing house
 דריטער|שלישי|third
@@ -2998,7 +2996,7 @@
 הענדלער|סוחר|merchant, dealer
 הענט|ידיים|hands
 העפט|מחברת|notebook
-העפטיקסטיער|הנמרץ ביותר, העז ביותר|most vigorous, intense
+העפטיקסטער|הנמרץ ביותר, העז ביותר|most vigorous, intense
 העפלעך|אדיב, נימוסי|polite, courteous
 הער|שמע!; אדון, מר|hear!, listen!; Mr.
 הערט|שומע|hears
@@ -3016,7 +3014,6 @@
 הרגענען|להרוג|to kill
 הרגש|רגש, הרגשה|feeling, emotion
 השכלהדיג|של השכלה (בחסידות)|intellectual, of comprehension (Chassidic)
-ואַסערטרעגער|(נושאי) סובלי-מים|water carriers
 וארט|מילה; רגע|word; moment
 וואָג|משקל|weight, scale
 וואגאן|קרון רכבת|train car
@@ -3048,7 +3045,7 @@
 וואונש|משאלה, איחול|wish
 וואַך|ער, שקדן; משמר, שמירה|awake, alert; guard, watch
 וואָך|שבוע|week
-וואָכדיקע|של-ימות-השבוע|weekday
+וואָכדיקע|של ימות החול|weekday (adj.)
 וואָכעדיגער|יום חול; של חול, חולין|weekday; mundane, everyday
 וואָכעדיק|של יום חול, חולין|of weekdays, mundane
 וואכעדיקן|של ימות החול, של יום חול|weekday, of weekdays
@@ -3066,7 +3063,7 @@
 וואַלצען|גלילים|cylinders, rollers
 וואָלקן|ענן|cloud
 וואָלקנס|עננים|clouds
-וואַנדערדיק|נודד|wandering
+וואַנדערנדיק|נודד|wandering
 וואנדערט|נודד|wanders
 וואַנדערן|לנדוד|to wander
 וואַנט|קיר|wall
@@ -3110,7 +3107,7 @@
 וואַרף|זורק (אני)|(I) throw
 וואַרפסט|זורק (אתה)|(you) throw
 וואַרפט|זורק; מוטל, נופל|throws; is cast, falls
-וואַרפינדיק|בזרקו|throwing
+וואַרפענדיק|בזרקו|throwing
 וואַרפן|לזרוק, להשליך|to throw, to cast
 וואָרצל|שורש|root
 ווארצעל|שורש|root
@@ -3167,6 +3164,7 @@
 ווייטערדיקער|הבא|the next, subsequent
 ווייט-פאַרלאָפענעם|רחוק ונידח|far-off, remote
 ווייטקייט|ריחוק|distance, remoteness
+ווייטקייטן|ריחוק|distance, remoteness
 ווייכן|רך|soft
 ווייכע|רך|soft
 ווייכער|רך יותר|softer
@@ -3175,7 +3173,7 @@
 וויילע-ארום|אחרי שעה קלה|after a while
 וויין|יין|wine
 וויינסט|בוכה (אתה)|(you) cry
-וויינט|בוכה; רוח|cries; wind
+וויינט|בוכה|cries
 ווייניג|לא מספיק, מעט|little, few
 ווייניגער|פחות|less, fewer
 ווייניגער פאַרמעגליך|פחות אמיד (עשיר)|less well-off
@@ -3230,6 +3228,7 @@
 ווינקעל|פינה, זווית|corner, angle
 ווינקעלע|פינה קטנה|little corner
 ווינקעלעך|פינות|corners
+ווינקלעך|פינות|corners
 ווינשט|מאחל|wishes
 ווינשן|לאחל|to wish
 וויסט|שומם; עגום|desolate; gloomy
@@ -3240,7 +3239,7 @@
 וויסנשאַפט|מדע|science
 וויסנשאַפטלעכע|מדעי; מדענים, מלומדים|scientific; scientists, scholars
 וויסנשאַפטן|מדעים|sciences
-וויסענשאַפט|ידע|knowledge, science
+וויסענשאַפט|מדע, ידע|science, knowledge
 וויען|וינה (עיר)|Vienna
 וויפיל|כמה|how much, how many
 וויפיעל|כמה|how much, how many
@@ -3321,10 +3320,9 @@
 ויא|כיצד, איך, כמו|how; as, like
 וייזענדיק|בהראותו|showing
 ווייזענדיק|בהראותו|showing
-ויינקעלע|פינה|corner
-ויינקעלשטיין|אבן הפינה|cornerstone
+ווינקעלשטיין|אבן הפינה|cornerstone
 וייסע|לבן|white
-וייסענשאַפט|ידע|knowledge
+וייסענשאַפט|מדע, ידע|science, knowledge
 וייסענשאַפטן|ידיעות|sciences, knowledge
 ויל|רוצה|wants
 ויסוואַקסן|לגדול|to grow up
@@ -3612,12 +3610,11 @@
 טויזינטער|אלפים|thousands
 טויזנד|אלף (1000)|thousand
 טויזנט|אלף|thousand
-טויזנטער|אלפים|thousands
+טויזנטער|אלפים, אלפי|thousands
 טויזענד|אלף|thousand
 טויזענדער|אלפים|thousands
 טויזענט|אלף (1000)|thousand
 טויזענטער|אלפי, אלפים|thousands
-טויזענטר|אלפים, אלפי|thousands
 טויט|מת, מוות|dead; death
 טויטע שטילקייט|שקט מוות, דממת מוות|deathly silence
 טויטער|מת|dead
@@ -3681,7 +3678,7 @@
 טעאַטער|תיאטרון|theater
 טעג|ימים|days
 טעגליכן|יומי, יומיומי|daily
-טעהענט|טוענים|argue, claim
+טענהט|טוענים|argue, claim
 טעות האָבן|לטעות|to be mistaken
 טעותים|טעויות|errors, mistakes
 טעטיקייט|עשייה, פעילות|activity
@@ -3939,11 +3936,11 @@
 ליידט|סובל|suffers
 ליידיגע|ריקים; בטלים|empty; idle
 ליידיק|ריק, פנוי|empty, idle
-ליידיקם|ידיים ריקות|empty-handed
 ליידיקן|ריק|empty
 ליידיקע|ריק|empty
 ליידיקער|ריק|empty
 ליידען|לסבול|to suffer
+לייַדן|לסבול|to suffer
 ליידער|לצערנו, לדאבוננו|unfortunately
 לייוונט|פשתן, בד|linen, canvas
 לייווענט|בד|canvas, cloth
@@ -4166,10 +4163,12 @@
 מיטגעבראכט|הביא עמו|brought along
 מיטגעגאַנגען|הלך יחד|went along
 מיטגעהאלפען|סייע|helped along, assisted
+מיטגעהאָלפן|סייע|helped along, assisted
 מיטגעזוּנגען|שר יחד|sang along
 מיטגענומען|לקח עמו|took along
-מיטגעצוייגען|סחף עמו, נסחף|swept along
+מיטגעצויגען|סחף עמו, נסחף|swept along
 מיטהעלפען|לעזור, לסייע|to help, to assist
+מיטהעלפן|לעזור, לסייע|to help, to assist
 מיטהעלפער|עוזר, מסייע|helper, assistant
 מיטוואָך|יום רביעי (בשבת)|Wednesday
 מיטל|אמצעי|means
@@ -4183,6 +4182,7 @@
 דער מיטעלער רבי|אדמו"ר האמצעי|the Mitteler Rebbe
 מיטפאָהרען|לנסוע יחד|to travel along
 מיטפארען|לנסוע יחד|to travel along
+מיטפאָרן|לנסוע יחד|to travel along
 מיידל|ילדה, נערה|girl
 מיידלעך|ילדות, נערות|girls
 מייז|עכברים|mice
@@ -4318,6 +4318,7 @@
 נאָכן|לאחר|after the
 נאָכער|אחר כך|afterwards
 נאָכפאָלגן|לעקוב|to follow
+נאָכצופאָלגן|לעקוב|to follow
 נאכפאָלגער|ממשיך דרך|successor, follower
 נאָכפאָלגערשאַפט|קהל חסידים, ציבור ההולכים אחריו; המשך, ממשיכים|following, body of followers; succession
 נאָכקומען|לעקוב, לבוא אחרי; למלא (דרישה), לעמוד ב־|to follow, to come after; to comply with, to fulfill
@@ -4452,7 +4453,6 @@
 עוואַקואירט זיך|יצאו, התפנו|were evacuated
 עוואַקואַירט זיך|התפנה|evacuated
 עוואַקואַציע|יציאה, פינוי|evacuation
-עופה'לה|עוף קטן|little bird; baby
 עופעלע|תינוק|infant, baby
 עטוואָס|קצת, במקצת, משהו|somewhat, something
 עטליכע|כמה, אחדים|several, a few
@@ -4480,8 +4480,8 @@
 ענדיגט זיך|מסתיים; הסתיים|ends, finished
 ענדיקן|לסיים|to finish, to end
 ענדליך|סוף-סוף|finally
-ענדלך|כבר|finally, already
-ענדלעך|כבר, סוף-סוף, סופית|finally
+ענדלך|כבר, סוף-סוף, סופית|finally, already
+ענדלעך|כבר, סוף-סוף, סופית|finally, already
 ענדע|סוף|end
 ענדערוּנג|שינוי|change
 ענדערן|לשנות|to change
@@ -4552,8 +4552,6 @@
 ערלעכער|ישר, ירא שמים|honest, pious
 ערלעכער איד|יהודי ירא שמיים|a pious Jew
 ערמונטערט|מעודד, ממריץ|encouraged, spurred
-ערנטס|רציני|serious
-ערנטסקייט|רצינות|seriousness
 ערנסט|רציני|serious
 ערנסטן|רציני|serious
 ערנסטע|רציני|serious
@@ -4646,6 +4644,7 @@
 פאַנאַנדערגערעדט|הסביר בהרחבה|explained at length
 פאַנאַנדערגערעדט זיך|שוחח, דן|talked it over
 פאַנאַנדערגעשפּרייט|התפשטו; פרוש לכל עבר|spread out
+פונאַנדערגעשפּרייט|התפשטו; פרוש לכל עבר|spread out
 פאַנאַנדערקלייבּען|להבחין, לברר|to sort out, to distinguish
 פאנגט|מתחיל|begins
 פאַנגט זיך אָן|מתחילה|begins
@@ -4705,7 +4704,7 @@
 פאַרבונדענע|קשור|connected
 פאַרביטערט|ממורמר|embittered
 פארביי|חלף, עבר|past, over
-פאַרבּייגויענדיג|בעוברי|passing by
+פאַרבּייגייענדיג|בעוברי|passing by
 פאַרבייגייענדיג|כלאחר יד, דרך אגב; בעוברו, בחלפו|in passing
 פאַרבייגעגאַנגען|חלף, עבר|passed by
 פארבייטן|להחליף|to exchange, to replace
@@ -4722,7 +4721,6 @@
 פאַרבּלענדעט|מסנוור, מסנור|dazzled, blinded
 פאַרבן|צבעים|colors
 פארבעטן|להזמין|to invite
-פאַרבענט געוואָרן|נשרף|was burned
 פאַרבעסערט|משופר|improved
 פארבעסרן|לשפר|to improve
 פאַרבּראַכט|התוועד(נו)|spent (time), gathered
@@ -4788,7 +4786,7 @@
 פאָרהאַנג|וילון|curtain
 פארהאנגען|וילונות|curtains
 פאַרהאָרעוועטער|יגע, מיוגע|worn out from toil
-פאַרהאָרעועט|מיוגעים|worn out
+פאַרהאָרעוועט|מיוגעים|worn out
 פאַרהויבּען|מופשלות|raised, rolled up
 פאַרהייליגטע|מקודשים|sanctified
 פאַרהייליקט|יתקדש|is sanctified
@@ -4823,7 +4821,6 @@
 פאַרזינקען|לטבוע|to sink, to drown
 פאָרזיץ|בראשות|chairmanship
 פאַרזען|להחמיץ, להחטיא|to miss, to overlook
-פאַרחאַט|נתפס|was caught
 פאָרט|נוסע; בכל זאת|travels; after all
 פאָרט אָפּ|נוסע (לדרכו)|departs
 פאַרטאָג|לפנות בוקר, קודם השחר|dawn, before daybreak
@@ -4845,7 +4842,6 @@
 פארטיפן|להעמיק|to deepen
 פאַרטיפן זיך|להתעמק|to delve deeply
 פאַרטיק|מוכן, גמור, עשוי|ready, finished
-פאַרטענדיקונג|הבנה|understanding
 פארטראגן|לשאת, לסבול; שקוע, נסחף (ב...)|to bear, to endure; absorbed, carried away (in)
 פאַרטראָטן|צעדו; ייצגו|stepped, trod; represented
 פאַרטראַכט|מחושב, מהורהר|thoughtful, pensive
@@ -4948,12 +4944,12 @@
 פאַרפּראָסטעט|נעשה גס, התגשם|coarsened, became crude
 פאַרפראָרען|קפוא, קר מאוד|frozen, freezing
 פאַרפרוירן|קפוא|frozen
-פאַרפריי זיך|הקדים|to be early, to rejoice
+פאַרפרי|מוקדם, בהשכמה|early
 פאַרצווייפלוּנג|יאוש|despair
 פאַרצווייפלט|מיואש|desperate
+פאַרצווייפלטער|מיואש|desperate
 פאַרצווייפעלט|נואש, מיואש|desperate
-פאָרצוזען|להמשיך|to continue
-פאָרצושטעלען|להציג, לדמיין|to present, to imagine
+פארצושטעלען|להציג, לדמיין|to present, to imagine
 פארציטערט|רועד|trembling
 פארצייטיקע|קדומים, מימים עברו|ancient, of olden times
 פארצייכנונג|רישום, רשימה|record, notation
@@ -4992,6 +4988,7 @@
 פאַרשאַטן|להזיק; נקבר, כוסה (בהריסות)|to harm; buried, covered (under rubble)
 פאַרשאַפען|לגרום, לספק|to cause, to provide
 פאַרשוואונדן|נעלם, אבד|disappeared
+פאַרשוווּנדן|נעלם, אבד|disappeared
 פארשוועכט|מחולל, מזולזל|desecrated, disgraced
 פארשוועכן|לחלל|to desecrate
 פאַרשטאַנד|הבנה, שכל, תבונה|understanding, intellect
@@ -5085,7 +5082,6 @@
 פורעם|צורה|form, shape
 פורעמס|צורות|forms, shapes
 פוּרען|כרכרות|carriages
-פָטאָגראַפיע|תמונה|photograph
 פיאווקעס|עלוקות|leeches
 פּיאַטע|עקב|heel
 פיבער|קדחת, חום|fever
@@ -5204,7 +5200,6 @@
 פנימיותדיקע|פנימית|inner
 פנימיותדיקער|פנימי, בעל פנימיות|inner, internal
 פנימער|פרצופים|faces
-פּנקטליך|בדיוק|exactly
 פּסיכישע|פסיכי, נפשי|psychic, mental
 פעאיג|מוכשר, מסוגל|capable, able
 פעדלער|רוכל|peddler
@@ -5264,7 +5259,7 @@
 פערשידענע|שונים, מגוונים|various, different
 פערשיידענע|שונים, מגוונים|various, different
 פערשיינונג|תופעה|phenomenon
-פערשענדעניש|הבנה|understanding
+פערשטענדעניש|הבנה|understanding
 פּראָבלעמען|בעיות|problems
 פראַגן|שאלות|questions
 פראַגע|שאלה|question
@@ -5403,7 +5398,6 @@
 צוגעבן|להוסיף|to add
 צוגעבראַכט|הביא, צירף|brought
 צוגעגאַנגען|ניגש|approached
-צוגעגבן ווערן|להתוסף|to be added
 צוגעגעבן|הוסיף|added
 צוגעגרייט|מוכן, הוכן|prepared
 צוגעדעקט|מכוסה|covered
@@ -5452,7 +5446,7 @@
 דעם צווייטענס|של השני, של חברו|the other's
 צווייטער|שני, השני|second
 צווייערליי|שני סוגים|two kinds
-צווייערס|של שניים, בזוגות|of two, in pairs
+צווייערס|מטבעות של שתי קופיקות|two-kopek coins
 צווילינג|תאומים|twins
 צווינגען|להכריח, לאלץ|to force, to compel
 צווישן|בין|between, among
@@ -5481,7 +5475,6 @@
 צוטומלעניש|מהומה, ערבוביה|commotion, confusion
 צוטראגן|להביא אל, לשאת אל|to bring to, to carry to
 צוּטרוי|אמון|trust, confidence
-צוּטרייַ|נאמן|loyal, faithful
 צוטריי|נאמן, ישר|loyal, honest
 צולויפן|לרוץ אל, להתקבץ|to run up to, to converge
 צוליב|בגלל, לשם|because of, for the sake of
@@ -5568,7 +5561,6 @@
 צוּשיקן|לשלוח|to send
 צושמעטערט|מרוסק|shattered
 צושפרייט|מפוזר|scattered
-צטיילונג|חלוקה|division
 צי|מושך (אני); האם|(I) pull; whether
 ציבעלע|בצל|onion
 ציג|עז|goat
@@ -5585,7 +5577,6 @@
 צייט|זמן|time
 צייטווייליגע|זמני, ארעי|temporary
 צייטווייליגער|זמני|temporary
-צייטוויליקע|זמני|temporary
 צייטונג|עיתון|newspaper
 צייטיג|בשל|ripe
 צײַטלעך|זמני|temporal, temporary
@@ -5607,13 +5598,14 @@
 ציל האַבן|לשאוף|to aim, to strive
 ציל-גרופּע|קהל יעד|target audience
 צילען|מטרות|goals; to aim
+צילן|מטרות|goals; to aim
 צימער|חדר|room
 צימערן|חדרים|rooms
 צינדן|להדליק|to light, to kindle
 ציעל|מטרה, יעד|goal, aim
 ציען|למשוך|to pull, to draw
 ציענדיק|מושך|pulling, drawing
-ציריק-וועגס|דרך-חזור|way back
+צוריקוועגס|דרך-חזור|way back
 צעבּער|דלי, כד|bucket, pail
 צעבראָכן|שבור, נשבר|broken
 צעברעקלונג|התפוררות|crumbling, disintegration
@@ -5697,7 +5689,7 @@
 קאַנצעלאַריע|לשכה|office, chancellery
 קאָסט|עולה (כסף)|costs
 קאָסטן|עלות, מחיר|cost
-קאַסירע|גזבר|treasurer, cashier
+קאַסירער|גזבר|treasurer, cashier
 קאָפּ|ראש; מוח, שכל|head; mind, brains, intellect
 קאַפּאָטע|קפוטה, מעיל חסידי|kapote, Chassidic coat
 קאָפּווייטיק|כאב ראש|headache
@@ -5784,7 +5776,6 @@
 קינדהייט|ילדות|childhood
 קינדווייז|בילדות, כילד|as a child
 קינדס|של הילד|child's
-קינדס־קינדר|בני בנים|grandchildren
 קינדער|ילדים|children
 קינדער־יאָרן|שנות הילדות|childhood years
 קינדעריש|ילדותי|childish
@@ -5839,7 +5830,7 @@
 קליינער|קטן|small
 קליינערהייט|בקטנותי (בילדותי)|in one's childhood
 קליינקייט|קטנות|smallness
-קליינשטעלדיקען|של-העיירות|of the small towns
+קליינשטעטלדיקן|של-העיירות|of the small towns
 קלינגט|מצלצל|rings
 קלינגען|לצלצל|to ring
 קלינגערס|מצלצלים|ringers
@@ -5953,7 +5944,7 @@
 קרעסלעס|כורסאות|armchairs
 קרעפאסט|מבצר, מצודה|fortress
 קרעפטן|כוחות|powers, forces
-קרפּערס|גופים|bodies
+קערפּערס|גופים|bodies
 ראָג|פינת רחוב|street corner
 ראגאטשאווער|מרוגצ'וב (הגאון הרוגצ'ובי)|of Rogatchov (the Rogatchover Gaon)
 ראַדיאָ|רדיו|radio
@@ -6007,6 +5998,7 @@
 ריידין|לדבר|to speak
 ריידנדיק|תוך כדי דיבור|while speaking
 ריידען|לדבר|to speak
+ריידן|לדבר|to speak
 רייזט|נוסע|travels
 רייזע|נסיעה, מסע|journey, trip
 רייזעס|נסיעות, מסעות|journeys
@@ -6256,12 +6248,10 @@
 שטעדט|ערים|cities
 שטעדטל|עיירה, עיר קטנה|town
 שטעדטעל|עיירה, עיר קטנה|town
-שטעדעט|ערים|cities
 שטעהן|לעמוד|to stand
 שטעט|ערים, עיירות|cities, towns
 שטעטל|עיירה|town, shtetl
 שטעטלעך|עיירות|towns
-שטעטלער|עיירות|towns
 שטעטעל|עיירה|town, shtetl
 שטעטעלדיקע|של - העיירות|of the towns
 שטעטעלע|עיירה קטנה|little town
@@ -6350,6 +6340,7 @@
 שלאָפסט|ישן (אתה)|(you) sleep
 שלאָפן|לישון|to sleep
 שלאָפנדיקן|ישן|sleeping
+שלאָפנדיקע|ישן|sleeping
 שלאָפענדיגען|ישנים, ישן|sleeping
 שלויסן|להדוף, לדחוף, לנגח|to push, to shove
 שלום מאַכן|להשלים, לעשות שלום|to make peace
@@ -6745,6 +6736,7 @@
 קעסטעל|קופסה קטנה, תיבה, ארגז; משבצת|little box, box, case; square (in a grid)
 נעהמען|לקחת; להתחיל, לגשת ל...|to take; to undertake, to set about
 איינגעזעהן|הבין, נוכח|realized
+איינגעזען|הבין, נוכח|realized
 פראנקיסטען|פרנקיסטים|Frankists
 צושלאגט|טורק, מכה; מפריך|slams; refutes, demolishes
 שכרות|שכרות, שיכרות|drunkenness
@@ -6753,6 +6745,7 @@
 ביישפיעל|דוגמה|example
 צוגעטיילט|הוקצה, חולק|allotted
 צוגעקראגען|קיבל, השיג|obtained
+צוגעקראָגן|קיבל, השיג|obtained
 ארויסהעלפער|עוזר, מחלץ|helper
 נאטירליך|טבעי; כמובן, באופן טבעי|natural; naturally, of course
 דערהויפט|בעיקר, בראש|mainly, especially
@@ -6767,6 +6760,7 @@
 עפענטליכע|פומבי, ציבורי|public
 מאנאטען|חודשים|months
 וויכטיג|חשוב|important
+וויכטיק|חשוב|important
 גלח|כומר|priest, monk
 גלחים|כמרים|priests
 קריסטענטום|נצרות|Christianity
@@ -6896,6 +6890,7 @@
 היטעלעך|כובעים קטנים|little hats
 שייטלאך|פאות נכריות|sheitels, wigs
 אויפגעריסען|נפרץ, נקרע|torn open
+אויפגעריסן|נפרץ, נקרע|torn open
 געניסען|ליהנות|to enjoy
 ארמיי|צבא|army
 פריווילעגיע|זכות יתר|privilege
@@ -6919,6 +6914,7 @@
 אוועקגערויבט|נגזל|robbed away
 אומבאריהרט|לא נגוע|untouched
 פארזיכטיג|זהיר|careful
+פאָרזיכטיק|זהיר|careful
 פארשטיקט|חנק, דיכא|stifled, choked
 פארביטערטקייט|מרירות|bitterness
 געקימערט|דאג|cared, worried
@@ -7021,6 +7017,7 @@
 עלענדקייט|בדידות, אומללות|wretchedness
 געטרייסט|ניחם|comforted
 פארדינסטען|זכויות; רווחים|merits; earnings
+פאַרדינסטן|זכויות; רווחים|merits; earnings
 געזעטיגט|שבע|satiated
 פארהונגערט|מורעב|starved
 צושטעהן|להצטרף, לסייע; להציק, ללחוץ, להטריד|to stand by; to pester, to press
@@ -7290,6 +7287,7 @@
 מאכען|לעשות|to do, to make
 בעגליקען|להביא אושר, לברך, להצליח|to make happy, to bless, to bring good fortune
 צוטיילען|לחלק, להפיץ|to distribute
+צוטיילן|לחלק, להפיץ|to distribute
 שטייען|לעמוד|to stand
 גייען|ללכת; לפעול (מכונה)|to go; to run, to work (machine)
 געבעטען|ביקש|asked, requested
@@ -7597,6 +7595,7 @@
 מעהרערע|נוספים|additional
 יאהרען|שנים|years
 זעהענדיק|בראותו|seeing
+זעענדיק|בראותו|seeing
 גידאכט|חשב|thought
 איבערגעגעבענע|מסורים|devoted
 פארגרעסערען|להגדיל|to enlarge, to increase
@@ -8382,6 +8381,7 @@
 נאענטסטע|הקרובה ביותר|nearest
 פרייליכערהייט|בשמחה|joyfully
 פילאזאפיע|פילוסופיה|philosophy
+פילאָסאָפיע|פילוסופיה|philosophy
 פארעכנט|נחשב, ייזקף|reckoned
 צירונגען|תכשיטים|ornaments
 באנייטער|מחודשת|renewed
@@ -8538,6 +8538,7 @@
 טשאריטי|צדקה|charity
 אינעווייניקסטן|הפנימי|innermost
 אינעווייניקסטער|הפנימי|innermost
+אינעווייניקסטע|הפנימי|innermost
 טריבן|עכורים, קודרים|murky, gloomy
 שנעלן|מהיר|swift
 פארברויכט|נצרך, מנוצל|consumed
@@ -9341,16 +9342,19 @@
 אפארטמענט|דירה, בניין דירות|apartment
 קומענדיקן|הבא|coming, next
 אויסשפרייטען|להתפשט|to spread out
+אויסשפּרייטן|להתפשט|to spread out
 מאנס|של הבעל|husband's
 ראטזאם|רצוי, כדאי|advisable
 געכער|יותר מהר|faster, sooner
 שאצן|להעריך|to appreciate, to value
 פונקטען|נקודות|points
+פונקטן|נקודות|points
 אפריקע|אפריקה|Africa
 עמוירדזשענסי|חירום|emergency
 זייטיגע|צדדיים, זרים|extraneous, side
 לעסאן|לקח, שיעור|lesson
 פאסירען|לקרות|to happen
+פּאַסירן|לקרות|to happen
 הייליגט|מקדש|sanctifies
 אוטא|מכונית|car
 שיכט|שכבה|layer
@@ -9403,6 +9407,7 @@
 קייס|תיק (משפטי)|case
 אונטערנעמען|לקבל על עצמו, ליזום|to undertake
 נויטווענדיקייט|הכרח, נחיצות|necessity
+נייטווענדיקייט|הכרח, נחיצות|necessity
 אפיס|משרד|office
 טעלעפאנישן|טלפוני|telephone (adj.)
 ביאגראפיע|ביוגרפיה|biography
@@ -9501,6 +9506,7 @@
 אנוועזענדע|הנוכחים|those present
 מיטגלידערינס|חברות (בארגון)|(female) members
 געענדערט|שינה, שונה|changed
+גענדערט|שינה, שונה|changed
 פאטאגראפירען|צילום|photographing
 אפסעט|דפוס אופסט|offset (printing)
 אריגינאל|מקור|original
@@ -9599,6 +9605,7 @@
 האמערן|להלום, לחזור ולהדגיש|to hammer
 ברייטערע|רחבים יותר|broader
 אמבעסטען|הכי טוב|best
+אַמבעסטן|הכי טוב|best
 פליגלען|כנפיים|wings
 אנפאנגער|מתחיל|beginner
 איבערבליק|סקירה|overview
@@ -9744,6 +9751,7 @@
 קארעספאנדענץ|התכתבות|correspondence
 קאנסעקווענצן|השלכות|consequences
 צענדליקע|עשרות|dozens, tens
+צענדליקער|עשרות|dozens, tens
 פארפליכטונגען|התחייבויות|obligations
 בעארבעטן|לעבד|to work on, to process, to cultivate
 אויסערדעם|מלבד זה|besides
@@ -9782,6 +9790,7 @@
 אומגעגענד|סביבה|surroundings
 פארוואלטונג|הנהלה|administration
 בוכשטעבליך|כפשוטו|literally
+בוכשטעבלעך|כפשוטו|literally
 ווירקליכקייט|מציאות|reality
 אונגעהויערע|עצום|enormous
 צופרידענשטעלענד|משביע רצון|satisfactory
@@ -9825,7 +9834,7 @@
 דערלייזונג|גאולה|redemption
 פארטרייבט|מגרש|drives away
 אפציען|להסיט, למשוך|to divert, draw away
-קינדסקינדער|צאצאים|descendants
+קינדסקינדער|צאצאים, בני בנים|descendants, grandchildren
 קייטן|שרשראות|chains
 דערגענצט|השלים|supplemented
 צייטשריפט|כתב עת|periodical
@@ -9888,6 +9897,7 @@
 פאסילקעס|חבילות|parcels
 פרעסט|לוחץ; מגהץ; כפור|presses; irons; frost
 אורזאכען|סיבות|causes
+אורזאַכן|סיבות|causes
 אנערקענענדיק|בהכירו|recognizing
 באגרעניצטען|מוגבל|limited
 בייגעטראגען|תרם|contributed
@@ -9947,6 +9957,7 @@
 אנטהאלטן|מכיל|contains
 פארגעבונג|מחילה|forgiveness
 פינטעל|נקודה|dot, point
+פינטל|נקודה|dot, point
 דערוועקונג|התעוררות|awakening
 פייאיקייט|יכולת|ability
 באהאלט|מסתיר|hides
@@ -10075,6 +10086,7 @@
 געשטודירט|למד|studied
 באלויכטונג|הארה|illumination
 גוטמאכען|לתקן|to make good
+גוטמאַכן|לתקן|to make good
 קאמנאטעס|חדרים|rooms
 אודאבנער|נוח|convenient (udobny)
 פראדאלזשאיען|ממשיכים|continue (prodolzhayut)
@@ -10212,6 +10224,7 @@
 אפצוהאלטן|לעכב; לקיים|to delay; to hold
 אויפגעוויזען|הראה, הוכיח|pointed out, showed
 אויפצוהייבען|להרים, לרומם|to lift, to elevate
+אויפצוהויבן|להרים, לרומם|to lift, to elevate
 באוויינט|בכה על|mourned
 ברייטערער|רחב יותר|broader
 באשרייבענדיק|בתארו|describing
@@ -10294,6 +10307,7 @@
 פאראיינציגונג|איחוד|unification
 אויסרעכענונגען|חישובים|calculations
 אלענפאלס|בכל אופן|in any case
+אַלנפאַלס|בכל אופן|in any case
 לעבדיקייט|חיות|liveliness
 מערצאל|ריבוי, כמות|greater number, quantity
 צוגעוויינען|להרגיל|to accustom
@@ -10572,7 +10586,7 @@
 בעקועם|נוח|comfortable
 ויהלין|לרצות; רוצים; רצון|to want; (we/they) want; will, desire
 ארופגילייגט|הניח על|placed upon
-אופמערקזאם|מעירים (מסבים תשומת לב); קשוב|drawing attention; attentive
+אופמערקזאם|קשוב; תשומת לב; מסב תשומת לב|attentive; attention; drawing attention
 ארויסהעלפין|לעזור, לחלץ|to help out
 שאפין|ליצור, לברוא|to create
 אופריכטיקן|כנה|sincere, upright
@@ -11058,6 +11072,7 @@
 באַגעהן|לעשות, לבצע (עבירה, טעות); להתנהג|to commit (a crime, a mistake); to conduct oneself
 שמידען|נפחים; לפרזל, לחשל|blacksmiths; to shoe (horses), to forge
 איבערגעקליבען|בירר, בחר; עבר (דירה)|picked, was choosy; moved (house)
+איבערגעקליבן|בירר, בחר; עבר (דירה)|picked, was choosy; moved (house)
 סטרונעס|מיתרים|strings
 האלזען|לחבק|to embrace
 קאַטאָרגע|עבודת פרך (בגלות)|penal servitude
@@ -11087,6 +11102,7 @@
 איבריגע|מיותר, נוסף|extra, superfluous
 באַקענט זיך|הכיר, התוודע|got acquainted
 לומדישען|למדן|scholarly
+לומדישן|למדן|scholarly
 נאַכטלעגער|לינת לילה|lodging for the night
 גוטהאַרציגקייט|טוב לב|kindheartedness
 מוהמע|דודה|aunt
@@ -11107,6 +11123,7 @@
 דריטען|שלישי|third
 געצאָהלט|שילם|paid
 אויפגעגעבען|ויתר על|gave up
+אויפגעגעבן|ויתר על|gave up
 שטאָטישער|עירוני|urban
 אויפהאַלט|שהייה|stay
 האָגעל|ברד|hail
@@ -11197,6 +11214,7 @@
 דערזעלביגער|אותו אחד, אותו עצמו|the same one, the very same
 נייהען|לתפור|to sew
 רוסען|רוסים|Russians
+רוסן|רוסים|Russians
 דעקרעט|צו, גזירה|decree
 הייזעל|בית קטן|little house
 פּאָליאַקען|פולנים|Poles
@@ -11253,6 +11271,7 @@
 פּאַראָבקעס|פועלי כפר, משרתים|farmhands
 נאכצוטראַכטען|להרהר|to reflect
 אָנבאָטען|להציע|to offer
+אָנבאָטן|להציע|to offer
 צוצוהערען|להקשיב|to listen
 פאַרקלייבען זיך|להתאסף; להסתגר, להתבודד (ב־)|to gather; to seclude oneself
 טראַגענדיג|בשאתו|carrying
@@ -11262,6 +11281,7 @@
 אומגעוואַנדערט|נדד|wandered about
 געקעכטס|תבשיל|cooked dish
 טיפענישען|מעמקים|depths
+טיפענישן|מעמקים|depths
 אונטערגעשפארט|נתמך, תמך|propped up
 צושלאָגען|מוכה, רצוץ|beaten up
 אָטעמען|לנשום|to breathe
@@ -11297,6 +11317,7 @@
 אַרויסלאָזען זיך|לצאת לדרך|to set out
 שלעכטעס|רע|evil
 בערגעל|גבעה|hill
+בערגל|גבעה|hill
 צופרידענשטעלען|לספק, לרצות|to satisfy
 דאַמאָלסדיגער|של אז|of that time
 אויסגעזאָגט|גילה|revealed
@@ -11868,6 +11889,7 @@
 אויפפאַסער|משגיח, שומר|caretaker
 אַהינגעקומען|הגיעו לשם|came there
 אָנפיהרענדיג|בנהלו|leading, conducting
+אָנפירנדיק|בנהלו|leading, conducting
 דערנעהרענדיג|בפרנסו (את עצמו)|supporting (oneself)
 דורכקריכען|לחדור (בזחילה)|to creep through
 באַרעדט|רכל, הלעיז|gossiped about
@@ -11881,6 +11903,7 @@
 צוזאַמענרופען|לכנס|to call together
 פאַנאַטיקער|קנאי|fanatic
 אריינצוציהען|למשוך פנימה|to draw in
+אַריינצוציען|למשוך פנימה|to draw in
 רופענדיג|בקוראו|calling
 ארויסגערוקט|התקדם, יצא קדימה|stepped forward
 דרייסטע|נועזים|bold
@@ -11920,6 +11943,7 @@
 געהיימען|סודי|secret
 וואַנדערענדיג|בנדדו|wandering
 אויפצוכאַפען|לקלוט, לתפוס|to grasp, to catch
+אויפצוכאַפּן|לקלוט, לתפוס|to grasp, to catch
 אַוועקגעוואַנדערט|נדד משם|wandered off
 דורכפאָהרען|לעבור דרך (בנסיעה)|to pass through
 צוזאַמענגעטראָפען|נפגש|met
@@ -11944,6 +11968,7 @@
 דיסציפלינירטע|ממושמע|disciplined
 שוואַכקייטען|חולשות|weaknesses
 צוציהענדיג|במשכו אליו|drawing (to himself)
+צוציענדיק|במשכו אליו|drawing (to himself)
 קרענקלאַך|חולני|sickly
 צילענדיג|בכוונו ל־|aiming
 איבערגעשטייגט|עלה על|surpassed
@@ -11997,6 +12022,7 @@
 ארויסדרעהען|להתחמק|to wriggle out
 מיטגעהן|ללכת עם, ללכת יחד|to go along
 אַנטשלאָסענע|נחושים|resolute
+אַנטשלאָסענער|נחוש, נחרץ|determined, resolute
 אונטערהאַלטען|לשוחח, לבלות|to converse, to entertain oneself
 חברישאַפט|חברות|companionship
 יאָמערליכען|מבכה, מר|wailing
@@ -12044,6 +12070,7 @@
 אנטטוישט|מאוכזב|disappointed
 פאַרשוינען|אישים; טיפוסים|persons; types
 צוריקגעהאַלטען|מאופק|reserved
+צוריקגעהאַלטן|מאופק|reserved
 אפגעשטאנענעם|נחשל|backward
 פאַרגרעבטע|שנעשו גסים|coarsened
 דערמונטערער|מעודדים|encouragers
@@ -12254,6 +12281,7 @@
 וואוילער|הגון, טוב|fine
 באַלאָדען|טעון|loaded
 פיגורען|דמויות|figures
+פיגורן|דמויות|figures
 באַקאַנטשאַפטען|מכרים, היכרויות|acquaintances
 בלאָטיגער|בוצי|muddy
 אפצורוהען|לנוח|to rest
@@ -12276,6 +12304,7 @@
 נויטיגסטען|הנחוץ ביותר|most necessary
 פאַרשאָלטען|מקולל|cursed
 אַרונטערלאַזען|לרדת|to descend
+אַרונטערלאָזן|לרדת|to descend
 אַרויפגעשוואומען|צפו ועלו|surfaced
 פאַרנאַנדערגעשמועסט|שוחח בהרחבה|talked at length
 טיעפער|עמוק|deep
@@ -12427,6 +12456,7 @@
 קלאָגעס|תביעות|lawsuits
 פּאַלאַקען|פולנים|Poles
 רוסישען|רוסי|Russian
+רוסישן|רוסי|Russian
 אָפּשייידען|להיפרד|to separate
 גראָשענס|פרוטות|pennies
 איבערצעהלען|לספור|to count
@@ -12561,6 +12591,7 @@
 ליכטיקערע|בהירים יותר|brighter
 וויארסטען|ורסטות|versts
 צוריקגעפארען|חזר (בנסיעה)|traveled back
+צוריקגעפאָרן|חזר (בנסיעה)|traveled back
 דורכגעברענט|צרף, זיכך|burned through
 פארטומלען|לבלבל|to confuse
 פארמאטערטער|מותש|exhausted
@@ -12891,7 +12922,7 @@
 קארידארן|מסדרונות|corridors
 איבערזעצער|מתרגם|translator
 ארסענאל|מחסן נשק|arsenal
-נאפאלעאנישע|של נפוליאון|Napoleonic
+נאַפּאָלעאָנישע|של נפוליאון|Napoleonic
 זעלביקער|אותו|the same
 דאטע|תאריך|date
 דאטעס|תאריכים|dates
@@ -13057,7 +13088,7 @@
 אנגעבנדיק|בציינו|stating
 צדיקת|צדקת|righteous woman
 שפייזנדיק|בהאכילו|feeding
-עניוותדיק|בענווה|humble
+עניוותדיק|בענווה, בצניעות|humble, humbly
 איינגעשריבן|נרשם|registered
 איינווארצלען|להשריש|to implant, to instill
 איינווארצלען זיך|להשתרש|to take root
@@ -14418,6 +14449,7 @@
 צוגעקוועטשט|נדחק, לחוץ|squeezed
 צושפרינגען|לקפוץ (ולהצטרף)|to jump in
 ארויסלאזען|לשחרר, להוציא; לצאת (לדרך) (זיך ארויסלאזען)|to let out; to set out
+אַרויסלאָזן|לשחרר, להוציא|to let out
 איינשלינגען|לבלוע|to swallow up
 ברעגן|שוליים, שפות|edges, rims
 שטיינערנער|של אבן; קשוח|stony
@@ -14544,7 +14576,7 @@
 טעלעפאניש|טלפונית|by telephone
 בעקענטע|מכרים|acquaintances
 קאנסול|קונסול|consul
-ארויספאהרענדיג|בצאתם|departing
+ארויספאהרענדיג|בצאתו (לדרך)|departing, setting out
 גיעערטער|נכבד|honored
 טערמין|מועד, תקופה|term
 דערליינגען|להגיש, להרים|to hand, to serve
@@ -14804,7 +14836,8 @@
 פּראָפעסיאָנעלער|מקצועי|professional
 אומקערנדיק זיך|בחזרו|returning
 סטיליזירן|לעצב (סגנונית)|to stylize
-באַטראַכטנדיג|בהתחשב|considering
+באַטראַכטנדיג|בהתחשב; בהתבוננו|considering; observing
+באַטראַכטנדיק|בהתחשב; בהתבוננו|considering; observing
 דרויסנדיגער|החיצוני|outside
 צוגעבנדיג|בהוסיפו|adding
 דערוואַרעמען|לחמם|to warm
@@ -14825,6 +14858,7 @@
 מיטפרייען זיך|לשמוח עם|to rejoice with
 סעקאנדערי|משני|secondary
 דערנעענטערט|מתקרב|approaches
+דערנענטערט|מתקרב|approaches
 וואקיישען|חופשה|vacation
 אַריינשרייבן|לרשום|to enroll
 פאַנאַנדערפרעגן זיך|לשאול ולברר (אצל רבים)|to ask around
@@ -15599,6 +15633,7 @@
 אויסרופנדיג|בקראו, בהכריזו|proclaiming
 איבערצומאכן|לשנות|to change
 אויסערגעוויינלעך|יוצא דופן, בלתי רגיל|extraordinary, unusual
+אויסערגעוויינלעכן|יוצא דופן, בלתי רגיל|extraordinary, unusual
 הייארדיקע|של השנה|this year's
 עטישער|מוסרית|ethical
 שטארקסטן|החזק ביותר|strongest
@@ -15973,6 +16008,7 @@
 געבן קאָרקעס|להכות, לגרש בבושה|to beat, to throw out
 אַוועק'פּטר'ן|לבזבז, להעביר לריק (זמן)|to waste, to while away (time)
 אַסטראָנאָמישע|אסטרונומי|astronomical
+אַסטראָנאָם|אסטרונום|astronomer
 אַפּותיקי|חסכון, קרן שמורה|savings, nest egg
 אַקערס|מחרשות|plows
 אַרויסגעבער|מוציא לאור, עורך|publisher, editor
@@ -16131,6 +16167,7 @@
 באפריינדען זיך|להתיידד|to make friends, to befriend
 באקאנטמאכונג|הודעה, פרסום|announcement
 באקוקען|להתבונן ב־, לבחון; לבקר|to look over, to inspect; to visit
+באַקוקט|להתבונן ב־, לבחון; לבקר|to look over, to inspect; to visit
 באשטימטקייט|החלטיות, ודאות|definiteness, decisiveness
 באשטעהן|לעמוד על (דבר), להתעקש|to insist (on), to stand by
 באשיינען|לייפות, לפאר|to beautify, to grace
@@ -16547,6 +16584,7 @@
 צעלויפען זיך|להתפזר בריצה, לברוח לכל עבר|to run off, to scatter
 צעקלאפּען|לנפץ, להכות; (בהשאלה) להפריך|to smash; (fig.) to demolish (arguments)
 צעשיידען זיך|להיפרד|to part, to separate
+צעשיידן זיך|להיפרד|to part, to separate
 צעשרויפט|נסער, נרגש מאוד|upset, agitated
 קאָליר|צבע|color
 קאָמפּאַניאָן|בן לוויה, חבר|companion
@@ -16635,12 +16673,14 @@
 אַרויפגעבראַכט|העלה, הביא (אל)|brought up, led (onto)
 אַרויפגענומען|הועלה|taken up, lifted up
 אַרומגעקליבען זיך|התקבץ מסביב|gathered around
+אַרומגעקליבן זיך|התקבץ מסביב|gathered around
 אַריינגיסענדיג זיך|בהישפכו פנימה|pouring (itself) in
 אַריינצודרינגען|לחדור|to penetrate
 אָזערעס|אגמים|lakes
 אָטעמס|נשימות|breaths
 אָנגע'ברוגז'טער|כועס, נרגז|angry, in a huff
 אָנגעברוגז'ט זיך|התרגז, כעס|got angry
+אָנגעגריפן|תקף, יצא נגד, התעמת|attacked, confronted
 אָנגעגריפענע|המותקפים, הנתקפים|the attacked (ones)
 אָנגעוואָרפען|הטיל (פחד)|cast, instilled (fear)
 אָנגעוואקסענעם|שהצטבר|accrued
@@ -16770,6 +16810,7 @@
 אויפצוברעכען|לפרוץ, לשבור (דלת)|to break open
 אויפצוברענגען|לגדל|to raise, to bring up
 אויפצוגעבען|לוותר על, לחסל|to give up
+אויפצוגעבן|לוותר על, לחסל|to give up
 אויפצוזעצען זיך|להתיישב, לקום לישיבה|to sit up
 אויפצורייצען|לגרות, להסית|to provoke, to incite
 אומבאקאנטען|בלתי מוכר|unknown
@@ -16943,6 +16984,7 @@
 גאנצענע|שלמים|whole
 גארט|(היא) משתוקקת|(she) yearns
 גוטצומאכען|לתקן; לפרוע|to make good, to repay
+גוטצומאַכן|לתקן; לפרוע|to make good, to repay
 גויאיש|שפת הגויים; גויי|the gentile language; gentile
 גיטער|אחוזות|estates
 גייסטליכער|איש דת; כומר|clergyman, priest
@@ -17039,7 +17081,9 @@
 דורכגעשמועסט זיך|שוחחו בהרחבה|talked over
 דורכגעשניטען|חצו; בקעו|cut through
 דורכגעשריבען זיך|התכתב|corresponded
+דורכגעשריבן|התכתב|corresponded
 דורכצוברעכען|לפרוץ|to break through
+דורכצוברעכן|לפרוץ|to break through
 דורשטיגער|צמא|thirsty (one)
 דיסקוסיע|דיון|discussion
 דעבאטירט|נדון|debated
@@ -17075,6 +17119,7 @@
 וואגט|מעז|dares
 וואגסט|מעז (אתה)|(you) dare
 וואונדערענדיג|בהתפלאו, תמה|wondering
+וואונדער־קינד|ילד פלא|child prodigy
 וואקלט|מתנודד, מתמוטט|totters, wavers
 ווידמעט|מקדיש|devotes
 וויז|הראה!|show!
@@ -17390,6 +17435,7 @@
 שווייגעדיגער|שתקן, שותק|silent, taciturn
 שווינדלערישען|של רמאות, רמאי|fraudulent
 שויבען|זגוגיות, שמשות|windowpanes
+שויבן|זגוגיות, שמשות|windowpanes
 שוכען|נעליים|shoes
 שטאָלצען|גאה|proud
 שטאמענדיג|שמוצאו מ־|stemming from
@@ -17846,3 +17892,74 @@
 בעהעלפט זיך|נעזר|makes use of, helps oneself
 טיהרן|לרמות, לפתות|to deceive, to entice
 אויפפיהרונגען|הנהגות, התנהגויות|conduct, customs
+צעהנדליק|עשרות|dozens, tens
+וואָליקעס|מגפי לבד, נעלי צמר|felt boots
+טומעלדיקן|סוחפניים, רועשים|noisy, bustling
+איבּערקערענישן|מהפכות|upheavals
+אויפגעמישט|עירב|mixed up, stirred
+בּילעטען|כרטיסים|tickets
+שטעטלער|עיירות|towns
+מיטפאָהרן|לנסוע יחד|to travel along
+געשפּירט|הרגיש|felt
+פיהרט אָן|מנהל|leads, directs
+אָנזעטיגן|לְהַשְׂבִּיעַ|to satiate
+דרויסענדיגע|חיצוניים|external
+וויכטיקן|חשוב, בעל-משקל|important, weighty
+מעשה'לע|סיפורון|little story
+פאַרשלאָפן|להרדם, לישון|to oversleep, to fall asleep
+איבּערדערציילן|לספר-שוב|to retell
+געשאַפן|נברא|created
+פארצושטעלן|להציג, לדמיין|to present, to imagine
+אַרויסצוזאָגן|להוציא מהפה, להגיד|to utter, to say
+אָפּגעצויגן|נמשך, נסחב|drawn off, pulled away
+באָדן|לרחוץ; קרקע, אדמה|to bathe; ground, soil
+איבּערריידן|לחזור; לשכנע|to repeat, to go over; to persuade
+געבּליבּן|נשאר|remained, stayed
+אָנגערופן|נקרא, כונה; ענה, אמר|called, named; responded, said
+טיפזיניקע|עמוקי משמעות|profound, deeply meaningful
+נעימות'דיגען|נעים, ערב|melodious
+דערנעמען|לתפוס, לקלוט; לחדור, להגיע (עד)|to grasp, to be moved; to reach, to penetrate
+כללות'דיקער|כללי|general
+ביחוד'דיקע|מיוחד, ייחודי; בייחודיות|special, unique; specially
+צוגעגעבן ווערן|להיתוסף|to be added
+צוגעגעבן געוואָרן|נוסף|was added
+קריגער|לוחם|warrior
+געשיקטן|מיומן, זריז, מוכשר|skillful, deft
+גע'ירש'נט|ירש, הנחיל|inherited
+הימלישקייט|שמימיות|heavenliness
+רוחניות'דיקייט|רוחניות|spirituality
+קוליע|קב, קביים|crutch
+אָנגעשטרענגט|מאמץ, התאמץ (לשמוע)|strained, exerted
+אַרויסגעמורמלט|מלמל (בקול)|muttered
+אָפּגעבנדיק|בתתו, במסרו|giving, handing over
+לענדן|מותניים|loins
+אַרעסטן|מאסרים, מעצרים|arrests
+טוץ|תריסר|dozen
+קריגעריש|מחרחר ריב, תוקפני, לוחמני|warlike, aggressive
+אַגיטירן|להטיף, לתעמל, לשכנע|to agitate, to proselytize
+הינטערגרונט|רקע|background
+כת'ניק|בן הכת (כינוי גנאי לחסיד)|sectarian (derogatory name for a Chassid)
+פאָרגעשטאַנען|עמד לפניו, ציפה לו|lay ahead (of him), awaited
+אינטערעסאַנטסטע|המעניינים ביותר|most interesting
+ממשות'דיקן|ממשי, מוחשי|actual, tangible
+געווער|נשק, כלי זין|weapons, arms
+אַגענטן|סוכנים|agents
+אַרסענאַלן|מחסני נשק|arsenals
+מאָטיוון|מניעים|motives
+אַריינשטעלן|להכניס, להציב בפנים|to put in, to install
+גוטגעמאַכט געוואָרן|תוקן, פוצה (נזק)|was made good, was repaired
+אָנגעגורט|חגר; (בהשאלה) התכונן (לקרב)|girded; braced oneself
+צעצווייגטע|מסועפים|branching
+דערלערנט|למד היטב, שלט|mastered
+סטראַטעגיע|אסטרטגיה, תכסיס|strategy
+מעטאָד|שיטה|method
+קאַמאָד (ר.)|שידה|chest of drawers, dresser
+קור|ריפוי, טיפול רפואי|cure
+וואַקסנדיק|גדל, הולך וגדל|growing
+אויסשפּרייטנדיק|מתפשט|spreading
+אַריינלייגנדיק|בהטילם, בהכניסם|putting (into)
+פאַרברענענדיק|בשרפם|burning
+אַרויסגעזעצט|הוציא, סילק|ousted, removed
+פרידלעכקייט|שלום, דרכי שלום, שלווה|peacefulness
+אויסגעפאָכטן|נלחם עד תום, הוכרע במאבק|fought out
+קעגן־שריט|צעד נגדי, פעולת נגד|countermeasure
