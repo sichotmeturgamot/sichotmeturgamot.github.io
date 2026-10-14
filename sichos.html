@@ -139,6 +139,7 @@
         </div>
         <div class="btns">
           <a class="btn btn-navy btn-sm" href="read.html?file=${encodeURIComponent(s.file)}&title=${encodeURIComponent(s.title)}">לקריאה</a>
+          ${s.hasPage ? `<a class="btn btn-line btn-sm" href="sichos/${s.file.replace(/^pdfs\//, '').replace(/\.pdf$/i, '')}.html" title="טקסט השיחה כדף אינטרנט">טקסט</a>` : ''}
           <a class="btn btn-line btn-sm" href="${s.file}" download>הורדה</a>
         </div>
       </div>`;

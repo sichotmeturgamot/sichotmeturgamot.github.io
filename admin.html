@@ -437,35 +437,85 @@ function siteBase() {
 function sichaSlug(file) { return String(file).replace(/^pdfs\//, '').replace(/\.pdf$/i, ''); }
 function sichaPagePath(file) { return 'sichos/' + sichaSlug(file) + '.html'; }
 
-function renderSichaPage(s, yearName) {
+/* טקסט השיחה לדף הנחיתה נשמר בנפרד: sichos-text/NAME.json
+   { sections: [ { head: [שורות כותרת], paras: [{t, c}], notes: [...] } ] }
+   בפסקאות, הפניה להערה מסומנת ⟦n⟧. אם אין קובץ טקסט — הדף נבנה כמו קודם, בלי טקסט. */
+function sichaTextPath(file) { return 'sichos-text/' + sichaSlug(file) + '.json'; }
+async function loadSichaText(file) {
+  try {
+    const f = await gh(repoPath('contents/' + sichaTextPath(file) + '?ref=' + cfg.branch));
+    return JSON.parse(dec(f.content));
+  } catch (e) {
+    if (String(e.message).startsWith('404')) return null;
+    throw e;
+  }
+}
+function sichaPlain(t) { return String(t || '').replace(/⟦\d+⟧/g, '').replace(/\s+/g, ' ').trim(); }
+function sichaDescription(s, yearName, td) {
+  const sub = (s.subtitle || '').trim();
+  let lead = '';
+  if (td && td.sections) {
+    const first = td.sections.flatMap(x => x.paras || []).find(p => !p.c && sichaPlain(p.t).length > 40);
+    if (first) {
+      lead = sichaPlain(first.t).replace(/^[א-ת]{1,2}\.\s*/, '');
+      const room = 150 - (sub ? sub.length + 3 : 0);
+      if (lead.length > room) { lead = lead.slice(0, room); lead = lead.slice(0, lead.lastIndexOf(' ')) + '…'; }
+    }
+  }
+  if (!lead) return (sub ? sub + ' ' : '') + 'מתוך ספר השיחות ' + yearName + ', מתורגם ללשון הקודש מאידיש.';
+  return (sub ? sub + ' – ' : '') + lead;
+}
+function sichaTextHtml(td, title) {
+  if (!td || !td.sections || !td.sections.length) return '';
+  const same = (a, b) => sichaPlain(a).replace(/[״"׳'\s־\-–,.]/g, '') === sichaPlain(b).replace(/[״"׳'\s־\-–,.]/g, '');
+  const many = td.sections.length > 1;
+  return td.sections.map((sec, si) => {
+    const id = n => (many ? (si + 1) + '-' : '') + n;
+    const refs = t => esc(t).replace(/⟦(\d+)⟧/g, (_, n) => `<sup><a href="#fn${id(n)}" id="r${id(n)}">${n}</a></sup>`);
+    const head = (sec.head || []).filter(h => sichaPlain(h));
+    const showHead = many || (head.length && !(head.length === 1 && same(head[0], title)));
+    const h = showHead && head.length ? `<h2>${head.map(refs).join('<br>')}</h2>` : '';
+    const ps = (sec.paras || []).map(p => `<p${p.c ? ' class="c"' : ''}>${refs(p.t)}</p>`).join('\n');
+    const ns = (sec.notes || []).length ? `<section class="notes" aria-label="הערות"><h3>הערות</h3><ol>${sec.notes.map((n, i) => `<li id="fn${id(i + 1)}">${esc(n)} <a class="back" href="#r${id(i + 1)}" aria-label="חזרה לטקסט">↩</a></li>`).join('\n')}</ol></section>` : '';
+    return `<div class="sec">${h}\n${ps}\n${ns}</div>`;
+  }).join('\n');
+}
+
+function renderSichaPage(s, yearName, td) {
   const base = siteBase();
   const slug = sichaSlug(s.file);
   const url = base + '/sichos/' + slug + '.html';
   const title = s.title || '';
-  const sub = (s.subtitle || '').trim();
-  const desc = (sub ? sub + ' ' : '') + 'מתוך ספר השיחות ' + yearName + ', מתורגם ללשון הקודש מאידיש.';
+  const desc = sichaDescription(s, yearName, td);
   const readUrl = '/read.html?file=' + encodeURIComponent(s.file) + '&title=' + encodeURIComponent(title);
   const pdfUrl = '/' + s.file;
   const meta = [];
   if (s.hebDate) meta.push('<span>' + esc(s.hebDate) + '</span>');
-  if (s.pages) meta.push('<span>' + s.pages + (s.pages == 1 ? ' עמוד' : ' עמודים') + '</span>');
+  meta.push('<span>שנת ' + esc(yearName) + '</span>');
+  if (s.pages) meta.push('<span>' + s.pages + (s.pages == 1 ? ' עמוד' : ' עמודים') + ' ב־PDF</span>');
+  const textHtml = sichaTextHtml(td, title);
+  const words = textHtml ? sichaPlain(textHtml.replace(/<[^>]+>/g, ' ')).split(' ').length : 0;
   const ld = JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Article',
-    headline: title, description: desc, inLanguage: 'he',
-    url: url, isPartOf: 'ספר השיחות ' + yearName,
+    headline: title, description: desc, inLanguage: 'he', url: url,
+    author: { '@type': 'Person', name: 'כ״ק אדמו״ר הריי״צ מליובאוויטש' },
+    isPartOf: { '@type': 'Book', name: 'ספר השיחות ' + yearName },
+    ...(words ? { wordCount: words } : {}),
+    encoding: { '@type': 'MediaObject', encodingFormat: 'application/pdf', contentUrl: base + pdfUrl },
     publisher: { '@type': 'Organization', name: 'ספר השיחות מתורגם ללה״ק', url: base + '/' }
   }).replace(/</g, '\\u003c');
+  const pageTitle = title + ' – שיחות אדמו״ר הריי״צ | ספר השיחות מתורגם ללה״ק';
   return `<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(title)} — ספר השיחות מתורגם ללה״ק</title>
+<title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(desc)}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="article">
-<meta property="og:title" content="${esc(title)}">
+<meta property="og:title" content="${esc(title)} – שיחות אדמו״ר הריי״צ">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${url}">
 <meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
@@ -476,30 +526,45 @@ function renderSichaPage(s, yearName) {
 <script type="application/ld+json">
 ${ld}
 <\/script>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  :root { --navy:#1a2942; --gold:#b8933e; --gold-ink:#93690f; --paper:#faf7f0; --card:#fff; --line:#e8e2d4; --ink:#2a2a2a; --muted:#6b6b6b; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Heebo',sans-serif; background:#faf7f0; color:#2a2a2a; line-height:1.7; min-height:100vh; display:flex; flex-direction:column; }
-  h1 { font-family:'Frank Ruhl Libre',serif; color:#1a2942; }
-  .topbar { background:#1a2942; border-bottom:3px solid #b8933e; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
-  .topbar .brand { color:#fff; font-family:'Frank Ruhl Libre',serif; font-size:1.15rem; }
-  .topbar a { color:#fff; text-decoration:none; font-size:.85rem; border:1px solid rgba(255,255,255,.5); border-radius:8px; padding:6px 14px; }
-  main { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 16px; }
-  .card { background:#fff; border:1px solid #e8e2d4; border-radius:16px; max-width:620px; width:100%; padding:34px 30px; text-align:center; box-shadow:0 6px 30px rgba(26,41,66,.08); }
-  .year-badge { display:inline-block; background:#f4efe3; color:#93690f; font-size:.9rem; border-radius:99px; padding:4px 16px; margin-bottom:16px; }
-  .card h1 { font-size:1.9rem; line-height:1.35; margin-bottom:12px; }
-  .meta { color:#6b6b6b; font-size:.95rem; margin-bottom:20px; }
+  body { font-family:'Heebo',Arial,sans-serif; background:var(--paper); color:var(--ink); line-height:1.7; }
+  .topbar { background:var(--navy); border-bottom:3px solid var(--gold); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .topbar .brand { color:#fff; font-family:'Frank Ruhl Libre',serif; font-size:1.1rem; }
+  .topbar a { color:#fff; text-decoration:none; font-size:.85rem; border:1px solid rgba(255,255,255,.5); border-radius:8px; padding:5px 12px; white-space:nowrap; }
+  main { max-width:860px; margin:0 auto; padding:28px 16px 40px; display:flex; flex-direction:column; gap:22px; }
+  .head { text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .crumb { font-size:.85rem; color:var(--muted); }
+  .crumb a { color:var(--gold-ink); text-decoration:none; }
+  h1 { font-family:'Frank Ruhl Libre',serif; color:var(--navy); font-size:clamp(1.6rem,4vw,2.2rem); line-height:1.3; text-wrap:balance; }
+  .meta { color:var(--muted); font-size:.95rem; }
   .meta span + span::before { content:' · '; }
-  .desc { font-size:1.05rem; color:#3a3a3a; margin-bottom:28px; }
-  .actions { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
-  .btn { text-decoration:none; border-radius:10px; padding:12px 26px; font-family:'Heebo',sans-serif; font-size:1rem; font-weight:500; display:inline-flex; align-items:center; gap:8px; border:1.5px solid transparent; }
-  .btn-read { background:#b8933e; color:#fff; }
-  .btn-dl { background:#1a2942; color:#fff; }
-  .btn-site { background:transparent; color:#1a2942; border-color:#1a2942; }
+  .sub { max-width:60ch; color:var(--ink); }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .btn { text-decoration:none; border-radius:10px; padding:10px 22px; font-size:.95rem; font-weight:500; display:inline-block; }
+  .btn-read { background:var(--gold); color:#fff; }
+  .btn-dl { background:var(--navy); color:#fff; }
   .btn:hover { opacity:.9; }
-  footer { text-align:center; padding:22px 16px; color:#8a857a; font-size:.82rem; }
-  footer a { color:#b8933e; text-decoration:none; }
-  @media (max-width:480px) { .card h1 { font-size:1.5rem; } .btn { padding:11px 20px; font-size:.95rem; } }
+  .btn:focus-visible, .text a:focus-visible { outline:2px solid var(--gold); outline-offset:3px; }
+  .text { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px 26px 28px; font-family:'Frank Ruhl Libre','David',serif; font-size:1.12rem; line-height:1.95; }
+  .text .sec + .sec { margin-top:30px; padding-top:22px; border-top:1px solid var(--line); }
+  .text h2 { font-size:1.25rem; color:var(--navy); text-align:center; margin-bottom:14px; line-height:1.5; }
+  .text p { margin:0 0 .9em; }
+  .text p.c { text-align:center; font-weight:700; }
+  .text sup { font-family:'Heebo',sans-serif; font-size:.62em; line-height:0; }
+  .text sup a { color:var(--gold-ink); text-decoration:none; padding:0 1px; }
+  .notes { border-top:1px solid var(--line); margin-top:18px; padding-top:12px; font-family:'Heebo',sans-serif; font-size:.88rem; line-height:1.7; }
+  .notes h3 { font-family:'Frank Ruhl Libre',serif; font-size:1rem; font-weight:500; color:var(--muted); margin-bottom:6px; }
+  .notes ol { padding-inline-start:1.6em; display:flex; flex-direction:column; gap:4px; }
+  .notes li::marker { color:var(--gold-ink); font-weight:500; }
+  .notes .back { color:var(--gold-ink); text-decoration:none; font-size:.85em; }
+  .notes li:target { background:#f3e9cf; border-radius:4px; }
+  .bottom { text-align:center; }
+  footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
+  footer a { color:var(--gold-ink); text-decoration:none; }
+  @media (max-width:480px) { .text { padding:20px 16px 22px; font-size:1.05rem; } }
 </style>
 </head>
 <body>
@@ -508,25 +573,26 @@ ${ld}
   <a href="/index.html">לאתר ←</a>
 </div>
 <main>
-  <article class="card">
-    <span class="year-badge">שנת ${esc(yearName)}</span>
+  <header class="head">
+    <div class="crumb"><a href="/sichos.html">קריאת השיחות</a> › שנת ${esc(yearName)}</div>
     <h1>${esc(title)}</h1>
     <div class="meta">${meta.join('')}</div>
-    <p class="desc">${esc(desc)}</p>
+    ${(s.subtitle || '').trim() ? `<p class="sub">${esc(s.subtitle.trim())}</p>` : ''}
     <div class="actions">
-      <a class="btn btn-read" href="${readUrl}">קריאת השיחה</a>
+      <a class="btn btn-read" href="${readUrl}">לקריאת השיחה כ־PDF</a>
       <a class="btn btn-dl" href="${pdfUrl}" download>הורדה כ־PDF</a>
-      <a class="btn btn-site" href="/index.html">לכל השיחות</a>
     </div>
-  </article>
+  </header>
+${textHtml ? `  <article class="text" lang="he">\n${textHtml}\n  </article>\n  <div class="bottom"><a class="btn btn-read" href="${readUrl}">לקריאת השיחה כ־PDF</a></div>` : ''}
 </main>
-<footer>ספר השיחות מתורגם ללשון הקודש · <a href="/index.html">לעמוד הבית</a></footer>
+<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
 </body>
 </html>
 `;
 }
-function pageEntry(s, yearName) {
-  return { path: sichaPagePath(s.file), mode: '100644', type: 'blob', content: renderSichaPage(s, yearName) };
+async function pageEntry(s, yearName) {
+  const td = await loadSichaText(s.file);
+  return { path: sichaPagePath(s.file), mode: '100644', type: 'blob', content: renderSichaPage(s, yearName, td) };
 }
 function pageDeleteEntry(file) {
   return { path: sichaPagePath(file), mode: '100644', type: 'blob', sha: null };
@@ -565,12 +631,13 @@ async function generateAllPages() {
     setStatus('בונה דפים לכל השיחות…', 'busy');
     const entries = [];
     let n = 0;
-    data.YEARS.forEach(y => y.sichos.forEach(s => {
-      if (s.hidden) return;
+    for (const y of data.YEARS) for (const s of y.sichos) {
+      if (s.hidden) continue;
       s.hasPage = true;
-      entries.push(pageEntry(s, y.year));
+      setStatus('בונה דפים… (' + (n + 1) + ')', 'busy');
+      entries.push(await pageEntry(s, y.year));
       n++;
-    }));
+    }
     entries.push(sitemapEntry(), dataEntry());
     await gitCommit(entries, 'בניית דפי נחיתה לכל השיחות (' + n + ') + עדכון מפת אתר');
     render();
@@ -773,7 +840,7 @@ async function saveSicha() {
       data.YEARS[yi].sichos.push(entry);
       sortYear(yi);
       setStatus('שומר…', 'busy');
-      await gitCommit([...extra, pageEntry(entry, data.YEARS[yi].year), sitemapEntry(), dataEntry()], 'עריכת שיחה: ' + title);
+      await gitCommit([...extra, await pageEntry(entry, data.YEARS[yi].year), sitemapEntry(), dataEntry()], 'עריכת שיחה: ' + title);
     } else {
       let name = $('s-filename').value.trim();
       if (!fileInput) return setStatus('חסר קובץ PDF', 'err');
@@ -792,7 +859,7 @@ async function saveSicha() {
       // קומיט יחיד = פרסום אמין (שני קומיטים מהירים ברצף גורמים לכשל פריסה ב-GitHub Pages).
       await gitCommit([
         { path: entry.file, mode: '100644', type: 'blob', sha: blobSha },
-        pageEntry(entry, data.YEARS[yi].year),
+        await pageEntry(entry, data.YEARS[yi].year),
         sitemapEntry(),
         dataEntry()
       ], 'הוספת שיחה: ' + title);
@@ -816,6 +883,7 @@ async function removeSicha(yi, si) {
     setStatus('מוחק…', 'busy');
     const delEntries = [{ path: s.file, mode: '100644', type: 'blob', sha: null }];
     if (s.hasPage) delEntries.push(pageDeleteEntry(s.file));
+    if (await getFileSha(sichaTextPath(s.file))) delEntries.push({ path: sichaTextPath(s.file), mode: '100644', type: 'blob', sha: null });
     data.YEARS[yi].sichos.splice(si, 1);
     delEntries.push(sitemapEntry(), dataEntry());
     await gitCommit(delEntries, 'מחיקת שיחה: ' + s.title);
@@ -841,7 +909,10 @@ async function renameSicha(yi, si) {
     ];
     if (s.hasPage) {
       const yi2 = data.YEARS.findIndex(y => y.sichos.includes(s));
-      renEntries.push(pageDeleteEntry(oldPath), pageEntry(s, data.YEARS[yi2].year), sitemapEntry());
+      // קובץ טקסט השיחה עובר יחד עם השם
+      const oldTxt = sichaTextPath(oldPath), txtSha = await getFileSha(oldTxt);
+      if (txtSha) renEntries.push({ path: sichaTextPath(s.file), mode: '100644', type: 'blob', sha: txtSha }, { path: oldTxt, mode: '100644', type: 'blob', sha: null });
+      renEntries.push(pageDeleteEntry(oldPath), await pageEntry(s, data.YEARS[yi2].year), sitemapEntry());
     }
     // עדכון קישורי המפתח (search.html) לשם הקובץ החדש — כדי שלא יישברו
     try {
