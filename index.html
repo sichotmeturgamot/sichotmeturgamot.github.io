@@ -30,6 +30,17 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ספר השיחות">
 <link rel="apple-touch-icon" href="icon-192.png">
+<style>
+.ketaim-card{border-top:3px solid var(--gold)}
+.ketaim-card .eyebrow{color:var(--gold-dark);font-size:.85rem;font-weight:700;letter-spacing:.02em;margin-bottom:4px}
+.ketaim-src{font-weight:700;color:var(--navy);margin-bottom:10px;font-size:1.05rem}
+.ketaim-text{font-family:'Frank Ruhl Libre',serif;font-size:1.08rem;line-height:1.9;white-space:pre-line;max-height:22em;overflow:hidden;position:relative}
+.ketaim-text.clamped::after{content:"";position:absolute;inset:auto 0 0 0;height:3em;background:linear-gradient(transparent,var(--paper))}
+.ketaim-more{background:none;border:0;color:var(--gold-dark);font:inherit;cursor:pointer;padding:6px 0;text-decoration:underline}
+.ketaim-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn-ghost{background:transparent;border:1px solid var(--gold);color:var(--gold-dark)}
+@media (prefers-color-scheme: dark){.ketaim-text.clamped::after{background:linear-gradient(transparent,var(--paper))}}
+</style>
 </head>
 <body>
 
@@ -57,6 +68,16 @@
 <div class="stats" id="stats"></div>
 
 <main>
+  <div class="card ketaim-card" id="ketaim-card" style="display:none">
+    <div class="eyebrow">קטע יומי</div>
+    <div class="ketaim-src" id="ketaim-src"></div>
+    <div class="ketaim-text" id="ketaim-text"></div>
+    <div class="ketaim-actions">
+      <a class="btn btn-navy" id="ketaim-link" href="#" style="display:none">לשיחה המלאה</a>
+      <a class="btn btn-ghost" id="ketaim-share" href="#" target="_blank" rel="noopener">שיתוף בווטסאפ</a>
+    </div>
+  </div>
+
   <div class="resume-card" id="resume-card" style="display:none">
     <div class="resume-info">
       <div class="eyebrow">המשך קריאה</div>
@@ -103,6 +124,50 @@
 </nav>
 
 <script src="data.js"></script>
+<script src="ketaim.js"></script>
+<script>
+/* קטע יומי: קודם קטע משיחה שנאמרה בתאריך העברי של היום; אחרת סבב יומי על כל הקטעים */
+(function(){
+  if (typeof KETAIM==='undefined' || !KETAIM.length) return;
+  const MON={Tishri:1,Heshvan:2,Kislev:3,Tevet:4,Shevat:5,'Adar I':6,Adar:6,'Adar II':7,Nisan:8,Iyar:9,Sivan:10,Tamuz:11,Av:12,Elul:13};
+  const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  let key=[];
+  try{
+    const p=new Intl.DateTimeFormat('en-u-ca-hebrew',{day:'numeric',month:'long'}).formatToParts(today);
+    const d=+p.find(x=>x.type==='day').value, mName=p.find(x=>x.type==='month').value, m=MON[mName];
+    const pad=n=>String(n).padStart(2,'0');
+    if(m){ key=[pad(m)+'-'+pad(d)]; if(mName==='Adar') key.push('07-'+pad(d)); }
+  }catch(e){}
+  const dayNo=Math.floor(today.getTime()/864e5);
+  const pad2=n=>String(n).padStart(2,'0');
+  const iso=today.getFullYear()+'-'+pad2(today.getMonth()+1)+'-'+pad2(today.getDate());
+  const sched=(typeof KETAIM_SCHEDULE!=='undefined'&&KETAIM_SCHEDULE)||{};
+  const byId=Object.fromEntries(KETAIM.map(x=>[x.id,x]));
+  const dated=KETAIM.filter(k=>k.sichaDate && key.includes(k.sichaDate));
+  const pool=dated.length?dated:KETAIM;
+  const k=byId[sched[iso]]||pool[dayNo%pool.length];
+  const $=id=>document.getElementById(id);
+  $('ketaim-src').textContent=(k.src||k.title)+(!byId[sched[iso]]&&dated.length?' · נאמרה ביום זה':'');
+  const html=String(k.text).replace(/\n\s*\n+/g,'\n').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/\*([^*\n]+)\*/g,'<b>$1</b>');
+  $('ketaim-text').innerHTML=html;
+  let url='';
+  if(k.file){
+    url='read.html?file='+encodeURIComponent(k.file)+'&title='+encodeURIComponent(k.title||k.src)+(k.page?'&page='+k.page:'');
+    $('ketaim-link').href=url; $('ketaim-link').style.display='';
+  }
+  const abs=url?new URL(url,location.href).href:location.origin+'/';
+  const msg='קטע משיחת '+(k.src||k.title)+':\n\n'+String(k.text).trim()+'\n\n🔗 לשיחה המלאה:\n'+abs;
+  $('ketaim-share').href='https://wa.me/?text='+encodeURIComponent(msg);
+  $('ketaim-card').style.display='';
+  const t=$('ketaim-text');
+  requestAnimationFrame(()=>{ if(t.scrollHeight>t.clientHeight+4){
+    t.classList.add('clamped');
+    const b=document.createElement('button'); b.className='ketaim-more'; b.textContent='להמשך הקטע';
+    b.onclick=()=>{t.style.maxHeight='none';t.classList.remove('clamped');b.remove();};
+    t.after(b);
+  }});
+})();
+</script>
 <script>
   // החלת טקסטים ועיצוב מההגדרות
   if (typeof SITE !== 'undefined' && SITE) {
