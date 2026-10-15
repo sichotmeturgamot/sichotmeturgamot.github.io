@@ -964,6 +964,17 @@ const YEARS = [
         "hebDate": "ט״ו ניסן",
         "addedAt": "2026-10-09",
         "hasPage": true
+      },
+      {
+        "title": "סדר השני של חג הפסח תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/seder_2_pesach_5708.pdf",
+        "pages": 3,
+        "count": 1,
+        "sortDate": "08-15",
+        "hebDate": "ט״ו ניסן",
+        "addedAt": "2026-10-15",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
