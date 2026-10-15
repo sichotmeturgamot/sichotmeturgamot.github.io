@@ -258,6 +258,8 @@
     </div>
     <label id="s-file-label">קובץ PDF</label>
     <input type="file" id="s-file" accept="application/pdf">
+    <label id="s-docx-label">קובץ הוורד של השיחה — ממנו נבנה הטקסט שבדף השיחה לגוגל (מומלץ)</label>
+    <input type="file" id="s-docx" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
     <div class="dlg-btns">
       <button class="btn btn-main" onclick="saveSicha()">שמירה</button>
       <button class="btn btn-line" onclick="dlg('dlg-sicha').close()">ביטול</button>
@@ -441,6 +443,91 @@ function sichaPagePath(file) { return 'sichos/' + sichaSlug(file) + '.html'; }
    { sections: [ { head: [שורות כותרת], paras: [{t, c}], notes: [...] } ] }
    בפסקאות, הפניה להערה מסומנת ⟦n⟧. אם אין קובץ טקסט — הדף נבנה כמו קודם, בלי טקסט. */
 function sichaTextPath(file) { return 'sichos-text/' + sichaSlug(file) + '.json'; }
+/* ---------- טקסט השיחה מתוך קובץ הוורד (לדף הנחיתה) ----------
+   כשמצרפים לשיחה גם את קובץ הוורד, הטקסט שלה נבנה ממנו כאן בדפדפן ונשמר ב-sichos-text/NAME.json
+   באותו קומיט עם ה-PDF והדף. כותרת = פסקה ממורכזת ומודגשת בגודל 16 ומעלה; כל כותרת פותחת קטע חדש
+   (קובץ עם כמה שיחות), והמספור של ההערות מתחיל מחדש בכל קטע. */
+async function unzipText(buf, name) {
+  const v = new DataView(buf), u8 = new Uint8Array(buf);
+  let e = buf.byteLength - 22;
+  while (e >= 0 && v.getUint32(e, true) !== 0x06054b50) e--;
+  if (e < 0) throw new Error('קובץ הוורד פגום (לא zip)');
+  let p = v.getUint32(e + 16, true);
+  const n = v.getUint16(e + 10, true);
+  for (let i = 0; i < n; i++) {
+    const method = v.getUint16(p + 10, true), csize = v.getUint32(p + 20, true);
+    const nl = v.getUint16(p + 28, true), xl = v.getUint16(p + 30, true), cl = v.getUint16(p + 32, true);
+    const off = v.getUint32(p + 42, true);
+    const fname = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nl));
+    if (fname === name) {
+      const start = off + 30 + v.getUint16(off + 26, true) + v.getUint16(off + 28, true);
+      const raw = u8.subarray(start, start + csize);
+      if (method === 0) return new TextDecoder().decode(raw);
+      const ds = new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+      return await new Response(ds).text();
+    }
+    p += 46 + nl + xl + cl;
+  }
+  return null;
+}
+async function docxToSichaText(file) {
+  const buf = await file.arrayBuffer();
+  const docXml = await unzipText(buf, 'word/document.xml');
+  if (!docXml) throw new Error('לא נמצא טקסט בקובץ הוורד');
+  const fnXml = await unzipText(buf, 'word/footnotes.xml');
+  const W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  const parse = s => new DOMParser().parseFromString(s, 'application/xml');
+  const kids = (el, tag) => Array.from(el.childNodes).filter(c => c.namespaceURI === W && c.localName === tag);
+  const all = (el, tag) => Array.from(el.getElementsByTagNameNS(W, tag));
+  const val = el => el && el.getAttributeNS(W, 'val');
+  const fns = {};
+  if (fnXml) all(parse(fnXml).documentElement, 'footnote').forEach(f => fns[f.getAttributeNS(W, 'id')] = f);
+  // the text of a paragraph, walking runs in order; footnote refs -> callback
+  function walk(p, onRef) {
+    let s = '';
+    for (const r of all(p, 'r')) {
+      const ref = kids(r, 'footnoteReference')[0];
+      const custom = ref && ['1', 'true'].includes(ref.getAttributeNS(W, 'customMarkFollows'));
+      for (const c of Array.from(r.childNodes)) {
+        if (c.namespaceURI !== W) continue;
+        if (c.localName === 't') { if (!custom) s += c.textContent; }      // a custom mark's typed text is the mark itself
+        else if (c.localName === 'tab' || c.localName === 'br') s += ' ';
+        else if (c.localName === 'noBreakHyphen') s += '־';
+        else if (c.localName === 'footnoteReference' && onRef) s += onRef(c);
+      }
+    }
+    return s.replace(/[ \t ]+/g, ' ').trim();
+  }
+  const noteText = (ref) => {
+    const f = fns[ref.getAttributeNS(W, 'id')]; if (!f) return '';
+    let t = kids(f, 'p').map(p => walk(p, null)).join(' ').replace(/\s+/g, ' ').trim();
+    if (['1', 'true'].includes(ref.getAttributeNS(W, 'customMarkFollows')))
+      t = t.replace(/^\*?\d*\*?\s+/, '');                              // fixed marks: the number is typed at the note's start
+    return t;
+  };
+  const body = all(parse(docXml).documentElement, 'body')[0];
+  const sections = []; let sec = null;
+  const newSec = () => { sec = { head: [], paras: [], notes: [] }; sections.push(sec); };
+  for (const p of kids(body, 'p')) {
+    const jc = val(all(p, 'jc')[0]);
+    const sizes = all(p, 'sz').map(e => +val(e)).filter(Boolean);
+    const runs = all(p, 'r').filter(r => all(r, 't').some(t => t.textContent.trim()));
+    const bold = runs.length && runs.every(r => all(r, 'b').length || all(r, 'bCs').length);
+    const isTitle = jc === 'center' && bold && sizes.length && Math.max(...sizes) >= 32;
+    if (isTitle && (!sec || sec.paras.length)) newSec();
+    if (!sec) newSec();
+    const t = walk(p, ref => { sec.notes.push((sec.notes.length + 1) + ' ' + noteText(ref)); return '⟦' + sec.notes.length + '⟧'; });
+    if (!t) continue;
+    if (isTitle) sec.head.push(t);
+    else sec.paras.push(jc === 'center' ? { t, c: true } : { t });
+  }
+  const out = sections.filter(s => s.paras.length || s.head.length);
+  if (!out.length) throw new Error('לא נמצא טקסט בקובץ הוורד');
+  return { source: file.name, sections: out };
+}
+function textEntry(file, td) {
+  return { path: sichaTextPath(file), mode: '100644', type: 'blob', content: JSON.stringify(td) };
+}
 async function loadSichaText(file) {
   try {
     const f = await gh(repoPath('contents/' + sichaTextPath(file) + '?ref=' + cfg.branch));
@@ -590,8 +677,8 @@ ${textHtml ? `  <article class="text" lang="he">\n${textHtml}\n  </article>\n  <
 </html>
 `;
 }
-async function pageEntry(s, yearName) {
-  const td = await loadSichaText(s.file);
+async function pageEntry(s, yearName, td) {
+  if (td === undefined) td = await loadSichaText(s.file);
   return { path: sichaPagePath(s.file), mode: '100644', type: 'blob', content: renderSichaPage(s, yearName, td) };
 }
 function pageDeleteEntry(file) {
@@ -794,7 +881,7 @@ function openAddSicha() {
   // ברירת מחדל: השנה הנוכחית שבטאב (או האחרונה אם אין)
   const defYi = data.YEARS.length ? Math.min(selectedYear, data.YEARS.length - 1) : 0;
   fillYearSelect(defYi);
-  $('s-title').value = ''; $('s-subtitle').value = ''; $('s-pages').value = ''; $('s-count').value = '1'; $('s-filename').value = ''; $('s-file').value = ''; setHebDate({});
+  $('s-title').value = ''; $('s-subtitle').value = ''; $('s-pages').value = ''; $('s-count').value = '1'; $('s-filename').value = ''; $('s-file').value = ''; $('s-docx').value = ''; setHebDate({});
   $('s-file-label').textContent = 'קובץ PDF';
   dlg('dlg-sicha').showModal();
 }
@@ -805,7 +892,7 @@ function openEditSicha(yi, si) {
   fillYearSelect(yi);
   $('s-title').value = s.title; $('s-subtitle').value = s.subtitle || ''; $('s-pages').value = s.pages || ''; $('s-count').value = s.count || 1; setHebDate(s);
   $('s-filename').value = s.file.replace(/^pdfs\//, ''); $('s-filename').disabled = true;
-  $('s-file').value = '';
+  $('s-file').value = ''; $('s-docx').value = '';
   $('s-file-label').textContent = 'קובץ PDF (השאר ריק כדי לשמור את הקובץ הקיים)';
   dlg('dlg-sicha').showModal();
 }
@@ -823,6 +910,12 @@ async function saveSicha() {
       ...getHebDate()
     };
     const fileInput = $('s-file').files[0];
+    const docxInput = $('s-docx').files[0];
+    let td;                                          // undefined = take the text already on the site (if any)
+    if (docxInput) {
+      setStatus('קורא את הטקסט מקובץ הוורד…', 'busy');
+      td = await docxToSichaText(docxInput);
+    }
 
     if (editing) {
       const old = data.YEARS[editing.yi].sichos[editing.si];
@@ -840,7 +933,8 @@ async function saveSicha() {
       data.YEARS[yi].sichos.push(entry);
       sortYear(yi);
       setStatus('שומר…', 'busy');
-      await gitCommit([...extra, await pageEntry(entry, data.YEARS[yi].year), sitemapEntry(), dataEntry()], 'עריכת שיחה: ' + title);
+      if (td) extra.push(textEntry(entry.file, td));
+      await gitCommit([...extra, await pageEntry(entry, data.YEARS[yi].year, td), sitemapEntry(), dataEntry()], 'עריכת שיחה: ' + title);
     } else {
       let name = $('s-filename').value.trim();
       if (!fileInput) return setStatus('חסר קובץ PDF', 'err');
@@ -859,7 +953,8 @@ async function saveSicha() {
       // קומיט יחיד = פרסום אמין (שני קומיטים מהירים ברצף גורמים לכשל פריסה ב-GitHub Pages).
       await gitCommit([
         { path: entry.file, mode: '100644', type: 'blob', sha: blobSha },
-        await pageEntry(entry, data.YEARS[yi].year),
+        ...(td ? [textEntry(entry.file, td)] : []),
+        await pageEntry(entry, data.YEARS[yi].year, td),
         sitemapEntry(),
         dataEntry()
       ], 'הוספת שיחה: ' + title);
