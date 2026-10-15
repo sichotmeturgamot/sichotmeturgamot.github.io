@@ -944,7 +944,7 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "סדר הראשון דחג הפסח תש\"ח",
+        "title": "סדר הראשון של חג הפסח תש\"ח",
         "subtitle": "",
         "file": "pdfs/seder_1_pesach_5708.pdf",
         "pages": 2,
