@@ -531,7 +531,7 @@ if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
       if(!meta){ st.textContent = 'לא הצלחתי לטעון את הטקסטים, נסו שוב'; return; }
       st.textContent = x.j.results.length ? 'נמצאו הקטעים הקרובים ביותר לשאלה:' : 'לא נמצאו תוצאות';
       x.j.results.forEach(function(r){
-        var c = meta.chunks[r.p]; if(!c) return;
+        var c = r.p != null ? meta.chunks[r.p] : {t:r.title, x:r.text, f:r.file}; if(!c) return;
         var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,c.t)); d.appendChild(s);
         var snip = r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x;
         var t = el('div','txt',snip); d.appendChild(t);
