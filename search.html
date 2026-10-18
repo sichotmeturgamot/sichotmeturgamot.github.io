@@ -50,6 +50,25 @@
   .search-box .clear { position: absolute; inset-inline-end: 12px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border: none; background: transparent; cursor: pointer; color: var(--muted); font-size: 1.4rem; line-height: 1; display: none; }
   .search-box .clear:hover { color: var(--navy); }
 
+  /* חיפוש חכם לפי שאלה */
+  .smart { max-width: 640px; margin: 22px auto 0; padding: 0 16px; }
+  .smart-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 14px; }
+  .smart-card h2 { font-size: 1.15rem; margin: 0 0 4px; display: flex; gap: 8px; align-items: center; }
+  .smart-card .beta { font-family: 'Heebo', sans-serif; font-size: .7rem; background: #efe9db; color: #8a7a52; border-radius: 999px; padding: 2px 9px; font-weight: 400; }
+  .smart-card p.hint { color: var(--muted); font-size: .88rem; margin: 0 0 10px; }
+  .smart-row { display: flex; gap: 8px; }
+  .smart-row input { flex: 1; min-width: 0; padding: 11px 14px; font-family: 'Frank Ruhl Libre', serif; font-size: 1.1rem; border: 1.5px solid var(--line); border-radius: 9px; background: var(--paper); color: var(--text); }
+  .smart-row input:focus { outline: none; border-color: var(--gold); }
+  .smart-row button { border: none; background: var(--navy); color: var(--cream); border-radius: 9px; padding: 0 18px; font-family: 'Heebo', sans-serif; font-size: .95rem; cursor: pointer; }
+  .smart-row button:disabled { opacity: .6; cursor: default; }
+  .smart-status { color: var(--muted); font-size: .88rem; margin-top: 10px; min-height: 1.2em; }
+  .smart-res { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
+  .smart-res .src { font-family: 'Heebo', sans-serif; font-size: .82rem; color: var(--muted); margin-bottom: 4px; }
+  .smart-res .src b { color: var(--navy); font-weight: 500; }
+  .smart-res .txt { font-family: 'Frank Ruhl Libre', serif; font-size: 1.05rem; line-height: 1.8; text-align: justify; white-space: pre-line; }
+  .smart-res .txt.clip { max-height: 7.2em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 60%, transparent); mask-image: linear-gradient(#000 60%, transparent); }
+  .smart-res .acts { margin-top: 6px; display: flex; gap: 16px; font-family: 'Heebo', sans-serif; font-size: .88rem; }
+  .smart-res .acts button, .smart-res .acts a { background: none; border: none; padding: 0; color: var(--gold); cursor: pointer; text-decoration: none; font: inherit; }
   .count-line { max-width: 640px; margin: 12px auto 0; color: var(--muted); font-size: .86rem; text-align: center; min-height: 1.2em; }
   .seg-bar { text-align: center; margin: 14px auto 0; }
   .seg-toggle { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--paper); }
@@ -127,6 +146,18 @@
 </div>
 
 <main style="padding-top:14px">
+  <section class="smart" id="smart" hidden>
+    <div class="smart-card">
+      <h2>חיפוש לפי שאלה <span class="beta">חדש · ניסיוני</span></h2>
+      <p class="hint">כתבו שאלה במילים שלכם, למשל: ״מה הסיפור של ניגון של ר׳ אשר״ — והחיפוש יציג קטעים מהשיחות שעוסקים בכך, גם אם המילים שונות.</p>
+      <form class="smart-row" id="smart-form">
+        <input id="smart-q" type="text" maxlength="200" placeholder="מה תרצו לדעת?" autocomplete="off" enterkeyhint="search">
+        <button type="submit" id="smart-go">חפשו</button>
+      </form>
+      <div class="smart-status" id="smart-status" aria-live="polite"></div>
+      <div id="smart-out"></div>
+    </div>
+  </section>
   <div class="search-wrap">
     <div class="search-box">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -477,6 +508,35 @@ clearEl.addEventListener('click', ()=>{ q.value=''; q.focus(); render(); });
 renderHistory();
 try{ var _r = sessionStorage.getItem('mafteach-return'); if(_r){ sessionStorage.removeItem('mafteach-return'); q.value=_r; render(); } }catch(_){}
 if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
+</script>
+<script>
+/* חיפוש חכם: מציג את התיבה רק אם מוגדרת כתובת שרת */
+(function(){
+  var API = 'https://sichos-search.doviber.workers.dev'; // כתובת שרת החיפוש (Cloudflare Worker)
+  var box = document.getElementById('smart'); if(!API || !box) return; box.hidden = false;
+  var form = document.getElementById('smart-form'), qi = document.getElementById('smart-q'),
+      go = document.getElementById('smart-go'), st = document.getElementById('smart-status'), out = document.getElementById('smart-out');
+  function el(t, c, x){ var e=document.createElement(t); if(c) e.className=c; if(x!=null) e.textContent=x; return e; }
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
+    go.disabled = true; st.textContent = 'מחפש…'; out.textContent = '';
+    fetch(API + '?q=' + encodeURIComponent(q)).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); })
+    .then(function(x){
+      go.disabled = false;
+      if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
+      st.textContent = x.j.results.length ? 'נמצאו הקטעים הקרובים ביותר לשאלה:' : 'לא נמצאו תוצאות';
+      x.j.results.forEach(function(r){
+        var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,r.title)); d.appendChild(s);
+        var t = el('div','txt clip',r.text); d.appendChild(t);
+        var a = el('div','acts'), more = el('button',null,'הצג עוד'); more.type='button';
+        more.onclick = function(){ var c = t.classList.toggle('clip'); more.textContent = c ? 'הצג עוד' : 'הצג פחות'; };
+        a.appendChild(more);
+        var l = el('a',null,'לקריאת השיחה'); l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + r.file + '.pdf') + '&title=' + encodeURIComponent(r.title);
+        a.appendChild(l); d.appendChild(a); out.appendChild(d);
+      });
+    }).catch(function(){ go.disabled = false; st.textContent = 'לא הצלחתי להתחבר, נסו שוב בעוד רגע'; });
+  });
+})();
 </script>
 <script src="nav.js"></script>
 <script src="morenav.js" defer></script>
