@@ -552,7 +552,7 @@ if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
     MAFTEACH.forEach(function(e){ (byTopic[e.topic] = byTopic[e.topic] || []).push(e); });
     Object.keys(byTopic).forEach(function(t){
       var tw = W(t).split(/[^א-ת]+/).filter(Boolean);
-      if(!tw.length || tw.join('').length < 3 || (tw.length === 1 && STOP.indexOf(tw[0]) >= 0) || byTopic[t].length > 8) return;
+      if(!tw.length || tw.join('').length < 3 || (tw.length === 1 && STOP.indexOf(tw[0]) >= 0) || byTopic[t].length > 15) return;
       if(tw.every(hasWord) && tw.join(' ').length > bestLen){ best = t; bestLen = tw.join(' ').length; }
     });
     if(!best) return [];
@@ -574,22 +574,29 @@ if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
   form.addEventListener('submit', function(ev){
     ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
     go.disabled = true; st.textContent = 'מחפש…'; out.textContent = '';
-    Promise.all([
-      fetch(API + '?q=' + encodeURIComponent(q)).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); }),
-      getMeta().catch(function(){ return null; })
-    ]).then(function(arr){
-      var x = arr[0], meta = arr[1]; go.disabled = false;
+    var meta = null, ex = [];
+    getMeta().catch(function(){ return null; }).then(function(m){
+      meta = m;
+      // קטעים מהמפתח ומילים נדירות — נשלחים לשרת כמועמדים נוספים, ו-Claude מחליט אם הם מתאימים
+      if(meta){ var seen0 = {}; ex = mafteachHits(q, meta).concat(exactHits(q, meta)).filter(function(r){ if(seen0[r.p]) return false; seen0[r.p] = 1; return true; }).slice(0, 10); }
+      var xs = ex.map(function(r){ return r.p; }).join(',');
+      return fetch(API + '?q=' + encodeURIComponent(q) + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+    }).then(function(x){
+      go.disabled = false;
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
       if(!meta){ st.textContent = 'לא הצלחתי לטעון את הטקסטים, נסו שוב'; return; }
-      var v2 = x.j.ranked != null || (x.j.results.length && x.j.results[0].p != null);
-      var ex = v2 ? mafteachHits(q, meta).slice(0, 4).concat(exactHits(q, meta)) : [];
+      var info = {}; ex.forEach(function(r){ info[r.p] = r; });
       x.j.results.forEach(function(r){ if(r.m >= 0 && meta.smalls[r.m]) r.p = meta.smalls[r.m].p; });
-      var seen = {}; var list = ex.concat(x.j.results).filter(function(r){ if(r.p == null) return true; if(seen[r.p]) return false; seen[r.p] = 1; return true; }).slice(0, 8);
+      var list;
+      if(x.j.ranked){ list = x.j.results; }                       // Claude בחר — מציגים רק את מה שהוא בחר
+      else { list = ex.slice(0, 4).concat(x.j.results); }          // בלי Claude — כמו קודם
+      var seen = {}; list = list.filter(function(r){ if(r.p == null) return true; if(seen[r.p]) return false; seen[r.p] = 1; return true; }).slice(0, 8);
       st.textContent = list.length ? 'נמצאו הקטעים הקרובים ביותר לשאלה:' : 'לא נמצא קטע שעוסק בשאלה הזו. נסו לנסח אחרת.';
       list.forEach(function(r){
         var c = r.p != null ? meta.chunks[r.p] : {t:r.title, x:r.text, f:r.file}; if(!c) return;
-        var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,c.t)); if(r.topic) s.appendChild(document.createTextNode(' · מהמפתח: ' + r.topic)); else if(r.exact) s.appendChild(document.createTextNode(' · מכיל את המילה שחיפשתם')); d.appendChild(s);
-        var snip = r.snip || (r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x);
+        var e = info[r.p] || {};
+        var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,c.t)); if(e.topic) s.appendChild(document.createTextNode(' · במפתח: ' + e.topic)); d.appendChild(s);
+        var snip = (r.m < 0 && e.snip) || (r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : (e.m >= 0 && meta.smalls[e.m] ? meta.smalls[e.m].x : c.x));
         var t = el('div','txt',snip); d.appendChild(t);
         var a = el('div','acts');
         if(snip !== c.x){
