@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שאלו את השיחות — ספר השיחות מתורגם ללה״ק</title>
+<meta name="description" content="כתבו שאלה במילים שלכם ומצאו את הקטעים בשיחות אדמו״ר הריי״צ שעוסקים בה.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://sichotmeturgamot.com/ask.html">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="https://sichotmeturgamot.com/style.css">
+<script src="analytics.js" defer></script>
+<link rel="manifest" href="https://sichotmeturgamot.com/manifest.json">
+<meta name="theme-color" content="#1a2942">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ספר השיחות">
+<link rel="apple-touch-icon" href="https://sichotmeturgamot.com/icon-192.png">
+<style>
+  /* כותרת ושורת חיפוש — זהים לעמוד המילון */
+  .milon-head { text-align: center; padding: 40px 20px 6px; }
+  .milon-head .bsd { font-size: .72rem; letter-spacing: .3em; color: var(--gold); margin-bottom: 14px; }
+  .milon-head h1 { font-size: clamp(1.8rem, 4.6vw, 2.5rem); line-height: 1.25; }
+  .milon-head h1::before { content: ""; display: block; width: 60px; height: 1px; background: var(--gold); margin: 0 auto 20px; }
+  .milon-head .sub { font-family: 'Frank Ruhl Libre', serif; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.18rem); margin-top: 10px; }
+
+  .search-wrap { max-width: 640px; margin: 26px auto 0; position: sticky; top: 74px; z-index: 30; }
+  .search-box { position: relative; }
+  .search-box input {
+    width: 100%; padding: 15px 52px 15px 18px;
+    font-family: 'Frank Ruhl Libre', serif; font-size: 1.35rem;
+    border: 1.5px solid var(--line, #e3dccd); border-radius: 10px;
+    background: var(--paper); color: var(--text);
+    box-shadow: 0 8px 22px -14px rgba(23,35,61,.35);
+  }
+  .search-box input:focus { outline: none; border-color: var(--gold); }
+  .search-box .icon { position: absolute; inset-inline-start: 16px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; color: var(--muted); pointer-events: none; }
+  .search-box .clear { position: absolute; inset-inline-end: 12px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border: none; background: transparent; cursor: pointer; color: var(--muted); font-size: 1.4rem; line-height: 1; display: none; }
+  .search-box .clear:hover { color: var(--navy); }
+
+  /* חיפוש חכם לפי שאלה */
+  .smart { max-width: 640px; margin: 22px auto 0; padding: 0 16px; }
+  .smart-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 14px; }
+  .smart-card h2 { font-size: 1.15rem; margin: 0 0 4px; display: flex; gap: 8px; align-items: center; }
+  .smart-card .beta { font-family: 'Heebo', sans-serif; font-size: .7rem; background: #efe9db; color: #8a7a52; border-radius: 999px; padding: 2px 9px; font-weight: 400; }
+  .smart-card p.hint { color: var(--muted); font-size: .88rem; margin: 0 0 10px; }
+  .smart-row { display: flex; gap: 8px; }
+  .smart-row input { flex: 1; min-width: 0; padding: 11px 14px; font-family: 'Frank Ruhl Libre', serif; font-size: 1.1rem; border: 1.5px solid var(--line); border-radius: 9px; background: var(--paper); color: var(--text); }
+  .smart-row input:focus { outline: none; border-color: var(--gold); }
+  .smart-row button { border: none; background: var(--navy); color: var(--cream); border-radius: 9px; padding: 0 18px; font-family: 'Heebo', sans-serif; font-size: .95rem; cursor: pointer; }
+  .smart-row button:disabled { opacity: .6; cursor: default; }
+  .smart-in { position: relative; flex: 1; min-width: 0; display: flex; }
+  .smart-in input { padding-inline-end: 40px; }
+  .smart-row .smart-clear { position: absolute; inset-inline-end: 6px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; padding: 0; border: none; background: transparent; color: var(--muted); font-size: 1.4rem; line-height: 1; cursor: pointer; display: none; }
+  .smart-row .smart-clear:hover { color: var(--navy); }
+  .smart-status { color: var(--muted); font-size: .88rem; margin-top: 10px; min-height: 1.2em; }
+  .smart-res { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
+  .smart-res .src { font-family: 'Heebo', sans-serif; font-size: .82rem; color: var(--muted); margin-bottom: 4px; }
+  .smart-res .src b { color: var(--navy); font-weight: 500; }
+  .smart-res .txt { font-family: 'Frank Ruhl Libre', serif; font-size: 1.05rem; line-height: 1.8; text-align: justify; white-space: pre-line; }
+  .smart-res .txt.clip { max-height: 7.2em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 60%, transparent); mask-image: linear-gradient(#000 60%, transparent); }
+  .smart-res .acts { margin-top: 6px; display: flex; gap: 16px; font-family: 'Heebo', sans-serif; font-size: .88rem; }
+  .smart-res .acts button, .smart-res .acts a { background: none; border: none; padding: 0; color: var(--gold); cursor: pointer; text-decoration: none; font: inherit; }
+  .count-line { max-width: 640px; margin: 12px auto 0; color: var(--muted); font-size: .86rem; text-align: center; min-height: 1.2em; }
+  .seg-bar { text-align: center; margin: 14px auto 0; }
+  .seg-toggle { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--paper); }
+  .seg-btn { border: none; background: transparent; cursor: pointer; font-family: 'Heebo', sans-serif; font-size: .92rem; padding: 8px 18px; color: var(--muted); transition: background .15s, color .15s; }
+  .seg-btn + .seg-btn { border-inline-start: 1.5px solid var(--line); }
+  .seg-btn.on { background: var(--navy); color: var(--cream); font-weight: 500; }
+  .seg-btn:not(.on):hover { color: var(--navy); }
+  /* רשימת הערכים: בחירת מפתח (הכל / ענינים / שמות / מקומות / מוסדות) */
+  .cat-bar { display: none; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 680px; margin: 12px auto 0; padding: 0 8px; }
+  .cat-btn { border: 1.5px solid var(--line); background: var(--paper); border-radius: 999px; padding: 6px 14px; font-family: 'Heebo', sans-serif; font-size: .9rem; color: var(--muted); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+  .cat-btn.on { background: var(--navy); color: var(--cream); border-color: var(--navy); font-weight: 500; }
+  .cat-btn:not(.on):hover { color: var(--navy); border-color: var(--gold); }
+  .cat-bar.open { display: flex; }   /* מוסתר עד שפותחים את רשימת הערכים */
+  .azlist { max-width: 760px; margin: 18px auto 0; padding: 0 16px; }
+  .az-group { margin-bottom: 20px; }
+  .az-letter { font-family: 'Frank Ruhl Libre', serif; color: var(--gold); font-size: 1.35rem; border-bottom: 1px solid var(--line, #e3dccd); padding-bottom: 4px; margin-bottom: 10px; }
+  .az-items { display: flex; flex-wrap: wrap; gap: 8px; }
+  .az-item { background: var(--paper); border: 1px solid var(--line, #e3dccd); border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: 1rem; color: var(--text); }
+  .az-item:hover { border-color: var(--gold); color: var(--navy); }
+  .q-show { background: transparent; border: none; color: var(--gold); cursor: pointer; font-size: .9rem; padding: 4px 0; font-family: 'Heebo', sans-serif; }
+  .q-show:hover { text-decoration: underline; }
+
+  /* היסטוריית חיפושים */
+  .history { max-width: 640px; margin: 20px auto 0; }
+  .history .hist-title { text-align: center; color: var(--muted); font-size: .82rem; margin-bottom: 10px; font-family: 'Heebo', sans-serif; }
+  .history .hist-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .history .chip { font-family: 'Frank Ruhl Libre', serif; font-size: 1.02rem; background: var(--paper); color: var(--navy); border: 1.5px solid var(--gold); border-radius: 999px; padding: 7px 18px; cursor: pointer; transition: all .15s; }
+  .history .chip:hover { background: var(--gold-light); color: #fff; }
+
+  /* תוצאות */
+  .results { max-width: 640px; margin: 14px auto 0; }
+  .result .topic-line { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .result .clar { color: var(--muted); font-size: .9rem; font-family: 'Heebo', sans-serif; font-weight: 400; }
+  .result .tag { font-size: .72rem; font-family: 'Heebo', sans-serif; background: #efe9db; color: #8a7a52; border-radius: 999px; padding: 2px 10px; align-self: center; }
+  .excerpt { margin: 9px 0 8px; color: var(--text); line-height: 1.75; border-inline-start: 3px solid var(--gold-light); padding-inline-start: 12px; }
+  .meta-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .see-ref { margin-top: 6px; font-family: 'Frank Ruhl Libre', serif; }
+  .see-ref a { color: var(--navy, #1b2a4a); font-weight: 700; text-decoration: underline; cursor: pointer; }
+  .src-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; width: 100%; }
+  .src-btns .btn, .btns .btn { font-family: 'Frank Ruhl Libre', serif; }
+  mark { background: var(--gold-light); color: var(--navy); border-radius: 3px; padding: 0 2px; }
+
+  @media (max-width: 640px) {
+    .search-wrap { top: 60px; }
+    .milon-head { padding: 28px 14px 4px; }
+    .search-box input { font-size: 1.25rem; padding: 13px 46px 13px 14px; }
+    /* בטלפון: שורה אחת נגללת במקום שתי שורות (אזור החיפוש נשאר צמוד למעלה) */
+    .cat-bar { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; gap: 4px; margin-top: 10px; }
+    .cat-bar::-webkit-scrollbar { display: none; }
+    .cat-btn { flex: 0 0 auto; padding: 5px 11px; font-size: .86rem; }
+    .cat-btn:first-child { margin-inline-start: auto; }
+    .cat-btn:last-child { margin-inline-end: auto; }
+  }
+  .page-tabs { display: flex; justify-content: center; margin: 18px auto 0; }
+  .page-tabs .seg-toggle a { display: inline-block; text-decoration: none; }
+  .smart { margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="https://sichotmeturgamot.com/index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <div class="links">
+    <a href="https://sichotmeturgamot.com/index.html">ראשי</a>
+    <a href="https://sichotmeturgamot.com/sichos.html">קריאת השיחות</a>
+    <a href="https://sichotmeturgamot.com/milon.html">מילון</a>
+    <a href="search.html" class="active">חיפוש</a>
+    <a href="https://sichotmeturgamot.com/subscribe.html">הצטרפות לעדכונים</a>
+    <a href="https://sichotmeturgamot.com/donate.html">תרומה</a>
+    <a href="https://sichotmeturgamot.com/feedback.html">פידבק</a>
+  </div>
+</nav>
+
+<div class="milon-head">
+  <div class="bsd">ב״ה</div>
+  <h1>שאלו את השיחות</h1>
+  <div class="sub">כתבו שאלה במילים שלכם — ותקבלו את הקטעים מהשיחות שעוסקים בה, גם אם המילים שונות</div>
+</div>
+<div class="page-tabs"><div class="seg-toggle"><a href="search.html" class="seg-btn">מפתחות</a><a href="ask.html" class="seg-btn on">שאלה במילים שלכם</a></div></div>
+
+<main style="padding-top:4px">
+  <section class="smart" id="smart">
+    <div class="smart-card">
+      <h2>שאלה <span class="beta">ניסיוני</span></h2>
+      <p class="hint">למשל: ״מה זה מתינות?״, ״מה הסיפור של הילד שרקד ובכה״, ״למה מנגנים לפני התפילה?״. החיפוש לוקח כמה שניות.</p>
+      <form class="smart-row" id="smart-form">
+        <span class="smart-in">
+          <input id="smart-q" type="text" maxlength="200" placeholder="מה תרצו לדעת?" autocomplete="off" enterkeyhint="search">
+          <button type="button" class="smart-clear" id="smart-clear" aria-label="ניקוי">×</button>
+        </span>
+        <button type="submit" id="smart-go">חפשו</button>
+      </form>
+      <div class="smart-status" id="smart-status" aria-live="polite"></div>
+      <div id="smart-out"></div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottomnav">
+  <a href="https://sichotmeturgamot.com/index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>ראשי</span></a>
+  <a href="https://sichotmeturgamot.com/sichos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/></svg><span>קריאה</span></a>
+  <a href="https://sichotmeturgamot.com/milon.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/></svg><span>מילון</span></a>
+  <a href="search.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span>חיפוש</span></a>
+  <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
+</nav>
+
+<script src="mafteach.js"></script>
+<script>
+/* חיפוש חכם: מציג את התיבה רק אם מוגדרת כתובת שרת */
+(function(){
+  var API = 'https://sichos-search.doviber.workers.dev'; // כתובת שרת החיפוש (Cloudflare Worker)
+  var box = document.getElementById('smart'); if(!API || !box) return; box.hidden = false;
+  var form = document.getElementById('smart-form'), qi = document.getElementById('smart-q'),
+      go = document.getElementById('smart-go'), st = document.getElementById('smart-status'), out = document.getElementById('smart-out');
+  function el(t, c, x){ var e=document.createElement(t); if(c) e.className=c; if(x!=null) e.textContent=x; return e; }
+  var metaP = null;
+  function getMeta(){ return metaP || (metaP = fetch('search-meta.json').then(function(r){ if(!r.ok) throw 0; return r.json(); }).catch(function(e){ metaP = null; throw e; })); }
+  var STOP = 'מה מהו מהי מהם מהן מדוע למה איך כיצד האם מי של על את עם אל הוא היא הם זה זו זאת עניין ענין הענין העניין אצל כל לא כן גם אם כי אשר יש אין היה היו אמר סיפור הסיפור'.split(' ');
+  function norm(t){ return t.replace(/[\u0591-\u05C7]/g,'').replace(/["'״׳]/g,''); }
+  function exactHits(q, meta){
+    var words = norm(q).split(/[^\u05D0-\u05EA]+/).filter(function(w){ return w.length >= 3 && STOP.indexOf(w) < 0; });
+    var res = [];
+    words.forEach(function(w){
+      var forms = [w]; if(w.length >= 5 && 'והבלמשכ'.indexOf(w[0]) >= 0) forms.push(w.slice(1));
+      var ps = [];
+      meta.chunks.forEach(function(c, i){ var t = c.nx || (c.nx = norm(c.x)); if(forms.some(function(f){ return t.indexOf(f) >= 0; })) ps.push(i); });
+      if(ps.length && ps.length <= 3) ps.forEach(function(p){
+        var m = -1; meta.smalls.forEach(function(sm, j){ if(m < 0 && sm.p === p && forms.some(function(f){ return norm(sm.x).indexOf(f) >= 0; })) m = j; });
+        res.push({p:p, m:m, exact:true});
+      });
+    });
+    return res.slice(0, 2);
+  }
+  function mafteachHits(q, meta){
+    if(typeof MAFTEACH === 'undefined') return [];
+    var W = function(t){ return norm(t.replace(/הי['׳](?=[^\u05D0-\u05EA]|$)/g,'היה')).replace(/\s+/g,' ').trim(); };
+    var qw = W(q).split(/[^א-ת]+/).filter(Boolean);
+    function hasWord(w){ return qw.some(function(x){ return x === w || (x.length > w.length && x.length - w.length <= 2 && x.slice(-w.length) === w && /^[והבלמשכ]+$/.test(x.slice(0, x.length - w.length))); }); }
+    var best = null, bestLen = 0;
+    var byTopic = {};
+    MAFTEACH.forEach(function(e){ (byTopic[e.topic] = byTopic[e.topic] || []).push(e); });
+    Object.keys(byTopic).forEach(function(t){
+      var tw = W(t).split(/[^א-ת]+/).filter(Boolean);
+      if(!tw.length || tw.join('').length < 3 || (tw.length === 1 && STOP.indexOf(tw[0]) >= 0) || byTopic[t].length > 15) return;
+      if(tw.every(hasWord) && tw.join(' ').length > bestLen){ best = t; bestLen = tw.join(' ').length; }
+    });
+    if(!best) return [];
+    var cx = meta.cx || (meta.cx = meta.chunks.map(function(c){ return W(c.x); }));
+    var res = [];
+    byTopic[best].forEach(function(e){
+      var k = W(e.a || e.excerpt || '').replace(/^[א-ת]{1,2}\. /,'').slice(0, 30); if(!k) return;
+      var p = -1; for(var i = 0; i < cx.length; i++) if(cx[i].indexOf(k) >= 0){ p = i; break; }
+      if(p < 0) return;
+      var m = -1; meta.smalls.forEach(function(sm, j){ if(m < 0 && sm.p === p && W(sm.x).indexOf(k) >= 0) m = j; });
+      res.push({p:p, m:m, topic:best, snip: (m < 0 && meta.chunks[p].x.length > 450) ? (e.excerpt || '') : null});
+    });
+    return res;
+  }
+  var sc = document.getElementById('smart-clear');
+  function syncClear(){ sc.style.display = qi.value ? 'block' : 'none'; if(!qi.value.trim()){ out.textContent = ''; st.textContent = ''; } }
+  qi.addEventListener('input', syncClear);
+  sc.addEventListener('click', function(){ qi.value = ''; syncClear(); qi.focus(); });
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
+    go.disabled = true; st.textContent = 'מחפש…'; out.textContent = '';
+    var meta = null, ex = [];
+    getMeta().catch(function(){ return null; }).then(function(m){
+      meta = m;
+      // קטעים מהמפתח ומילים נדירות — נשלחים לשרת כמועמדים נוספים, ו-Claude מחליט אם הם מתאימים
+      if(meta){ var seen0 = {}; ex = mafteachHits(q, meta).concat(exactHits(q, meta)).filter(function(r){ if(seen0[r.p]) return false; seen0[r.p] = 1; return true; }).slice(0, 10); }
+      var xs = ex.map(function(r){ return r.p; }).join(',');
+      return fetch(API + '?q=' + encodeURIComponent(q) + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+    }).then(function(x){
+      go.disabled = false;
+      if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
+      if(!meta){ st.textContent = 'לא הצלחתי לטעון את הטקסטים, נסו שוב'; return; }
+      var info = {}; ex.forEach(function(r){ info[r.p] = r; });
+      x.j.results.forEach(function(r){ if(r.m >= 0 && meta.smalls[r.m]) r.p = meta.smalls[r.m].p; });
+      var list;
+      if(x.j.ranked){ list = x.j.results; }                       // Claude בחר — מציגים רק את מה שהוא בחר
+      else { list = ex.slice(0, 4).concat(x.j.results); }          // בלי Claude — כמו קודם
+      var seen = {}; list = list.filter(function(r){ if(r.p == null) return true; if(seen[r.p]) return false; seen[r.p] = 1; return true; }).slice(0, 8);
+      st.textContent = list.length ? 'נמצאו הקטעים הקרובים ביותר לשאלה:' : 'לא נמצא קטע שעוסק בשאלה הזו. נסו לנסח אחרת.';
+      list.forEach(function(r){
+        var c = r.p != null ? meta.chunks[r.p] : {t:r.title, x:r.text, f:r.file}; if(!c) return;
+        var e = info[r.p] || {};
+        var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,c.t)); if(e.topic) s.appendChild(document.createTextNode(' · במפתח: ' + e.topic)); d.appendChild(s);
+        var snip = e.snip || (e.m >= 0 && meta.smalls[e.m] ? meta.smalls[e.m].x : (r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x));
+        var t = el('div','txt',snip); d.appendChild(t);
+        var a = el('div','acts');
+        if(snip !== c.x){
+          var more = el('button',null,'הצג את כל הסעיף'); more.type='button'; var open=false;
+          more.onclick = function(){ open=!open; t.textContent = open ? c.x : snip; more.textContent = open ? 'הצג רק את הקטע התואם' : 'הצג את כל הסעיף'; };
+          a.appendChild(more);
+        }
+        var l = el('a',null,'לקריאת השיחה'); l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t);
+        a.appendChild(l); d.appendChild(a); out.appendChild(d);
+      });
+    }).catch(function(){ go.disabled = false; st.textContent = 'לא הצלחתי להתחבר, נסו שוב בעוד רגע'; });
+  });
+})();
+</script>
+<script src="nav.js"></script>
+<script src="morenav.js" defer></script>
+<script src="install.js" defer></script>
+</body>
+</html>
