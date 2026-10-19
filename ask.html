@@ -114,8 +114,15 @@
     .cat-btn:first-child { margin-inline-start: auto; }
     .cat-btn:last-child { margin-inline-end: auto; }
   }
-  .page-tabs { display: flex; justify-content: center; margin: 18px auto 0; }
-  .page-tabs .seg-toggle a { display: inline-block; text-decoration: none; }
+  /* שתי לשוניות החיפוש: מפתחות / שאלה */
+  .page-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 640px; margin: 18px auto 0; padding: 0 16px; }
+  .ptab { display: flex; gap: 10px; align-items: center; text-decoration: none; border: 2px solid var(--line); background: var(--paper); border-radius: 12px; padding: 12px 12px; color: var(--muted); transition: border-color .15s, background .15s; }
+  .ptab svg { width: 26px; height: 26px; flex: 0 0 auto; color: var(--gold); }
+  .ptab b { display: block; font-family: 'Heebo', sans-serif; font-size: 1rem; color: var(--navy); font-weight: 600; }
+  .ptab small { display: block; font-family: 'Heebo', sans-serif; font-size: .78rem; line-height: 1.35; margin-top: 2px; }
+  .ptab.on { background: var(--navy); border-color: var(--navy); color: #d9cfb8; }
+  .ptab.on b { color: var(--cream); }
+  .ptab:not(.on):hover { border-color: var(--gold); }
   .smart { margin-top: 14px; }
 </style>
 </head>
@@ -139,12 +146,11 @@
   <h1>שאלו את השיחות</h1>
   <div class="sub">כתבו שאלה במילים שלכם — ותקבלו את הקטעים מהשיחות שעוסקים בה, גם אם המילים שונות</div>
 </div>
-<div class="page-tabs"><div class="seg-toggle"><a href="search.html" class="seg-btn">מפתחות</a><a href="ask.html" class="seg-btn on">שאלה במילים שלכם</a></div></div>
+<div class="page-tabs"><a href="search.html" class="ptab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 10h10M4 15h16M4 20h10"/></svg><span><b>מפתחות</b><small>חיפוש ערך, שם או מקום</small></span></a><a href="ask.html" class="ptab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 01-11.5 7.2L4 20l1-4.6A8 8 0 1121 12z"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.5-1.5 1-1.5 2"/><path d="M12 16.5h.01"/></svg><span><b>שאלה</b><small>כתבו שאלה במילים שלכם</small></span></a></div>
 
 <main style="padding-top:4px">
   <section class="smart" id="smart">
     <div class="smart-card">
-      <h2>שאלה <span class="beta">ניסיוני</span></h2>
       <p class="hint">למשל: ״מה זה מתינות?״, ״מה הסיפור של הילד שרקד ובכה״, ״למה מנגנים לפני התפילה?״. החיפוש לוקח כמה שניות.</p>
       <form class="smart-row" id="smart-form">
         <span class="smart-in">
