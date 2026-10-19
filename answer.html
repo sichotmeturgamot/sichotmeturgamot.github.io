@@ -115,14 +115,14 @@
     .cat-btn:last-child { margin-inline-end: auto; }
   }
   /* שלוש לשוניות החיפוש: מקורות / שאל את ה-AI / מפתחות */
-  .page-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 680px; margin: 18px auto 0; padding: 0 12px; }
-  .ptab { display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; text-decoration: none; border: 2px solid var(--line); background: var(--paper); border-radius: 12px; padding: 10px 6px; color: var(--muted); transition: border-color .15s, background .15s; }
-  .ptab svg { width: 24px; height: 24px; flex: 0 0 auto; color: var(--gold); }
-  .ptab b { display: block; font-family: 'Heebo', sans-serif; font-size: .95rem; color: var(--navy); font-weight: 600; }
-  .ptab small { display: block; font-family: 'Heebo', sans-serif; font-size: .72rem; line-height: 1.3; margin-top: 2px; }
-  .ptab.on { background: var(--navy); border-color: var(--navy); color: #d9cfb8; }
-  .ptab.on b { color: var(--cream); }
-  .ptab:not(.on):hover { border-color: var(--gold); }
+  .page-tabs { display: flex; gap: 4px; max-width: 520px; margin: 18px auto 0; padding: 4px; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; }
+  .ptab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; border-radius: 10px; padding: 9px 4px; color: var(--navy); transition: background .15s, color .15s; }
+  .ptab svg { width: 18px; height: 18px; flex: 0 0 auto; color: var(--gold); }
+  .ptab b { font-family: 'Heebo', sans-serif; font-size: .92rem; font-weight: 500; white-space: nowrap; }
+  .ptab small { display: none; }
+  .ptab.on { background: var(--navy); color: var(--cream); }
+  .ptab:not(.on):hover { background: #efe9db; }
+  @media (max-width: 560px) { .page-tabs { margin: 16px 12px 0; } .ptab b { font-size: .86rem; } .ptab svg { width: 16px; height: 16px; } }
   .tab-sub { max-width: 640px; margin: 12px auto 0; padding: 0 16px; text-align: center; font-family: 'Frank Ruhl Libre', serif; color: var(--muted); font-size: 1.02rem; }
   .smart { margin-top: 14px; }
   .about-ask { max-width: 640px; margin: 34px auto 8px; padding: 0 22px; line-height: 1.7; font-size: .86rem; color: var(--muted); text-align: center; }
@@ -145,6 +145,30 @@
   .smart-res .num { display: inline-block; min-width: 1.6em; text-align: center; background: var(--navy); color: var(--cream); border-radius: 999px; font-size: .75rem; margin-inline-end: 6px; padding: 0 5px; }
   .smart-res.flash { background: #f6ecd2; transition: background .6s; }
   .smart-res .txt.clip { max-height: 7.2em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 60%, transparent); mask-image: linear-gradient(#000 60%, transparent); }
+  /* עיצוב נקי לחיפוש לפי שאלה ול"שאל את ה-AI" */
+  .tab-sub { font-size: .98rem; margin-top: 14px; }
+  .smart { margin-top: 18px; }
+  .smart-card { background: transparent; border: 0; padding: 0; border-radius: 0; }
+  .smart-row { gap: 8px; }
+  .smart-row input { height: 52px; padding: 0 16px; font-size: 1.12rem; border: 1.5px solid var(--line); border-radius: 12px; background: var(--paper); box-shadow: 0 8px 22px -16px rgba(23,35,61,.35); }
+  .smart-in input { padding-inline-end: 42px; }
+  .smart-row button[type=submit] { height: 52px; border-radius: 12px; padding: 0 22px; font-size: 1rem; }
+  .smart-status { text-align: center; margin-top: 14px; font-size: .86rem; }
+  .smart-res { border-top: 1px solid var(--line); margin-top: 0; padding: 16px 2px; }
+  .smart-res:first-of-type { border-top: 0; }
+  .smart-res .src { font-size: .8rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .smart-res .txt { font-size: 1.04rem; line-height: 1.85; }
+  .smart-res .acts { margin-top: 8px; gap: 18px; font-size: .84rem; }
+  .smart-xlink { margin: 18px auto 0; padding: 10px 16px; border: 1px solid var(--line); border-radius: 999px; width: fit-content; font-size: .88rem; background: var(--paper); }
+  .ans-box { background: transparent; border: 0; border-inline-start: 3px solid var(--gold); border-radius: 0; padding: 2px 16px 2px 4px; padding-inline-start: 16px; margin-top: 22px; }
+  .ans-label { font-size: .78rem; color: var(--muted); margin-bottom: 10px; }
+  .ans-text { font-size: 1.1rem; line-height: 1.9; text-align: start; }
+  .ans-text p { margin: 0 0 12px; }
+  .cite { background: #efe6cf; color: var(--navy); font-size: .7rem; font-weight: 600; min-width: 1.5em; vertical-align: 3px; }
+  .cite:hover { background: var(--gold); color: #fff; }
+  .src-head { margin-top: 30px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-size: .82rem; font-weight: 500; color: var(--muted); }
+  .smart-res .num { background: #efe6cf; color: var(--navy); font-weight: 600; margin: 0; }
+  .smart-res.flash { background: #f6ecd2; }
 </style>
 </head>
 <body>
@@ -172,7 +196,6 @@
 <main style="padding-top:4px">
   <section class="smart" id="smart">
     <div class="smart-card">
-      <p class="hint">כתבו שאלה ולחצו ״שאלו״ — ניסוח התשובה לוקח כ-10–20 שניות. דוגמאות לשאלות בהמשך העמוד.</p>
       <form class="smart-row" id="smart-form">
         <span class="smart-in">
           <input id="smart-q" type="text" maxlength="200" placeholder="מה תרצו לדעת?" autocomplete="off" enterkeyhint="search">
@@ -316,7 +339,7 @@
           var snip = r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x;
           var t = el('div','txt',snip); d.appendChild(t);
           var a2 = el('div','acts');
-          if(snip === c.x && c.x.length > 600){
+          if(snip === c.x && c.x.length > 420){
             t.classList.add('clip'); var mo = el('button',null,'הצג עוד'); mo.type='button';
             mo.onclick = function(){ var cl = t.classList.toggle('clip'); mo.textContent = cl ? 'הצג עוד' : 'הצג פחות'; };
             a2.appendChild(mo);
