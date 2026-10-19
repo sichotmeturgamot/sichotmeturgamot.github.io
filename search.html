@@ -61,6 +61,10 @@
   .smart-row input:focus { outline: none; border-color: var(--gold); }
   .smart-row button { border: none; background: var(--navy); color: var(--cream); border-radius: 9px; padding: 0 18px; font-family: 'Heebo', sans-serif; font-size: .95rem; cursor: pointer; }
   .smart-row button:disabled { opacity: .6; cursor: default; }
+  .smart-in { position: relative; flex: 1; min-width: 0; display: flex; }
+  .smart-in input { padding-inline-end: 40px; }
+  .smart-row .smart-clear { position: absolute; inset-inline-end: 6px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; padding: 0; border: none; background: transparent; color: var(--muted); font-size: 1.4rem; line-height: 1; cursor: pointer; display: none; }
+  .smart-row .smart-clear:hover { color: var(--navy); }
   .smart-status { color: var(--muted); font-size: .88rem; margin-top: 10px; min-height: 1.2em; }
   .smart-res { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
   .smart-res .src { font-family: 'Heebo', sans-serif; font-size: .82rem; color: var(--muted); margin-bottom: 4px; }
@@ -151,7 +155,10 @@
       <h2>חיפוש לפי שאלה <span class="beta">חדש · ניסיוני</span></h2>
       <p class="hint">כתבו שאלה במילים שלכם, למשל: ״מה הסיפור של ניגון של ר׳ אשר״ — והחיפוש יציג קטעים מהשיחות שעוסקים בכך, גם אם המילים שונות.</p>
       <form class="smart-row" id="smart-form">
-        <input id="smart-q" type="text" maxlength="200" placeholder="מה תרצו לדעת?" autocomplete="off" enterkeyhint="search">
+        <span class="smart-in">
+          <input id="smart-q" type="text" maxlength="200" placeholder="מה תרצו לדעת?" autocomplete="off" enterkeyhint="search">
+          <button type="button" class="smart-clear" id="smart-clear" aria-label="ניקוי">×</button>
+        </span>
         <button type="submit" id="smart-go">חפשו</button>
       </form>
       <div class="smart-status" id="smart-status" aria-live="polite"></div>
@@ -535,7 +542,10 @@ if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
     });
     return res.slice(0, 2);
   }
-  qi.addEventListener('input', function(){ if(!qi.value.trim()){ out.textContent = ''; st.textContent = ''; } });
+  var sc = document.getElementById('smart-clear');
+  function syncClear(){ sc.style.display = qi.value ? 'block' : 'none'; if(!qi.value.trim()){ out.textContent = ''; st.textContent = ''; } }
+  qi.addEventListener('input', syncClear);
+  sc.addEventListener('click', function(){ qi.value = ''; syncClear(); qi.focus(); });
   form.addEventListener('submit', function(ev){
     ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
     go.disabled = true; st.textContent = 'מחפש…'; out.textContent = '';
