@@ -596,7 +596,7 @@ if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
         var c = r.p != null ? meta.chunks[r.p] : {t:r.title, x:r.text, f:r.file}; if(!c) return;
         var e = info[r.p] || {};
         var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,c.t)); if(e.topic) s.appendChild(document.createTextNode(' · במפתח: ' + e.topic)); d.appendChild(s);
-        var snip = (r.m < 0 && e.snip) || (r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : (e.m >= 0 && meta.smalls[e.m] ? meta.smalls[e.m].x : c.x));
+        var snip = e.snip || (e.m >= 0 && meta.smalls[e.m] ? meta.smalls[e.m].x : (r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x));
         var t = el('div','txt',snip); d.appendChild(t);
         var a = el('div','acts');
         if(snip !== c.x){
