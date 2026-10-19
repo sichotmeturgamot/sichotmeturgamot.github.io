@@ -2,14 +2,14 @@
 // עדכון סדר/פריטי התפריט נעשה כאן, במקום אחד, ומשפיע על כל העמודים.
 (function () {
   var page = (location.pathname.split('/').pop() || 'index.html');
-  if (page === 'ask.html') page = 'search.html';   // עמוד השאלה שייך ללשונית "חיפוש"
+  if (page === 'search.html') page = 'ask.html';   // המפתחות שייכים ללשונית "חיפוש" (ברירת המחדל: שאלה)
 
   // סדר התפריט העליון (שולחני)
   var links = [
     ['index.html',     'ראשי'],
     ['sichos.html',    'קריאת השיחות'],
     ['milon.html',     'מילון'],
-    ['search.html',    'חיפוש'],
+    ['ask.html',       'חיפוש'],
     ['subscribe.html', 'הצטרפות לעדכונים'],
     ['donate.html',    'תרומה'],
     ['about.html',     'אודות'],
@@ -31,7 +31,7 @@
     ['index.html',  'ראשי',   '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'],
     ['sichos.html', 'קריאה',  '<path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/>'],
     ['milon.html',  'מילון',  '<path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/>'],
-    ['search.html', 'חיפוש', '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>']
+    ['ask.html',    'חיפוש', '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>']
   ];
   var bHtml = bItems.map(function (b) {
     return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') +
