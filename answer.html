@@ -169,6 +169,12 @@
   .src-head { margin-top: 30px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-size: .82rem; font-weight: 500; color: var(--muted); }
   .smart-res .num { background: #efe6cf; color: var(--navy); font-weight: 600; margin: 0; }
   .smart-res.flash { background: #f6ecd2; }
+  .think { display: inline-flex; align-items: center; gap: 8px; }
+  .dots { display: inline-flex; gap: 5px; }
+  .dots b { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: dot 1.2s ease-in-out infinite; }
+  .dots b:nth-child(2) { animation-delay: .15s; } .dots b:nth-child(3) { animation-delay: .3s; }
+  @keyframes dot { 0%, 80%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-4px); } }
+  @media (prefers-reduced-motion: reduce) { .dots b { animation-duration: 2.4s; } }
 </style>
 </head>
 <body>
@@ -310,7 +316,12 @@
   }
   form.addEventListener('submit', function(ev){
     ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
-    go.disabled = true; st.textContent = 'ה-AI קורא את הקטעים ומנסח תשובה… (כ-10–20 שניות)'; out.textContent = '';
+    go.disabled = true; out.textContent = '';
+    var STEPS = ['מחפש קטעים בשיחות', 'קורא את הקטעים', 'בוחר את המתאימים', 'מנסח תשובה'], sk = 0;
+    st.innerHTML = '<span class="think"><span id="think-t"></span><span class="dots"><b></b><b></b><b></b></span></span>';
+    var tt = document.getElementById('think-t'); tt.textContent = STEPS[0];
+    var stepTimer = setInterval(function(){ if(sk < STEPS.length - 1){ sk++; tt.textContent = STEPS[sk]; } }, 3500);
+    function stopSteps(){ clearInterval(stepTimer); }
     var meta = null;
     getMeta().catch(function(){ return null; }).then(function(m){
       meta = m; var xs = [];
@@ -322,7 +333,7 @@
       xs = xs.slice(0, 30);
       return fetch(API + '?mode=answer&q=' + encodeURIComponent(q) + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
-      go.disabled = false;
+      go.disabled = false; stopSteps();
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
       if(!meta){ st.textContent = 'לא הצלחתי לטעון את הטקסטים, נסו שוב'; return; }
       st.textContent = '';
@@ -353,7 +364,7 @@
         });
       }
       var xl = el('a','smart-xlink','לחיפוש מקורות מדויקים לשאלה הזו ←'); xl.href = 'ask.html?q=' + encodeURIComponent(q); out.appendChild(xl);
-    }).catch(function(){ go.disabled = false; st.textContent = 'לא הצלחתי להתחבר, נסו שוב בעוד רגע'; });
+    }).catch(function(){ go.disabled = false; stopSteps(); st.textContent = 'לא הצלחתי להתחבר, נסו שוב בעוד רגע'; });
   });
   out.addEventListener('click', function(e){
     var c = e.target.closest('.cite'); if(!c) return; e.preventDefault();
