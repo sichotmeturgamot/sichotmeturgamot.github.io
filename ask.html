@@ -125,6 +125,15 @@
   .ptab:not(.on):hover { border-color: var(--gold); }
   .tab-sub { max-width: 640px; margin: 12px auto 0; padding: 0 16px; text-align: center; font-family: 'Frank Ruhl Libre', serif; color: var(--muted); font-size: 1.02rem; }
   .smart { margin-top: 14px; }
+  .about-ask { max-width: 640px; margin: 34px auto 8px; padding: 0 22px; line-height: 1.7; font-size: .86rem; color: var(--muted); text-align: center; }
+  .about-ask h2 { font-size: .98rem; font-weight: 500; color: var(--muted); margin-bottom: 8px; }
+  .about-ask p { margin-bottom: 8px; }
+  .about-ask b { color: var(--navy); font-weight: 600; }
+  .about-ask a { color: var(--gold); }
+  .about-ask .ex-title { margin: 12px 0 6px; }
+  .ex-list { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 14px; }
+  .ex-list button { font-family: 'Frank Ruhl Libre', serif; font-size: .98rem; background: var(--paper); color: var(--navy); border: 1.5px solid var(--gold); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+  .ex-list button:hover { background: var(--gold-light); color: #fff; }
 </style>
 </head>
 <body>
@@ -152,7 +161,7 @@
 <main style="padding-top:4px">
   <section class="smart" id="smart">
     <div class="smart-card">
-      <p class="hint">למשל: ״מה זה מתינות?״, ״מה הסיפור של הילד שרקד ובכה״, ״למה מנגנים לפני התפילה?״. החיפוש לוקח כמה שניות.</p>
+      <p class="hint">כתבו שאלה ולחצו ״חפשו״ — החיפוש לוקח כמה שניות. דוגמאות לשאלות בהמשך העמוד.</p>
       <form class="smart-row" id="smart-form">
         <span class="smart-in">
           <input id="smart-q" type="text" maxlength="200" placeholder="מה תרצו לדעת?" autocomplete="off" enterkeyhint="search">
@@ -163,6 +172,23 @@
       <div class="smart-status" id="smart-status" aria-live="polite"></div>
       <div id="smart-out"></div>
     </div>
+  </section>
+  <section class="about-ask">
+    <h2>אודות החיפוש</h2>
+    <p>בשיחותיו של כ״ק אדמו״ר הריי״צ שזורים מאות סיפורים, פתגמים, הוראות ורעיונות — אבל לא תמיד זוכרים באיזו שיחה נאמר דבר מסוים, ואיך בדיוק הוא נוסח.</p>
+    <p>חיפוש רגיל מוצא רק את המילה שהקלדתם, בדיוק כפי שהקלדתם אותה. אבל אותו רעיון נאמר בשיחות בהרבה דרכים. למשל, המילה ״מתינות״ מופיעה בכל השיחות פעם אחת בלבד — ואילו העניין עצמו נמצא בכמה מקומות: ״חסידים הולכים לאט־לאט, צעד אחר צעד״, ״עשו את העבודה בלי חיפזון״, ״אצלו היה הכל מדוד ומכוון״. חיפוש לפי מילים היה מחמיץ כמעט את כולם.</p>
+    <p>החיפוש כאן מבוסס AI ומחפש לפי המשמעות של השאלה, לא לפי המילים שבה. כתבו שאלה כמו שהייתם שואלים חבר, וה-AI יקרא את הקטעים הרלוונטיים בשיחות ויבחר את אלה שעונים עליה.</p>
+    <p><b>התוצאות הן ציטוט מדויק מתוך השיחות</b> — לא הסבר או סיכום שכתב ה-AI. ה-AI רק מאתר ובוחר את הקטעים; מה שמוצג לפניכם הוא לשון השיחה עצמה, כפי שתורגמה.</p>
+    <p class="ex-title">דוגמאות לשאלות (לחצו כדי לחפש):</p>
+    <div class="ex-list" id="ex-list">
+      <button type="button">מה זה מתינות?</button>
+      <button type="button">מה הסיפור של הילד שרקד ובכה?</button>
+      <button type="button">למה מנגנים לפני התפילה?</button>
+      <button type="button">מה ההבדל בין מלאך לנשמה?</button>
+      <button type="button">האם אפשר לסמוך על הרבי שיעשה את העבודה במקומי?</button>
+      <button type="button">מה הרבי הרש״ב למד עם בנו כשהיה ילד?</button>
+    </div>
+    <p>החיפוש עדיין בשלבי ניסוי, והוא כולל את השיחות שכבר תורגמו ועלו לאתר. בכל תוצאה אפשר ללחוץ ״לקריאת השיחה״ ולראות את הקטע בהקשר המלא — וכדאי תמיד לעיין במקור. לא מצאתם? נסו לנסח את השאלה אחרת, או חפשו ערך בלשונית <a href="search.html">המפתחות</a>.</p>
   </section>
 </main>
 
@@ -230,6 +256,8 @@
   function syncClear(){ sc.style.display = qi.value ? 'block' : 'none'; if(!qi.value.trim()){ out.textContent = ''; st.textContent = ''; } }
   qi.addEventListener('input', syncClear);
   sc.addEventListener('click', function(){ qi.value = ''; syncClear(); qi.focus(); });
+  var exl = document.getElementById('ex-list');
+  if (exl) exl.addEventListener('click', function(e){ var b = e.target.closest('button'); if(!b) return; qi.value = b.textContent; syncClear(); window.scrollTo({top: 0, behavior: 'smooth'}); form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', {cancelable: true})); });
   form.addEventListener('submit', function(ev){
     ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
     go.disabled = true; st.textContent = 'מחפש…'; out.textContent = '';
