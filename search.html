@@ -126,12 +126,12 @@
     .cat-btn:first-child { margin-inline-start: auto; }
     .cat-btn:last-child { margin-inline-end: auto; }
   }
-  /* שתי לשוניות החיפוש: מפתחות / שאלה */
-  .page-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 640px; margin: 18px auto 0; padding: 0 16px; }
-  .ptab { display: flex; gap: 10px; align-items: center; text-decoration: none; border: 2px solid var(--line); background: var(--paper); border-radius: 12px; padding: 12px 12px; color: var(--muted); transition: border-color .15s, background .15s; }
-  .ptab svg { width: 26px; height: 26px; flex: 0 0 auto; color: var(--gold); }
-  .ptab b { display: block; font-family: 'Heebo', sans-serif; font-size: 1rem; color: var(--navy); font-weight: 600; }
-  .ptab small { display: block; font-family: 'Heebo', sans-serif; font-size: .78rem; line-height: 1.35; margin-top: 2px; }
+  /* שלוש לשוניות החיפוש: מקורות / שאל את ה-AI / מפתחות */
+  .page-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 680px; margin: 18px auto 0; padding: 0 12px; }
+  .ptab { display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; text-decoration: none; border: 2px solid var(--line); background: var(--paper); border-radius: 12px; padding: 10px 6px; color: var(--muted); transition: border-color .15s, background .15s; }
+  .ptab svg { width: 24px; height: 24px; flex: 0 0 auto; color: var(--gold); }
+  .ptab b { display: block; font-family: 'Heebo', sans-serif; font-size: .95rem; color: var(--navy); font-weight: 600; }
+  .ptab small { display: block; font-family: 'Heebo', sans-serif; font-size: .72rem; line-height: 1.3; margin-top: 2px; }
   .ptab.on { background: var(--navy); border-color: var(--navy); color: #d9cfb8; }
   .ptab.on b { color: var(--cream); }
   .ptab:not(.on):hover { border-color: var(--gold); }
@@ -157,7 +157,7 @@
   <div class="bsd">ב״ה</div>
   <h1>חיפוש בשיחות</h1>
 </div>
-<div class="page-tabs"><a href="ask.html" class="ptab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14a2 2 0 012 2v10a2 2 0 01-2 2h-6l-4 3.5V17H5a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M10.3 8.6a1.7 1.7 0 113.1 1c-.5.5-1.4.8-1.4 1.6"/><path d="M12 13.5h.01"/></svg><span><b>שאלה</b><small>חיפוש בשיחות - מבוסס AI</small></span></a><a href="search.html" class="ptab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M10 10h10M4 15h16M10 20h10"/></svg><span><b>מפתחות</b><small>חיפוש ערך, שם או מקום</small></span></a></div>
+<div class="page-tabs"><a href="ask.html" class="ptab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14a2 2 0 012 2v10a2 2 0 01-2 2h-6l-4 3.5V17H5a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M10.3 8.6a1.7 1.7 0 113.1 1c-.5.5-1.4.8-1.4 1.6"/><path d="M12 13.5h.01"/></svg><span><b>חיפוש מקורות</b><small>מקורות מדויקים באמצעות AI</small></span></a><a href="answer.html" class="ptab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18.5 9.5l-4.7 1.9L12 16l-1.8-4.6L5.5 9.5l4.7-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg><span><b>שאל את ה-AI</b><small>תשובה מנוסחת עם מראי מקומות</small></span></a><a href="search.html" class="ptab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M10 10h10M4 15h16M10 20h10"/></svg><span><b>מפתחות</b><small>ערך, שם או מקום</small></span></a></div>
 <p class="tab-sub">מפתח ענינים, שמות, מקומות ומוסדות. הקלידו מילה — ויופיעו הערכים המתאימים.</p>
 
 <main style="padding-top:14px">

@@ -2,7 +2,7 @@
 // עדכון סדר/פריטי התפריט נעשה כאן, במקום אחד, ומשפיע על כל העמודים.
 (function () {
   var page = (location.pathname.split('/').pop() || 'index.html');
-  if (page === 'search.html') page = 'ask.html';   // המפתחות שייכים ללשונית "חיפוש" (ברירת המחדל: שאלה)
+  if (page === 'search.html' || page === 'answer.html') page = 'ask.html';   // המפתחות שייכים ללשונית "חיפוש" (ברירת המחדל: שאלה)
 
   // סדר התפריט העליון (שולחני)
   var links = [
