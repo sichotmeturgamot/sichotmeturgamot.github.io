@@ -1,17 +1,18 @@
-// שרת החיפוש הסמנטי — גרסה 6: חיפוש לפי משמעות + Claude בוחר את הקטעים המתאימים ביותר
+// שרת החיפוש הסמנטי — גרסה 7: חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
 // Claude חושב מעט (effort: low) לפני שהוא בוחר
 // דרוש: Binding מסוג Workers AI בשם AI, וסוד בשם ANTHROPIC_API_KEY
 const SITE = 'https://sichotmeturgamot.com/';
 const ALLOWED = ['https://sichotmeturgamot.com', 'https://www.sichotmeturgamot.com',
                  'https://sichotmeturgamot.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000'];
 const MAX_Q = 200, TOP = 5, CAND = 30, PER_MIN = 12, SCALE = 400;
+const A_CAND = 50, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
 const MODEL = 'claude-haiku-5-5';
 
 let IDX = null, TXT = null;
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=6', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=7', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -38,8 +39,8 @@ function cors(origin) {
 }
 const json = (o, status, h) => new Response(JSON.stringify(o), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', ...h } });
 
-async function claude(env, prompt, maxTokens) {
-  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 25000);
+async function claude(env, prompt, maxTokens, ms) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms || 25000);
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', signal: ctl.signal,
@@ -75,6 +76,44 @@ ${list}
   return [...new Set(nums)].slice(0, TOP).map(n => cands[n - 1]);
 }
 
+
+async function answer(env, q, cands, txt, np, ns) {
+  const list = cands.map((c, k) => {
+    const head = txt(c.p);
+    const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p);
+    return `[${k + 1}] ${head}\n${body}`;
+  }).join('\n\n');
+  const prompt = `להלן קטעים מספר השיחות של כ"ק אדמו"ר הריי"צ (בתרגום ללשון הקודש). לכל קטע: מספר, שם השיחה, תקציר הנושאים, ומובאה מהטקסט.
+
+<קטעים>
+${list}
+</קטעים>
+
+שאלת הלומד: ${q}
+
+כתוב תשובה בעברית לשאלה, על סמך הקטעים בלבד.
+כללים:
+- כל טענה בתשובה חייבת להופיע בקטעים. אל תוסיף ידע מבחוץ, אל תשער ואל תפרש מעבר למה שכתוב.
+- אחרי כל משפט או פרט — ציין בסוגריים מרובעים את מספר הקטע שממנו הוא לקוח, למשל [3] או [3][7].
+- השתמש רק בקטעים שעוסקים ישירות בשאלה (עד ${A_TOP} קטעים). התעלם מקטעים לא רלוונטיים.
+- אם יש כמה היבטים — חלק לפסקאות קצרות, ופתח כל פסקה בכותרת קצרה מודגשת בתבנית **כותרת.**
+- ציטוט קצר מדויק מהקטע — במירכאות ״...״.
+- סגנון: עברית ברורה ומכובדת, בכינויים המקובלים (אדמו״ר הזקן, אדנ״ע וכו').
+- אורך: עד כ-250 מילים. שאלה ממוקדת — תשובה קצרה.
+- אם הקטעים לא עונים על השאלה — כתוב רק: לא נמצאה תשובה לשאלה זו בשיחות שבאתר.
+כתוב רק את התשובה עצמה, בלי הקדמה.`;
+  const out = (await claude(env, prompt, 6000, 55000)).trim();
+  answer.last = out;
+  // מספור מחדש לפי סדר ההופעה
+  const map = new Map(), used = [];
+  const text = out.replace(/\[(\d+)\]/g, (all, d) => {
+    const n = +d; if (n < 1 || n > cands.length) return '';
+    if (!map.has(n)) { map.set(n, used.length + 1); used.push(cands[n - 1]); }
+    return '[' + map.get(n) + ']';
+  });
+  return { text, used };
+}
+
 export default {
   async fetch(req, env, ctx) {
     const origin = req.headers.get('Origin') || '';
@@ -92,14 +131,15 @@ export default {
     const q = (url.searchParams.get('q') || '').trim().slice(0, MAX_Q);
     if (q.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
 
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v6?q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v7?m=' + mode + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = debug ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
 
-    const ip = req.headers.get('CF-Connecting-IP') || 'x', now = Date.now();
+    const ip = (req.headers.get('CF-Connecting-IP') || 'x') + (mode === 'answer' ? '#a' : ''), now = Date.now();
     const arr = (hits.get(ip) || []).filter(t => now - t < 60000);
-    if (arr.length >= PER_MIN) return json({ error: 'יותר מדי חיפושים, נסו שוב בעוד דקה' }, 429, h);
+    if (arr.length >= (mode === 'answer' ? A_PER_MIN : PER_MIN)) return json({ error: 'יותר מדי חיפושים, נסו שוב בעוד דקה' }, 429, h);
     arr.push(now); hits.set(ip, arr);
     if (hits.size > 5000) hits.clear();
 
@@ -120,11 +160,23 @@ export default {
         const p = parent[i], cur = best.get(p);
         if (!cur || s > cur[0]) best.set(p, [s, isSmall ? i - np : -1]);
       }
-      let cands = [...best.entries()].sort((a, b) => b[1][0] - a[1][0]).slice(0, CAND)
+      let cands = [...best.entries()].sort((a, b) => b[1][0] - a[1][0]).slice(0, mode === 'answer' ? A_CAND : CAND)
                     .map(([p, [s, m]]) => ({ p, m, s: +s.toFixed(3) }));
       const xs = (url.searchParams.get('x') || '').split(',').map(Number)          // מועמדים נוספים מהמפתח
-                   .filter(p => Number.isInteger(p) && p >= 0 && p < np).slice(0, 10);
+                   .filter(p => Number.isInteger(p) && p >= 0 && p < np).slice(0, mode === 'answer' ? A_X : 10);
       for (const p of xs) if (!cands.some(c => c.p === p)) { const b = best.get(p); cands.push({ p, m: b ? b[1] : -1, s: b ? +b[0].toFixed(3) : 0 }); }
+      if (mode === 'answer') {
+        if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
+        const txt = await loadTxt();
+        let a;
+        try { a = await answer(env, q, cands, txt, np, N - np); }
+        catch (e) { return json({ error: 'לא הצלחתי לנסח תשובה, נסו שוב בעוד רגע' }, 502, h); }
+        if (debug) return json({ q, raw: answer.last, answer: a.text, results: a.used,
+          cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70)) }, 200, h);
+        const resp = json({ answer: a.text, results: a.used, ranked: true }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
+        ctx.waitUntil(cache.put(ckey, resp.clone()));
+        return resp;
+      }
       let results = cands.slice(0, TOP), ranked = false;
       rerank.last = rerank.err = null;
       if (env.ANTHROPIC_API_KEY) {
