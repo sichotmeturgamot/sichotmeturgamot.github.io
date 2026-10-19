@@ -542,6 +542,31 @@ if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
     });
     return res.slice(0, 2);
   }
+  function mafteachHits(q, meta){
+    if(typeof MAFTEACH === 'undefined') return [];
+    var W = function(t){ return norm(t.replace(/הי['׳](?=[^\u05D0-\u05EA]|$)/g,'היה')).replace(/\s+/g,' ').trim(); };
+    var qw = W(q).split(/[^א-ת]+/).filter(Boolean);
+    function hasWord(w){ return qw.some(function(x){ return x === w || (x.length > w.length && x.length - w.length <= 2 && x.slice(-w.length) === w && /^[והבלמשכ]+$/.test(x.slice(0, x.length - w.length))); }); }
+    var best = null, bestLen = 0;
+    var byTopic = {};
+    MAFTEACH.forEach(function(e){ (byTopic[e.topic] = byTopic[e.topic] || []).push(e); });
+    Object.keys(byTopic).forEach(function(t){
+      var tw = W(t).split(/[^א-ת]+/).filter(Boolean);
+      if(!tw.length || tw.join('').length < 3 || (tw.length === 1 && STOP.indexOf(tw[0]) >= 0) || byTopic[t].length > 8) return;
+      if(tw.every(hasWord) && tw.join(' ').length > bestLen){ best = t; bestLen = tw.join(' ').length; }
+    });
+    if(!best) return [];
+    var cx = meta.cx || (meta.cx = meta.chunks.map(function(c){ return W(c.x); }));
+    var res = [];
+    byTopic[best].forEach(function(e){
+      var k = W(e.a || e.excerpt || '').replace(/^[א-ת]{1,2}\. /,'').slice(0, 30); if(!k) return;
+      var p = -1; for(var i = 0; i < cx.length; i++) if(cx[i].indexOf(k) >= 0){ p = i; break; }
+      if(p < 0) return;
+      var m = -1; meta.smalls.forEach(function(sm, j){ if(m < 0 && sm.p === p && W(sm.x).indexOf(k) >= 0) m = j; });
+      res.push({p:p, m:m, topic:best, snip: (m < 0 && meta.chunks[p].x.length > 450) ? (e.excerpt || '') : null});
+    });
+    return res;
+  }
   var sc = document.getElementById('smart-clear');
   function syncClear(){ sc.style.display = qi.value ? 'block' : 'none'; if(!qi.value.trim()){ out.textContent = ''; st.textContent = ''; } }
   qi.addEventListener('input', syncClear);
@@ -557,13 +582,14 @@ if(!matchMedia('(max-width: 640px)').matches && !q.value) q.focus();
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
       if(!meta){ st.textContent = 'לא הצלחתי לטעון את הטקסטים, נסו שוב'; return; }
       st.textContent = x.j.results.length ? 'נמצאו הקטעים הקרובים ביותר לשאלה:' : 'לא נמצאו תוצאות';
-      var ex = x.j.results.length && x.j.results[0].p != null ? exactHits(q, meta) : [];
+      var v2 = x.j.results.length && x.j.results[0].p != null;
+      var ex = v2 ? mafteachHits(q, meta).slice(0, 4).concat(exactHits(q, meta)) : [];
       x.j.results.forEach(function(r){ if(r.m >= 0 && meta.smalls[r.m]) r.p = meta.smalls[r.m].p; });
-      var seen = {}; var list = ex.concat(x.j.results).filter(function(r){ if(r.p == null) return true; if(seen[r.p]) return false; seen[r.p] = 1; return true; }).slice(0, 6);
+      var seen = {}; var list = ex.concat(x.j.results).filter(function(r){ if(r.p == null) return true; if(seen[r.p]) return false; seen[r.p] = 1; return true; }).slice(0, 8);
       list.forEach(function(r){
         var c = r.p != null ? meta.chunks[r.p] : {t:r.title, x:r.text, f:r.file}; if(!c) return;
-        var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,c.t)); if(r.exact) s.appendChild(document.createTextNode(' · מכיל את המילה שחיפשתם')); d.appendChild(s);
-        var snip = r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x;
+        var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,c.t)); if(r.topic) s.appendChild(document.createTextNode(' · מהמפתח: ' + r.topic)); else if(r.exact) s.appendChild(document.createTextNode(' · מכיל את המילה שחיפשתם')); d.appendChild(s);
+        var snip = r.snip || (r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x);
         var t = el('div','txt',snip); d.appendChild(t);
         var a = el('div','acts');
         if(snip !== c.x){
