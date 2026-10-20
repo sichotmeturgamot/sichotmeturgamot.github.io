@@ -295,7 +295,7 @@
       // קטעים מהמפתח ומילים נדירות — נשלחים לשרת כמועמדים נוספים, ו-Claude מחליט אם הם מתאימים
       if(meta){ var seen0 = {}; ex = mafteachHits(q, meta).concat(exactHits(q, meta)).filter(function(r){ if(seen0[r.p]) return false; seen0[r.p] = 1; return true; }).slice(0, 10); }
       var xs = ex.map(function(r){ return r.p; }).join(',');
-      return fetch(API + '?v=8&q=' + encodeURIComponent(q) + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+      return fetch(API + '?v=9&q=' + encodeURIComponent(q) + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
       go.disabled = false; sin.classList.remove('busy');
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
