@@ -275,7 +275,7 @@
       go = document.getElementById('smart-go'), st = document.getElementById('smart-status'), out = document.getElementById('smart-out');
   function el(t, c, x){ var e=document.createElement(t); if(c) e.className=c; if(x!=null) e.textContent=x; return e; }
   var metaP = null;
-  function getMeta(){ return metaP || (metaP = fetch('search-meta.json').then(function(r){ if(!r.ok) throw 0; return r.json(); }).catch(function(e){ metaP = null; throw e; })); }
+  function getMeta(){ return metaP || (metaP = fetch('search-meta.json?v=9').then(function(r){ if(!r.ok) throw 0; return r.json(); }).catch(function(e){ metaP = null; throw e; })); }
   var STOP = 'מה מהו מהי מהם מהן מדוע למה איך כיצד האם מי של על את עם אל הוא היא הם זה זו זאת עניין ענין הענין העניין אצל כל לא כן גם אם כי אשר יש אין היה היו אמר סיפור הסיפור'.split(' ');
   function norm(t){ return t.replace(/[\u0591-\u05C7]/g,'').replace(/["'״׳]/g,''); }
   function exactHits(q, meta){
@@ -411,7 +411,7 @@
           more.onclick = function(){ open=!open; t.textContent = open ? c.x : c.s; more.textContent = open ? 'הצג רק את הקטע התואם' : 'הצג את כל הסעיף'; };
           a2.appendChild(more);
         }
-        var l = el('a',null,'לקריאת השיחה'); l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t);
+        var l = el('a',null, c.u ? 'לעמוד בספר (HebrewBooks) ↗' : 'לקריאת השיחה'); if(c.u){ l.href = c.u; l.target = '_blank'; l.rel = 'noopener'; } else l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t);
         a2.appendChild(l); d.appendChild(a2); out.appendChild(d);
       });
     }
@@ -523,7 +523,7 @@
       (x.j.results || []).forEach(function(r){
         if(r.m >= 0 && meta.smalls[r.m]) r.p = meta.smalls[r.m].p;
         var c = meta.chunks[r.p]; if(!c) return;
-        srcs.push({t: c.t, f: c.f, s: r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x, x: c.x});
+        srcs.push({t: c.t, f: c.f, u: c.u, s: r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x, x: c.x});
       });
       var rec = {q: q, n: n, answer: x.j.answer || '', srcs: srcs, ts: Date.now()};
       if(rec.answer) putHist(rec);

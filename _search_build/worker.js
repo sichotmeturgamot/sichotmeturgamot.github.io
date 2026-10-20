@@ -1,4 +1,4 @@
-// שרת החיפוש הסמנטי — גרסה 7: חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
+// שרת החיפוש הסמנטי — גרסה 9: חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
 // Claude חושב מעט (effort: low) לפני שהוא בוחר
 // דרוש: Binding מסוג Workers AI בשם AI, וסוד בשם ANTHROPIC_API_KEY
 const SITE = 'https://sichotmeturgamot.com/';
@@ -12,7 +12,7 @@ let IDX = null, TXT = null;
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=7', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=9', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -59,7 +59,7 @@ async function rerank(env, q, cands, txt, np, ns) {
     const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p); // החתיכה שהתאימה, או תחילת הקטע
     return `[${k + 1}] ${head}\n${body}`;
   }).join('\n\n');
-  const prompt = `להלן קטעים מספר השיחות של כ"ק אדמו"ר הריי"צ. לכל קטע: שם השיחה, תקציר הנושאים שלו, ומובאה מהטקסט.
+  const prompt = `להלן קטעים משיחות כ"ק אדמו"ר הריי"צ (ספר השיחות ולקוטי דיבורים). לכל קטע: שם השיחה, תקציר הנושאים שלו, ומובאה מהטקסט.
 
 <קטעים>
 ${list}
@@ -83,7 +83,7 @@ async function answer(env, q, cands, txt, np, ns) {
     const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p);
     return `[${k + 1}] ${head}\n${body}`;
   }).join('\n\n');
-  const prompt = `להלן קטעים מספר השיחות של כ"ק אדמו"ר הריי"צ (בתרגום ללשון הקודש). לכל קטע: מספר, שם השיחה, תקציר הנושאים, ומובאה מהטקסט.
+  const prompt = `להלן קטעים משיחות כ"ק אדמו"ר הריי"צ (ספר השיחות ולקוטי דיבורים, בלשון הקודש). לכל קטע: מספר, שם השיחה, תקציר הנושאים, ומובאה מהטקסט.
 
 <קטעים>
 ${list}
