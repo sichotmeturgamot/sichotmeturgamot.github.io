@@ -175,6 +175,34 @@
   .dots b:nth-child(2) { animation-delay: .15s; } .dots b:nth-child(3) { animation-delay: .3s; }
   @keyframes dot { 0%, 80%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-4px); } }
   @media (prefers-reduced-motion: reduce) { .dots b { animation-duration: 2.4s; } }
+  /* זיכרון שאלות ומשוב */
+  .my-hist { margin-top: 18px; text-align: center; }
+  .my-hist .hist-t { font-family: 'Heebo', sans-serif; font-size: .8rem; color: var(--muted); margin-bottom: 8px; }
+  .my-hist .hist-list { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
+  .my-hist button { font-family: 'Frank Ruhl Libre', serif; font-size: .95rem; background: var(--paper); color: var(--navy); border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .my-hist button:hover { border-color: var(--gold); }
+  .ans-note { margin-top: 18px; font-family: 'Heebo', sans-serif; font-size: .84rem; color: #8a7a52; background: #f6efdc; border-radius: 8px; padding: 8px 12px; text-align: center; }
+  .ans-box.ok { border-inline-start-color: #5b8a5a; }
+  .ans-box.ok .ans-label { color: #4c7a4b; font-weight: 500; }
+  .fb { margin: 6px 0 0; padding-inline-start: 19px; font-family: 'Heebo', sans-serif; }
+  .fb-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .fb-q { font-size: .86rem; color: var(--muted); }
+  .fb-btn { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; width: 44px; height: 36px; font-size: 1.05rem; cursor: pointer; line-height: 1; }
+  .fb-btn:hover { border-color: var(--gold); }
+  .fb-done { font-size: .86rem; color: #4c7a4b; }
+  .fb-form { display: grid; gap: 8px; max-width: 520px; }
+  .fb-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .fb-chip { border: 1px solid var(--line); background: var(--paper); color: var(--navy); border-radius: 999px; padding: 5px 12px; font: .84rem 'Heebo', sans-serif; cursor: pointer; }
+  .fb-chip.on { background: var(--navy); color: var(--cream); border-color: var(--navy); }
+  .fb-ta { width: 100%; font: 1rem 'Frank Ruhl Libre', serif; border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 12px; background: var(--paper); color: var(--text); resize: vertical; }
+  .fb-ta:focus { outline: none; border-color: var(--gold); }
+  .fb-send { justify-self: start; border: none; background: var(--navy); color: var(--cream); border-radius: 10px; padding: 9px 22px; font: .92rem 'Heebo', sans-serif; cursor: pointer; }
+  .fb-send:disabled { opacity: .6; }
+  .fb-err { font-size: .84rem; color: #a5452f; }
+  .adm-bar { margin: 12px 0 0; padding: 10px 12px; border: 1px dashed #b9a46a; border-radius: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-family: 'Heebo', sans-serif; font-size: .86rem; }
+  .adm-bar button { border: none; background: #4c7a4b; color: #fff; border-radius: 8px; padding: 7px 14px; font: inherit; cursor: pointer; }
+  .adm-bar button:disabled { opacity: .6; }
+  .adm-msg { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -314,8 +342,158 @@
       return '<p>' + h + '</p>';
     }).join('');
   }
+  /* ---------- זיכרון שאלות, תשובות מאושרות ומשוב ---------- */
+  var FB_MAIL = 'https://formsubmit.co/ajax/doviber@gmail.com';
+  var HKEY = 'ai-answers-v1';
+  function nq(q){ return norm(q).replace(/[^א-ת0-9a-z ]+/gi,' ').replace(/\s+/g,' ').trim(); }
+  function hist(){ try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch(e){ return []; } }
+  function saveHist(h){ try { localStorage.setItem(HKEY, JSON.stringify(h.slice(0, 25))); } catch(e){} }
+  function findHist(n){ var h = hist(); for(var i = 0; i < h.length; i++) if(h[i].n === n) return h[i]; return null; }
+  function putHist(rec){ var h = hist().filter(function(r){ return r.n !== rec.n; }); h.unshift(rec); saveHist(h); drawHist(); }
+  function setVote(n, v){ var h = hist(); h.forEach(function(r){ if(r.n === n) r.vote = v; }); saveHist(h); }
+  var apprP = null;
+  function getApproved(){ return apprP || (apprP = fetch('ai-approved.json?t=' + Math.floor(Date.now() / 600000)).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; })); }
+  function admin(){ try { var c = JSON.parse(localStorage.getItem('sichos-admin')); return c && c.token ? c : null; } catch(e){ return null; } }
+  function fmtDate(ts){ try { return new Date(ts).toLocaleDateString('he-IL', {day:'numeric', month:'numeric', year:'numeric'}); } catch(e){ return ''; } }
+  function plain(rec){
+    return rec.answer.replace(/\*\*/g,'') + '\n\nמקורות:\n' + rec.srcs.map(function(s, k){ return '[' + (k + 1) + '] ' + s.t; }).join('\n');
+  }
+  function mail(subject, fields){
+    var body = {'_subject': subject, '_template': 'table', '_captcha': 'false'};
+    Object.keys(fields).forEach(function(k){ body[k] = fields[k]; });
+    return fetch(FB_MAIL, {method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify(body)}).then(function(r){ if(!r.ok) throw 0; });
+  }
+  /* היסטוריה אישית — נשמרת רק בדפדפן של הגולש */
+  var hbox = el('div','my-hist'); hbox.id = 'my-hist';
+  out.parentNode.appendChild(hbox);
+  function drawHist(){
+    var h = hist(); hbox.textContent = '';
+    if(!h.length || qi.value.trim()) { hbox.hidden = true; return; }
+    hbox.hidden = false;
+    hbox.appendChild(el('div','hist-t','השאלות הקודמות שלכם'));
+    var w = el('div','hist-list');
+    h.slice(0, 8).forEach(function(r){ var b = el('button', null, r.q); b.type = 'button'; b.onclick = function(){ qi.value = r.q; syncClear(); submit(); }; w.appendChild(b); });
+    hbox.appendChild(w);
+  }
+  function submit(){ form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', {cancelable: true})); }
+  qi.addEventListener('input', drawHist);
+  sc.addEventListener('click', drawHist);
+
+  /* הצגת תשובה (חדשה, מההיסטוריה או מאושרת) */
+  function show(rec, how){
+    out.textContent = ''; st.textContent = ''; hbox.hidden = true;
+    if(how === 'again'){ out.appendChild(el('div','ans-note','כבר שאלתם את השאלה הזו ב-' + fmtDate(rec.ts) + ' — זו התשובה שקיבלתם אז.')); }
+    var box = el('div','ans-box' + (how === 'approved' ? ' ok' : ''));
+    box.appendChild(el('div','ans-label', how === 'approved'
+      ? '✓ תשובה שנבדקה ואושרה — מנוסחת ע״י AI, על סמך המקורות שלמטה.'
+      : '✨ תשובה מנוסחת ע״י AI — על סמך המקורות שלמטה. כדאי לבדוק במקור.'));
+    var at = el('div','ans-text'); at.innerHTML = renderAnswer(rec.answer || ''); box.appendChild(at); out.appendChild(box);
+    out.appendChild(feedback(rec, how));
+    var ad = admin(); if(ad) out.appendChild(adminBar(rec, ad, how === 'approved'));
+    if(rec.srcs.length){
+      out.appendChild(el('div','src-head','המקורות שעליהם מבוססת התשובה (' + rec.srcs.length + '):'));
+      rec.srcs.forEach(function(c, k){
+        var d = el('div','smart-res'); d.id = 'src-' + (k + 1);
+        var s2 = el('div','src'); s2.appendChild(el('span','num', String(k + 1))); s2.appendChild(el('b',null,c.t)); d.appendChild(s2);
+        var t = el('div','txt',c.s); d.appendChild(t);
+        var a2 = el('div','acts');
+        if(c.s === c.x && c.x.length > 420){
+          t.classList.add('clip'); var mo = el('button',null,'הצג עוד'); mo.type='button';
+          mo.onclick = function(){ var cl = t.classList.toggle('clip'); mo.textContent = cl ? 'הצג עוד' : 'הצג פחות'; };
+          a2.appendChild(mo);
+        } else if(c.x && c.s !== c.x){
+          var more = el('button',null,'הצג את כל הסעיף'); more.type='button'; var open=false;
+          more.onclick = function(){ open=!open; t.textContent = open ? c.x : c.s; more.textContent = open ? 'הצג רק את הקטע התואם' : 'הצג את כל הסעיף'; };
+          a2.appendChild(more);
+        }
+        var l = el('a',null,'לקריאת השיחה'); l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t);
+        a2.appendChild(l); d.appendChild(a2); out.appendChild(d);
+      });
+    }
+    var xl = el('a','smart-xlink','לחיפוש מקורות מדויקים לשאלה הזו ←'); xl.href = 'ask.html?q=' + encodeURIComponent(rec.q); out.appendChild(xl);
+  }
+
+  /* משוב: אצבע למעלה / למטה, סיבה והסבר — נשלח במייל לעורך */
+  function feedback(rec, how){
+    var fb = el('div','fb');
+    var h = findHist(rec.n), voted = h && h.vote;
+    if(voted){ fb.appendChild(el('div','fb-done', voted === 'up' ? 'סימנתם שהתשובה עזרה — תודה!' : 'שלחתם משוב על התשובה — תודה!')); return fb; }
+    var row = el('div','fb-row');
+    row.appendChild(el('span','fb-q', how === 'again' ? 'האם התשובה עזרה לכם?' : 'האם התשובה עזרה?'));
+    var up = el('button','fb-btn','👍'), dn = el('button','fb-btn','👎');
+    up.type = dn.type = 'button'; up.setAttribute('aria-label','התשובה עזרה'); dn.setAttribute('aria-label','התשובה לא עזרה');
+    row.appendChild(up); row.appendChild(dn); fb.appendChild(row);
+    var link = location.origin + location.pathname + '?q=' + encodeURIComponent(rec.q);
+    up.onclick = function(){
+      setVote(rec.n, 'up'); fb.textContent = ''; fb.appendChild(el('div','fb-done','תודה! התשובה תיבדק, ואם תאושר — תוצג לכל מי שישאל.'));
+      if(how !== 'approved') mail('👍 תשובת AI טובה — לבדיקה ואישור', {'השאלה': rec.q, 'התשובה': plain(rec), 'לבדיקה ואישור': link}).catch(function(){});
+    };
+    dn.onclick = function(){
+      row.style.display = 'none';
+      var form2 = el('div','fb-form');
+      form2.appendChild(el('div','fb-q','מה לא היה טוב? (אפשר לבחור כמה)'));
+      var chips = el('div','fb-chips'), picked = {};
+      ['לא ענתה על השאלה', 'יש בה טעות / לא נאמנה למקור', 'חסר מקור חשוב', 'ניסוח לא ברור'].forEach(function(t){
+        var c = el('button','fb-chip',t); c.type = 'button';
+        c.onclick = function(){ picked[t] = !picked[t]; c.classList.toggle('on', picked[t]); };
+        chips.appendChild(c);
+      });
+      form2.appendChild(chips);
+      var ta = el('textarea','fb-ta'); ta.rows = 3; ta.maxLength = 1500; ta.placeholder = 'הסבר קצר (לא חובה) — מה חסר, מה שגוי, או איפה זה כתוב בשיחות';
+      form2.appendChild(ta);
+      var send = el('button','fb-send','שליחה'); send.type = 'button'; form2.appendChild(send);
+      var err = el('div','fb-err'); form2.appendChild(err);
+      send.onclick = function(){
+        var rs = Object.keys(picked).filter(function(k){ return picked[k]; });
+        send.disabled = true; send.textContent = 'שולח…'; err.textContent = '';
+        mail('👎 תשובת AI לא טובה', {'השאלה': rec.q, 'מה לא טוב': rs.join(', ') || '(לא צוין)', 'הסבר הגולש': ta.value.trim() || '(אין)', 'התשובה': plain(rec), 'סטטוס': how === 'approved' ? 'שים לב: זו תשובה שכבר אושרה!' : 'תשובה רגילה', 'קישור': link})
+          .then(function(){ setVote(rec.n, 'down'); fb.textContent = ''; fb.appendChild(el('div','fb-done','תודה! המשוב נשלח לעורך האתר.')); })
+          .catch(function(){ send.disabled = false; send.textContent = 'שליחה'; err.textContent = 'השליחה נכשלה, נסו שוב.'; });
+      };
+      fb.appendChild(form2); ta.focus();
+    };
+    return fb;
+  }
+
+  /* לעורך בלבד (מחובר בעמוד הניהול): אישור תשובה לכולם */
+  function adminBar(rec, cfg, isApproved){
+    var bar = el('div','adm-bar');
+    var b = el('button', null, isApproved ? 'בטל את אישור התשובה' : '✓ אשר תשובה זו — תוצג לכל מי שישאל'); b.type = 'button';
+    var msg = el('span','adm-msg');
+    b.onclick = function(){
+      b.disabled = true; msg.textContent = 'שומר…';
+      var url = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + '/contents/ai-approved.json';
+      var H = {'Authorization': 'Bearer ' + cfg.token, 'Accept': 'application/vnd.github+json'};
+      fetch(url + '?ref=' + (cfg.branch || 'main') + '&t=' + Date.now(), {headers: H}).then(function(r){
+        if(r.status === 404) return {sha: null, data: {}};
+        if(!r.ok) throw new Error(r.status);
+        return r.json().then(function(j){ return {sha: j.sha, data: JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))))) }; });
+      }).then(function(f){
+        if(isApproved) delete f.data[rec.n];
+        else f.data[rec.n] = {q: rec.q, answer: rec.answer, srcs: rec.srcs, ts: Date.now()};
+        var body = {message: (isApproved ? 'ביטול אישור: ' : 'אישור תשובת AI: ') + rec.q, content: btoa(unescape(encodeURIComponent(JSON.stringify(f.data, null, 1)))), branch: cfg.branch || 'main'};
+        if(f.sha) body.sha = f.sha;
+        return fetch(url, {method: 'PUT', headers: H, body: JSON.stringify(body)});
+      }).then(function(r){
+        if(!r.ok) throw new Error(r.status);
+        msg.textContent = isApproved ? 'האישור בוטל. (מתעדכן באתר תוך כדקה)' : 'אושר! תוצג לכולם תוך כדקה.';
+      }).catch(function(e){ b.disabled = false; msg.textContent = 'נכשל (' + (e && e.message) + ')'; });
+    };
+    bar.appendChild(b); bar.appendChild(msg); return bar;
+  }
+
   form.addEventListener('submit', function(ev){
     ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
+    var n = nq(q);
+    out.textContent = ''; hbox.hidden = true;
+    getApproved().then(function(appr){
+      if(appr[n]){ var a = appr[n]; show({q: q, n: n, answer: a.answer, srcs: a.srcs, ts: a.ts}, 'approved'); return; }
+      var h = findHist(n);
+      if(h){ show(h, 'again'); return; }
+      ask(q, n);
+    });
+  });
+  function ask(q, n){
     go.disabled = true; out.textContent = '';
     var STEPS = ['מחפש קטעים בשיחות', 'קורא את הקטעים', 'בוחר את המתאימים', 'מנסח תשובה'], sk = 0;
     st.innerHTML = '<span class="think"><span id="think-t"></span><span class="dots"><b></b><b></b><b></b></span></span>';
@@ -336,36 +514,18 @@
       go.disabled = false; stopSteps();
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
       if(!meta){ st.textContent = 'לא הצלחתי לטעון את הטקסטים, נסו שוב'; return; }
-      st.textContent = '';
-      var box = el('div','ans-box'); box.appendChild(el('div','ans-label','✨ תשובה מנוסחת ע״י AI — על סמך המקורות שלמטה. כדאי לבדוק במקור.'));
-      var at = el('div','ans-text'); at.innerHTML = renderAnswer(x.j.answer || ''); box.appendChild(at); out.appendChild(box);
-      var res = x.j.results || [];
-      res.forEach(function(r){ if(r.m >= 0 && meta.smalls[r.m]) r.p = meta.smalls[r.m].p; });
-      if(res.length){
-        out.appendChild(el('div','src-head','המקורות שעליהם מבוססת התשובה (' + res.length + '):'));
-        res.forEach(function(r, k){
-          var c = meta.chunks[r.p]; if(!c) return;
-          var d = el('div','smart-res'); d.id = 'src-' + (k + 1);
-          var s2 = el('div','src'); s2.appendChild(el('span','num', String(k + 1))); s2.appendChild(el('b',null,c.t)); d.appendChild(s2);
-          var snip = r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x;
-          var t = el('div','txt',snip); d.appendChild(t);
-          var a2 = el('div','acts');
-          if(snip === c.x && c.x.length > 420){
-            t.classList.add('clip'); var mo = el('button',null,'הצג עוד'); mo.type='button';
-            mo.onclick = function(){ var cl = t.classList.toggle('clip'); mo.textContent = cl ? 'הצג עוד' : 'הצג פחות'; };
-            a2.appendChild(mo);
-          } else if(snip !== c.x){
-            var more = el('button',null,'הצג את כל הסעיף'); more.type='button'; var open=false;
-            more.onclick = function(){ open=!open; t.textContent = open ? c.x : snip; more.textContent = open ? 'הצג רק את הקטע התואם' : 'הצג את כל הסעיף'; };
-            a2.appendChild(more);
-          }
-          var l = el('a',null,'לקריאת השיחה'); l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t);
-          a2.appendChild(l); d.appendChild(a2); out.appendChild(d);
-        });
-      }
-      var xl = el('a','smart-xlink','לחיפוש מקורות מדויקים לשאלה הזו ←'); xl.href = 'ask.html?q=' + encodeURIComponent(q); out.appendChild(xl);
+      var srcs = [];
+      (x.j.results || []).forEach(function(r){
+        if(r.m >= 0 && meta.smalls[r.m]) r.p = meta.smalls[r.m].p;
+        var c = meta.chunks[r.p]; if(!c) return;
+        srcs.push({t: c.t, f: c.f, s: r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x, x: c.x});
+      });
+      var rec = {q: q, n: n, answer: x.j.answer || '', srcs: srcs, ts: Date.now()};
+      if(rec.answer) putHist(rec);
+      show(rec, 'new');
     }).catch(function(){ go.disabled = false; stopSteps(); st.textContent = 'לא הצלחתי להתחבר, נסו שוב בעוד רגע'; });
-  });
+  }
+  drawHist();
   out.addEventListener('click', function(e){
     var c = e.target.closest('.cite'); if(!c) return; e.preventDefault();
     var d = document.getElementById('src-' + c.getAttribute('data-n')); if(!d) return;
