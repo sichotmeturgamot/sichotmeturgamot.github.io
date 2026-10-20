@@ -12,7 +12,7 @@ let IDX = null, TXT = null;
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=13', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=14', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -162,12 +162,18 @@ export default {
       n = (Math.sqrt(n) || 1) * SCALE;
       const { N, dim, np, delta, parent, vec } = idx;
       const qf = new Float32Array(dim); for (let k = 0; k < dim; k++) qf[k] = qv[k] / n;   // מהיר יותר (מערך מספרים + פריסת לולאה)
-      const bs = new Float32Array(np).fill(-1e9), bm = new Int32Array(np).fill(-1);
-      for (let i = 0; i < N; i++) {
-        let s0 = 0, s1 = 0, s2 = 0, s3 = 0, o = i * dim;
+      // שלב 1: ניקוד כל הקטעים; שלב 2: חתיכות קטנות רק של 300 הקטעים המובילים (חוסך כמחצית מהחישוב, בלי שינוי בתוצאות בבדיקה)
+      const dot = (i) => { let s0 = 0, s1 = 0, s2 = 0, s3 = 0, o = i * dim;
         for (let k = 0; k < dim; k += 4, o += 4) { s0 += vec[o] * qf[k]; s1 += vec[o + 1] * qf[k + 1]; s2 += vec[o + 2] * qf[k + 2]; s3 += vec[o + 3] * qf[k + 3]; }
-        const isSmall = i >= np, s = s0 + s1 + s2 + s3 - (isSmall ? delta : 0), p = parent[i];
-        if (s > bs[p]) { bs[p] = s; bm[p] = isSmall ? i - np : -1; }
+        return s0 + s1 + s2 + s3; };
+      const bs = new Float32Array(np), bm = new Int32Array(np).fill(-1);
+      for (let p = 0; p < np; p++) bs[p] = dot(p);
+      const thr = Float32Array.from(bs).sort()[Math.max(0, np - 300)];
+      const top = new Uint8Array(np); for (let p = 0; p < np; p++) if (bs[p] >= thr) top[p] = 1;
+      for (let i = np; i < N; i++) {
+        const p = parent[i]; if (!top[p]) continue;
+        const s = dot(i) - delta;
+        if (s > bs[p]) { bs[p] = s; bm[p] = i - np; }
       }
       const best = new Map(); for (let p = 0; p < np; p++) best.set(p, [bs[p], bm[p]]);
       let cands = [...best.entries()].sort((a, b) => b[1][0] - a[1][0]).slice(0, mode === 'answer' ? A_CAND : CAND)
