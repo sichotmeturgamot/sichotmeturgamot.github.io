@@ -407,8 +407,8 @@
           more.onclick = function(){ open=!open; t.textContent = open ? c.x : c.s; more.textContent = open ? 'הצג רק את הקטע התואם' : 'הצג את כל הסעיף'; };
           a2.appendChild(more);
         }
-        var l = el('a',null, c.u ? 'לעמוד בספר (HebrewBooks) ↗' : 'לקריאת השיחה'); if(c.u){ l.href = c.u; l.target = '_blank'; l.rel = 'noopener'; } else l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t);
-        a2.appendChild(l); d.appendChild(a2); out.appendChild(d);
+        var l = el('a',null, c.u ? 'לעמוד בספר (HebrewBooks) ↗' : 'לקריאת השיחה'); if(c.u){ l.href = c.u; l.target = '_blank'; l.rel = 'noopener'; } else if(c.f) l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t); else l = null;
+        if(l) a2.appendChild(l); d.appendChild(a2); out.appendChild(d);
       });
     }
     var xl = el('a','smart-xlink','לחיפוש מקורות מדויקים לשאלה הזו ←'); xl.href = 'ask.html?q=' + encodeURIComponent(rec.q); out.appendChild(xl);
