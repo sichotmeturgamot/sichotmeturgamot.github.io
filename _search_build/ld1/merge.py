@@ -35,11 +35,10 @@ parent = np.array(list(range(np_)) + [s['p'] for s in S], dtype=np.uint16)
 N = len(V)
 with open(OUT + 'search-vectors.bin', 'wb') as f:
     f.write(struct.pack('<IIII', N, dim, np_, d1000)); f.write(parent.tobytes()); f.write(V.tobytes())
-strs = [c['t'] + ' | ' + D[i] for i, c in enumerate(C)] + [s['x'] for s in S] + [c['x'][:700] for c in C]
-bs = [s.encode() for s in strs]; offs = [0]
-for b in bs: offs.append(offs[-1] + len(b))
-with open(OUT + 'search-texts.bin', 'wb') as f:
-    f.write(struct.pack('<I', len(bs))); f.write(struct.pack('<%dI' % len(offs), *offs)); f.write(b''.join(bs))
 json.dump({'chunks': C, 'smalls': S}, open(OUT + 'search-meta.json', 'w'), ensure_ascii=False, separators=(',', ':'))
 json.dump(D, open(OUT + '_search_build/descs.json', 'w'), ensure_ascii=False, indent=0)
+import subprocess
+if OUT == R:
+    subprocess.run(['python3', R + '_search_build/build_texts.py'], check=True)
+    subprocess.run(['node', R + '_search_build/build_kw.mjs'], cwd=R, check=True)
 print('parents', np_, 'smalls', len(S), 'N', N)

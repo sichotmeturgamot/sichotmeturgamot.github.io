@@ -14,3 +14,10 @@
 - 564 קטעים (מזהה `LD1#n`), לכל קטע שדה `u` — קישור לעמוד ב-HebrewBooks (במקום `f`).
 - תיאורים: `ld1/descs_ld1.json`; מיזוג לאינדקס: `ld1/merge.py` (וקטורים ישנים נלקחים מהקובץ הקיים).
 - שרת גרסה 9: CAND=45, A_CAND=60, לולאת ניקוד מהירה (Float32Array) — 2,984 וקטורים.
+
+## שינוי מבנה (גרסה 10)
+- הדפדפן כבר לא מוריד את search-meta.json. במקומו: `search-kw.json` (אינדקס מילים + מיפוי ערכי המפתח לקטעים), נבנה ע"י `build_kw.mjs`.
+- השרת מחזיר עם כל תוצאה את הטקסט לתצוגה (t, f, u, s, x). `search-texts.bin` נבנה ע"י `build_texts.py`:
+  [0,np) "שם | תיאור" · [np,np+ns) חתיכות · [np+ns,2np+ns) טקסט מלא · [2np+ns,3np+ns) "f\tu\tt".
+- אחרי כל שינוי ב-search-meta.json / descs.json: `python3 _search_build/build_texts.py && node _search_build/build_kw.mjs`.
+- מועמדים נוספים מהדפדפן: x=p או x=p:m (חתיכה מסוימת).
