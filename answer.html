@@ -182,6 +182,7 @@
   .my-hist button { font-family: 'Frank Ruhl Libre', serif; font-size: .95rem; background: var(--paper); color: var(--navy); border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; cursor: pointer; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .my-hist button:hover { border-color: var(--gold); }
   .ans-note { margin-top: 18px; font-family: 'Heebo', sans-serif; font-size: .84rem; color: #8a7a52; background: #f6efdc; border-radius: 8px; padding: 8px 12px; text-align: center; }
+  .ans-re { background: none; border: none; padding: 0; color: var(--gold); text-decoration: underline; font: inherit; cursor: pointer; }
   .ans-box.ok { border-inline-start-color: #5b8a5a; }
   .ans-box.ok .ans-label { color: #4c7a4b; font-weight: 500; }
   .fb { margin: 6px 0 0; padding-inline-start: 19px; font-family: 'Heebo', sans-serif; }
@@ -382,7 +383,11 @@
   /* הצגת תשובה (חדשה, מההיסטוריה או מאושרת) */
   function show(rec, how){
     out.textContent = ''; st.textContent = ''; hbox.hidden = true;
-    if(how === 'again'){ out.appendChild(el('div','ans-note','כבר שאלתם את השאלה הזו ב-' + fmtDate(rec.ts) + ' — זו התשובה שקיבלתם אז.')); }
+    if(how === 'again'){
+      var note = el('div','ans-note','כבר שאלתם את השאלה הזו ב-' + fmtDate(rec.ts) + ' — זו התשובה שקיבלתם אז. ');
+      var re = el('button','ans-re','לניסוח מחדש'); re.type = 'button'; re.onclick = function(){ ask(rec.q, rec.n); };
+      note.appendChild(re); out.appendChild(note);
+    }
     var box = el('div','ans-box' + (how === 'approved' ? ' ok' : ''));
     box.appendChild(el('div','ans-label', how === 'approved'
       ? '✓ תשובה שנבדקה ואושרה — מנוסחת ע״י AI, על סמך המקורות שלמטה.'
