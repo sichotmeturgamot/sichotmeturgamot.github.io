@@ -4,8 +4,8 @@
 const SITE = 'https://sichotmeturgamot.com/';
 const ALLOWED = ['https://sichotmeturgamot.com', 'https://www.sichotmeturgamot.com',
                  'https://sichotmeturgamot.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000'];
-const MAX_Q = 200, TOP = 5, CAND = 30, PER_MIN = 12, SCALE = 400;
-const A_CAND = 50, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
+const MAX_Q = 200, TOP = 5, CAND = 45, PER_MIN = 12, SCALE = 400;
+const A_CAND = 60, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
 const MODEL = 'claude-haiku-5-5';
 
 let IDX = null, TXT = null;
@@ -161,16 +161,15 @@ export default {
       let n = 0; for (let i = 0; i < qv.length; i++) n += qv[i] * qv[i];
       n = (Math.sqrt(n) || 1) * SCALE;
       const { N, dim, np, delta, parent, vec } = idx;
-      const best = new Map();
+      const qf = new Float32Array(dim); for (let k = 0; k < dim; k++) qf[k] = qv[k] / n;   // מהיר יותר (מערך מספרים + פריסת לולאה)
+      const bs = new Float32Array(np).fill(-1e9), bm = new Int32Array(np).fill(-1);
       for (let i = 0; i < N; i++) {
-        let s = 0; const o = i * dim;
-        for (let k = 0; k < dim; k++) s += vec[o + k] * qv[k];
-        s /= n;
-        const isSmall = i >= np;
-        if (isSmall) s -= delta;
-        const p = parent[i], cur = best.get(p);
-        if (!cur || s > cur[0]) best.set(p, [s, isSmall ? i - np : -1]);
+        let s0 = 0, s1 = 0, s2 = 0, s3 = 0, o = i * dim;
+        for (let k = 0; k < dim; k += 4, o += 4) { s0 += vec[o] * qf[k]; s1 += vec[o + 1] * qf[k + 1]; s2 += vec[o + 2] * qf[k + 2]; s3 += vec[o + 3] * qf[k + 3]; }
+        const isSmall = i >= np, s = s0 + s1 + s2 + s3 - (isSmall ? delta : 0), p = parent[i];
+        if (s > bs[p]) { bs[p] = s; bm[p] = isSmall ? i - np : -1; }
       }
+      const best = new Map(); for (let p = 0; p < np; p++) best.set(p, [bs[p], bm[p]]);
       let cands = [...best.entries()].sort((a, b) => b[1][0] - a[1][0]).slice(0, mode === 'answer' ? A_CAND : CAND)
                     .map(([p, [s, m]]) => ({ p, m, s: +s.toFixed(3) }));
       const xs = (url.searchParams.get('x') || '').split(',').map(Number)          // מועמדים נוספים מהמפתח
