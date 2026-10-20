@@ -1,4 +1,4 @@
-// שרת החיפוש הסמנטי — גרסה 9: חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
+// שרת החיפוש הסמנטי — גרסה 10 (הטקסט לתצוגה נשלח מהשרת): חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
 // Claude חושב מעט (effort: low) לפני שהוא בוחר
 // דרוש: Binding מסוג Workers AI בשם AI, וסוד בשם ANTHROPIC_API_KEY
 const SITE = 'https://sichotmeturgamot.com/';
@@ -12,7 +12,7 @@ let IDX = null, TXT = null;
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=9', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=10', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -56,7 +56,7 @@ async function claude(env, prompt, maxTokens, ms) {
 async function rerank(env, q, cands, txt, np, ns) {
   const list = cands.map((c, k) => {
     const head = txt(c.p);                                  // "שם השיחה | תיאור"
-    const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p); // החתיכה שהתאימה, או תחילת הקטע
+    const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p).slice(0, 700); // החתיכה שהתאימה, או תחילת הקטע
     return `[${k + 1}] ${head}\n${body}`;
   }).join('\n\n');
   const prompt = `להלן קטעים משיחות כ"ק אדמו"ר הריי"צ (ספר השיחות ולקוטי דיבורים). לכל קטע: שם השיחה, תקציר הנושאים שלו, ומובאה מהטקסט.
@@ -80,7 +80,7 @@ ${list}
 async function answer(env, q, cands, txt, np, ns) {
   const list = cands.map((c, k) => {
     const head = txt(c.p);
-    const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p);
+    const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p).slice(0, 700);
     return `[${k + 1}] ${head}\n${body}`;
   }).join('\n\n');
   const prompt = `להלן קטעים משיחות כ"ק אדמו"ר הריי"צ (ספר השיחות ולקוטי דיבורים, בלשון הקודש). לכל קטע: מספר, שם השיחה, תקציר הנושאים, ומובאה מהטקסט.
@@ -172,22 +172,34 @@ export default {
       const best = new Map(); for (let p = 0; p < np; p++) best.set(p, [bs[p], bm[p]]);
       let cands = [...best.entries()].sort((a, b) => b[1][0] - a[1][0]).slice(0, mode === 'answer' ? A_CAND : CAND)
                     .map(([p, [s, m]]) => ({ p, m, s: +s.toFixed(3) }));
-      const xs = (url.searchParams.get('x') || '').split(',').map(Number)          // מועמדים נוספים מהמפתח
-                   .filter(p => Number.isInteger(p) && p >= 0 && p < np).slice(0, mode === 'answer' ? A_X : 10);
-      for (const p of xs) if (!cands.some(c => c.p === p)) { const b = best.get(p); cands.push({ p, m: b ? b[1] : -1, s: b ? +b[0].toFixed(3) : 0 }); }
+      const ns = N - np;
+      const xs = (url.searchParams.get('x') || '').split(',').map(v => v.split(':').map(Number))   // מועמדים נוספים מהדפדפן: "קטע" או "קטע:חתיכה"
+                   .filter(([p]) => Number.isInteger(p) && p >= 0 && p < np).slice(0, mode === 'answer' ? A_X : 10);
+      for (const [p, xm] of xs) {
+        const okm = Number.isInteger(xm) && xm >= 0 && xm < ns && parent[np + xm] === p ? xm : null;
+        const c = cands.find(c => c.p === p);
+        if (c) { if (okm !== null) c.m = okm; continue; }
+        const b = best.get(p); cands.push({ p, m: okm !== null ? okm : (b ? b[1] : -1), s: b ? +b[0].toFixed(3) : 0 });
+      }
+      // הטקסט לתצוגה נשלח מהשרת — הדפדפן לא צריך להוריד את כל הטקסטים
+      const full = (txt, r) => { const [f, u, t] = txt(2 * np + ns + r.p).split('\t'); const x = txt(np + ns + r.p);
+        return { p: r.p, m: r.m, t, f, u, x, s: r.m >= 0 ? txt(np + r.m) : x }; };
       if (mode === 'answer') {
         if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
         const txt = await loadTxt();
         let a;
         try { a = await answer(env, q, cands, txt, np, N - np); }
         catch (e) { return json({ error: 'לא הצלחתי לנסח תשובה, נסו שוב בעוד רגע' }, 502, h); }
-        if (debug) return json({ q, raw: answer.last, answer: a.text, results: a.used,
+        if (debug) return json({ q, raw: answer.last, answer: a.text, results: a.used.map(r => full(txt, r)),
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70)) }, 200, h);
-        const resp = json({ answer: a.text, results: a.used, ranked: true }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
+        const resp = json({ answer: a.text, results: a.used.map(r => full(txt, r)), ranked: true }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
         ctx.waitUntil(cache.put(ckey, resp.clone()));
         return resp;
       }
-      let results = cands.slice(0, TOP), ranked = false;
+      // בלי Claude: קודם עד 4 מועמדים מהדפדפן (מפתח/מילים נדירות), ואחריהם הקרובים ביותר לפי משמעות
+      const xset = new Set(xs.map(([p]) => p));
+      let results = [...cands.filter(c => xset.has(c.p)).slice(0, 4), ...cands.slice(0, TOP)]
+                      .filter((c, i, a) => a.findIndex(d => d.p === c.p) === i).slice(0, 8), ranked = false;
       rerank.last = rerank.err = null;
       if (env.ANTHROPIC_API_KEY) {
         try {
@@ -202,10 +214,12 @@ export default {
         return json({ q, ranked, claude: rerank.last || null, err: rerank.err || null, results,
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70) + ' (' + c.s + ')') }, 200, h);
       }
+      const txt2 = await loadTxt(); results = results.map(r => full(txt2, r));
       const resp = json({ results, ranked }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
       ctx.waitUntil(cache.put(ckey, resp.clone()));
       return resp;
     } catch (e) {
+      console.error('search error', e && (e.stack || e));
       return json({ error: 'שגיאת חיפוש, נסו שוב' }, 500, h);
     }
   }

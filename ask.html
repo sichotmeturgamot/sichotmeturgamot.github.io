@@ -236,46 +236,43 @@
   var form = document.getElementById('smart-form'), qi = document.getElementById('smart-q'),
       go = document.getElementById('smart-go'), st = document.getElementById('smart-status'), out = document.getElementById('smart-out');
   function el(t, c, x){ var e=document.createElement(t); if(c) e.className=c; if(x!=null) e.textContent=x; return e; }
-  var metaP = null;
-  function getMeta(){ return metaP || (metaP = fetch('search-meta.json?v=9').then(function(r){ if(!r.ok) throw 0; return r.json(); }).catch(function(e){ metaP = null; throw e; })); }
+  var kwP = null;   // אינדקס מילים קטן (במקום כל הטקסט): מילה → קטעים, ומיפוי ערכי המפתח לקטעים
+  function getKw(){ return kwP || (kwP = fetch('search-kw.json?v=10').then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(k){ k.words = Object.keys(k.v); return k; }).catch(function(e){ kwP = null; throw e; })); }
+  function hitsFor(forms, kw){   // כל הקטעים שמכילים אחת הצורות (כמו חיפוש בטקסט המלא)
+    var seen = {}, out = [];
+    kw.words.forEach(function(w){ if(forms.some(function(f){ return w.indexOf(f) >= 0; })) kw.v[w].forEach(function(p){ if(!seen[p]){ seen[p] = 1; out.push(p); } }); });
+    return out.sort(function(a, b){ return a - b; });
+  }
   var STOP = 'מה מהו מהי מהם מהן מדוע למה איך כיצד האם מי של על את עם אל הוא היא הם זה זו זאת עניין ענין הענין העניין אצל כל לא כן גם אם כי אשר יש אין היה היו אמר סיפור הסיפור'.split(' ');
   function norm(t){ return t.replace(/[\u0591-\u05C7]/g,'').replace(/["'״׳]/g,''); }
-  function exactHits(q, meta){
-    var words = norm(q).split(/[^\u05D0-\u05EA]+/).filter(function(w){ return w.length >= 3 && STOP.indexOf(w) < 0; });
+  function exactHits(q, kw){
+    var words = norm(q).split(/[^א-ת]+/).filter(function(w){ return w.length >= 3 && STOP.indexOf(w) < 0; });
     var res = [];
     words.forEach(function(w){
       var forms = [w]; if(w.length >= 5 && 'והבלמשכ'.indexOf(w[0]) >= 0) forms.push(w.slice(1));
-      var ps = [];
-      meta.chunks.forEach(function(c, i){ var t = c.nx || (c.nx = norm(c.x)); if(forms.some(function(f){ return t.indexOf(f) >= 0; })) ps.push(i); });
-      if(ps.length && ps.length <= 3) ps.forEach(function(p){
-        var m = -1; meta.smalls.forEach(function(sm, j){ if(m < 0 && sm.p === p && forms.some(function(f){ return norm(sm.x).indexOf(f) >= 0; })) m = j; });
-        res.push({p:p, m:m, exact:true});
-      });
+      var ps = hitsFor(forms, kw);
+      if(ps.length && ps.length <= 3) ps.forEach(function(p){ res.push({p:p, m:-1, exact:true}); });
     });
     return res.slice(0, 2);
   }
-  function mafteachHits(q, meta){
-    if(typeof MAFTEACH === 'undefined') return [];
-    var W = function(t){ return norm(t.replace(/הי['׳](?=[^\u05D0-\u05EA]|$)/g,'היה')).replace(/\s+/g,' ').trim(); };
+  function mafteachHits(q, kw){
+    if(typeof MAFTEACH === 'undefined' || !kw.mf) return [];
+    var W = function(t){ return norm(t.replace(/הי['׳](?=[^א-ת]|$)/g,'היה')).replace(/\s+/g,' ').trim(); };
     var qw = W(q).split(/[^א-ת]+/).filter(Boolean);
     function hasWord(w){ return qw.some(function(x){ return x === w || (x.length > w.length && x.length - w.length <= 2 && x.slice(-w.length) === w && /^[והבלמשכ]+$/.test(x.slice(0, x.length - w.length))); }); }
     var best = null, bestLen = 0;
     var byTopic = {};
-    MAFTEACH.forEach(function(e){ (byTopic[e.topic] = byTopic[e.topic] || []).push(e); });
+    MAFTEACH.forEach(function(e, i){ (byTopic[e.topic] = byTopic[e.topic] || []).push(i); });
     Object.keys(byTopic).forEach(function(t){
       var tw = W(t).split(/[^א-ת]+/).filter(Boolean);
       if(!tw.length || tw.join('').length < 3 || (tw.length === 1 && STOP.indexOf(tw[0]) >= 0) || byTopic[t].length > 15) return;
       if(tw.every(hasWord) && tw.join(' ').length > bestLen){ best = t; bestLen = tw.join(' ').length; }
     });
     if(!best) return [];
-    var cx = meta.cx || (meta.cx = meta.chunks.map(function(c){ return W(c.x); }));
     var res = [];
-    byTopic[best].forEach(function(e){
-      var k = W(e.a || e.excerpt || '').replace(/^[א-ת]{1,2}\. /,'').slice(0, 30); if(!k) return;
-      var p = -1; for(var i = 0; i < cx.length; i++) if(cx[i].indexOf(k) >= 0){ p = i; break; }
-      if(p < 0) return;
-      var m = -1; meta.smalls.forEach(function(sm, j){ if(m < 0 && sm.p === p && W(sm.x).indexOf(k) >= 0) m = j; });
-      res.push({p:p, m:m, topic:best, snip: (m < 0 && meta.chunks[p].x.length > 450) ? (e.excerpt || '') : null});
+    byTopic[best].forEach(function(i){
+      var mp = kw.mf[i], e = MAFTEACH[i]; if(!mp) return;
+      res.push({p:mp[0], m:mp[1], topic:best, snip: (mp[1] < 0 && mp[2]) ? (e.excerpt || '') : null});
     });
     return res;
   }
@@ -289,29 +286,22 @@
     ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
     var sin = qi.parentNode; sin.classList.add('busy');
     go.disabled = true; st.textContent = 'מחפש…'; out.textContent = '';
-    var meta = null, ex = [];
-    getMeta().catch(function(){ return null; }).then(function(m){
-      meta = m;
+    var ex = [];
+    getKw().catch(function(){ return null; }).then(function(kw){
       // קטעים מהמפתח ומילים נדירות — נשלחים לשרת כמועמדים נוספים, ו-Claude מחליט אם הם מתאימים
-      if(meta){ var seen0 = {}; ex = mafteachHits(q, meta).concat(exactHits(q, meta)).filter(function(r){ if(seen0[r.p]) return false; seen0[r.p] = 1; return true; }).slice(0, 10); }
-      var xs = ex.map(function(r){ return r.p; }).join(',');
-      return fetch(API + '?v=9&q=' + encodeURIComponent(q) + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+      if(kw){ var seen0 = {}; ex = mafteachHits(q, kw).concat(exactHits(q, kw)).filter(function(r){ if(seen0[r.p]) return false; seen0[r.p] = 1; return true; }).slice(0, 10); }
+      var xs = ex.map(function(r){ return r.m >= 0 ? r.p + ':' + r.m : r.p; }).join(',');
+      return fetch(API + '?v=10&q=' + encodeURIComponent(q) + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
       go.disabled = false; sin.classList.remove('busy');
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
-      if(!meta){ st.textContent = 'לא הצלחתי לטעון את הטקסטים, נסו שוב'; return; }
       var info = {}; ex.forEach(function(r){ info[r.p] = r; });
-      x.j.results.forEach(function(r){ if(r.m >= 0 && meta.smalls[r.m]) r.p = meta.smalls[r.m].p; });
-      var list;
-      if(x.j.ranked){ list = x.j.results; }                       // Claude בחר — מציגים רק את מה שהוא בחר
-      else { list = ex.slice(0, 4).concat(x.j.results); }          // בלי Claude — כמו קודם
-      var seen = {}; list = list.filter(function(r){ if(r.p == null) return true; if(seen[r.p]) return false; seen[r.p] = 1; return true; }).slice(0, 8);
+      var list = (x.j.results || []).filter(function(r){ return r && r.x; });   // השרת שולח גם את הטקסט
       st.textContent = list.length ? 'נמצאו הקטעים הקרובים ביותר לשאלה:' : 'לא נמצא קטע שעוסק בשאלה הזו. נסו לנסח אחרת.';
       list.forEach(function(r){
-        var c = r.p != null ? meta.chunks[r.p] : {t:r.title, x:r.text, f:r.file}; if(!c) return;
-        var e = info[r.p] || {};
+        var c = r, e = info[r.p] || {};
         var d = el('div','smart-res'), s = el('div','src'); s.appendChild(el('b',null,c.t)); if(e.topic) s.appendChild(document.createTextNode(' · במפתח: ' + e.topic)); d.appendChild(s);
-        var snip = e.snip || (e.m >= 0 && meta.smalls[e.m] ? meta.smalls[e.m].x : (r.m >= 0 && meta.smalls[r.m] ? meta.smalls[r.m].x : c.x));
+        var snip = e.snip || r.s || c.x;
         var t = el('div','txt',snip); d.appendChild(t);
         var a = el('div','acts');
         if(snip === c.x && c.x.length > 420){
