@@ -313,8 +313,8 @@
           more.onclick = function(){ open=!open; t.textContent = open ? c.x : snip; more.textContent = open ? 'הצג רק את הקטע התואם' : 'הצג את כל הסעיף'; };
           a.appendChild(more);
         }
-        var l = el('a',null, c.u ? 'לעמוד בספר (HebrewBooks) ↗' : 'לקריאת השיחה'); if(c.u){ l.href = c.u; l.target = '_blank'; l.rel = 'noopener'; } else l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t);
-        a.appendChild(l); d.appendChild(a); out.appendChild(d);
+        var l = el('a',null, c.u ? 'לעמוד בספר (HebrewBooks) ↗' : 'לקריאת השיחה'); if(c.u){ l.href = c.u; l.target = '_blank'; l.rel = 'noopener'; } else if(c.f) l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t); else l = null;
+        if(l) a.appendChild(l); d.appendChild(a); out.appendChild(d);
       });
       if(list.length){ var xl = el('a','smart-xlink','רוצים תשובה מנוסחת לשאלה הזו? שאלו את ה-AI ←'); xl.href = 'answer.html?q=' + encodeURIComponent(q); out.appendChild(xl); }
     }).catch(function(){ go.disabled = false; sin.classList.remove('busy'); st.textContent = 'לא הצלחתי להתחבר, נסו שוב בעוד רגע'; });
