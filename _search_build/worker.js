@@ -105,6 +105,9 @@ ${list}
 - אחרי כל משפט או פרט — ציין בסוגריים מרובעים את מספר הקטע שממנו הוא לקוח, למשל [3] או [3][7].
 - השתמש רק בקטעים שעוסקים ישירות בשאלה (עד ${A_TOP} קטעים). התעלם מקטעים לא רלוונטיים.
 - אם יש כמה היבטים — חלק לפסקאות קצרות, ופתח כל פסקה בכותרת קצרה מודגשת בתבנית **כותרת.**
+- לפני הכתיבה בדוק: האם שני קטעים או יותר מתארים את אותו אירוע (אותם אנשים, אותו מקום או זמן, אותה מטרה) — גם אם בניסוח אחר? שיחות נאמרו בשנים שונות, ואותו סיפור מסופר בהן כמה פעמים בפרטים שונים.
+- כשכמה קטעים מספרים את אותו סיפור או אירוע בפרטים שונים או סותרים — אל תמזג אותם לסיפור אחד, ואל תציג אותם כאירועים נפרדים שקרו זה אחר זה. הצג אותם כגרסאות שונות של אותו סיפור: "בשיחת [שם השיחה] מסופר ש... [n], ואילו בשיחת [שם השיחה] מסופר ש... [m]", וציין במפורש במה הגרסאות שונות.
+- כשהדובר מסייג ("כמדומה לי", "אינני זוכר בבירור") — שמור על הסייג בתשובה.
 - ציטוט קצר מדויק מהקטע — במירכאות ״...״.
 - סגנון: עברית ברורה ומכובדת, בכינויים המפורשים (אדמו״ר הזקן, אדמו״ר הרש״ב, אדמו״ר הריי״צ וכו').
 - אורך: עד כ-250 מילים. שאלה ממוקדת — תשובה קצרה.
@@ -140,7 +143,7 @@ export default {
     if (q.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
 
     const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v8?m=' + mode + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v9?m=' + mode + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = debug ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }

@@ -514,7 +514,7 @@
           .forEach(function(p){ if(!seen0[p]){ seen0[p] = 1; xs.push(p); } });
       }
       xs = xs.slice(0, 30);
-      return fetch(API + '?v=8&mode=answer&q=' + encodeURIComponent(q) + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+      return fetch(API + '?v=9&mode=answer&q=' + encodeURIComponent(q) + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
       go.disabled = false; stopSteps();
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
