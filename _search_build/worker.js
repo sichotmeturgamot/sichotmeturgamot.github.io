@@ -4,7 +4,7 @@
 const SITE = 'https://sichotmeturgamot.com/';
 const ALLOWED = ['https://sichotmeturgamot.com', 'https://www.sichotmeturgamot.com',
                  'https://sichotmeturgamot.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000'];
-const MAX_Q = 200, TOP = 5, CAND = 45, PER_MIN = 12, SCALE = 400;
+const MAX_Q = 200, TOP = 5, CAND = 50, PER_MIN = 12, SCALE = 400;
 const A_CAND = 60, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
 const MODEL = 'claude-haiku-5-5';
 
@@ -12,7 +12,7 @@ let IDX = null, TXT = null;
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=10', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=11', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
