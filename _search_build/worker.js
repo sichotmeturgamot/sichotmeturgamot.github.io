@@ -12,7 +12,7 @@ let IDX = null, TXT = null;
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=12', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=13', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
