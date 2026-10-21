@@ -154,7 +154,7 @@ document.querySelectorAll('.sp-tabs button').forEach(b => b.onclick = () => {
 $('q').addEventListener('input', e => { q = e.target.value; only = null; render(); });
 $('rand').onclick = () => { const pool = ITEMS.filter(i => i.type === tab); only = pool[Math.floor(Math.random() * pool.length)]; render();
   if (only.type === 'story'){ const b = $('list').querySelector('.acts .main'); if (b) b.click(); } window.scrollTo({ top: $('count').offsetTop - 80, behavior: 'smooth' }); };
-fetch('stories.json?v=3').then(r => r.json()).then(d => { ITEMS = d; chips(); render(); });
+fetch('stories.json?v=4').then(r => r.json()).then(d => { ITEMS = d; chips(); render(); });
 </script>
 <script src="nav.js"></script>
 <script src="morenav.js" defer></script>
