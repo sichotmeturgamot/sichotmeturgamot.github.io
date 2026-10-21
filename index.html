@@ -75,6 +75,7 @@
     <div class="ketaim-actions">
       <a class="btn btn-navy" id="ketaim-link" href="#" style="display:none">לשיחה המלאה</a>
       <a class="btn btn-ghost" id="ketaim-share" href="#" target="_blank" rel="noopener">שיתוף בווטסאפ</a>
+      <button type="button" class="btn btn-ghost" id="ketaim-img" style="display:none">🖼 שיתוף כתמונה</button>
     </div>
   </div>
 
@@ -125,6 +126,7 @@
 
 <script src="data.js"></script>
 <script src="ketaim.js"></script>
+<script src="quote-img.js"></script>
 <script>
 /* קטע יומי: קודם קטע משיחה שנאמרה בתאריך העברי של היום; אחרת סבב יומי על כל הקטעים */
 (function(){
@@ -158,6 +160,7 @@
   const abs=url?new URL(url,location.href).href:location.origin+'/';
   const msg='קטע משיחת '+(k.src||k.title)+':\n\n'+String(k.text).trim()+'\n\n🔗 לשיחה המלאה:\n'+abs;
   $('ketaim-share').href='https://wa.me/?text='+encodeURIComponent(msg);
+  if(window.QuoteImage){ const ib=$('ketaim-img'); ib.style.display=''; ib.onclick=()=>{ ib.disabled=true; QuoteImage.open({text:k.text, name:(k.src||k.title), link:abs}).catch(()=>{}).finally(()=>{ib.disabled=false;}); }; }
   $('ketaim-card').style.display='';
   const t=$('ketaim-text');
   requestAnimationFrame(()=>{ if(t.scrollHeight>t.clientHeight+4){
