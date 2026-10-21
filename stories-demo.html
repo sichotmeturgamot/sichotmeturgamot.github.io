@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סיפורים ופתגמים — ספר השיחות מתורגם ללה״ק</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a2942">
+<style>
+  .sp-head { text-align: center; padding: 38px 20px 4px; }
+  .sp-head .bsd { font-size: .72rem; letter-spacing: .3em; color: var(--gold); margin-bottom: 14px; }
+  .sp-head h1 { font-size: clamp(1.8rem, 4.6vw, 2.5rem); line-height: 1.25; }
+  .sp-head h1::before { content: ""; display: block; width: 60px; height: 1px; background: var(--gold); margin: 0 auto 18px; }
+  .sp-head .sub { font-family: 'Frank Ruhl Libre', serif; color: var(--muted); font-size: 1.05rem; margin-top: 8px; }
+  .demo-note { max-width: 640px; margin: 10px auto 0; padding: 0 16px; text-align: center; font-size: .8rem; color: var(--muted); }
+  .sp-tabs { display: flex; gap: 4px; max-width: 460px; margin: 18px 16px 0; margin-inline: auto; padding: 4px; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; }
+  .sp-tabs button { flex: 1; white-space: nowrap; border: 0; background: transparent; border-radius: 10px; padding: 10px 6px; font: 500 .98rem 'Heebo', sans-serif; color: var(--navy); cursor: pointer; }
+  .sp-tabs button.on { background: var(--navy); color: var(--cream); }
+  .sp-tools { max-width: 680px; margin: 16px auto 0; padding: 0 16px; display: grid; gap: 10px; }
+  .sp-row { display: flex; gap: 8px; }
+  .sp-row input { flex: 1; min-width: 0; height: 46px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--paper); font: 1.05rem 'Frank Ruhl Libre', serif; color: var(--text); }
+  .sp-row input:focus { outline: none; border-color: var(--gold); }
+  .sp-row .rand { border: 1.5px solid var(--gold); background: var(--paper); color: var(--gold-dark); border-radius: 12px; padding: 0 14px; font: 500 .9rem 'Heebo', sans-serif; cursor: pointer; white-space: nowrap; }
+  .chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: 0 0 auto; border: 1px solid var(--line); background: var(--paper); color: var(--navy); border-radius: 999px; padding: 6px 13px; font: .86rem 'Heebo', sans-serif; cursor: pointer; }
+  .chip.on { background: var(--navy); color: var(--cream); border-color: var(--navy); }
+  .chip-label { font: 500 .75rem 'Heebo', sans-serif; color: var(--muted); margin-bottom: -4px; }
+  .sp-count { max-width: 680px; margin: 12px auto 0; padding: 0 16px; font-size: .82rem; color: var(--muted); }
+  .sp-list { max-width: 680px; margin: 8px auto 30px; padding: 0 16px; display: grid; gap: 14px; }
+  .st { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 14px; border-top: 3px solid var(--gold); }
+  .st h3 { font-size: 1.3rem; margin: 0 0 6px; }
+  .st .sum { font-family: 'Frank Ruhl Libre', serif; font-size: 1.03rem; line-height: 1.7; color: var(--text); margin: 0 0 10px; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .tag { font: .74rem 'Heebo', sans-serif; background: #efe9db; color: #7a6a42; border-radius: 999px; padding: 2px 10px; }
+  .tag.who { background: var(--navy); color: var(--cream); }
+  .full { font-family: 'Frank Ruhl Libre', serif; font-size: 1.07rem; line-height: 1.9; text-align: justify; white-space: pre-line; border-inline-start: 3px solid var(--gold-soft); padding-inline-start: 12px; margin: 10px 0 6px; }
+  .src { font: .82rem 'Heebo', sans-serif; color: var(--muted); margin-top: 6px; }
+  .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .acts a, .acts button { border: 1px solid var(--line); background: transparent; color: var(--navy); border-radius: 999px; padding: 7px 14px; font: 500 .85rem 'Heebo', sans-serif; cursor: pointer; text-decoration: none; }
+  .acts .main { background: var(--navy); color: var(--cream); border-color: var(--navy); }
+  .sy { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 20px 20px 14px; position: relative; }
+  .sy::before { content: "”"; position: absolute; top: -6px; inset-inline-start: 14px; font: 700 4rem 'Frank Ruhl Libre', serif; color: var(--gold); opacity: .3; line-height: 1; }
+  .sy .q { font-family: 'Frank Ruhl Libre', serif; font-size: 1.2rem; line-height: 1.8; color: var(--navy); text-align: justify; padding-top: 8px; }
+  .sy .who-line { margin-top: 10px; font: 500 .88rem 'Heebo', sans-serif; color: var(--gold-dark); }
+  .empty { text-align: center; color: var(--muted); padding: 30px 0; }
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="https://sichotmeturgamot.com/index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <div class="links">
+    <a href="https://sichotmeturgamot.com/index.html">ראשי</a>
+    <a href="https://sichotmeturgamot.com/sichos.html">קריאת השיחות</a>
+    <a href="https://sichotmeturgamot.com/milon.html">מילון</a>
+    <a href="ask.html">חיפוש</a>
+    <a href="https://sichotmeturgamot.com/subscribe.html">הצטרפות לעדכונים</a>
+    <a href="https://sichotmeturgamot.com/donate.html">תרומה</a>
+    <a href="https://sichotmeturgamot.com/feedback.html">פידבק</a>
+  </div>
+</nav>
+<div class="sp-head">
+  <div class="bsd">ב״ה</div>
+  <h1>סיפורים ופתגמים</h1>
+  <div class="sub">מתוך שיחות כ״ק אדמו״ר הריי״צ — לפי דמות, נושא וזמן</div>
+</div>
+<p class="demo-note">עמוד לדוגמה (12 סיפורים ו-12 פתגמים) — לא מקושר עדיין מהאתר.</p>
+<div class="sp-tabs"><button type="button" data-tab="story" class="on">סיפורים</button><button type="button" data-tab="saying">פתגמים ואמרות</button></div>
+<div class="sp-tools">
+  <div class="sp-row"><input id="q" type="search" placeholder="חפשו סיפור או פתגם…" autocomplete="off"><button type="button" class="rand" id="rand">🎲 אקראי</button></div>
+  <div class="chip-label" id="who-label">מי במרכז</div>
+  <div class="chips" id="who"></div>
+  <div class="chip-label">נושא</div>
+  <div class="chips" id="theme"></div>
+</div>
+<div class="sp-count" id="count"></div>
+<main class="sp-list" id="list"></main>
+<nav class="bottomnav">
+  <a href="https://sichotmeturgamot.com/index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>ראשי</span></a>
+  <a href="https://sichotmeturgamot.com/sichos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/></svg><span>קריאה</span></a>
+  <a href="https://sichotmeturgamot.com/milon.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/></svg><span>מילון</span></a>
+  <a href="ask.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span>חיפוש</span></a>
+  <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
+</nav>
+<script src="quote-img.js"></script>
+<script>
+const ITEMS = [{"type": "story", "title": "נרות הקרח", "summary": "כשלא נמצאו נרות, ציווה הבעש\"ט להדליק את נטיפי הקרח – והם דלקו, האירו וחיממו.", "who": "הבעש\"ט", "themes": ["אמונה ובטחון"], "occasion": "פסח", "text": "התלמידים רצו למשכן את המעילים שלהם אבל לא היה ניתן להשיג נרות, והי' הדבר לפלא גדול אצל התלמידים. לבנתיים הבעש\"ט נכנס, והתלמידים סיפרו לו שלא השיגו נרות, ואמר הבעש\"ט: אבל חייב להיות מואר. וציוה הבעש\"ט לתלמידים שישברו מתקרת הבית את ה\"נרות־קרח\" שתלויים ושידליקו אותם. התלמידים עשו כך ו\"נרות־הקרח\" אכן דלקו.\nכשסבי אדמו\"ר המהר\"ש סיפר את סיפור זה לאבי הוא סיים: לא רק שהקרח לא נמס, אלא שהוא האיר וחימם.", "chunk": "21_Leil_Acharon_shel_Pesach_5706#0.1", "t": "ליל אחרון של פסח תש\"ו", "f": "21_Leil_Acharon_shel_Pesach_5706"}, {"type": "story", "title": "ברכת כהנים לילד בן שלוש", "summary": "הבעש\"ט בירך את אדמו\"ר הזקן הפעוט בברכת כהנים וציווה להחזירו מיד, כי \"הוא שייך למגיד\".", "who": "הבעש\"ט", "themes": ["התקשרות", "חינוך"], "occasion": "י\"ט כסלו", "text": "רבינו הזקן היה נשמה חדשה, והבעש\"ט רצה שרבינו הזקן לא יכירו, לפי שהוא שייך למגיד, וכשהיה בן ג' שנים והביאוהו לבעל שם טוב, ציווה שתעמוד מחוץ לעיר עגלה מוכנה להסיעו מיד הביתה. וכשהביאוהו לבעש\"ט הניח ידיו הקדושות עליו ובירכו בברכת כהנים, וציווה להסיעו מיד, ואמר: הוא שייך למגיד ממעזריטש.", "chunk": "19_kislev_5707#0.22", "t": "שיחת י\"ט כסלו תש\"ז", "f": "19_kislev_5707"}, {"type": "story", "title": "לשם מה צריכים אותך?", "summary": "לחסיד עשיר שירד מנכסיו ושפך את לבו השיב אדמו\"ר הזקן בניגון: סיפרת מה אתה צריך, אך לא לשם מה צריכים אותך.", "who": "אדמו\"ר הזקן", "themes": ["פרנסה", "עבודת המידות"], "occasion": "", "text": "זקני החסידים היו מספרים את מה שקיבלו מזקני החסידים הראשונים מליאזנא — הסיפור הידוע על אחד מן החסידים שהי' גביר, אותו החסיד היה מקושר מאוד להוד כ\"ק רבינו הזקן, והי' נותן סכומי כסף גדולים לרבינו הזקן עבור החזקת ארצנו הקדושה ועבור פדיון שבויים.\nהחסיד, שהיה עשיר גדול, כבר השיא את ילדיו, וילדיו היו במצב טוב; לקח על עצמו להשיא את ילדי קרוביו והבטיח להם נדוניות נאות, ובכלל ניהל את ביתו בעשירות. אך לפתע נהפך הגלגל והוא ירד מנכסיו ר\"ל, נשאר אביון גדול ובנוסף לכך בעל חוב גדול. הוא נסע אל אדמו\"ר הזקן ושפך לפניו את לבו המר.\nבשומעו את מצבו, הרים אדמו\"ר הזקן את ראשו ואמר, בניגון, כדרכו בקודש הקדשים: אתה סיפרת מה שאתה צריך, ולשם מה צריכים אותך אינך אומר כלום!", "chunk": "lag_baomer_5707#0.1", "t": "ל\"ג בעומר תש\"ז", "f": "lag_baomer_5707"}, {"type": "story", "title": "דמעות של שמחה", "summary": "אדמו\"ר האמצעי והצמח צדק שאלו מדוע אדמו\"ר הזקן בוכה בראש השנה, והוא השיב שאלו דמעות שמחה לבלבל את המקטרגים.", "who": "אדמו\"ר הזקן", "themes": ["שמחה", "תפילה"], "occasion": "ראש השנה", "text": "פעם אחת אדמו\"ר האמצעי ואדמו\"ר הצ\"צ נכנסו לאדמו\"ר הזקן בליל ראש השנה לומר לו לשנה טובה תכתב ותחתם. הם שאלו: הרי בר\"ה צריכים להיות בשמחה, א\"כ מדוע הדמעות? והשיב אדמו\"ר הזקן: אלו דמעות של שמחה, מאחר שעצם הנשמה רואה, ממילא היא בשמחה, והדמעות הן בכדי לבלבל את המלאכים הלא טובים.", "chunk": "leyl_1_rosh_hashana_5707_laramash#0.0", "t": "אחר תפילת ערבית בליל א' דראש השנה תש''ז", "f": "leyl_1_rosh_hashana_5707_laramash"}, {"type": "story", "title": "\"יבוא החץ בי\"", "summary": "הרבנית דבורה לאה שמעה את אדמו\"ר הזקן מתפלל \"יבוא החץ בי\" ובכתה, והוא בירך את בנה הצמח צדק שיאיר את העולם בתורה ועבודה.", "who": "אדמו\"ר הזקן", "themes": ["מסירות נפש", "אהבת ישראל"], "occasion": "ראש השנה", "text": "ח. כשיצאה ההתנגדות לצורת ועבודת החסידות, ובערים רבות בליטא חוו החסידים רדיפות, שמעו מקורביו של אדה\"ז כיצד הוא אומר בסוף תפילת שמונה עשרה, יבא החץ בי.\nבערב ראש השנה תק\"ן, הרבי הצמח צדק הי' בן שלוש שנים, אמו הרבנית דבורה לאה הביאהאותו לאדמו\"ר הזקן בכדי שיברך אותו.\nכשהיא נכנסה לאדמו\"ר הזקן הוא הי' עדיין התפלל, והיא שמעה אותו אומר יבוא החץ בי, והיא נרעשה מאד ומיררה בבכי.\nלאחר מכן כשהיא הכניסה את הרבי הצמח צדק לאדמו\"ר הזקן היא בכתה מאד. אדמו\"ר הזקן הושיב את הצמח צדק על כיסא, והניח את ידיו הק' על ראש הילד וברכו.\nהרבנית דבורה לאה שהייתה שם מיררה בבכי, הרבי שאל, מה את בוכה? בנך יאיר את העולם בתורה ועבודה על פי דרך החסידות באריכותימים ושנים.", "chunk": "Yom_Alef_Sukkos_5706#0.6", "t": "יום א' דחג הסוכות תש\"ו", "f": "Yom_Alef_Sukkos_5706"}, {"type": "story", "title": "הלוואה לפני התפילה", "summary": "הצמח צדק חזר מבית הכנסת לחפש בשוק יהודי פשוט כדי לתת לו הלוואה לפני התפילה, ואז נגלה אליו אדמו\"ר הזקן.", "who": "הצמח צדק", "themes": ["אהבת ישראל", "פרנסה", "יהודי פשוט"], "occasion": "י\"ט כסלו", "text": "כשנכנס הרה\"ק צמח צדק לבית הכנסת נפל ברעיונו הקדוש המאמר ר' אלעזר יהיב פרוטה לעני והדר מצלי, וגם המאמר גדול גמ\"ח מצדקה, ויתבונן הרה\"ק צמח צדק אשר לא טוב עשה שלא נתן תיכף להרמ\"א הנ\"ל את הגמ\"ח שביקש, ויחזור הרה\"ק צמח צדק לביתו, ויקח את הסכום וילך אל השוק לחפש את הרמ\"א, וביני לביני כבר נתקבצו אנשי הכפר עם עגלותיהם וסחורותיהם אל השוק, ועלה לו בטורח רב למצוא את הרמ\"א ביניהם, וכשמצאו נתן לו את הגמ\"ח, ויחזור לבית הכנסת להתפלל.\nכשנתעטף הוד כ\"ק הרה\"ק צמח צדק בטלית ותפילין, ראה פתאום את הוד כ\"ק רבינו הזקן בפנים צהובות, ויאמר לו: הנותן גמ\"ח לאיש ישראל בלבב שלם בלי שום פני', והעושה טובה לישראל באהבה כצווי ואהבת לרעך כמוך, שערי היכלי מעלה פתוחים לפניו.\nכשסיפר הוד כ\"ק הרה\"ק צמח צדק את הסיפור הזה לבנו הוד כ\"ק אאזמו\"ר הרה\"ק מוהר\"ש — בשנת תרט\"ז — אמר לו: בכך שעוזרים ליהודי בפרנסה, אפילו בלהרוויח שבעים קופיקות ממסחר בעגל, פותחים לפניו כל שערי ההיכלות העליונים.\nבשנת תרל\"ט סיפר הוד כ\"ק אאזמו\"ר הרה\"ק מוהר\"ש את כל הנ\"ל לבנו הוד כ\"ק אאמו\"ר הרה\"ק ויסיים:\nאפילו שצריך לדעת את הדרך אל ההיכלות העליונים, אבל אין זה משנה, העיקר צריך להיות לעזור בלב שלם מתוך רגש, ולהרגיש עריבות בעשיית טובה ליהודי.", "chunk": "19_kislev_5707#0.20", "t": "שיחת י\"ט כסלו תש\"ז", "f": "19_kislev_5707"}, {"type": "story", "title": "דג מסריח מהראש", "summary": "לרב שהתלונן ששומעיו אינם מקיימים, השיב אדמו\"ר מהר\"ש: ומה איתך?", "who": "אדמו\"ר מהר\"ש", "themes": ["עבודת המידות", "חינוך"], "occasion": "י\"ט כסלו", "text": "רב חסידי מסמיליאַן הגיע לאדמו\"ר המהר\"ש והתלונן על אלו ששומעים ממנו חסידות שהם לא מקשיבים, וזה לא מגיע אצלם לידי פועל. וענה לו אדמו\"ר מוהר\"ש: ומה קורה איתך? כשדג מסריח — הוא מסריח מהראש. הוא היה יהודי חסידי, וזה פעל עליו.", "chunk": "Shabbos_Vayishlach_19_Kislev_5706#0.4", "t": "ש\"פ וישלח, י\"ט כסלו תש\"ו", "f": "Shabbos_Vayishlach_19_Kislev_5706"}, {"type": "story", "title": "וכי האצבעות אינן חסידיות?", "summary": "אדמו\"ר הרש\"ב נכווה ממים רותחים בהגעלת הסמובר לפסח, והשיב שחסיד אינו נעצר מפני קור או חום.", "who": "אדמו\"ר הרש\"ב", "themes": ["מסירות נפש"], "occasion": "פסח", "text": "פעם, לפני פסח, נכנס הוד כ\"ק אאמו\"ר הרה\"ק לחדר שבו הכשירו את הכלים לפסח, הכשירו את כלי חג הפסח גם כן. בשעת ההכשרה הוד כ\"ק אאמו\"ר הרה\"ק שם לב לסדר ואופן ההגעלה.\nכאשר הכשירו את הסמובר*, השליך הוד כ\"ק אאמו\"ר הרה\"ק לתוך המים כמה אבנים מלובנות, כדי שירתחו, ופתח את הברז שממנו יוצאים המים; ניתזו המים החמים הרותחים על ידו של הוד כ\"ק אאמו\"ר הרה\"ק. ר' מיכאל שי', שעמד שם, צעק: אוי רבי! אתה כוֹוה את האצבעות!\nענה לו הוד כ\"ק אאמו\"ר הרה\"ק בפניו הקדושות, פנים צהובות: וכי האצבעות אינן חסידיות? חסיד – בין אם קר ובין אם חם – אין זה צריך לעכב אותו ממה שצריך.", "chunk": "yom_1_pesach_5708#0.6", "t": "שיחת יום שבת קודש א' דחג הפסח תש\"ח", "f": "yom_1_pesach_5708"}, {"type": "story", "title": "שכחת שאתה אוכל דייסה", "summary": "חסיד שהתענג על דברי חסידות על חיבת המצוה אכל בהנאה את דייסת י\"ט כסלו, ואדמו\"ר הרש\"ב העיר לו על כך.", "who": "אדמו\"ר הרש\"ב", "themes": ["עבודת המידות", "התוועדות"], "occasion": "י\"ט כסלו", "text": "בהתוועדות ההיא דובר אודות צדיקי פולין (\"פּוילישע גוטע אידן\"), ואודות הרב הצדיק ר' לוי יצחק מברדיטשוב שהיה מנשק את האתרוג בליל סוכות.\nהדיבור סבב אודות – מניין נלקח הנשיקה, וביאר מעניין חיבת המצוה, התענוג במצוה, וזה היה תענוג לשמוע. בין המסובין ישב יהודי חסידי ששמע והבין את מה שדובר, והקשיב בהנאה.\nבעת ההיא אכלו את הדייסה הידועה של י\"ט כסלו- דייסת כוסמת.\n– כפי המנהג, שבי\"ט כסלו מכינים דייסת כוסמת – לכל מדינה יש את המאכל שלה שמחבבים יותר ממאכלים אחרים, בליטא המאכל הוא דיסת כוסמת -\nהיהודי ההוא ששמע את הדיבור אודות חיבת המצווה עם תענוג – אכל את הדיסה בהנאה.\nאבי הרגיש שהתענוג מהדיבור הועבר לאכילת הדייסה, שהוא אכל בהנאה (לא כפי שיהודי חסידי אמור לאכול).\nאבי אמר לו: שכחת שאתה אוכל דייסה.\nוכ\"ק אדמו\"ר הסביר: עונג המוחין בהסבר על חיבת המצוה – והוא היה מונח בזה – גרם שיהיה תענוג דנפש הטבעית באכילת הדייסה. והאוכל לא הרגיש כלל, כי לא היה עסוק באכילה אלא רק בעניין ששמע, ובכל זאת הנפש הטבעית עשה את שלו. והאוכל לא הרגיש, שהנפש הטבעית העבירה את התענוג גם לדיסה. וזהו מה שאמר לו שכחת שאתה אוכל גדיסת כוסמת.", "chunk": "19_Kislev_5698#0.3", "t": "י\"ט כסלו תרצ\"ח", "f": "19_Kislev_5698"}, {"type": "story", "title": "שליחות בליל שבת", "summary": "הריי\"צ נשלח על ידי אביו לפגישה מסוכנת בליל שבת מחוץ לפטרבורג – והכל נעשה בלי הרגש, כי כשצריך כך עושים.", "who": "אדמו\"ר הריי\"צ", "themes": ["מסירות נפש", "התקשרות"], "occasion": "", "text": "אשר פעם היה אצל אאמו\"ר נ\"ע, אשר היו צריכים להתראות עם איש א' בפּעטערבורג, והוא היה דר מחוץ לעיר. זמן ההתראות הוקבע על ליל שבת קודש אשר דוקא אז הייתי צריך להתראות איתו. שם לא היו בתי מלון, רק בתי מרזח, והוכרחתי לבוא לשם בערב שבת קודש ושילמתי להם כמובן עבור השבת קודש ועוד יותר עבור ההליכה, כי היה רחוק משם מהלך איזה שעות, ואחר כך בלילה הלכתי לשם ע\"י איזה ליוי ושהיתי שם איזה שעות, ודברנו מה שדברנו.\nכל זה היה בלי הרגש, הן מצד המשלח — אף שהיה אבא, ובנו היה בנו יחידו, והוא בוודאי ידע מה המשמעות של בן ובמיוחד בן יחיד, ומכל מקום היה בלי הרגש, לא אצלו ולא אצלי. כי כשכך צריך להֵעשות כך עושים, מאחר והיה התגברות הצורה על החומר.", "chunk": "21_Sivan_5706#0.1", "t": "כ\"א סיון תש\"ו", "f": "21_Sivan_5706"}, {"type": "story", "title": "הקנאה בשלום יוסף הבנאי", "summary": "ר' הלל מפאריטש קינא בבנאי פשוט שבכה בתפילה מרחמנות על \"חכמה דאצילות\" שבתוך הגוף.", "who": "חסידים", "themes": ["יהודי פשוט", "תפילה"], "occasion": "פסח", "text": "הרשב\"ץ סיפר את שראה באחת ההתועדויות החסידיות בליובאוויטש: בהתוועדות ישבו ר' הלל מפאַריטש ור' אייזיל מהאָמיל, ור' הלל התבטא שהוא מקנא בשלום יוסף הבונה (פּלאָטניק).\nר' שלום יוסף היה יהודי זקן מחסידי אדמו\"ר הזקן, אבל הוא היה פשוט מאד, פרנסתו היתה מזה שהיה בנאי, פועל פשוט. כשר' הלל עוד היה אברך, ר' שלום יוסף כבר היה זקן מופלג. ר' שלום יוסף היה מתפלל הרבה. פעם אחת ר' הלל ראה את ר' שלום יוסף ממרר בבכי בתפילה, ולאחר מכן ר' הלל שאל אותו מדוע בכית בתפילה? ר' שלום יוסף ענה לו ששמע מאדמו\"ר הזקן שנשמתו של כל יהודי היא מחכמה דאצילות, והיום כשחשבתי על כך שחכמה דאצילות נמצאת בתוך נָבָל וא\"כ איזו רחמנות יש עליה, וזה גרם לי לבכות.\nבהתוועדות כשר' הלל אמר שהוא מקנא בר' שלום יוסף, הוא מירר בבכי. כשהרשב\"ץ חזר עבורי את הסיפור הזה הוא אמר שבכייתו של ר' הלל היתה על דרך געה בבכיה וכו'.", "chunk": "Yom_Alef_Pesach_5706#0.3", "t": "יום א' דחג הפסח תש\"ו", "f": "Yom_Alef_Pesach_5706"}, {"type": "story", "title": "יין ודגים לפני התפילה", "summary": "ר' יקותיאל לעפלער אכל מיד את סעודת השבת שקיבל מבית הצמח צדק, בטוח שאם הרבי שלח לפני התפילה – זה נוגע לתפילה.", "who": "חסידים", "themes": ["תפילה", "התקשרות"], "occasion": "", "text": "ג. סעודת ליל שבת קודש היתה אצל הצ\"צ בשעה מאוחרת, ובניו היה דרכם לבוא לומר \"שבת־שלום\", ואצלם היה כבר אחר הסעודה. מבית הצ\"צ שלחו לר' יקותיאל לעפלער, ע\"פ הנהוג אז, בערב שבת קודש קודם התפילה את צרכי סעודת שבת קודש, יין עם דגים וכו'; ר' יקותיאל אכל זאת מיד, קודם התפילה: אם הרבי שולח קודם התפילה, מן הסתם זה נוגע לתפילה.\nבליל שבת קודש אחר התפילה בא אל הרבנית ושאל: אולי תקבלו (תארחו) יהודי לשבת? שאלה הרבנית: קושיע, הרי שלחו לך! הוא ענה: אם הרבי שלח לי קודם התפילה, מן הסתם זה נגע לתפילה.\nמזה ניכר עד כמה הייתה עבודתו רק עבודת התפילה, וכיון שהרבי שלח לו קודם התפילה, היה ברור אצלו שזה סגולה לתפילה, כי זה היה עיקר התעסקותו.", "chunk": "Noach_Bayom_5707#0.2", "t": "ש\"פ נח בסעודת היום תש\"ז", "f": "Noach_Bayom_5707"}, {"type": "saying", "title": "לחיות את מה שהנך", "summary": "כשיודעים מה רוצים – חיים את מה שהם, והחיות מאירה יותר.", "who": "אדמו\"ר הזקן", "themes": ["עבודת המידות"], "occasion": "", "text": "פתגם מאדמו\"ר הזקן: צריך להבין מה אתה רוצה, וצריך לחיות את מה שהנך. כאשר תדע מה אתה רוצה תחי' את מה שהנך, וחיות זאת תהי' מאירה יותר.", "chunk": "purim_5708#0.6", "t": "פורים תש\"ח", "f": "purim_5708"}, {"type": "saying", "title": "קל לחדש בתורה", "summary": "", "who": "אדמו\"ר הזקן", "themes": ["עבודת המידות", "לימוד תורה"], "occasion": "", "text": "אדמו\"ר האמצעי סיפר, שהחסיד ר' פנחס שקלאָווער סיפר לו את אמרה שאמר אדמו\"ר הזקן בשקלאָוו, בעברו דרך שם ממעזריטש בשנת תקל\"א:\nקל הרבה יותר לפעול מוחין דגדלות לחדש בתורה, מלפעול התעוררות פנימית שבלב על תיקון המידות.", "chunk": "Leil_Alef_Sukkos_5706#0.15", "t": "ליל א' דחג הסוכות תש\"ו", "f": "Leil_Alef_Sukkos_5706"}, {"type": "saying", "title": "זמן לומר וזמן לעשות", "summary": "", "who": "הצמח צדק", "themes": ["תפילה", "לימוד תורה"], "occasion": "", "text": "סיפר אאזמו\"ר (מהרשנ\"ע) לאאמו\"ר, אשר פעם בראותו שאמו הלכה לסליחות – בעשי\"ת – ואביו (הצ\"צ) יושב ולומד, שאל אותו עד\"ז. ויענהו הצ\"צ: יש זמן שבו צריך לומר, ויש זמן שבו צריך לעשות.", "chunk": "tishrey_5708#0.0", "t": "משיחות תשרי תש\"ח", "f": "tishrey_5708"}, {"type": "saying", "title": "טוב ועוד יותר טוב", "summary": "", "who": "אדמו\"ר מהר\"ש", "themes": ["ניגון", "חינוך"], "occasion": "", "text": "הרי ידוע הפתגם של סבא הוד כ\"ק אאזמו\"ר הרה\"ק מהר\"ש — יש \"טוב\", ויש \"עוד יותר טוב\"; שכן אם \"טוב\" הוא טוב, ה\"יותר טוב\" אינו טוב יותר?", "chunk": "achron_shel_pesach_5707#0.11", "t": "אחרון של פסח תש\"ז", "f": "achron_shel_pesach_5707"}, {"type": "saying", "title": "מה מספרים נרות החנוכה", "summary": "", "who": "אדמו\"ר מהר\"ש", "themes": ["התקשרות"], "occasion": "חנוכה", "text": "הוד כ\"ק אאמו\"ר הרה\"ק סיפר, שפעם הוד כ\"ק אאזמו\"ר הרה\"ק מוהר\"ש אמר לו: צריך להקשיב לנרות החנוכה מה הם מספרים.", "chunk": "Leil_Shabbos_Vayeishev_26_Kislev_Chanukah_5706#0.7", "t": "ליל ש\"פ וישב, כ\"ו כסלו, שבת חנוכה תש\"ו", "f": "Leil_Shabbos_Vayeishev_26_Kislev_Chanukah_5706"}, {"type": "saying", "title": "האמת שבתפילה", "summary": "", "who": "אדמו\"ר הרש\"ב", "themes": ["תפילה"], "occasion": "", "text": "פעם אחת שאל הרי\"מ מפּאָטלטאַווע: כיצד מגיעים לאמת בתפילה? וענה כ\"ק אאמו\"ר נ\"ע: כיצד לא מגיעים לאמת בתפילה? אם לא מגיעים לאמת זה סימן שלא התפללת.", "chunk": "Leil_Shabbos_Vayeira_20_MarCheshvan_5706#0.2", "t": "ליל ש\"פ וירא, כ' מר־חשון תש\"ו", "f": "Leil_Shabbos_Vayeira_20_MarCheshvan_5706"}, {"type": "saying", "title": "לקחת משקה", "summary": "חסידים שתו כמה שצריך ומתי שצריך.", "who": "אדמו\"ר הרש\"ב", "themes": ["התוועדות"], "occasion": "", "text": "אאמו\"ר אמר שלקחת משקה יכול להיות לא טוב, אבל מלא לקחת יכול להיות גרוע יותר.\nחסידיו של הרבי שתו משקה, אבל הם שתו כמה שצריך ומתי שצריך.", "chunk": "19_Kislev_5698#0.6", "t": "י\"ט כסלו תרצ\"ח", "f": "19_Kislev_5698"}, {"type": "saying", "title": "כלב מפחד מיהודי", "summary": "", "who": "אדמו\"ר הריי\"צ", "themes": ["מסירות נפש", "אמונה ובטחון"], "occasion": "", "text": "עניתי לו: יהודי אינו מפחד מכלב; כלב מפחד מיהודי.", "chunk": "simchat_tora_yom_5708#0.3", "t": "שמחת תורה תש\"ח", "f": "simchat_tora_yom_5708"}, {"type": "saying", "title": "שתמיד יחסר כסף לתורה", "summary": "כלומר, שיעשו כל כך הרבה ישיבות עד שתמיד יחסר כסף.", "who": "אדמו\"ר הריי\"צ", "themes": ["לימוד תורה", "חינוך"], "occasion": "", "text": "הקב\"ה יעזור שליהודים יהי' כסף על כל מה שהם צריכים, ועל תורה תמיד יחסר — כלומר, שיעשו כל־כך הרבה ישיבות עד שיחסר כסף, העבודה עדיין לא נגמרה.", "chunk": "16_adar_a_5708#0.1", "t": "שיחת יום ה' ט\"ז אדר ראשון תש\"ח", "f": "16_adar_a_5708"}, {"type": "saying", "title": "חסידים מתפללים ופועלים", "summary": "מפני הצורך שיהיה במה להתפלל, מוכרחים ללמוד תחילה.", "who": "חסידים", "themes": ["תפילה", "לימוד תורה"], "occasion": "", "text": "זקני חסידי־חב\"ד היו מספרים, שמיד כאשר הוד כ\"ק רבינו הזקן גילה וסידר את דרך העבודה וההשכלה של חסידות חב\"ד, נוצר אצל החסידים פתגם עממי: יהודים לומדים ומתפללים, חסידים מתפללים ופועלים, ומפני הצורך שיהיה במה להתפלל, מוכרחים ממילא ללמוד תחילה.", "chunk": "19_kislev_5707#0.12", "t": "שיחת י\"ט כסלו תש\"ז", "f": "19_kislev_5707"}, {"type": "saying", "title": "היום מוקדם ממחר", "summary": "", "who": "חסידים", "themes": ["שמחה", "אמונה ובטחון"], "occasion": "", "text": "אצל מחונכים חסידיים ישנה אמרה מסורתית, מן האמרות הקדומות ביותר, שזקני החסידים היו חוזרים עליה, שקיבלוה מחסידי חב\"ד הראשונים.\n\"אמת שה'היום' מאוחר יותר מה'אתמול', אך נחמתנו היא שה'היום' מוקדם יותר מן ה'מחר'\" — ובכך היו מנגנים ניגון המוטעם בטעם פנימי, איזה ניגון התעוררות, ופוצחים בריקוד דבקות.", "chunk": "achron_shel_pesach_5707#0.15", "t": "אחרון של פסח תש\"ז", "f": "achron_shel_pesach_5707"}, {"type": "saying", "title": "על חטא לא נגמר ביום כיפור", "summary": "", "who": "חסידים", "themes": ["עבודת המידות"], "occasion": "סוכות", "text": "חסידים זקנים היו אומרים: כשאומרים ביום הכיפורים 'על חטא' – כאן זה לא נגמר; לאחר יום הכיפורים עושים קפל [בסידור]; וכשמגיע סוכות אומר [היהודי] לנפש הבהמית: נו! מה, לקחת את הגוף ואתה מתחיל להשתולל?! היכנס לסוכה ותתחיל לעבוד עם הרגליים; בשמיני עצרת – מרגישים שמחת תורה, ואז ה'בראשית' הוא אחר.", "chunk": "shabat_chol_hamoed_sukot_5708#0.4", "t": "שבת חול המועד סוכות תש\"ח", "f": "shabat_chol_hamoed_sukot_5708"}];
+const WHO = ['הבעש"ט','המגיד','אדמו"ר הזקן','אדמו"ר האמצעי','הצמח צדק','אדמו"ר מהר"ש','אדמו"ר הרש"ב','אדמו"ר הריי"צ','חסידים'];
+let tab = 'story', who = '', theme = '', q = '', only = null;
+const $ = id => document.getElementById(id);
+function el(t, c, x){ const e = document.createElement(t); if(c) e.className = c; if(x != null) e.textContent = x; return e; }
+function link(it){ return 'read.html?file=' + encodeURIComponent('pdfs/' + it.f + '.pdf') + '&title=' + encodeURIComponent(it.t); }
+function norm(s){ return s.replace(/[\u0591-\u05C7"'״׳]/g, ''); }
+function chips(){
+  const pool = ITEMS.filter(i => i.type === tab);
+  const ws = WHO.filter(w => pool.some(i => i.who === w));
+  const ts = [...new Set(pool.flatMap(i => i.themes))];
+  $('who-label').textContent = tab === 'story' ? 'מי במרכז הסיפור' : 'מי אמר';
+  for (const [id, arr, cur, set] of [['who', ws, who, v => who = v], ['theme', ts, theme, v => theme = v]]){
+    const box = $(id); box.textContent = '';
+    ['', ...arr].forEach(v => { const b = el('button', 'chip' + (v === cur ? ' on' : ''), v || 'הכל'); b.type = 'button';
+      b.onclick = () => { set(v); only = null; chips(); render(); }; box.appendChild(b); });
+  }
+}
+function render(){
+  const n = norm(q.trim());
+  let list = ITEMS.filter(i => i.type === tab && (!who || i.who === who) && (!theme || i.themes.includes(theme))
+    && (!n || norm(i.title + ' ' + i.summary + ' ' + i.text + ' ' + i.who + ' ' + i.themes.join(' ')).includes(n)));
+  if (only) list = [only];
+  $('count').textContent = only ? 'סיפור אקראי · ' : (list.length + (tab === 'story' ? ' סיפורים' : ' פתגמים'));
+  if (only){ const b = el('a', null, 'הצג הכל'); b.href = '#'; b.onclick = e => { e.preventDefault(); only = null; render(); }; $('count').appendChild(b); }
+  const box = $('list'); box.textContent = '';
+  if (!list.length){ box.appendChild(el('div', 'empty', 'לא נמצאו תוצאות')); return; }
+  list.forEach(it => box.appendChild(it.type === 'story' ? story(it) : saying(it)));
+}
+function tags(it){
+  const t = el('div', 'tags'); t.appendChild(el('span', 'tag who', it.who));
+  it.themes.forEach(x => t.appendChild(el('span', 'tag', x))); if (it.occasion) t.appendChild(el('span', 'tag', it.occasion)); return t;
+}
+function actions(it, extra){
+  const a = el('div', 'acts'); if (extra) a.appendChild(extra);
+  const r = el('a', null, 'לשיחה'); r.href = link(it); a.appendChild(r);
+  const im = el('button', null, '🖼 תמונה'); im.type = 'button';
+  im.onclick = () => window.QuoteImage && QuoteImage.open({ text: it.text, name: it.t, link: new URL(link(it), location.href).href });
+  a.appendChild(im);
+  const w = el('a', null, 'ווטסאפ'); w.target = '_blank'; w.rel = 'noopener';
+  w.href = 'https://wa.me/?text=' + encodeURIComponent((it.type === 'story' ? it.title + '\n\n' : '') + it.text + '\n\n(מתוך שיחת ' + it.t + ')\n' + new URL(link(it), location.href).href);
+  a.appendChild(w); return a;
+}
+function story(it){
+  const c = el('article', 'st'); c.appendChild(el('h3', null, it.title)); c.appendChild(tags(it));
+  c.appendChild(el('p', 'sum', it.summary));
+  const full = el('div', 'full', it.text); full.hidden = true; c.appendChild(full);
+  const src = el('div', 'src', 'מתוך שיחת ' + it.t); src.hidden = true; c.appendChild(src);
+  const tg = el('button', 'main', 'לקריאת הסיפור'); tg.type = 'button';
+  tg.onclick = () => { full.hidden = !full.hidden; src.hidden = full.hidden; tg.textContent = full.hidden ? 'לקריאת הסיפור' : 'סגירה'; };
+  c.appendChild(actions(it, tg)); return c;
+}
+function saying(it){
+  const c = el('article', 'sy'); c.appendChild(el('div', 'q', it.text));
+  if (it.summary) c.appendChild(el('p', 'sum', it.summary));
+  c.appendChild(el('div', 'who-line', it.who + ' · ' + it.title));
+  c.appendChild(tags(it)); c.appendChild(el('div', 'src', 'מתוך שיחת ' + it.t));
+  c.appendChild(actions(it)); return c;
+}
+document.querySelectorAll('.sp-tabs button').forEach(b => b.onclick = () => {
+  tab = b.dataset.tab; who = theme = ''; only = null;
+  document.querySelectorAll('.sp-tabs button').forEach(x => x.classList.toggle('on', x === b));
+  $('q').placeholder = tab === 'story' ? 'חפשו סיפור…' : 'חפשו פתגם…'; chips(); render();
+});
+$('q').addEventListener('input', e => { q = e.target.value; only = null; render(); });
+$('rand').onclick = () => { const pool = ITEMS.filter(i => i.type === tab); only = pool[Math.floor(Math.random() * pool.length)]; render();
+  if (only.type === 'story'){ const b = $('list').querySelector('.acts .main'); if (b) b.click(); } window.scrollTo({ top: $('count').offsetTop - 80, behavior: 'smooth' }); };
+chips(); render();
+</script>
+<script src="nav.js"></script>
+<script src="morenav.js" defer></script>
+<script src="install.js" defer></script>
+</body>
+</html>
