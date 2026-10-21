@@ -141,7 +141,6 @@ function story(it){
 }
 function saying(it){
   const c = el('article', 'sy'); c.appendChild(el('div', 'q', it.text));
-  if (it.summary) c.appendChild(el('p', 'sum', it.summary));
   c.appendChild(el('div', 'who-line', it.who + ' · ' + it.title));
   c.appendChild(tags(it)); c.appendChild(el('div', 'src', 'מתוך שיחת ' + it.t));
   c.appendChild(actions(it)); return c;
