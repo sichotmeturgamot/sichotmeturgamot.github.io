@@ -1,4 +1,4 @@
-// שרת החיפוש הסמנטי — גרסה 10 (הטקסט לתצוגה נשלח מהשרת): חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
+// שרת החיפוש הסמנטי — גרסה 15: סינון לפי מקור (src) ו"עוד תוצאות" (more). גרסה 10 (הטקסט לתצוגה נשלח מהשרת): חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
 // Claude חושב מעט (effort: low) לפני שהוא בוחר
 // דרוש: Binding מסוג Workers AI בשם AI, וסוד בשם ANTHROPIC_API_KEY
 const SITE = 'https://sichotmeturgamot.com/';
@@ -8,7 +8,7 @@ const MAX_Q = 200, TOP = 5, CAND = 50, PER_MIN = 12, SCALE = 400;
 const A_CAND = 60, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
 const MODEL = 'claude-haiku-5-5';
 
-let IDX = null, TXT = null;
+let IDX = null, TXT = null, GRP = null;
 const hits = new Map();
 
 async function getBuf(name) {
@@ -30,6 +30,15 @@ async function loadTxt() {
   const off = new Uint32Array(buf, 4, n + 1), base = 4 + 4 * (n + 1);
   const dec = new TextDecoder();
   return (TXT = i => dec.decode(new Uint8Array(buf, base + off[i], off[i + 1] - off[i])));
+}
+
+// קבוצת מקור לכל קטע: s = ספר השיחות (יש f), l = לקוטי דיבורים (HebrewBooks), r = רשימות ואגרות (כל השאר)
+function groups(txt, np, ns) {
+  if (GRP) return GRP;
+  const g = new Uint8Array(np);
+  for (let p = 0; p < np; p++) { const [f, u] = txt(2 * np + ns + p).split('\t');
+    g[p] = f ? 115 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114); }
+  return (GRP = g);
 }
 
 function cors(origin) {
@@ -143,7 +152,8 @@ export default {
     if (q.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
 
     const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v9?m=' + mode + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const src = ['s', 'l', 'r'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v10?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = debug ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
@@ -166,21 +176,22 @@ export default {
       const dot = (i) => { let s0 = 0, s1 = 0, s2 = 0, s3 = 0, o = i * dim;
         for (let k = 0; k < dim; k += 4, o += 4) { s0 += vec[o] * qf[k]; s1 += vec[o + 1] * qf[k + 1]; s2 += vec[o + 2] * qf[k + 2]; s3 += vec[o + 3] * qf[k + 3]; }
         return s0 + s1 + s2 + s3; };
+      const ns = N - np;
+      const grp = src ? groups(await loadTxt(), np, ns) : null, want = src ? src.charCodeAt(0) : 0;
       const bs = new Float32Array(np), bm = new Int32Array(np).fill(-1);
-      for (let p = 0; p < np; p++) bs[p] = dot(p);
-      const thr = Float32Array.from(bs).sort()[Math.max(0, np - 300)];
+      for (let p = 0; p < np; p++) bs[p] = grp && grp[p] !== want ? -1e9 : dot(p);
+      const thr = Math.max(-1e8, Float32Array.from(bs).sort()[Math.max(0, np - 300)]);
       const top = new Uint8Array(np); for (let p = 0; p < np; p++) if (bs[p] >= thr) top[p] = 1;
       for (let i = np; i < N; i++) {
         const p = parent[i]; if (!top[p]) continue;
         const s = dot(i) - delta;
         if (s > bs[p]) { bs[p] = s; bm[p] = i - np; }
       }
-      const best = new Map(); for (let p = 0; p < np; p++) best.set(p, [bs[p], bm[p]]);
+      const best = new Map(); for (let p = 0; p < np; p++) if (!grp || grp[p] === want) best.set(p, [bs[p], bm[p]]);
       let cands = [...best.entries()].sort((a, b) => b[1][0] - a[1][0]).slice(0, mode === 'answer' ? A_CAND : CAND)
                     .map(([p, [s, m]]) => ({ p, m, s: +s.toFixed(3) }));
-      const ns = N - np;
       const xs = (url.searchParams.get('x') || '').split(',').map(v => v.split(':').map(Number))   // מועמדים נוספים מהדפדפן: "קטע" או "קטע:חתיכה"
-                   .filter(([p]) => Number.isInteger(p) && p >= 0 && p < np).slice(0, mode === 'answer' ? A_X : 10);
+                   .filter(([p]) => Number.isInteger(p) && p >= 0 && p < np && (!grp || grp[p] === want)).slice(0, mode === 'answer' ? A_X : 10);
       for (const [p, xm] of xs) {
         const okm = Number.isInteger(xm) && xm >= 0 && xm < ns && parent[np + xm] === p ? xm : null;
         const c = cands.find(c => c.p === p);
@@ -220,8 +231,11 @@ export default {
         return json({ q, ranked, claude: rerank.last || null, err: rerank.err || null, results,
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70) + ' (' + c.s + ')') }, 200, h);
       }
-      const txt2 = await loadTxt(); results = results.map(r => full(txt2, r));
-      const resp = json({ results, ranked }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
+      const txt2 = await loadTxt();
+      const shown = new Set(results.map(r => r.p));
+      const more = cands.filter(c => !shown.has(c.p)).slice(0, 10).map(r => full(txt2, r));   // "הצג עוד תוצאות": הקרובים הבאים לפי משמעות
+      results = results.map(r => full(txt2, r));
+      const resp = json({ results, ranked, more }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
       ctx.waitUntil(cache.put(ckey, resp.clone()));
       return resp;
     } catch (e) {

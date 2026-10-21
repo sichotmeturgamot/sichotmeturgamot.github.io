@@ -53,6 +53,12 @@
   .smart-in input { padding-inline-end: 40px; }
   .smart-row .smart-clear { position: absolute; inset-inline-end: 6px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; padding: 0; border: none; background: transparent; color: var(--muted); font-size: 1.4rem; line-height: 1; cursor: pointer; display: none; }
   .smart-row .smart-clear:hover { color: var(--navy); }
+  .src-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 10px; align-items: center; }
+  .src-row .lbl { font-size: .8rem; color: var(--muted); }
+  .src-row button { font: 500 .8rem 'Heebo', sans-serif; padding: 5px 12px; border-radius: 16px; border: 1px solid var(--line, #e5dcc6); background: transparent; color: var(--navy); cursor: pointer; }
+  .src-row button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .smart-more { display: block; margin: 14px auto 4px; font: 500 .9rem 'Heebo', sans-serif; padding: 9px 20px; border-radius: 22px; border: 1px solid var(--gold); background: transparent; color: var(--gold-dark, #8a6d2a); cursor: pointer; }
+  .more-note { text-align: center; font-size: .8rem; color: var(--muted); margin: 16px 0 6px; }
   .smart-status { color: var(--muted); font-size: .88rem; margin-top: 10px; min-height: 1.2em; }
   .smart-res { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
   .smart-res .src { font-family: 'Heebo', sans-serif; font-size: .82rem; color: var(--muted); margin-bottom: 4px; }
@@ -238,6 +244,7 @@
         </span>
         <button type="submit" id="smart-go">שאלו</button>
       </form>
+      <div class="src-row" id="src-row"><span class="lbl">חיפוש ב:</span><button type="button" data-src="">הכל</button><button type="button" data-src="s">ספר השיחות</button><button type="button" data-src="l">לקוטי דיבורים</button><button type="button" data-src="r">רשימות ואגרות</button></div>
       <div class="smart-status" id="smart-status" aria-live="polite"></div>
       <div id="smart-out"></div>
     </div>
@@ -314,6 +321,14 @@
     });
     return res;
   }
+  // סינון לפי מקור — נשמר לביקור הבא
+  var SRC = ''; try { SRC = localStorage.getItem('ai-src') || ''; } catch(e){}
+  var srow = document.getElementById('src-row');
+  function drawSrc(){ srow.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-src') === SRC); }); }
+  srow.addEventListener('click', function(e){ var b = e.target.closest('button'); if(!b) return; SRC = b.getAttribute('data-src'); try { localStorage.setItem('ai-src', SRC); } catch(e2){} drawSrc();
+    if(qi.value.trim().length >= 2) form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', {cancelable: true})); });
+  drawSrc();
+  function srcQ(){ return SRC ? '&src=' + SRC : ''; }
   var sc = document.getElementById('smart-clear');
   function syncClear(){ sc.style.display = qi.value ? 'block' : 'none'; if(!qi.value.trim()){ out.textContent = ''; st.textContent = ''; } }
   qi.addEventListener('input', syncClear);
@@ -485,7 +500,7 @@
 
   form.addEventListener('submit', function(ev){
     ev.preventDefault(); var q = qi.value.trim(); if(q.length < 2) return;
-    var n = nq(q);
+    var n = nq(q) + (SRC ? '|' + SRC : '');   // סינון מקור — תשובה נפרדת
     out.textContent = ''; hbox.hidden = true;
     getApproved().then(function(appr){
       if(appr[n]){ var a = appr[n]; show({q: q, n: n, answer: a.answer, srcs: a.srcs, ts: a.ts}, 'approved'); return; }
@@ -509,7 +524,7 @@
           .forEach(function(p){ if(!seen0[p]){ seen0[p] = 1; xs.push(p); } });
       }
       xs = xs.slice(0, 30);
-      return fetch(API + '?v=14&mode=answer&q=' + encodeURIComponent(q) + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+      return fetch(API + '?v=15&mode=answer&q=' + encodeURIComponent(q) + srcQ() + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
       go.disabled = false; stopSteps();
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
