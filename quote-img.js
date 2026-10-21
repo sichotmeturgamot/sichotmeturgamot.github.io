@@ -62,8 +62,6 @@
     // ב"ה ומרכאות
     ctx.textAlign = 'center'; ctx.fillStyle = C.gold; ctx.font = '400 30px "Frank Ruhl Libre", serif';
     ctx.fillText('ב״ה', W / 2, 108);
-    ctx.font = '700 150px "Frank Ruhl Libre", serif'; ctx.textAlign = 'right'; ctx.globalAlpha = .3;
-    ctx.fillText('”', W - C.pad + 24, 238); ctx.globalAlpha = 1;
     // הציטוט
     ctx.fillStyle = C.navy; ctx.textAlign = 'right';
     ctx.font = '500 ' + size + 'px "Frank Ruhl Libre", serif';
