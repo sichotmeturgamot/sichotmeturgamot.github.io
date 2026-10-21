@@ -9,6 +9,7 @@
     ['index.html',     'ראשי'],
     ['sichos.html',    'קריאת השיחות'],
     ['milon.html',     'מילון'],
+    ['stories.html',   'סיפורים ופתגמים'],
     ['ask.html',       'חיפוש'],
     ['subscribe.html', 'הצטרפות לעדכונים'],
     ['donate.html',    'תרומה'],
