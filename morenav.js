@@ -3,6 +3,7 @@
   var page = (location.pathname.split('/').pop() || 'index.html');
 
   var items = [
+    { href: 'stories.html',  label: 'סיפורים ופתגמים', icon: '<path d="M7 8h10M7 12h7"/><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>' },
     { href: 'about.html',    label: 'אודות',         icon: '<circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/>' },
     { href: 'subscribe.html', label: 'הצטרפות לעדכונים', icon: '<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10 21a2 2 0 004 0"/>' },
     { href: 'donate.html',   label: 'תרומה',        icon: '<path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 000-7.8z"/>' },
