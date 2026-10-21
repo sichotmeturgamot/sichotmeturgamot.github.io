@@ -51,7 +51,7 @@
     const lh = size * 1.62;
     ctx.font = '700 36px "Frank Ruhl Libre", serif';
     const srcLines = wrapLines(ctx, 'מתוך שיחת ' + p.name, maxW);
-    const top = 210, footH = 150;
+    const top = 170, footH = 150;
     const H = Math.max(1080, Math.round(top + textH(lines, lh) + 80 + srcLines.length * 52 + 70 + footH));
     cv.width = W; cv.height = H;
     ctx.direction = 'rtl'; ctx.textBaseline = 'alphabetic';
@@ -65,7 +65,9 @@
     // הציטוט
     ctx.fillStyle = C.navy; ctx.textAlign = 'right';
     ctx.font = '500 ' + size + 'px "Frank Ruhl Libre", serif';
-    let y = top + size;
+    // קטע קצר — ממרכזים את הבלוק (ציטוט + מקור) בתוך המסגרת
+    const blockH = textH(lines, lh) + 84 + srcLines.length * 52;
+    let y = Math.max(top, Math.round((150 + (H - footH - 70) - blockH) / 2)) + size;
     lines.forEach(l => { if (l === null) { y += lh * .55; return; } drawJustified(ctx, l, W - C.pad, maxW, y); y += lh; });
     // קו ומראה מקום
     y += 22; ctx.fillStyle = C.gold; ctx.fillRect(W - C.pad - 90, y, 90, 3);
