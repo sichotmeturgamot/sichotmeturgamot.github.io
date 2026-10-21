@@ -6,17 +6,27 @@
   const MAX_TEXT_H = 1300;   // גובה מרבי לטקסט הציטוט (פיקסלים בתמונה)
 
   function wrapLines(ctx, text, maxW) {
-    const out = [];
+    const out = [];                                           // {t, last} — last = שורה אחרונה בפסקה (לא מיושרת לשני הצדדים)
     text.split(/\n\s*\n+|\n/).forEach((para, pi) => {
       if (pi) out.push(null);                                 // רווח בין פסקאות
       let line = '';
       para.split(/\s+/).filter(Boolean).forEach(w => {
         const t = line ? line + ' ' + w : w;
-        if (ctx.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t;
+        if (ctx.measureText(t).width > maxW && line) { out.push({ t: line, last: false }); line = w; } else line = t;
       });
-      if (line) out.push(line);
+      if (line) out.push({ t: line, last: true });
     });
     return out;
+  }
+  // שורה מיושרת לשני הצדדים: מפזרים את הרווח העודף בין המילים (מימין לשמאל)
+  function drawJustified(ctx, l, right, maxW, y) {
+    const words = l.t.split(' ');
+    if (l.last || words.length < 2) { ctx.textAlign = 'right'; ctx.fillText(l.t, right, y); return; }
+    const ws = words.map(w => ctx.measureText(w).width), sum = ws.reduce((a, b) => a + b, 0);
+    const gap = (maxW - sum) / (words.length - 1);
+    if (gap > ctx.measureText(' ').width * 3.2) { ctx.textAlign = 'right'; ctx.fillText(l.t, right, y); return; }  // רווחים גדולים מדי — בלי יישור
+    ctx.textAlign = 'right'; let x = right;
+    words.forEach((w, i) => { ctx.fillText(w, x, y); x -= ws[i] + gap; });
   }
   const textH = (lines, lh) => lines.reduce((h, l) => h + (l === null ? lh * .55 : lh), 0);
 
@@ -58,11 +68,11 @@
     ctx.fillStyle = C.navy; ctx.textAlign = 'right';
     ctx.font = '500 ' + size + 'px "Frank Ruhl Libre", serif';
     let y = top + size;
-    lines.forEach(l => { if (l === null) { y += lh * .55; return; } ctx.fillText(l, W - C.pad, y); y += lh; });
+    lines.forEach(l => { if (l === null) { y += lh * .55; return; } drawJustified(ctx, l, W - C.pad, maxW, y); y += lh; });
     // קו ומראה מקום
     y += 22; ctx.fillStyle = C.gold; ctx.fillRect(W - C.pad - 90, y, 90, 3);
     y += 62; ctx.fillStyle = C.navy; ctx.font = '700 36px "Frank Ruhl Libre", serif';
-    srcLines.forEach(l => { ctx.fillText(l, W - C.pad, y); y += 52; });
+    srcLines.forEach(l => { ctx.textAlign = 'right'; ctx.fillText(l.t, W - C.pad, y); y += 52; });
     // פס תחתון עם שם האתר
     ctx.fillStyle = C.navy; ctx.fillRect(0, H - footH, W, footH);
     ctx.textAlign = 'center'; ctx.fillStyle = C.cream; ctx.font = '500 40px "Frank Ruhl Libre", serif';
