@@ -33,6 +33,7 @@
   .sp-list { max-width: 680px; margin: 8px auto 30px; padding: 0 16px; display: grid; gap: 14px; }
   .st { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 14px; border-top: 3px solid var(--gold); }
   .st h3 { font-size: 1.3rem; margin: 0 0 6px; }
+  .st .sum b { font: 500 .85rem 'Heebo', sans-serif; color: var(--gold-dark); }
   .st .sum { font-family: 'Frank Ruhl Libre', serif; font-size: 1.03rem; line-height: 1.7; color: var(--text); margin: 0 0 10px; }
   .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
   .tag { font: .74rem 'Heebo', sans-serif; background: #efe9db; color: #7a6a42; border-radius: 999px; padding: 2px 10px; }
@@ -132,7 +133,7 @@ function actions(it, extra){
 }
 function story(it){
   const c = el('article', 'st'); c.appendChild(el('h3', null, it.title)); c.appendChild(tags(it));
-  c.appendChild(el('p', 'sum', it.summary));
+  const sm = el('p', 'sum', ''); const lb = el('b', null, 'תקציר: '); sm.appendChild(lb); sm.appendChild(document.createTextNode(it.summary)); c.appendChild(sm);
   const full = el('div', 'full', it.text); full.hidden = true; c.appendChild(full);
   const src = el('div', 'src', 'מתוך שיחת ' + it.t); src.hidden = true; c.appendChild(src);
   const tg = el('button', 'main', 'לקריאת הסיפור'); tg.type = 'button';
