@@ -1,4 +1,4 @@
-// שרת החיפוש הסמנטי — גרסה 15: סינון לפי מקור (src) ו"עוד תוצאות" (more). גרסה 10 (הטקסט לתצוגה נשלח מהשרת): חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
+// שרת החיפוש הסמנטי — גרסה 17: חיפוש דו־שלבי (ביטים ואז מדויק). גרסה 15: סינון לפי מקור (src) ו"עוד תוצאות" (more). גרסה 10 (הטקסט לתצוגה נשלח מהשרת): חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
 // Claude חושב מעט (effort: low) לפני שהוא בוחר
 // דרוש: Binding מסוג Workers AI בשם AI, וסוד בשם ANTHROPIC_API_KEY
 const SITE = 'https://sichotmeturgamot.com/';
@@ -8,7 +8,9 @@ const MAX_Q = 200, TOP = 5, CAND = 50, PER_MIN = 12, SCALE = 400;
 const A_CAND = 60, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
 const MODEL = 'claude-haiku-5-5';
 
-let IDX = null, TXT = null, GRP = null;
+let IDX = null, TXT = null, GRP = null, BITS = null;
+const K1 = 300;   // שלב 1 (ביטים) בוחר את 300 הקטעים המובילים; רק עליהם החישוב המדויק
+const pop = x => { x -= (x >>> 1) & 0x55555555; x = (x & 0x33333333) + ((x >>> 2) & 0x33333333); return (((x + (x >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24; };
 const hits = new Map();
 
 async function getBuf(name) {
@@ -21,7 +23,13 @@ async function loadIdx() {
   const buf = await getBuf('search-vectors.bin');
   const h = new Uint32Array(buf, 0, 4);
   const N = h[0], dim = h[1], np = h[2], delta = h[3] / 1000;
-  return (IDX = { N, dim, np, delta, parent: new Uint16Array(buf, 16, N), vec: new Int8Array(buf, 16 + 2 * N) });
+  const parent = new Uint16Array(buf, 16, N), kids = Array.from({ length: np }, () => []);
+  for (let i = np; i < N; i++) kids[parent[i]].push(i);
+  return (IDX = { N, dim, np, delta, parent, kids, vec: new Int8Array(buf, 16 + 2 * N) });
+}
+async function loadBits() {   // search-bits.bin: לכל וקטור ביט לכל ממד (חיובי/לא) — לסינון ראשוני מהיר
+  if (BITS) return BITS;
+  return (BITS = new Uint32Array(await getBuf('search-bits.bin'), 8));
 }
 async function loadTxt() {
   if (TXT) return TXT;
@@ -172,22 +180,25 @@ export default {
       n = (Math.sqrt(n) || 1) * SCALE;
       const { N, dim, np, delta, parent, vec } = idx;
       const qf = new Float32Array(dim); for (let k = 0; k < dim; k++) qf[k] = qv[k] / n;   // מהיר יותר (מערך מספרים + פריסת לולאה)
-      // שלב 1: ניקוד כל הקטעים; שלב 2: חתיכות קטנות רק של 300 הקטעים המובילים (חוסך כמחצית מהחישוב, בלי שינוי בתוצאות בבדיקה)
+      // חיפוש דו־שלבי: (1) השוואת ביטים מהירה לכל הקטעים והחתיכות → 300 קטעים מובילים; (2) חישוב מדויק רק להם ולחתיכות שלהם
       const dot = (i) => { let s0 = 0, s1 = 0, s2 = 0, s3 = 0, o = i * dim;
         for (let k = 0; k < dim; k += 4, o += 4) { s0 += vec[o] * qf[k]; s1 += vec[o + 1] * qf[k + 1]; s2 += vec[o + 2] * qf[k + 2]; s3 += vec[o + 3] * qf[k + 3]; }
         return s0 + s1 + s2 + s3; };
-      const ns = N - np;
+      const ns = N - np, { kids } = idx, bits = await loadBits();
       const grp = src ? groups(await loadTxt(), np, ns) : null, want = src ? src.charCodeAt(0) : 0;
-      const bs = new Float32Array(np), bm = new Int32Array(np).fill(-1);
-      for (let p = 0; p < np; p++) bs[p] = grp && grp[p] !== want ? -1e9 : dot(p);
-      const thr = Math.max(-1e8, Float32Array.from(bs).sort()[Math.max(0, np - 300)]);
-      const top = new Uint8Array(np); for (let p = 0; p < np; p++) if (bs[p] >= thr) top[p] = 1;
-      for (let i = np; i < N; i++) {
-        const p = parent[i]; if (!top[p]) continue;
-        const s = dot(i) - delta;
-        if (s > bs[p]) { bs[p] = s; bm[p] = i - np; }
+      const W4 = dim / 32, qb = new Uint8Array(dim / 8); for (let k = 0; k < dim; k++) if (qv[k] > 0) qb[k >> 3] |= 128 >> (k & 7);
+      const q32 = new Uint32Array(qb.buffer), ap = new Int32Array(np).fill(-dim - 1);
+      for (let i = 0; i < N; i++) {
+        const p = i < np ? i : parent[i]; if (grp && grp[p] !== want) continue;
+        let ham = 0; const o = i * W4; for (let j = 0; j < W4; j++) ham += pop(bits[o + j] ^ q32[j]);
+        const sb = dim - 2 * ham; if (sb > ap[p]) ap[p] = sb;
       }
-      const best = new Map(); for (let p = 0; p < np; p++) if (!grp || grp[p] === want) best.set(p, [bs[p], bm[p]]);
+      const hist = new Int32Array(2 * dim + 2); for (let p = 0; p < np; p++) hist[ap[p] + dim + 1]++;
+      let cnt = 0, t = 2 * dim + 1; for (; t > 1; t--) { cnt += hist[t]; if (cnt >= K1) break; }
+      const bs = new Float32Array(np).fill(-1e9), bm = new Int32Array(np).fill(-1), sel = [];
+      for (let p = 0; p < np; p++) if (ap[p] + dim + 1 >= t && ap[p] > -dim - 1) sel.push(p);
+      for (const p of sel) { bs[p] = dot(p); for (const i of kids[p]) { const s = dot(i) - delta; if (s > bs[p]) { bs[p] = s; bm[p] = i - np; } } }
+      const best = new Map(); for (const p of sel) best.set(p, [bs[p], bm[p]]);
       let cands = [...best.entries()].sort((a, b) => b[1][0] - a[1][0]).slice(0, mode === 'answer' ? A_CAND : CAND)
                     .map(([p, [s, m]]) => ({ p, m, s: +s.toFixed(3) }));
       const xs = (url.searchParams.get('x') || '').split(',').map(v => v.split(':').map(Number))   // מועמדים נוספים מהדפדפן: "קטע" או "קטע:חתיכה"
@@ -196,7 +207,7 @@ export default {
         const okm = Number.isInteger(xm) && xm >= 0 && xm < ns && parent[np + xm] === p ? xm : null;
         const c = cands.find(c => c.p === p);
         if (c) { if (okm !== null) c.m = okm; continue; }
-        const b = best.get(p); cands.push({ p, m: okm !== null ? okm : (b ? b[1] : -1), s: b ? +b[0].toFixed(3) : 0 });
+        const b = best.get(p); cands.push({ p, m: okm !== null ? okm : (b ? b[1] : -1), s: b ? +b[0].toFixed(3) : +dot(p).toFixed(3) });
       }
       // הטקסט לתצוגה נשלח מהשרת — הדפדפן לא צריך להוריד את כל הטקסטים
       const full = (txt, r) => { const [f, u, t] = txt(2 * np + ns + r.p).split('\t'); const x = txt(np + ns + r.p);
