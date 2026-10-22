@@ -1,0 +1,114 @@
+[
+ {
+  "page": 243,
+  "words": 316,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 245,
+  "words": 283,
+  "wrong": 1,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": [
+   "scan: יי״א (intro line, after 'מפורסם,') → transcription: יו״א (glyph is borderline; likely yod-yod)"
+  ]
+ },
+ {
+  "page": 249,
+  "words": 337,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 255,
+  "words": 316,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 269,
+  "words": 302,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 313,
+  "words": 226,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 324,
+  "words": 344,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 332,
+  "words": 384,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 19,
+  "words": 304,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 32,
+  "words": 326,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": []
+ },
+ {
+  "page": 64,
+  "words": 223,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": [],
+  "notes": "ASCII ' and \" used for geresh/gershayim instead of ׳ ״ (typographic inconsistency vs. other pages, not counted as word errors)"
+ },
+ {
+  "page": 139,
+  "words": 396,
+  "wrong": 0,
+  "missing": 0,
+  "extra": 0,
+  "order_ok": true,
+  "examples": [],
+  "notes": "ASCII ' and \" used for geresh/gershayim instead of ׳ ״ (typographic inconsistency vs. other pages, not counted as word errors)"
+ }
+]
