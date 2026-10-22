@@ -283,7 +283,7 @@
       go = document.getElementById('smart-go'), st = document.getElementById('smart-status'), out = document.getElementById('smart-out');
   function el(t, c, x){ var e=document.createElement(t); if(c) e.className=c; if(x!=null) e.textContent=x; return e; }
   var kwP = null;   // אינדקס מילים קטן (במקום כל הטקסט): מילה → קטעים, ומיפוי ערכי המפתח לקטעים
-  function getKw(){ return kwP || (kwP = fetch('search-kw.json?v=14').then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(k){ k.words = Object.keys(k.v); return k; }).catch(function(e){ kwP = null; throw e; })); }
+  function getKw(){ return kwP || (kwP = fetch('search-kw.json?v=16').then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(k){ k.words = Object.keys(k.v); return k; }).catch(function(e){ kwP = null; throw e; })); }
   function hitsFor(forms, kw){   // כל הקטעים שמכילים אחת הצורות (כמו חיפוש בטקסט המלא)
     var seen = {}, out = [];
     kw.words.forEach(function(w){ if(forms.some(function(f){ return w.indexOf(f) >= 0; })) kw.v[w].forEach(function(p){ if(!seen[p]){ seen[p] = 1; out.push(p); } }); });
@@ -525,7 +525,7 @@
           .forEach(function(p){ if(!seen0[p]){ seen0[p] = 1; xs.push(p); } });
       }
       xs = xs.slice(0, 30);
-      return fetch(API + '?v=15&mode=answer&q=' + encodeURIComponent(q) + srcQ() + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+      return fetch(API + '?v=16&mode=answer&q=' + encodeURIComponent(q) + srcQ() + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
       go.disabled = false; stopSteps();
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
