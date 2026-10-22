@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>השוואת חיפוש — ניסוי</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="https://sichotmeturgamot.com/style.css">
+<style>
+  main { max-width: 900px; margin: 0 auto; padding: 24px 14px 120px; }
+  h1 { text-align: center; font-size: 1.6rem; margin: 10px 0 6px; }
+  .intro { text-align: center; color: var(--muted); font-size: .92rem; line-height: 1.7; max-width: 640px; margin: 0 auto 18px; }
+  .bar { display: flex; gap: 8px; max-width: 640px; margin: 0 auto 10px; }
+  .bar input { flex: 1; min-width: 0; padding: 11px 14px; border: 1.5px solid var(--line); border-radius: 22px; font: inherit; background: var(--paper); }
+  .bar button, .runall { background: var(--navy); color: #fff; border: 0; border-radius: 22px; padding: 10px 18px; font: 500 .95rem 'Heebo', sans-serif; cursor: pointer; }
+  .runall { display: block; margin: 6px auto 14px; background: var(--gold); }
+  .sum { text-align: center; font: 700 1rem 'Heebo', sans-serif; color: var(--navy); min-height: 1.4em; margin-bottom: 10px; }
+  .qcard { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 12px 0; }
+  .qcard h3 { font-size: 1rem; margin: 0 0 6px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .badge { font: 600 .75rem 'Heebo', sans-serif; padding: 2px 9px; border-radius: 10px; }
+  .badge.same { background: #e4f1e4; color: #2d6a2d; } .badge.diff { background: #fbecd9; color: #8a5a10; } .badge.wait { background: #eee; color: #777; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+  .col h4 { font: 600 .82rem 'Heebo', sans-serif; color: var(--gold-dark, #8a6d2a); margin: 4px 0; }
+  .col ol { margin: 0; padding-inline-start: 22px; font-size: .86rem; line-height: 1.5; }
+  .col li { margin: 3px 0; } .col li.new { background: #fff3cd; } .col li.gone { color: #999; }
+  .col li small { color: var(--muted); }
+  details summary { cursor: pointer; font-size: .8rem; color: var(--muted); margin-top: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>השוואת חיפוש — ניסוי</h1>
+  <p class="intro">לכל שאלה: עשר התוצאות הראשונות לפי משמעות (לפני בחירת ה-AI) — בשיטה הנוכחית (א) ובשיטה הדו־שלבית החדשה (ב). מסומן ״זהה״ כשחמש התוצאות הראשונות זהות. תוצאה שמופיעה רק באחת השיטות — מודגשת בצהוב.</p>
+  <form class="bar" id="f"><input id="q" placeholder="אפשר גם לכתוב שאלה משלכם…" autocomplete="off"><button>השוואה</button></form>
+  <button class="runall" id="all" type="button">להריץ את 20 שאלות הבדיקה</button>
+  <div class="sum" id="sum"></div>
+  <div id="out"></div>
+</main>
+<script>
+var API = 'https://sichos-search-cmp.doviber.workers.dev/';
+var QS = ["מה הרעיון שאדמו\"ר הזקן הביא ממעזריטש על סדר ההגדה בפסח?", "מי היו הזקנים שאדמו\"ר הזקן הביא ממעזריטש לליאזנא?", "מה עשה אחד החסידים כשהצמח צדק שלח לו אוכל לפני התפילה?", "מה סיפר הרבי על אדמו\"ר מוהר\"ש בתפילת יום הכיפורים?", "איך צריך להתנהג מלמד חסידי עם התלמידים", "מה המשמעות של הוידוי בלחש בזמן תקיעת שופר", "איזו תועלת רוחנית יכולה להיות לאדם שיושב בכלא", "מה היה סדר היום של הרבי בערב פסח עד ליל הסדר", "מה אומרים לאדם שהפסיד את כל רכושו ושוקע בדיכאון, ומה לעשיר שמתנשא?", "למה בר המצוה של הרבי האמצעי עלה לתורה במנחה של שבת ולא בבוקר", "ילד שסיכן את חייו והסתתר באח הבוערת כדי לשמוע תורה מסבא שלו", "לא לבקר אנשים אחרים לפני שמבינים את הנסיבות שלהם — אל תדין את חברך", "למה הגר\"א רצה שיתרגמו את החומש ליידיש עם ביאור פשוט?", "הסופר דרז'אווין ששנא יהודים ונשלח לבדוק את מצב היהודים", "שריפת ספר התניא בחצר בית הכנסת בווילנא", "מה השיבו תלמידיו של מרדכי כשהמן התקרב והוא ביקש מהם לברוח ולהציל את עצמם?", "על אילו נושאים דתיים לא נותנים לרב באמריקה לדבר בדרשות בבית הכנסת, ומה קורה לו אם הוא כן מדבר?", "באיזה יום בשנה כדאי במיוחד לקבל על עצמו נכונות להקרבה עצמית למען התורה לכל השנה, ומה הקשר לנחשון?", "איזה סדר הנהגה קבע הרבי הרש\"ב לבנו בלילה שלפני שלקח אותו להשתטח על קברי הרבאים ביום הולדתו?", "מה התועלת באמירת תהילים מתוך בכי, ולמה צריך לקחת את התרופה הזאת בכמויות קטנות ולא בבת אחת?"];
+var done = 0, same = 0;
+function el(t, c, x){ var e = document.createElement(t); if(c) e.className = c; if(x != null) e.textContent = x; return e; }
+function list(title, arr, other){
+  var d = el('div','col'); d.appendChild(el('h4', null, title)); var ol = el('ol');
+  var op = {}; other.forEach(function(r){ op[r.p] = 1; });
+  arr.forEach(function(r){ var li = el('li', op[r.p] ? '' : 'new'); li.appendChild(el('b', null, r.t + ' ')); li.appendChild(el('small', null, r.x.slice(0, 110) + '…')); ol.appendChild(li); });
+  d.appendChild(ol); return d;
+}
+function run(q, top){
+  var c = el('div','qcard'), h = el('h3', null, q), b = el('span','badge wait','בודק…'); h.appendChild(b); c.appendChild(h);
+  var out = document.getElementById('out'); top ? out.insertBefore(c, out.firstChild) : out.appendChild(c);
+  return fetch(API + '?q=' + encodeURIComponent(q)).then(function(r){ return r.json(); }).then(function(j){
+    if(j.error){ b.textContent = 'שגיאה: ' + j.error; return null; }
+    var a5 = j.a.slice(0,5).map(function(r){ return r.p; }).join(), b5 = j.b.slice(0,5).map(function(r){ return r.p; }).join();
+    var eq = a5 === b5; b.className = 'badge ' + (eq ? 'same' : 'diff');
+    var inter = j.a.filter(function(r){ return j.b.some(function(s){ return s.p === r.p; }); }).length;
+    b.textContent = eq ? 'זהה (5 הראשונות)' : ('שונה · ' + inter + ' מתוך 10 משותפות');
+    var cols = el('div','cols'); cols.appendChild(list('א — השיטה הנוכחית', j.a, j.b)); cols.appendChild(list('ב — השיטה החדשה', j.b, j.a));
+    if(eq){ var det = el('details'); det.appendChild(el('summary', null, 'הצג את התוצאות')); det.appendChild(cols); c.appendChild(det); } else c.appendChild(cols);
+    return eq;
+  }).catch(function(){ b.textContent = 'שגיאת חיבור'; return null; });
+}
+document.getElementById('f').onsubmit = function(e){ e.preventDefault(); var q = document.getElementById('q').value.trim(); if(q.length > 1) run(q, true); };
+document.getElementById('all').onclick = function(){
+  this.disabled = true; done = same = 0; var s = document.getElementById('sum'); var i = 0;
+  (function next(){ if(i >= QS.length){ s.textContent = 'סיכום: ב־' + same + ' מתוך ' + done + ' שאלות חמש התוצאות הראשונות זהות'; return; }
+    run(QS[i++]).then(function(eq){ if(eq !== null){ done++; if(eq) same++; } s.textContent = 'נבדקו ' + done + ' מתוך ' + QS.length + '…'; next(); }); })();
+};
+</script>
+</body>
+</html>
