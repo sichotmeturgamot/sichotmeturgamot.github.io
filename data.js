@@ -986,6 +986,17 @@ const YEARS = [
         "hebDate": "ט״ז ניסן",
         "addedAt": "2026-10-22",
         "hasPage": true
+      },
+      {
+        "title": "יום ג', ב' דחול המועד פסח תש\"ח",
+        "subtitle": "לקבוצת רמי\"ם מערי השדה ותלמידי התמימים",
+        "file": "pdfs/chol_hamoed_2_pesach_5708.pdf",
+        "pages": 4,
+        "count": 1,
+        "sortDate": "08-18",
+        "hebDate": "י״ח ניסן",
+        "addedAt": "2026-10-22",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
