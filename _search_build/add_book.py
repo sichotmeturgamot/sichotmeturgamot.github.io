@@ -19,7 +19,7 @@ oldS = [(j, s) for j, s in enumerate(old['smalls']) if s['p'] in remap]
 B = json.load(open(book)); bd = json.load(open(descs)); bd = [d['d'] if isinstance(d, dict) else d for d in bd]
 assert len(bd) == len(B['chunks'])
 cache = json.load(open(cachef))
-q = lambda texts: np.clip(np.rint(np.array([cache[key(t)] for t in texts], np.float32) * 400), -127, 127).astype(np.int8)
+q = lambda texts: np.clip(np.rint(np.array([cache[key(t)] for t in texts], np.float32).reshape(len(texts), -1 if texts else dim) * 400), -127, 127).astype(np.int8)
 Pn = q([bd[i] + '\n' + c['x'] for i, c in enumerate(B['chunks'])]); Sn = q([s['x'] for s in B['smalls']])
 np1 = len(oldC)
 C = oldC + B['chunks']; D = oldDk + bd
