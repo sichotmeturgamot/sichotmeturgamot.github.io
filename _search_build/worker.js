@@ -44,8 +44,8 @@ async function loadTxt() {
 function groups(txt, np, ns) {
   if (GRP) return GRP;
   const g = new Uint8Array(np);
-  for (let p = 0; p < np; p++) { const [f, u] = txt(2 * np + ns + p).split('\t');
-    g[p] = f ? 115 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114); }
+  for (let p = 0; p < np; p++) { const [f, u, t] = txt(2 * np + ns + p).split('\t');
+    g[p] = f || (t && t.startsWith('ספר השיחות')) ? 115 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114); }   // ספר השיחות: קובץ באתר, או התרגום של קה"ת
   return (GRP = g);
 }
 
