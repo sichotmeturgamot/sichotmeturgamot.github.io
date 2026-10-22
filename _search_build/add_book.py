@@ -32,4 +32,5 @@ json.dump({'chunks': C, 'smalls': S}, open(R + 'search-meta.json', 'w'), ensure_
 json.dump(D, open(R + '_search_build/descs.json', 'w'), ensure_ascii=False, indent=0)
 subprocess.run(['python3', R + '_search_build/build_texts.py'], check=True)
 subprocess.run(['node', R + '_search_build/build_kw.mjs'], cwd=R, check=True)
+subprocess.run(['python3', R + '_search_build/build_bits.py'], check=True)   # search-bits.bin לשלב הסינון בשרת
 print('parents', len(C), 'smalls', len(S), 'vectors', len(V))
