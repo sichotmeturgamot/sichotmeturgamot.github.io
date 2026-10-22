@@ -245,7 +245,7 @@
       go = document.getElementById('smart-go'), st = document.getElementById('smart-status'), out = document.getElementById('smart-out');
   function el(t, c, x){ var e=document.createElement(t); if(c) e.className=c; if(x!=null) e.textContent=x; return e; }
   var kwP = null;   // אינדקס מילים קטן (במקום כל הטקסט): מילה → קטעים, ומיפוי ערכי המפתח לקטעים
-  function getKw(){ return kwP || (kwP = fetch('search-kw.json?v=18').then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(k){ k.words = Object.keys(k.v); return k; }).catch(function(e){ kwP = null; throw e; })); }
+  function getKw(){ return kwP || (kwP = fetch('search-kw.json?v=19').then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(k){ k.words = Object.keys(k.v); return k; }).catch(function(e){ kwP = null; throw e; })); }
   function hitsFor(forms, kw){   // כל הקטעים שמכילים אחת הצורות (כמו חיפוש בטקסט המלא)
     var seen = {}, out = [];
     kw.words.forEach(function(w){ if(forms.some(function(f){ return w.indexOf(f) >= 0; })) kw.v[w].forEach(function(p){ if(!seen[p]){ seen[p] = 1; out.push(p); } }); });
