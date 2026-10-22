@@ -1,0 +1,68 @@
+[
+ {
+  "page": 56,
+  "words": 357,
+  "errors": []
+ },
+ {
+  "page": 102,
+  "words": 295,
+  "errors": [
+   {
+    "file": "׳אגורה באהלך עולמים״",
+    "scan": "׳אגורה באהלך עולמים׳",
+    "type": "punct"
+   }
+  ]
+ },
+ {
+  "page": 103,
+  "words": 290,
+  "errors": []
+ },
+ {
+  "page": 105,
+  "words": 390,
+  "errors": []
+ },
+ {
+  "page": 163,
+  "words": 341,
+  "errors": []
+ },
+ {
+  "page": 271,
+  "words": 324,
+  "errors": []
+ },
+ {
+  "page": 274,
+  "words": 335,
+  "errors": []
+ },
+ {
+  "page": 281,
+  "words": 286,
+  "errors": []
+ },
+ {
+  "page": 286,
+  "words": 321,
+  "errors": []
+ },
+ {
+  "page": 303,
+  "words": 325,
+  "errors": []
+ },
+ {
+  "page": 305,
+  "words": 335,
+  "errors": []
+ },
+ {
+  "page": 329,
+  "words": 359,
+  "errors": []
+ }
+]
