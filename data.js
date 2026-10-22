@@ -997,6 +997,17 @@ const YEARS = [
         "hebDate": "י״ח ניסן",
         "addedAt": "2026-10-22",
         "hasPage": true
+      },
+      {
+        "title": "יום ד', ג' דחול המועד פסח תש\"ח",
+        "subtitle": "ע\"ד שהתלמידים שי' ינאמו בימים האחרונים של החג",
+        "file": "pdfs/chol_hamoed_3_pesach_5708.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "08-19",
+        "hebDate": "י״ט ניסן",
+        "addedAt": "2026-10-22",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
