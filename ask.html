@@ -204,7 +204,7 @@
         </span>
         <button type="submit" id="smart-go">חפשו</button>
       </form>
-      <div class="src-row" id="src-row"><span class="lbl">חיפוש ב:</span><button type="button" data-src="">הכל</button><button type="button" data-src="s">ספר השיחות מתורגם</button><button type="button" data-src="k">שיחות מתורגמות (קה״ת)</button><button type="button" data-src="l">לקוטי דיבורים</button><button type="button" data-src="r">רשימות ואגרות</button></div>
+      <div class="src-row" id="src-row"><span class="lbl">חיפוש ב:</span><button type="button" data-src="">הכל</button><button type="button" data-src="s">ספר השיחות מתורגם</button><button type="button" data-src="l">לקוטי דיבורים</button><button type="button" data-src="r">רשימות ואגרות</button></div>
       <div class="smart-status" id="smart-status" aria-live="polite"></div>
       <div id="smart-out"></div>
     </div>
@@ -307,7 +307,7 @@
       // קטעים מהמפתח ומילים נדירות — נשלחים לשרת כמועמדים נוספים, ו-Claude מחליט אם הם מתאימים
       if(kw){ var seen0 = {}; ex = mafteachHits(q, kw).concat(exactHits(q, kw)).filter(function(r){ if(seen0[r.p]) return false; seen0[r.p] = 1; return true; }).slice(0, 10); }
       var xs = ex.map(function(r){ return r.m >= 0 ? r.p + ':' + r.m : r.p; }).join(',');
-      return fetch(API + '?v=19&q=' + encodeURIComponent(q) + srcQ() + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+      return fetch(API + '?v=20&q=' + encodeURIComponent(q) + srcQ() + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
       go.disabled = false; sin.classList.remove('busy');
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
