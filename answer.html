@@ -245,7 +245,7 @@
         </span>
         <button type="submit" id="smart-go">שאלו</button>
       </form>
-      <div class="src-row" id="src-row"><span class="lbl">חיפוש ב:</span><button type="button" data-src="">הכל</button><button type="button" data-src="s">ספר השיחות מתורגם</button><button type="button" data-src="l">לקוטי דיבורים</button><button type="button" data-src="r">רשימות ואגרות</button></div>
+      <div class="src-row" id="src-row"><span class="lbl">חיפוש ב:</span><button type="button" data-src="">הכל</button><button type="button" data-src="s">ספר השיחות מתורגם</button><button type="button" data-src="k">שיחות מתורגמות (קה״ת)</button><button type="button" data-src="l">לקוטי דיבורים</button><button type="button" data-src="r">רשימות ואגרות</button></div>
       <div class="smart-status" id="smart-status" aria-live="polite"></div>
       <div id="smart-out"></div>
     </div>
@@ -525,7 +525,7 @@
           .forEach(function(p){ if(!seen0[p]){ seen0[p] = 1; xs.push(p); } });
       }
       xs = xs.slice(0, 30);
-      return fetch(API + '?v=18&mode=answer&q=' + encodeURIComponent(q) + srcQ() + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+      return fetch(API + '?v=19&mode=answer&q=' + encodeURIComponent(q) + srcQ() + (xs.length ? '&x=' + xs.join(',') : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
       go.disabled = false; stopSteps();
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }

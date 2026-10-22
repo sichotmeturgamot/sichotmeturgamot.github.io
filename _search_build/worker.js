@@ -45,7 +45,7 @@ function groups(txt, np, ns) {
   if (GRP) return GRP;
   const g = new Uint8Array(np);
   for (let p = 0; p < np; p++) { const [f, u, t] = txt(2 * np + ns + p).split('\t');
-    g[p] = f || (t && t.startsWith('ספר השיחות')) ? 115 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114); }   // ספר השיחות: קובץ באתר, או התרגום של קה"ת
+    g[p] = f ? 115 : t && t.startsWith('ספר השיחות') ? 107 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114); }   // s = שיחות האתר, k = שיחות מתורגמות (תרגום קה"ת), l = לקוטי דיבורים, r = השאר
   return (GRP = g);
 }
 
@@ -160,8 +160,8 @@ export default {
     if (q.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
 
     const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
-    const src = ['s', 'l', 'r'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v13?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const src = ['s', 'k', 'l', 'r'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v14?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = debug ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
