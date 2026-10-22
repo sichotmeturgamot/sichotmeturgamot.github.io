@@ -16,7 +16,7 @@ def ranks(d,qs,isgold):
 old=json.load(open('/home/claude/enrich/cache.json'))
 ev=json.load(open(B+'eval.json'))
 sets=[('sichos',[(np.array(old[key(x['q'])],np.float32),x['exp']) for x in ev],lambda c,g: c['f'] in g)]
-for name,f,pre in [('LD1',B+'ld1/ld_eval.json','LD1#'),('LD2',B+'ld2/ld2_eval.json','LD2#'),('RSH8',B+'rsh8/rsh8_eval.json','RSH8#'),('LD3','/home/claude/ld3/ld3_eval.json','LD3#'),('LD4','/home/claude/ld4/ld4_eval.json','LD4#'),('LD5','/home/claude/ld5/ld5_eval.json','LD5#')]:
+for name,f,pre in [('LD1',B+'ld1/ld_eval.json','LD1#'),('LD2',B+'ld2/ld2_eval.json','LD2#'),('RSH8',B+'rsh8/rsh8_eval.json','RSH8#'),('LD3','/home/claude/ld3/ld3_eval.json','LD3#'),('LD4','/home/claude/ld4/ld4_eval.json','LD4#'),('LD5','/home/claude/ld5/ld5_eval.json','LD5#'),('SH','/home/claude/sh1/sh_eval.json','SH5700#')]:
     if not os.path.exists(f): continue
     E=json.load(open(f)); qv=g['embed_all']([x['q'] for x in E])
     sets.append((name,[(np.array(v,np.float32),x['gold']) for v,x in zip(qv,E)],(lambda pre: lambda c,gl: c['id'] in {pre+str(k) for k in gl})(pre)))

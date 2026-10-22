@@ -4,8 +4,8 @@
 const SITE = 'https://sichotmeturgamot.com/';
 const ALLOWED = ['https://sichotmeturgamot.com', 'https://www.sichotmeturgamot.com',
                  'https://sichotmeturgamot.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000'];
-const MAX_Q = 200, TOP = 5, CAND = 50, PER_MIN = 12, SCALE = 400;
-const A_CAND = 60, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
+const MAX_Q = 200, TOP = 5, CAND = 60, PER_MIN = 12, SCALE = 400;
+const A_CAND = 80, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
 const MODEL = 'claude-haiku-5-5';
 
 let IDX = null, TXT = null, GRP = null, BITS = null;
@@ -14,7 +14,7 @@ const pop = x => { x -= (x >>> 1) & 0x55555555; x = (x & 0x33333333) + ((x >>> 2
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=17', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=18', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -161,7 +161,7 @@ export default {
 
     const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v12?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v13?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = debug ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
