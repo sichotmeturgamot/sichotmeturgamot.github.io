@@ -12,7 +12,7 @@ let IDX = null, TXT = null, GRP = null;
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=14', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=16', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -153,7 +153,7 @@ export default {
 
     const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v10?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v11?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = debug ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
