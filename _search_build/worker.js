@@ -45,7 +45,7 @@ function groups(txt, np, ns) {
   if (GRP) return GRP;
   const g = new Uint8Array(np);
   for (let p = 0; p < np; p++) { const [f, u, t] = txt(2 * np + ns + p).split('\t');
-    g[p] = f || (t && t.startsWith('ספר השיחות')) ? 115 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114); }   // s = כל השיחות המתורגמות (האתר + תרגום קה"ת), l = לקוטי דיבורים, r = השאר
+    g[p] = (t && t.startsWith('ספר הזכרונות')) ? 122 : (f || (t && t.startsWith('ספר השיחות')) ? 115 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114)); }   // z = ספר הזכרונות, s = כל השיחות המתורגמות (האתר + תרגום קה"ת), l = לקוטי דיבורים, r = השאר
   return (GRP = g);
 }
 
@@ -160,7 +160,7 @@ export default {
     if (q.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
 
     const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
-    const src = ['s', 'l', 'r'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
+    const src = ['s', 'l', 'r', 'z'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
     const cache = caches.default, ckey = new Request('https://cache.sichos/v16?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = debug ? null : await cache.match(ckey);
