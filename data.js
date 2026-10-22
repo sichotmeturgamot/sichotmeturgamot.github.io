@@ -975,6 +975,17 @@ const YEARS = [
         "hebDate": "ט״ו ניסן",
         "addedAt": "2026-10-15",
         "hasPage": true
+      },
+      {
+        "title": "יום ב' דחג הפסח תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/yom_2_pesach_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "08-16",
+        "hebDate": "ט״ז ניסן",
+        "addedAt": "2026-10-22",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
