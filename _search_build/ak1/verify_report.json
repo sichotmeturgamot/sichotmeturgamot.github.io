@@ -1,0 +1,101 @@
+[
+ {
+  "page": 89,
+  "words": 146,
+  "errors": []
+ },
+ {
+  "page": 99,
+  "words": 324,
+  "errors": [
+   {
+    "got": "ה״תניא״",
+    "should": "ה„תניא״",
+    "type": "quote"
+   },
+   {
+    "got": "״תומכי תמימים״ על מכונו",
+    "should": "„תומכי תמימים״ על מכונו",
+    "type": "quote"
+   },
+   {
+    "got": "ותלמידי ״תומכי",
+    "should": "ותלמידי „תומכי",
+    "type": "quote"
+   }
+  ]
+ },
+ {
+  "page": 114,
+  "words": 273,
+  "errors": []
+ },
+ {
+  "page": 136,
+  "words": 359,
+  "errors": []
+ },
+ {
+  "page": 194,
+  "words": 104,
+  "errors": []
+ },
+ {
+  "page": 259,
+  "words": 240,
+  "errors": [
+   {
+    "got": "ו[ו]״ח",
+    "should": "[וו]״ח",
+    "type": "word"
+   }
+  ]
+ },
+ {
+  "page": 371,
+  "words": 214,
+  "errors": [
+   {
+    "got": "מגור זצוקלל״ה נבג״מ",
+    "should": "מגור זצוקללה״ה נבג״מ",
+    "type": "word"
+   },
+   {
+    "got": "אצלו זצוקלל״ה בשנת",
+    "should": "אצלו זצוקללה״ה בשנת",
+    "type": "word"
+   }
+  ]
+ },
+ {
+  "page": 414,
+  "words": 262,
+  "errors": []
+ },
+ {
+  "page": 444,
+  "words": 200,
+  "errors": [
+   {
+    "got": "הרד״ש שי׳ שניהם",
+    "should": "הרד״ש שי׳, שניהם",
+    "type": "punct"
+   }
+  ]
+ },
+ {
+  "page": 559,
+  "words": 249,
+  "errors": []
+ },
+ {
+  "page": 588,
+  "words": 315,
+  "errors": []
+ },
+ {
+  "page": 636,
+  "words": 67,
+  "errors": []
+ }
+]
