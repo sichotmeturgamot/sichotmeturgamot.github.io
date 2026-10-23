@@ -45,7 +45,7 @@ for ci in range(len(CH)):
 meta, smalls = [], []
 for i, c in enumerate(chunks):
     t = ctitle(c['ci']) + ' (עמ׳ ' + str(c['pg'] - OFF) + ')'
-    meta.append({'id': 'ZICH1#%d' % i, 'f': '', 't': t, 'x': c['x'], 'u': ''})
+    meta.append({'id': 'ZICH1#%d' % i, 'f': '', 't': t, 'x': c['x'], 'u': 'https://hebrewbooks.org/pdfpager.aspx?req=58821&pgnum=%d' % c['pg']})
     if len(c['x'].split()) > 90:
         cur = []
         for s in sentences(c['x']):
