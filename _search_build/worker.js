@@ -14,7 +14,7 @@ const pop = x => { x -= (x >>> 1) & 0x55555555; x = (x & 0x33333333) + ((x >>> 2
 const hits = new Map();
 
 async function getBuf(name) {
-  const res = await fetch(SITE + name + '?v=29', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=30', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -45,7 +45,7 @@ function groups(txt, np, ns) {
   if (GRP) return GRP;
   const g = new Uint8Array(np);
   for (let p = 0; p < np; p++) { const [f, u, t] = txt(2 * np + ns + p).split('\t');
-    g[p] = (t && t.startsWith('ספר הזכרונות')) ? 122 : (f || (t && t.startsWith('ספר השיחות')) ? 115 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114)); }   // z = ספר הזכרונות, s = כל השיחות המתורגמות (האתר + תרגום קה"ת), l = לקוטי דיבורים, r = השאר
+    g[p] = (t && t.startsWith('ספר הזכרונות')) ? 122 : (f || (t && t.startsWith('ספר השיחות')) ? 115 : (t && t.startsWith('אגרות קודש')) ? 114 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114)); }   // z = ספר הזכרונות, s = כל השיחות המתורגמות (האתר + תרגום קה"ת), l = לקוטי דיבורים, r = השאר
   return (GRP = g);
 }
 
@@ -197,7 +197,7 @@ export default {
 
     const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r', 'z'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v25?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v26?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = debug ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }

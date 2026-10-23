@@ -40,7 +40,7 @@ for it in items:
     for pg, x in out:
         if len(x.split()) < 4: continue
         i = len(meta)
-        meta.append({'id': 'AK2#%d' % i, 'f': '', 'u': '', 't': 'אגרות קודש אדמו״ר מוהריי״צ ח״ב — ' + it['h'] + ' (עמ׳ ' + heb(pg - OFF) + ')', 'x': x})
+        meta.append({'id': 'AK2#%d' % i, 'f': '', 'u': 'https://hebrewbooks.org/pdfpager.aspx?req=31602&pgnum=%d' % pg, 't': 'אגרות קודש אדמו״ר מוהריי״צ ח״ב — ' + it['h'] + ' (עמ׳ ' + heb(pg - OFF) + ')', 'x': x})
         if len(x.split()) > 90:
             c = []
             for s in sentences(x.replace('\n', ' ')):
