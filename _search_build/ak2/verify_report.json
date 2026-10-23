@@ -1,0 +1,73 @@
+[
+ {
+  "page": 173,
+  "words": 288,
+  "errors": []
+ },
+ {
+  "page": 266,
+  "words": 185,
+  "errors": []
+ },
+ {
+  "page": 267,
+  "words": 196,
+  "errors": []
+ },
+ {
+  "page": 274,
+  "words": 150,
+  "errors": [
+   {
+    "got": "פארברייינגען",
+    "should": "פארבריינגען"
+   }
+  ]
+ },
+ {
+  "page": 402,
+  "words": 308,
+  "errors": [
+   {
+    "got": "מזבח",
+    "should": "מזבת",
+    "note": "כך בדפוס (טעות דפוס במקור); ההעתקה תיקנה"
+   }
+  ]
+ },
+ {
+  "page": 549,
+  "words": 297,
+  "errors": []
+ },
+ {
+  "page": 554,
+  "words": 148,
+  "errors": []
+ },
+ {
+  "page": 555,
+  "words": 102,
+  "errors": []
+ },
+ {
+  "page": 568,
+  "words": 302,
+  "errors": []
+ },
+ {
+  "page": 579,
+  "words": 187,
+  "errors": []
+ },
+ {
+  "page": 612,
+  "words": 341,
+  "errors": []
+ },
+ {
+  "page": 616,
+  "words": 355,
+  "errors": []
+ }
+]
