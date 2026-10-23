@@ -38,7 +38,7 @@ for it in items:
         p, x = out.pop(); out[-1] = (out[-1][0], out[-1][1] + '\n' + x)
     for pg, x in out:
         i = len(meta)
-        meta.append({'id': 'AK15#%d' % i, 'f': '', 'u': '', 't': 'אגרות קודש אדמו״ר מוהריי״צ ח״טו — ' + it['h'] + ' (עמ׳ ' + heb(pg - OFF) + ')', 'x': x})
+        meta.append({'id': 'AK15#%d' % i, 'f': '', 'u': 'https://hebrewbooks.org/pdfpager.aspx?req=58795&pgnum=%d' % pg, 't': 'אגרות קודש אדמו״ר מוהריי״צ ח״טו — ' + it['h'] + ' (עמ׳ ' + heb(pg - OFF) + ')', 'x': x})
         if len(x.split()) > 90:
             c = []
             for s in sentences(x.replace('\n', ' ')):
