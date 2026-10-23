@@ -64,6 +64,9 @@
   .smart-res { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
   .smart-res .src { font-family: 'Heebo', sans-serif; font-size: .82rem; color: var(--muted); margin-bottom: 4px; }
   .smart-res .src b { color: var(--navy); font-weight: 500; }
+  .smart-res .yi-tr { margin-top: 8px; padding: 8px 12px; border-inline-start: 3px solid var(--gold); background: rgba(201,162,39,.07); border-radius: 4px; }
+  .smart-res .yi-note { font-family: 'Heebo', sans-serif; font-size: .78rem; color: var(--muted); margin: 4px 0; }
+  .smart-res .yi-tag { font-family: 'Heebo', sans-serif; font-size: .72rem; color: var(--gold); border: 1px solid var(--gold); border-radius: 999px; padding: 0 6px; margin-inline-start: 6px; }
   .smart-res .txt { font-family: 'Frank Ruhl Libre', serif; font-size: 1.05rem; line-height: 1.8; text-align: justify; white-space: pre-line; }
   .smart-res .txt.clip { max-height: 7.2em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 60%, transparent); mask-image: linear-gradient(#000 60%, transparent); }
   .smart-res .acts { margin-top: 6px; display: flex; gap: 16px; font-family: 'Heebo', sans-serif; font-size: .88rem; }
@@ -244,6 +247,24 @@
 /* חיפוש חכם: מציג את התיבה רק אם מוגדרת כתובת שרת */
 (function(){
   var API = 'https://sichos-search.doviber.workers.dev'; // כתובת שרת החיפוש (Cloudflare Worker)
+
+  // קטע ביידיש: כפתור "תרגם" — ה-AI מתרגם רק בלחיצה (התרגום נשמר בשרת)
+  function trBtn(c, d, a){
+    if(!/ · אידיש$/.test(c.t || '') || !(c.p >= 0)) return;
+    var b = el('button',null,'תרגם לעברית'); b.type = 'button'; var box = null, busy = false;
+    b.onclick = function(){
+      if(box){ var h = box.style.display !== 'none'; box.style.display = h ? 'none' : ''; b.textContent = h ? 'הצג תרגום' : 'הסתר תרגום'; return; }
+      if(busy) return; busy = true; b.textContent = 'מתרגם…';
+      fetch(API + '?v=28&tr=' + c.p).then(function(r){ return r.json(); }).then(function(j){
+        busy = false;
+        if(!j.tr){ b.textContent = 'תרגם לעברית'; alertTr(d, j.error || 'התרגום נכשל, נסו שוב'); return; }
+        box = el('div','yi-tr'); box.appendChild(el('div','yi-note','תרגום אוטומטי ע״י AI — לא מוגה. המקור ביידיש למעלה.')); box.appendChild(el('div','txt', j.tr));
+        d.insertBefore(box, a); b.textContent = 'הסתר תרגום';
+      }).catch(function(){ busy = false; b.textContent = 'תרגם לעברית'; alertTr(d, 'לא הצלחתי להתחבר, נסו שוב'); });
+    };
+    a.insertBefore(b, a.firstChild);
+  }
+  function alertTr(d, m){ var n = el('div','yi-note', m); d.appendChild(n); setTimeout(function(){ n.remove(); }, 4000); }
   var box = document.getElementById('smart'); if(!API || !box) return; box.hidden = false;
   var form = document.getElementById('smart-form'), qi = document.getElementById('smart-q'),
       go = document.getElementById('smart-go'), st = document.getElementById('smart-status'), out = document.getElementById('smart-out');
@@ -334,7 +355,7 @@
           a.appendChild(more);
         }
         var l = el('a',null, c.u ? (c.u.indexOf('hebrewbooks') >= 0 ? 'לעמוד בספר (HebrewBooks) ↗' : 'לחוברת המלאה (PDF) ↗') : 'לקריאת השיחה'); if(c.u){ l.href = c.u; l.target = '_blank'; l.rel = 'noopener'; } else if(c.f) l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t); else l = null;
-        if(l) a.appendChild(l); d.appendChild(a); return d;
+        if(l) a.appendChild(l); d.appendChild(a); trBtn(c, d, a); return d;
       }
       list.forEach(function(r){ out.appendChild(card(r)); });
       var more = (x.j.more || []).filter(function(r){ return r && r.x; });

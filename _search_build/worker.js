@@ -98,7 +98,8 @@ async function answer(env, q, cands, txt, np, ns) {
   const list = cands.map((c, k) => {
     const head = txt(c.p);
     const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p).slice(0, 700);
-    return `[${k + 1}] ${head}\n${body}`;
+    const yi = isYi(txt, np, ns, c.p) ? ' (הקטע כתוב ביידיש)' : '';
+    return `[${k + 1}] ${head}${yi}\n${body}`;
   }).join('\n\n');
   const prompt = `להלן קטעים משיחות כ"ק אדמו"ר הריי"צ (ספר השיחות ולקוטי דיבורים, בלשון הקודש). לכל קטע: מספר, שם השיחה, תקציר הנושאים, ומובאה מהטקסט.
 
@@ -125,7 +126,7 @@ ${list}
 - לפני הכתיבה בדוק: האם שני קטעים או יותר מתארים את אותו אירוע (אותם אנשים, אותו מקום או זמן, אותה מטרה) — גם אם בניסוח אחר? שיחות נאמרו בשנים שונות, ואותו סיפור מסופר בהן כמה פעמים בפרטים שונים.
 - כשכמה קטעים מספרים את אותו סיפור או אירוע בפרטים שונים או סותרים — אל תמזג אותם לסיפור אחד, ואל תציג אותם כאירועים נפרדים שקרו זה אחר זה. הצג אותם כגרסאות שונות של אותו סיפור: "בשיחת [שם השיחה] מסופר ש... [n], ואילו בשיחת [שם השיחה] מסופר ש... [m]", וציין במפורש במה הגרסאות שונות.
 - כשהדובר מסייג ("כמדומה לי", "אינני זוכר בבירור") — שמור על הסייג בתשובה.
-- ציטוט קצר מדויק מהקטע — במירכאות ״...״.
+- ציטוט קצר מדויק מהקטע — במירכאות ״...״. מקטע שכתוב ביידיש — אל תצטט ביידיש; כתוב את הדברים בעברית והוסף "(בתרגום חופשי)".
 - סגנון: עברית ברורה ומכובדת, בכינויים המפורשים (אדמו״ר הזקן, אדמו״ר הרש״ב, אדמו״ר הריי״צ וכו').
 - אורך: עד כ-250 מילים. שאלה ממוקדת — תשובה קצרה.
 - אם הקטעים לא עונים על השאלה — כתוב רק: לא נמצאה תשובה לשאלה זו בשיחות שבאתר.
@@ -142,6 +143,21 @@ ${list}
   return { text, used };
 }
 
+// קטעים ביידיש: הכותרת מסתיימת ב"· אידיש". תרגום — רק בלחיצה על "תרגם", ונשמר במטמון
+function isYi(txt, np, ns, p) { return / · אידיש$/.test(txt(2 * np + ns + p).split('\t')[2] || ''); }
+async function translate(env, x) {
+  const prompt = `תרגם לעברית את הקטע הבא מתוך אגרות קודש של כ"ק אדמו"ר הריי"צ, שנכתב ביידיש.
+- תרגום נאמן ומדויק, בעברית ברורה בסגנון ספרי חסידות חב"ד (לשון הקודש מודרנית ומכובדת).
+- מילים, ביטויים וציטוטים שכבר בעברית/ארמית — השאר כמו שהם.
+- שמור על חלוקת הפסקאות, על שורות הפתיחה והחתימה, ועל ראשי התיבות.
+- אל תוסיף הסברים או הערות. החזר רק את התרגום.
+
+<קטע>
+${x}
+</קטע>`;
+  return (await claude(env, prompt, 4000, 55000)).trim();
+}
+
 export default {
   async fetch(req, env, ctx) {
     const origin = req.headers.get('Origin') || '';
@@ -155,6 +171,26 @@ export default {
       catch (e) { return json({ ok: false, msg: 'שגיאה: ' + e.message }, 200, h); }
     }
     if (origin && !ALLOWED.includes(origin)) return json({ error: 'forbidden' }, 403, h);
+
+    if (url.searchParams.has('tr')) {                       // תרגום קטע ביידיש — רק לפי בקשה
+      const p = parseInt(url.searchParams.get('tr'), 10);
+      const tkey = new Request('https://cache.sichos/tr1?p=' + p + '&v=' + (url.searchParams.get('v') || ''));
+      const hit = await caches.default.match(tkey);
+      if (hit) { const r = new Response(hit.body, hit); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
+      const ip = (req.headers.get('CF-Connecting-IP') || 'x') + '#t', now = Date.now();
+      const arr = (hits.get(ip) || []).filter(t => now - t < 60000);
+      if (arr.length >= A_PER_MIN) return json({ error: 'יותר מדי בקשות, נסו שוב בעוד דקה' }, 429, h);
+      arr.push(now); hits.set(ip, arr);
+      try {
+        const { N, np } = await loadIdx(), ns = N - np, txt = await loadTxt();
+        if (!Number.isInteger(p) || p < 0 || p >= np || !isYi(txt, np, ns, p)) return json({ error: 'קטע לא מתאים לתרגום' }, 400, h);
+        if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
+        const tr = await translate(env, txt(np + ns + p));
+        const resp = json({ tr }, 200, { ...h, 'Cache-Control': 'public, max-age=2592000' });
+        ctx.waitUntil(caches.default.put(tkey, resp.clone()));
+        return resp;
+      } catch (e) { return json({ error: 'התרגום נכשל, נסו שוב בעוד רגע' }, 502, h); }
+    }
 
     const q = (url.searchParams.get('q') || '').trim().slice(0, MAX_Q);
     if (q.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
