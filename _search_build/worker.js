@@ -219,7 +219,7 @@ export default {
       let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
       if (!env.CHAT_KEY || b.key !== env.CHAT_KEY) return json({ error: 'אין הרשאה' }, 403, h);
       if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
-      const hist = (Array.isArray(b.h) ? b.h : []).slice(-4).map(t => ({ q: String(t.q || '').slice(0, 300), a: String(t.a || '').replace(/\[\d+\]/g, '').slice(0, 1500) }));
+      const hist = (Array.isArray(b.h) ? b.h : []).slice(-6).map(t => ({ q: String(t.q || '').slice(0, 300), a: String(t.a || '').replace(/\[\d+\]/g, '').slice(0, 1500) }));
       const cq = String(b.q || '').trim().slice(0, 300);
       if (cq.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
       let sq = cq;
