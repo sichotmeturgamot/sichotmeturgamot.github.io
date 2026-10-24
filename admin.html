@@ -129,6 +129,7 @@
       <button type="button" class="adm-tab" data-atab="mafteach">מפתחות</button>
       <button type="button" class="adm-tab" data-atab="settings">הגדרות</button>
       <button type="button" class="adm-tab" data-atab="design">עיצוב</button>
+      <button type="button" class="adm-tab" data-atab="aiq">חיפוש AI</button>
     </div>
 
     <div class="adm-panel on" id="atab-sichos">
@@ -208,6 +209,29 @@
       <div class="dlg-btns"><button class="btn btn-main" onclick="saveSettings()">שמירת הגדרות</button></div>
     </div>
     </div><!-- /atab-settings -->
+
+    <div class="adm-panel" id="atab-aiq">
+    <div class="card">
+      <h2>ניהול שאלות ה-AI</h2>
+      <p style="font-size:.85rem;color:var(--muted)">כאן שולטים בהגבלת השאלות בדף "שיחה עם השיחות". יש להתחבר עם חשבון הגוגל של המנהל.</p>
+      <script src="https://accounts.google.com/gsi/client" async defer></script>
+      <div id="aiq-login"><div id="aiq-gbtn"></div></div>
+      <div id="aiq-main" style="display:none">
+        <p id="aiq-stats" style="font-weight:600"></p>
+        <div class="row">
+          <div><label>שאלות ביום לכל משתמש</label><input type="number" id="aiq-user" min="0"></div>
+          <div><label>תקרה יומית לכל האתר</label><input type="number" id="aiq-global" min="0"></div>
+        </div>
+        <label>מיילים ללא הגבלה (אחד בכל שורה)</label>
+        <textarea id="aiq-vip" rows="3" class="en"></textarea>
+        <label>מיילים חסומים (אחד בכל שורה)</label>
+        <textarea id="aiq-blocked" rows="3" class="en"></textarea>
+        <div class="dlg-btns"><button class="btn btn-main" type="button" onclick="aiqSave()">שמירה</button> <button class="btn" type="button" onclick="aiqLoad()">רענון</button></div>
+        <h3 style="margin-top:18px">מי שאל היום</h3>
+        <div id="aiq-users" style="font-size:.9rem"></div>
+      </div>
+    </div>
+    </div><!-- /atab-aiq -->
 
     <div class="adm-panel" id="atab-design">
     <div class="card">
@@ -1370,6 +1394,32 @@ document.addEventListener('click', ev => {
     ['mf-sug', 'mf-sug-old'].forEach(id => { const s = $(id); if (s) s.classList.remove('show'); });
   }
 });
+
+/* ניהול שאלות AI */
+const AIQ_API = 'https://sichos-search.doviber.workers.dev/?mode=gadmin', AIQ_CLIENT = '696641021937-mqm27b0nkh18t82oh17su951btii7l3f.apps.googleusercontent.com';
+let aiqCred = null;
+function aiqInit() {
+  if (!window.google || !google.accounts) { setTimeout(aiqInit, 400); return; }
+  google.accounts.id.initialize({ client_id: AIQ_CLIENT, callback: r => { aiqCred = r.credential; aiqLoad(); } });
+  google.accounts.id.renderButton($('aiq-gbtn'), { theme: 'outline', size: 'large', locale: 'he' });
+}
+aiqInit();
+async function aiqCall(act, cfgv) {
+  const r = await fetch(AIQ_API, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ cred: aiqCred, act, cfg: cfgv }) });
+  const j = await r.json(); if (!r.ok) throw new Error(j.error || 'שגיאה'); return j;
+}
+function aiqShow(j) {
+  $('aiq-login').style.display = 'none'; $('aiq-main').style.display = '';
+  $('aiq-user').value = j.cfg.user; $('aiq-global').value = j.cfg.global;
+  $('aiq-vip').value = j.cfg.vip.join('\n'); $('aiq-blocked').value = j.cfg.blocked.join('\n');
+  $('aiq-stats').textContent = 'היום נשאלו ' + j.today + ' שאלות (מתוך תקרה של ' + j.cfg.global + ')';
+  $('aiq-users').innerHTML = j.users ? (j.users.length ? j.users.map(u => '<div>' + u[0].replace(/</g, '&lt;') + ' — ' + u[1] + '</div>').join('') : 'עדיין אף אחד') : '';
+}
+async function aiqLoad() { try { aiqShow(await aiqCall('stats')); } catch (e) { alert(e.message); $('aiq-login').style.display = ''; } }
+async function aiqSave() {
+  const L = id => $(id).value.split(/\s+/).filter(Boolean);
+  try { aiqShow(await aiqCall('set', { user: $('aiq-user').value, global: $('aiq-global').value, vip: L('aiq-vip'), blocked: L('aiq-blocked') })); await aiqLoad(); alert('נשמר'); } catch (e) { alert(e.message); }
+}
 
 (function init() {
   const saved = localStorage.getItem('sichos-admin');

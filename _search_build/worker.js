@@ -181,6 +181,15 @@ ${x}
   return (await claude(env, prompt, 4000, 55000)).trim();
 }
 
+async function gEmail(cred) {
+  try {
+    const tr = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(String(cred || '')));
+    const t = tr.ok ? await tr.json() : null;
+    if (t && t.aud === GOOGLE_CLIENT_ID && t.email_verified === 'true' && +t.exp * 1000 > Date.now()) return String(t.email).toLowerCase();
+  } catch (e) {}
+  return null;
+}
+
 export default {
   async fetch(req, env, ctx) {
     const origin = req.headers.get('Origin') || '';
@@ -215,6 +224,14 @@ export default {
       } catch (e) { return json({ error: 'התרגום נכשל, נסו שוב בעוד רגע' }, 502, h); }
     }
 
+    if (req.method === 'POST' && url.searchParams.get('mode') === 'gadmin') {
+      let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
+      const em = await gEmail(b.cred);
+      if (!em || !ADMINS.includes(em)) return json({ error: 'אין הרשאה' }, 403, h);
+      const stub = env.USERS.get(env.USERS.idFromName('main'));
+      const r = await stub.fetch('https://do/admin?act=' + (b.act === 'set' ? 'set' : 'stats'), { method: 'POST', body: JSON.stringify(b.cfg || {}) });
+      return json(await r.json(), 200, h);
+    }
     let chat = null, left = null;
     const cm = url.searchParams.get('mode');
     if (req.method === 'POST' && (cm === 'chat' || cm === 'gchat')) {
@@ -222,12 +239,56 @@ export default {
       if (cm === 'chat') {
         if (!env.CHAT_KEY || b.key !== env.CHAT_KEY) return json({ error: 'אין הרשאה' }, 403, h);
       } else {
-        let em = null;
-        try {
-          const tr = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(String(b.cred || '')));
-          const t = tr.ok ? await tr.json() : null;
-          if (t && t.aud === GOOGLE_CLIENT_ID && t.email_verified === 'true' && +t.exp * 1000 > Date.now()) em = String(t.email).toLowerCase();
-        } catch (e) {}
+        const em = await gEmail(b.cred);
+        if (!em) return json({ error: 'ההתחברות פגה, התחברו מחדש' }, 401, h);
+        if (b.q === '__quota__') return json({ email: em }, 200, h);
+        const u = await env.USERS.get(env.USERS.idFromName('main')).fetch('https://do/use?e=' + encodeURIComponent(em) + '&a=' + (ADMINS.includes(em) ? 1 : 0));
+        const ur = await u.json();
+        if (!ur.ok) return json({ error: ur.why === 'user' ? 'הגעתם למכסה היומית (' + ur.lim + ' שאלות). חזרו מחר 🙂' : ur.why === 'blocked' ? 'הגישה שלכם לשירות הוגבלה' : 'השירות הגיע למכסה היומית הכללית, נסו שוב מחר', left: 0 }, 429, h);
+        left = ur.left;
+      }
+      if (!env.ANTHROPIC_API_KEY) return json({ ok: false, msg: 'הסוד ANTHROPIC_API_KEY לא מוגדר בשרת' }, 200, h);
+      try { await claude(env, 'ענה במילה אחת: שלום', 5); return json({ ok: true, msg: 'המפתח עובד ✓' }, 200, h); }
+      catch (e) { return json({ ok: false, msg: 'שגיאה: ' + e.message }, 200, h); }
+    }
+    if (origin && !ALLOWED.includes(origin)) return json({ error: 'forbidden' }, 403, h);
+
+    if (url.searchParams.has('tr')) {                       // תרגום קטע ביידיש — רק לפי בקשה
+      const p = parseInt(url.searchParams.get('tr'), 10);
+      const tkey = new Request('https://cache.sichos/tr1?p=' + p + '&v=' + (url.searchParams.get('v') || ''));
+      const hit = await caches.default.match(tkey);
+      if (hit) { const r = new Response(hit.body, hit); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
+      const ip = (req.headers.get('CF-Connecting-IP') || 'x') + '#t', now = Date.now();
+      const arr = (hits.get(ip) || []).filter(t => now - t < 60000);
+      if (arr.length >= A_PER_MIN) return json({ error: 'יותר מדי בקשות, נסו שוב בעוד דקה' }, 429, h);
+      arr.push(now); hits.set(ip, arr);
+      try {
+        const { N, np } = await loadIdx(), ns = N - np, txt = await loadTxt();
+        if (!Number.isInteger(p) || p < 0 || p >= np || !isYi(txt, np, ns, p)) return json({ error: 'קטע לא מתאים לתרגום' }, 400, h);
+        if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
+        const tr = await translate(env, txt(np + ns + p));
+        const resp = json({ tr }, 200, { ...h, 'Cache-Control': 'public, max-age=2592000' });
+        ctx.waitUntil(caches.default.put(tkey, resp.clone()));
+        return resp;
+      } catch (e) { return json({ error: 'התרגום נכשל, נסו שוב בעוד רגע' }, 502, h); }
+    }
+
+    if (req.method === 'POST' && url.searchParams.get('mode') === 'gadmin') {
+      let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
+      const em = await gEmail(b.cred);
+      if (!em || !ADMINS.includes(em)) return json({ error: 'אין הרשאה' }, 403, h);
+      const stub = env.USERS.get(env.USERS.idFromName('main'));
+      const r = await stub.fetch('https://do/admin?act=' + (b.act === 'set' ? 'set' : 'stats'), { method: 'POST', body: JSON.stringify(b.cfg || {}) });
+      return json(await r.json(), 200, h);
+    }
+    let chat = null, left = null;
+    const cm = url.searchParams.get('mode');
+    if (req.method === 'POST' && (cm === 'chat' || cm === 'gchat')) {
+      let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
+      if (cm === 'chat') {
+        if (!env.CHAT_KEY || b.key !== env.CHAT_KEY) return json({ error: 'אין הרשאה' }, 403, h);
+      } else {
+        const em = await gEmail(b.cred);
         if (!em) return json({ error: 'ההתחברות פגה, התחברו מחדש' }, 401, h);
         if (b.q === '__quota__') return json({ email: em }, 200, h);
         if (!ADMINS.includes(em)) {
@@ -352,13 +413,28 @@ export class Users {
   constructor(state) { this.s = state.storage; }
   async fetch(req) {
     const u = new URL(req.url), day = new Date().toISOString().slice(0, 10);
-    const e = u.searchParams.get('e'), l = +u.searchParams.get('l'), g = +u.searchParams.get('g');
+    const r = (o) => new Response(JSON.stringify(o));
+    const cfg = Object.assign({ user: USER_DAILY, global: GLOBAL_DAILY, vip: [], blocked: [] }, (await this.s.get('cfg')) || {});
+    if (u.pathname === '/admin') {
+      if (u.searchParams.get('act') === 'set') {
+        const n = await req.json();
+        const c = { user: Math.max(0, Math.min(1000, +n.user || 0)), global: Math.max(0, Math.min(100000, +n.global || 0)),
+          vip: (n.vip || []).map(x => String(x).trim().toLowerCase()).filter(Boolean), blocked: (n.blocked || []).map(x => String(x).trim().toLowerCase()).filter(Boolean) };
+        await this.s.put('cfg', c); return r({ cfg: c });
+      }
+      const m = await this.s.list({ prefix: 'u:' + day + ':' }), users = [];
+      m.forEach((v, k) => users.push([k.slice(('u:' + day + ':').length), v]));
+      users.sort((a, b) => b[1] - a[1]);
+      return r({ cfg, today: (await this.s.get('g:' + day)) || 0, users: users.slice(0, 50) });
+    }
+    const e = u.searchParams.get('e'), adm = u.searchParams.get('a') === '1';
+    if (!adm && cfg.blocked.includes(e)) return r({ ok: false, why: 'blocked' });
     const ku = 'u:' + day + ':' + e, kg = 'g:' + day;
     const cu = (await this.s.get(ku)) || 0, cg = (await this.s.get(kg)) || 0;
-    const r = (o) => new Response(JSON.stringify(o));
-    if (cg >= g) return r({ ok: false, why: 'global' });
-    if (cu >= l) return r({ ok: false, why: 'user' });
+    const vip = adm || cfg.vip.includes(e);
+    if (!vip && cg >= cfg.global) return r({ ok: false, why: 'global' });
+    if (!vip && cu >= cfg.user) return r({ ok: false, why: 'user', lim: cfg.user });
     await this.s.put(ku, cu + 1); await this.s.put(kg, cg + 1);
-    return r({ ok: true, left: l - cu - 1 });
+    return r({ ok: true, left: vip ? null : cfg.user - cu - 1 });
   }
 }
