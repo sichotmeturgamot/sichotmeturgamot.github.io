@@ -4,7 +4,7 @@
 const SITE = 'https://sichotmeturgamot.com/';
 const ALLOWED = ['https://sichotmeturgamot.com', 'https://www.sichotmeturgamot.com',
                  'https://sichotmeturgamot.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000'];
-const GOOGLE_CLIENT_ID = 'PENDING', ADMINS = ['doviber@gmail.com'], USER_DAILY = 10, GLOBAL_DAILY = 300;
+const GOOGLE_CLIENT_ID = '696641021937-mqm27b0nkh18t82oh17su951btii7l3f.apps.googleusercontent.com', ADMINS = ['doviber@gmail.com'], USER_DAILY = 10, GLOBAL_DAILY = 300;
 const MAX_Q = 200, TOP = 5, CAND = 60, PER_MIN = 12, SCALE = 400;
 const A_CAND = 80, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
 const MODEL = 'claude-haiku-5-5';

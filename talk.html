@@ -76,7 +76,7 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
 <div id="bar"><form id="f"><textarea id="q" rows="1" placeholder="כתבו שאלה…"></textarea><button class="send" id="go" type="submit" aria-label="שלח">➤</button></form></div>
 <script>
 (function(){
-  var CLIENT_ID='PENDING', API='https://sichos-search.doviber.workers.dev', KEY=null, hist=[], turn=0, busy=false, convs=[], cur=null;
+  var CLIENT_ID='696641021937-mqm27b0nkh18t82oh17su951btii7l3f.apps.googleusercontent.com', API='https://sichos-search.doviber.workers.dev', KEY=null, hist=[], turn=0, busy=false, convs=[], cur=null;
   try{convs=JSON.parse(localStorage.getItem('chat-convs')||'[]');}catch(e){convs=[];}
   function persist(){try{localStorage.setItem('chat-convs',JSON.stringify(convs.slice(0,30)));}catch(e){}}
   var feed=document.getElementById('feed'), q=document.getElementById('q'), go=document.getElementById('go'), lock=document.getElementById('lock'), bar=document.getElementById('bar');
