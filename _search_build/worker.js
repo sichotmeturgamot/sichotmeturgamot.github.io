@@ -247,58 +247,6 @@ export default {
         if (!ur.ok) return json({ error: ur.why === 'user' ? 'הגעתם למכסה היומית (' + ur.lim + ' שאלות). חזרו מחר 🙂' : ur.why === 'blocked' ? 'הגישה שלכם לשירות הוגבלה' : 'השירות הגיע למכסה היומית הכללית, נסו שוב מחר', left: 0 }, 429, h);
         left = ur.left;
       }
-      if (!env.ANTHROPIC_API_KEY) return json({ ok: false, msg: 'הסוד ANTHROPIC_API_KEY לא מוגדר בשרת' }, 200, h);
-      try { await claude(env, 'ענה במילה אחת: שלום', 5); return json({ ok: true, msg: 'המפתח עובד ✓' }, 200, h); }
-      catch (e) { return json({ ok: false, msg: 'שגיאה: ' + e.message }, 200, h); }
-    }
-    if (origin && !ALLOWED.includes(origin)) return json({ error: 'forbidden' }, 403, h);
-
-    if (url.searchParams.has('tr')) {                       // תרגום קטע ביידיש — רק לפי בקשה
-      const p = parseInt(url.searchParams.get('tr'), 10);
-      const tkey = new Request('https://cache.sichos/tr1?p=' + p + '&v=' + (url.searchParams.get('v') || ''));
-      const hit = await caches.default.match(tkey);
-      if (hit) { const r = new Response(hit.body, hit); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
-      const ip = (req.headers.get('CF-Connecting-IP') || 'x') + '#t', now = Date.now();
-      const arr = (hits.get(ip) || []).filter(t => now - t < 60000);
-      if (arr.length >= A_PER_MIN) return json({ error: 'יותר מדי בקשות, נסו שוב בעוד דקה' }, 429, h);
-      arr.push(now); hits.set(ip, arr);
-      try {
-        const { N, np } = await loadIdx(), ns = N - np, txt = await loadTxt();
-        if (!Number.isInteger(p) || p < 0 || p >= np || !isYi(txt, np, ns, p)) return json({ error: 'קטע לא מתאים לתרגום' }, 400, h);
-        if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
-        const tr = await translate(env, txt(np + ns + p));
-        const resp = json({ tr }, 200, { ...h, 'Cache-Control': 'public, max-age=2592000' });
-        ctx.waitUntil(caches.default.put(tkey, resp.clone()));
-        return resp;
-      } catch (e) { return json({ error: 'התרגום נכשל, נסו שוב בעוד רגע' }, 502, h); }
-    }
-
-    if (req.method === 'POST' && url.searchParams.get('mode') === 'gadmin') {
-      let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
-      const em = await gEmail(b.cred);
-      if (!em || !ADMINS.includes(em)) return json({ error: 'אין הרשאה' }, 403, h);
-      const stub = env.USERS.get(env.USERS.idFromName('main'));
-      const r = await stub.fetch('https://do/admin?act=' + (b.act === 'set' ? 'set' : 'stats'), { method: 'POST', body: JSON.stringify(b.cfg || {}) });
-      return json(await r.json(), 200, h);
-    }
-    let chat = null, left = null;
-    const cm = url.searchParams.get('mode');
-    if (req.method === 'POST' && (cm === 'chat' || cm === 'gchat')) {
-      let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
-      if (cm === 'chat') {
-        if (!env.CHAT_KEY || b.key !== env.CHAT_KEY) return json({ error: 'אין הרשאה' }, 403, h);
-      } else {
-        const em = await gEmail(b.cred);
-        if (!em) return json({ error: 'ההתחברות פגה, התחברו מחדש' }, 401, h);
-        if (b.q === '__quota__') return json({ email: em }, 200, h);
-        if (!ADMINS.includes(em)) {
-        const lim = USER_DAILY;
-        const u = await env.USERS.get(env.USERS.idFromName('main')).fetch('https://do/use?e=' + encodeURIComponent(em) + '&l=' + lim + '&g=' + GLOBAL_DAILY);
-        const ur = await u.json();
-        if (!ur.ok) return json({ error: ur.why === 'user' ? 'הגעתם למכסה היומית (' + lim + ' שאלות). חזרו מחר 🙂' : 'השירות הגיע למכסה היומית הכללית, נסו שוב מחר', left: 0 }, 429, h);
-        left = ur.left;
-        }
-      }
       if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
       const hist = (Array.isArray(b.h) ? b.h : []).slice(-6).map(t => ({ q: String(t.q || '').slice(0, 300), a: String(t.a || '').replace(/\[\d+\]/g, '').slice(0, 1500) }));
       const cq = String(b.q || '').trim().slice(0, 300);
