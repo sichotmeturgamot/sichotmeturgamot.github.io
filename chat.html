@@ -54,19 +54,30 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
 #bar textarea{flex:1;resize:none;border:none;padding:10px 14px;font:1.12rem 'Frank Ruhl Libre',serif;background:transparent;max-height:130px;outline:none}
 #bar .send{width:42px;height:42px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),#8d6c28);color:#fff;font-size:1.15rem;cursor:pointer;flex:none;transform:scaleX(-1)}
 #bar .send:disabled{opacity:.4}
+#panel{position:fixed;top:0;bottom:0;right:0;width:min(360px,88vw);background:var(--paper);z-index:50;box-shadow:-6px 0 30px rgba(0,0,0,.25);overflow:auto;border-left:2px solid var(--gold)}
+#panel .ph{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--navy);color:#fff;font-family:'Frank Ruhl Libre',serif;font-size:1.1rem}
+#panel .ph button{background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer}
+#panel .it{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+#panel .it:hover{background:#fbf7ec}#panel .it.on{background:#f3ead0}
+#panel .it span{flex:1;font:500 .95rem 'Frank Ruhl Libre',serif;color:var(--navy)}#panel .it small{display:block;color:var(--muted);font:.72rem Heebo,sans-serif}
+#panel .it button{background:none;border:none;color:#a33;cursor:pointer;font-size:1rem}
+#panel .empty{padding:24px;color:var(--muted);text-align:center;font-family:'Frank Ruhl Libre',serif}
 #lock{max-width:420px;margin:70px auto;padding:0 20px;text-align:center}
 #lock input{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:14px;font-size:1rem;margin:14px 0;text-align:center;direction:ltr}
 #lock button{background:var(--navy);color:#fff;border:none;border-radius:14px;padding:11px 28px;font:600 1rem Heebo,sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="top"><div class="tt"><small>ב״ה</small><b>שיחה עם השיחות</b></div><button id="new" type="button">שיחה חדשה</button></div>
+<div class="top"><div class="tt"><small>ב״ה</small><b>שיחה עם השיחות</b></div><div><button id="lst" type="button">שיחות קודמות</button> <button id="new" type="button">שיחה חדשה</button></div></div>
+<div id="panel" hidden><div class="ph"><b>שיחות קודמות</b><button id="pc" type="button">✕</button></div><div id="pl"></div></div>
 <div id="lock" hidden><p style="font-family:'Frank Ruhl Libre',serif;font-size:1.2rem">עמוד פרטי. הדביקו את מפתח הגישה (פעם אחת בלבד, הוא יישמר במכשיר).</p><input id="k" type="password" autocomplete="off"><br><button id="kb" type="button">כניסה</button></div>
 <div id="feed"><div class="hello"><h2>במה תרצו לעיין?</h2><p>שאלו על השיחות והאגרות, ואפשר להמשיך ולשאול — אני זוכר את מהלך השיחה.</p><div class="chips" id="starters"></div></div></div>
 <div id="bar"><form id="f"><textarea id="q" rows="1" placeholder="כתבו שאלה…"></textarea><button class="send" id="go" type="submit" aria-label="שלח">➤</button></form></div>
 <script>
 (function(){
-  var API='https://sichos-search.doviber.workers.dev', KEY=null, hist=[], turn=0, busy=false;
+  var API='https://sichos-search.doviber.workers.dev', KEY=null, hist=[], turn=0, busy=false, convs=[], cur=null;
+  try{convs=JSON.parse(localStorage.getItem('chat-convs')||'[]');}catch(e){convs=[];}
+  function persist(){try{localStorage.setItem('chat-convs',JSON.stringify(convs.slice(0,30)));}catch(e){}}
   var feed=document.getElementById('feed'), q=document.getElementById('q'), go=document.getElementById('go'), lock=document.getElementById('lock'), bar=document.getElementById('bar');
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
   function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -76,7 +87,18 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
   gate();
   function starters(){var c=document.getElementById('starters');if(!c)return;['מה סיפר הרבי הריי״צ על ילדותו?','איך התייחס לעבודת התפילה?','סיפורים על מסירות נפש'].forEach(function(t){var b=el('button',null,t);b.type='button';b.onclick=function(){ask(t);};c.appendChild(b);});}
   starters();
-  document.getElementById('new').onclick=function(){hist=[];turn=0;feed.innerHTML='<div class="hello"><h2>במה תרצו לעיין?</h2><p>שאלו על השיחות והאגרות, ואפשר להמשיך ולשאול — אני זוכר את מהלך השיחה.</p><div class="chips" id="starters"></div></div>';starters();};
+  function fresh(){hist=[];turn=0;cur=null;feed.innerHTML=HELLO_HTML;document.getElementById('starters').innerHTML='';starters();}
+  var HELLO_HTML=feed.innerHTML;
+  document.getElementById('new').onclick=fresh;
+  var panel=document.getElementById('panel'),pl=document.getElementById('pl');
+  function drawList(){pl.innerHTML='';if(!convs.length){pl.appendChild(el('div','empty','עדיין אין שיחות שמורות'));return;}
+    convs.forEach(function(c){var d=el('div','it'+(cur&&cur.id===c.id?' on':''));var sp=el('span',null,c.title);sp.appendChild(el('small',null,new Date(c.ts).toLocaleDateString('he-IL')+' · '+c.turns.length+' שאלות'));d.appendChild(sp);
+      var x=el('button',null,'🗑');x.type='button';x.onclick=function(e){e.stopPropagation();convs=convs.filter(function(k){return k.id!==c.id;});persist();if(cur&&cur.id===c.id)fresh();drawList();};d.appendChild(x);
+      d.onclick=function(){load(c);panel.hidden=true;};pl.appendChild(d);});}
+  document.getElementById('lst').onclick=function(){drawList();panel.hidden=false;};
+  document.getElementById('pc').onclick=function(){panel.hidden=true;};
+  function load(c){cur=c;hist=c.turns.map(function(t){return{q:t.q,a:(t.answer||'').replace(/\[\d+\]/g,'').slice(0,1500)};});turn=0;feed.innerHTML='';
+    c.turns.forEach(function(t,i){feed.appendChild(el('div','qb',t.q));addAns(t,++turn,i===c.turns.length-1);});window.scrollTo(0,document.body.scrollHeight);}
   function render(txt,t){return txt.split(/\n+/).filter(function(x){return x.trim();}).map(function(p){
     return '<p>'+esc(p.trim()).replace(/^[-•]\s*/,'• ').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\[(\d+)\]/g,'<a href="#" class="cite" data-t="'+t+'" data-n="$1">$1</a>')+'</p>';}).join('');}
   function trBtn(c,d,a){
@@ -108,6 +130,15 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
   feed.addEventListener('click',function(e){var c=e.target.closest('.cite');if(!c)return;e.preventDefault();
     var d=document.getElementById('s'+c.dataset.t+'-'+c.dataset.n);if(!d)return;var det=d.closest('details');if(det)det.open=true;
     d.scrollIntoView({behavior:'smooth',block:'center'});d.classList.add('flash');setTimeout(function(){d.classList.remove('flash');},1400);});
+  function list0(r){return (r||[]).filter(function(c){return c&&c.x;}).map(function(c){return{p:c.p,t:c.t,f:c.f,u:c.u,s:(c.s||c.x).slice(0,1500),x:(c.s||c.x).slice(0,1500)};});}
+  function addAns(j,t,last){
+    var box=el('div','ab');box.appendChild(el('div','lbl','✨ תשובת AI על סמך המקורות — כדאי לבדוק במקור'));
+    var at=el('div');at.innerHTML=render(j.answer||'',t);box.appendChild(at);
+    var list=j.results||[];if(list.length)box.appendChild(srcs(list,t));
+    feed.appendChild(box);
+    if(last&&j.follow&&j.follow.length){var ch=el('div','chips');j.follow.forEach(function(f){var b=el('button',null,f);b.type='button';b.onclick=function(){ask(f);};ch.appendChild(b);});feed.appendChild(ch);}
+    return box;
+  }
   function ask(text){
     if(busy||!text.trim())return;busy=true;go.disabled=true;
     var h=feed.querySelector('.hello');if(h)h.remove();
@@ -119,13 +150,12 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
     .then(function(x){busy=false;go.disabled=false;th.remove();
       if(!x.ok){if(x.s===401||x.s===403){try{localStorage.removeItem('chat-key');}catch(e){}KEY=null;gate();}
         feed.appendChild(el('div','err',x.j.error||'שגיאה, נסו שוב'));return;}
-      var j=x.j,box=el('div','ab');box.appendChild(el('div','lbl','✨ תשובת AI על סמך המקורות — כדאי לבדוק במקור'));
-      var at=el('div');at.innerHTML=render(j.answer||'',t);box.appendChild(at);
-      var list=(j.results||[]).filter(function(r){return r&&r.x;});if(list.length)box.appendChild(srcs(list,t));
-      feed.appendChild(box);
-      if(j.follow&&j.follow.length){var ch=el('div','chips');j.follow.forEach(function(f){var b=el('button',null,f);b.type='button';b.onclick=function(){ask(f);};ch.appendChild(b);});feed.appendChild(ch);}
+      var j=x.j,rec={q:text,answer:j.answer||'',follow:j.follow||[],results:list0(j.results)};
+      addAns(rec,t,true);
+      if(!cur){cur={id:Date.now(),title:text.slice(0,50),ts:Date.now(),turns:[]};convs.unshift(cur);}
+      cur.turns.push(rec);cur.ts=Date.now();persist();
       hist.push({q:text,a:(j.answer||'').replace(/\[\d+\]/g,'').slice(0,1500)});
-      box.scrollIntoView({block:'start',behavior:'smooth'});
+      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
     }).catch(function(){busy=false;go.disabled=false;th.remove();feed.appendChild(el('div','err','לא הצלחתי להתחבר, נסו שוב'));});
   }
   document.getElementById('f').onsubmit=function(e){e.preventDefault();var v=q.value;q.value='';q.style.height='';ask(v);};
