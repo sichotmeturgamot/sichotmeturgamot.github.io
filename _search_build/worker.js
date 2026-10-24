@@ -230,11 +230,13 @@ export default {
         } catch (e) {}
         if (!em) return json({ error: 'ההתחברות פגה, התחברו מחדש' }, 401, h);
         if (b.q === '__quota__') return json({ email: em }, 200, h);
-        const lim = ADMINS.includes(em) ? 500 : USER_DAILY;
+        if (!ADMINS.includes(em)) {
+        const lim = USER_DAILY;
         const u = await env.USERS.get(env.USERS.idFromName('main')).fetch('https://do/use?e=' + encodeURIComponent(em) + '&l=' + lim + '&g=' + GLOBAL_DAILY);
         const ur = await u.json();
         if (!ur.ok) return json({ error: ur.why === 'user' ? 'הגעתם למכסה היומית (' + lim + ' שאלות). חזרו מחר 🙂' : 'השירות הגיע למכסה היומית הכללית, נסו שוב מחר', left: 0 }, 429, h);
         left = ur.left;
+        }
       }
       if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
       const hist = (Array.isArray(b.h) ? b.h : []).slice(-6).map(t => ({ q: String(t.q || '').slice(0, 300), a: String(t.a || '').replace(/\[\d+\]/g, '').slice(0, 1500) }));
