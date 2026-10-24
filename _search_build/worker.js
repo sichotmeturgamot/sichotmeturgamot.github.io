@@ -4,6 +4,7 @@
 const SITE = 'https://sichotmeturgamot.com/';
 const ALLOWED = ['https://sichotmeturgamot.com', 'https://www.sichotmeturgamot.com',
                  'https://sichotmeturgamot.github.io', 'http://localhost:8000', 'http://127.0.0.1:8000'];
+const GOOGLE_CLIENT_ID = 'PENDING', ADMINS = ['doviber@gmail.com'], USER_DAILY = 10, GLOBAL_DAILY = 300;
 const MAX_Q = 200, TOP = 5, CAND = 60, PER_MIN = 12, SCALE = 400;
 const A_CAND = 80, A_X = 30, A_TOP = 12, A_PER_MIN = 6;   // מצב תשובה
 const MODEL = 'claude-haiku-5-5';
@@ -214,10 +215,27 @@ export default {
       } catch (e) { return json({ error: 'התרגום נכשל, נסו שוב בעוד רגע' }, 502, h); }
     }
 
-    let chat = null;
-    if (req.method === 'POST' && url.searchParams.get('mode') === 'chat') {
+    let chat = null, left = null;
+    const cm = url.searchParams.get('mode');
+    if (req.method === 'POST' && (cm === 'chat' || cm === 'gchat')) {
       let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
-      if (!env.CHAT_KEY || b.key !== env.CHAT_KEY) return json({ error: 'אין הרשאה' }, 403, h);
+      if (cm === 'chat') {
+        if (!env.CHAT_KEY || b.key !== env.CHAT_KEY) return json({ error: 'אין הרשאה' }, 403, h);
+      } else {
+        let em = null;
+        try {
+          const tr = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(String(b.cred || '')));
+          const t = tr.ok ? await tr.json() : null;
+          if (t && t.aud === GOOGLE_CLIENT_ID && t.email_verified === 'true' && +t.exp * 1000 > Date.now()) em = String(t.email).toLowerCase();
+        } catch (e) {}
+        if (!em) return json({ error: 'ההתחברות פגה, התחברו מחדש' }, 401, h);
+        if (b.q === '__quota__') return json({ email: em }, 200, h);
+        const lim = ADMINS.includes(em) ? 500 : USER_DAILY;
+        const u = await env.USERS.get(env.USERS.idFromName('main')).fetch('https://do/use?e=' + encodeURIComponent(em) + '&l=' + lim + '&g=' + GLOBAL_DAILY);
+        const ur = await u.json();
+        if (!ur.ok) return json({ error: ur.why === 'user' ? 'הגעתם למכסה היומית (' + lim + ' שאלות). חזרו מחר 🙂' : 'השירות הגיע למכסה היומית הכללית, נסו שוב מחר', left: 0 }, 429, h);
+        left = ur.left;
+      }
       if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
       const hist = (Array.isArray(b.h) ? b.h : []).slice(-6).map(t => ({ q: String(t.q || '').slice(0, 300), a: String(t.a || '').replace(/\[\d+\]/g, '').slice(0, 1500) }));
       const cq = String(b.q || '').trim().slice(0, 300);
@@ -229,7 +247,7 @@ export default {
     const q = chat ? chat.sq : (url.searchParams.get('q') || '').trim().slice(0, MAX_Q);
     if (q.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
 
-    const mode = (chat || url.searchParams.get('mode') === 'answer') ? 'answer' : 'quotes';
+    const mode = (chat || cm === 'answer') ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r', 'z'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
     const cache = caches.default, ckey = new Request('https://cache.sichos/v30?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
@@ -290,7 +308,7 @@ export default {
         catch (e) { return json({ error: 'לא הצלחתי לנסח תשובה, נסו שוב בעוד רגע' }, 502, h); }
         if (debug) return json({ q, raw: answer.last, answer: a.text, results: a.used.map(r => full(txt, r)),
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70)) }, 200, h);
-        if (chat) return json({ answer: a.text, results: a.used.map(r => full(txt, r)), follow: a.follow, sq: q }, 200, h);
+        if (chat) return json({ answer: a.text, results: a.used.map(r => full(txt, r)), follow: a.follow, sq: q, left }, 200, h);
         const resp = json({ answer: a.text, results: a.used.map(r => full(txt, r)), ranked: true }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
         ctx.waitUntil(cache.put(ckey, resp.clone()));
         return resp;
@@ -326,3 +344,19 @@ export default {
     }
   }
 };
+
+
+export class Users {
+  constructor(state) { this.s = state.storage; }
+  async fetch(req) {
+    const u = new URL(req.url), day = new Date().toISOString().slice(0, 10);
+    const e = u.searchParams.get('e'), l = +u.searchParams.get('l'), g = +u.searchParams.get('g');
+    const ku = 'u:' + day + ':' + e, kg = 'g:' + day;
+    const cu = (await this.s.get(ku)) || 0, cg = (await this.s.get(kg)) || 0;
+    const r = (o) => new Response(JSON.stringify(o));
+    if (cg >= g) return r({ ok: false, why: 'global' });
+    if (cu >= l) return r({ ok: false, why: 'user' });
+    await this.s.put(ku, cu + 1); await this.s.put(kg, cg + 1);
+    return r({ ok: true, left: l - cu - 1 });
+  }
+}
