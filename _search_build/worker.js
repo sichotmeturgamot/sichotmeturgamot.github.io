@@ -52,7 +52,7 @@ function groups(txt, np, ns) {
 function cors(origin) {
   const ok = ALLOWED.includes(origin);
   return { 'Access-Control-Allow-Origin': ok ? origin : ALLOWED[0], 'Vary': 'Origin',
-           'Access-Control-Allow-Methods': 'GET,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+           'Access-Control-Allow-Methods': 'GET,POST,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
 }
 const json = (o, status, h) => new Response(JSON.stringify(o), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', ...h } });
 
@@ -94,7 +94,20 @@ ${list}
 }
 
 
-async function answer(env, q, cands, txt, np, ns) {
+// מצב שיחה (ניסוי, רק למנהל עם מפתח): שאלת המשך → שאלה עצמאית לחיפוש
+async function rewriteQ(env, hist, q) {
+  const conv = hist.map(t => `שאלה: ${t.q}\nתשובה: ${t.a.slice(0, 600)}`).join('\n\n');
+  const prompt = `להלן שיחה בין לומד ל-AI על שיחות ואגרות כ"ק אדמו"ר הריי"צ, ואחריה שאלת המשך.
+<שיחה>
+${conv}
+</שיחה>
+שאלת ההמשך: ${q}
+
+נסח את שאלת ההמשך מחדש כשאלה עצמאית ומלאה בעברית (עד 25 מילים), שמובנת בלי השיחה — עם הנושא, האנשים והפרטים שהיא מתייחסת אליהם. החזר רק את השאלה.`;
+  return (await claude(env, prompt, 200, 15000)).trim().replace(/^["״]|["״]$/g, '');
+}
+
+async function answer(env, q, cands, txt, np, ns, chat) {
   const list = cands.map((c, k) => {
     const head = txt(c.p);
     const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p).slice(0, 700);
@@ -107,7 +120,13 @@ async function answer(env, q, cands, txt, np, ns) {
 ${list}
 </קטעים>
 
-שאלת הלומד: ${q}
+${chat && chat.hist.length ? `<שיחה קודמת>
+${chat.hist.map(t => `שאלה: ${t.q}\nתשובה: ${t.a}`).join('\n\n')}
+</שיחה קודמת>
+
+שאלת ההמשך של הלומד: ${chat.q}
+(כלומר: ${q})
+ענה על שאלת ההמשך בהקשר של השיחה הקודמת. אל תחזור על מה שכבר נאמר בה, אלא אם צריך בקצרה להקשר.` : 'שאלת הלומד: ' + q}
 
 מי מדבר ועל מי — חשוב מאוד, אל תתבלבל:
 - הדובר בשיחות הוא אדמו"ר הריי"צ. כשהוא אומר "אני", "שלי", "אלי" — הכוונה לאדמו"ר הריי"צ.
@@ -130,9 +149,12 @@ ${list}
 - סגנון: עברית ברורה ומכובדת, בכינויים המפורשים (אדמו״ר הזקן, אדמו״ר הרש״ב, אדמו״ר הריי״צ וכו').
 - אורך: עד כ-250 מילים. שאלה ממוקדת — תשובה קצרה.
 - אם הקטעים לא עונים על השאלה — כתוב רק: לא נמצאה תשובה לשאלה זו בשיחות שבאתר.
-כתוב רק את התשובה עצמה, בלי הקדמה.`;
-  const out = (await claude(env, prompt, 6000, 55000)).trim();
+כתוב רק את התשובה עצמה, בלי הקדמה.${chat ? `\nבסוף, בשורה נפרדת שמתחילה במילה המשך: — הצע 3 שאלות המשך קצרות (עד 10 מילים כל אחת) שהלומד עשוי לרצות לשאול ושאפשר לענות עליהן מהשיחות, מופרדות ב- | ` : ''}`;
+  let out = (await claude(env, prompt, 6000, 55000)).trim();
   answer.last = out;
+  let follow = [];
+  const fm = out.match(/\n\s*\**המשך:?\**\s*:?\s*(.+)\s*$/);
+  if (fm) { follow = fm[1].split('|').map(s => s.trim().replace(/^[-•\d.]+\s*/, '')).filter(Boolean).slice(0, 3); out = out.slice(0, fm.index).trim(); }
   // מספור מחדש לפי סדר ההופעה
   const map = new Map(), used = [];
   const text = out.replace(/\[(\d+)\]/g, (all, d) => {
@@ -140,7 +162,7 @@ ${list}
     if (!map.has(n)) { map.set(n, used.length + 1); used.push(cands[n - 1]); }
     return '[' + map.get(n) + ']';
   });
-  return { text, used };
+  return { text, used, follow };
 }
 
 // קטעים ביידיש: הכותרת מסתיימת ב"· אידיש". תרגום — רק בלחיצה על "תרגם", ונשמר במטמון
@@ -192,19 +214,31 @@ export default {
       } catch (e) { return json({ error: 'התרגום נכשל, נסו שוב בעוד רגע' }, 502, h); }
     }
 
-    const q = (url.searchParams.get('q') || '').trim().slice(0, MAX_Q);
+    let chat = null;
+    if (req.method === 'POST' && url.searchParams.get('mode') === 'chat') {
+      let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
+      if (!env.CHAT_KEY || b.key !== env.CHAT_KEY) return json({ error: 'אין הרשאה' }, 403, h);
+      if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
+      const hist = (Array.isArray(b.h) ? b.h : []).slice(-4).map(t => ({ q: String(t.q || '').slice(0, 300), a: String(t.a || '').replace(/\[\d+\]/g, '').slice(0, 1500) }));
+      const cq = String(b.q || '').trim().slice(0, 300);
+      if (cq.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
+      let sq = cq;
+      if (hist.length) { try { sq = (await rewriteQ(env, hist, cq)).slice(0, MAX_Q) || cq; } catch (e) { sq = cq; } }
+      chat = { hist, q: cq, sq };
+    }
+    const q = chat ? chat.sq : (url.searchParams.get('q') || '').trim().slice(0, MAX_Q);
     if (q.length < 2) return json({ error: 'שאלה קצרה מדי' }, 400, h);
 
-    const mode = url.searchParams.get('mode') === 'answer' ? 'answer' : 'quotes';
+    const mode = (chat || url.searchParams.get('mode') === 'answer') ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r', 'z'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
     const cache = caches.default, ckey = new Request('https://cache.sichos/v30?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
-    const cached = debug ? null : await cache.match(ckey);
+    const cached = (debug || chat) ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
 
     const ip = (req.headers.get('CF-Connecting-IP') || 'x') + (mode === 'answer' ? '#a' : ''), now = Date.now();
     const arr = (hits.get(ip) || []).filter(t => now - t < 60000);
-    if (arr.length >= (mode === 'answer' ? A_PER_MIN : PER_MIN)) return json({ error: 'יותר מדי חיפושים, נסו שוב בעוד דקה' }, 429, h);
+    if (!chat && arr.length >= (mode === 'answer' ? A_PER_MIN : PER_MIN)) return json({ error: 'יותר מדי חיפושים, נסו שוב בעוד דקה' }, 429, h);
     arr.push(now); hits.set(ip, arr);
     if (hits.size > 5000) hits.clear();
 
@@ -252,10 +286,11 @@ export default {
         if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
         const txt = await loadTxt();
         let a;
-        try { a = await answer(env, q, cands, txt, np, N - np); }
+        try { a = await answer(env, q, cands, txt, np, N - np, chat); }
         catch (e) { return json({ error: 'לא הצלחתי לנסח תשובה, נסו שוב בעוד רגע' }, 502, h); }
         if (debug) return json({ q, raw: answer.last, answer: a.text, results: a.used.map(r => full(txt, r)),
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70)) }, 200, h);
+        if (chat) return json({ answer: a.text, results: a.used.map(r => full(txt, r)), follow: a.follow, sq: q }, 200, h);
         const resp = json({ answer: a.text, results: a.used.map(r => full(txt, r)), ranked: true }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
         ctx.waitUntil(cache.put(ckey, resp.clone()));
         return resp;

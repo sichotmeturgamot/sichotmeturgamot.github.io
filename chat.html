@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שיחה עם ה-AI</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="https://sichotmeturgamot.com/style.css">
+<meta name="theme-color" content="#17233d">
+<style>
+body{background:var(--cream);padding-bottom:0}
+.top{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.top b{font-family:'Frank Ruhl Libre',serif;font-size:1.15rem}
+.top button{background:transparent;color:#e9dfc4;border:1px solid #5b6784;border-radius:14px;padding:4px 12px;font:500 .8rem Heebo,sans-serif;cursor:pointer}
+#feed{max-width:760px;margin:0 auto;padding:16px 14px 150px}
+.hello{text-align:center;color:var(--muted);margin:40px 10px;font-family:'Frank Ruhl Libre',serif;font-size:1.15rem;line-height:1.7}
+.qb{background:var(--navy);color:#fff;border-radius:16px 16px 4px 16px;padding:10px 16px;margin:22px 0 10px auto;width:fit-content;max-width:88%;font-family:'Frank Ruhl Libre',serif;font-size:1.1rem}
+.ab{background:var(--paper);border:1px solid var(--line);border-radius:16px 16px 16px 4px;padding:14px 18px;margin:0 auto 6px 0;max-width:100%;box-shadow:0 1px 6px rgba(23,35,61,.06)}
+.ab .lbl{font:500 .75rem Heebo,sans-serif;color:var(--gold);margin-bottom:6px}
+.ab p{font-family:'Frank Ruhl Libre',serif;font-size:1.12rem;line-height:1.75;margin:.5em 0;color:var(--text)}
+.ab .cite{display:inline-block;background:var(--gold);color:#fff;border-radius:9px;font:600 .7rem Heebo,sans-serif;padding:0 6px;margin:0 2px;text-decoration:none;vertical-align:super}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.chips button{font:500 .88rem Heebo,sans-serif;border:1px solid var(--gold);background:#fff;color:var(--navy);border-radius:18px;padding:7px 14px;cursor:pointer;text-align:right}
+.srcs summary{cursor:pointer;color:var(--muted);font:500 .85rem Heebo,sans-serif;margin:8px 4px}
+.srcs .sr{border-top:1px solid var(--line);padding:10px 4px;font-size:.95rem}
+.srcs .sr .h{font:600 .85rem Heebo,sans-serif;color:var(--navy)}
+.srcs .sr .h i{display:inline-block;background:var(--gold);color:#fff;border-radius:9px;font-style:normal;padding:0 7px;margin-left:6px}
+.srcs .sr .txt{font-family:'Frank Ruhl Libre',serif;line-height:1.7;margin:4px 0;white-space:pre-wrap}
+.srcs .sr .txt.clip{max-height:7.5em;overflow:hidden}
+.srcs .acts{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.srcs .acts button,.srcs .acts a{font:500 .8rem Heebo,sans-serif;color:var(--navy);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline}
+.yi-tr{background:#faf4e3;border-radius:8px;padding:8px 10px;margin:6px 0}.yi-note{font-size:.75rem;color:var(--muted)}
+.flash{background:#fff3c4}
+.think{color:var(--muted);padding:8px 4px;font:.9rem Heebo,sans-serif}
+.err{color:#a33;padding:8px 4px;font:.9rem Heebo,sans-serif}
+#bar{position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom));z-index:30}
+#bar form{max-width:760px;margin:0 auto;display:flex;gap:8px;align-items:flex-end}
+#bar textarea{flex:1;resize:none;border:1.5px solid var(--line);border-radius:22px;padding:11px 16px;font:1.1rem 'Frank Ruhl Libre',serif;background:#fff;max-height:130px;outline:none}
+#bar textarea:focus{border-color:var(--gold)}
+#bar .send{width:46px;height:46px;border-radius:50%;border:none;background:var(--navy);color:#fff;font-size:1.3rem;cursor:pointer;flex:none}
+#bar .send:disabled{opacity:.4}
+#lock{max-width:420px;margin:70px auto;padding:0 20px;text-align:center}
+#lock input{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:1rem;margin:14px 0;text-align:center;direction:ltr}
+#lock button{background:var(--navy);color:#fff;border:none;border-radius:12px;padding:11px 28px;font:600 1rem Heebo,sans-serif;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="top"><b>שיחה עם ה-AI</b><button id="new" type="button">שיחה חדשה</button></div>
+<div id="lock" hidden><p style="font-family:'Frank Ruhl Libre',serif;font-size:1.2rem">עמוד פרטי. הדביקו את מפתח הגישה (פעם אחת בלבד, הוא יישמר במכשיר).</p><input id="k" type="password" autocomplete="off"><br><button id="kb" type="button">כניסה</button></div>
+<div id="feed"><div class="hello">שאלו כל שאלה על השיחות והאגרות.<br>אפשר להמשיך ולשאול שאלות המשך — ה-AI זוכר מה שנשאל קודם.</div></div>
+<div id="bar"><form id="f"><textarea id="q" rows="1" placeholder="כתבו שאלה…"></textarea><button class="send" id="go" type="submit" aria-label="שלח">➤</button></form></div>
+<script>
+(function(){
+  var API='https://sichos-search.doviber.workers.dev', KEY=null, hist=[], turn=0, busy=false;
+  var feed=document.getElementById('feed'), q=document.getElementById('q'), go=document.getElementById('go'), lock=document.getElementById('lock'), bar=document.getElementById('bar');
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+  function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  try{KEY=localStorage.getItem('chat-key');}catch(e){}
+  function gate(){var ok=!!KEY;lock.hidden=ok;feed.hidden=!ok;bar.hidden=!ok;}
+  document.getElementById('kb').onclick=function(){var v=document.getElementById('k').value.trim();if(!v)return;KEY=v;try{localStorage.setItem('chat-key',v);}catch(e){}gate();};
+  gate();
+  document.getElementById('new').onclick=function(){hist=[];turn=0;feed.innerHTML='<div class="hello">שיחה חדשה. מה תרצו לשאול?</div>';};
+  function render(txt,t){return txt.split(/\n+/).filter(function(x){return x.trim();}).map(function(p){
+    return '<p>'+esc(p.trim()).replace(/^[-•]\s*/,'• ').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\[(\d+)\]/g,'<a href="#" class="cite" data-t="'+t+'" data-n="$1">$1</a>')+'</p>';}).join('');}
+  function trBtn(c,d,a){
+    if(!/ · אידיש$/.test(c.t||'')||!(c.p>=0))return;
+    var b=el('button',null,'תרגם לעברית'),box=null,busy2=false;b.type='button';
+    b.onclick=function(){
+      if(box){var h=box.style.display!=='none';box.style.display=h?'none':'';b.textContent=h?'הצג תרגום':'הסתר תרגום';return;}
+      if(busy2)return;busy2=true;b.textContent='מתרגם…';
+      fetch(API+'?v=34&tr='+c.p).then(function(r){return r.json();}).then(function(j){busy2=false;
+        if(!j.tr){b.textContent='תרגם לעברית';return;}
+        box=el('div','yi-tr');box.appendChild(el('div','yi-note','תרגום אוטומטי ע״י AI — לא מוגה.'));box.appendChild(el('div','txt',j.tr));d.insertBefore(box,a);b.textContent='הסתר תרגום';
+      }).catch(function(){busy2=false;b.textContent='תרגם לעברית';});
+    };a.appendChild(b);
+  }
+  function srcs(list,t){
+    var w=el('details','srcs');w.appendChild(el('summary',null,'מקורות ('+list.length+')'));
+    list.forEach(function(c,k){
+      var d=el('div','sr');d.id='s'+t+'-'+(k+1);
+      var h=el('div','h');h.appendChild(el('i',null,String(k+1)));h.appendChild(document.createTextNode(c.t));d.appendChild(h);
+      var tx=el('div','txt',c.s||c.x);d.appendChild(tx);
+      var a=el('div','acts');
+      if((c.s||c.x).length>420){tx.classList.add('clip');var m=el('button',null,'הצג עוד');m.type='button';m.onclick=function(){var cl=tx.classList.toggle('clip');m.textContent=cl?'הצג עוד':'הצג פחות';};a.appendChild(m);}
+      var l=null;
+      if(c.u){l=el('a',null,c.u.indexOf('hebrewbooks')>=0?'לעמוד בספר ↗':'לחוברת (PDF) ↗');l.href=c.u;l.target='_blank';l.rel='noopener';}
+      else if(c.f){l=el('a',null,'לקריאת השיחה');l.href='read.html?file='+encodeURIComponent('pdfs/'+c.f+'.pdf')+'&title='+encodeURIComponent(c.t);l.target='_blank';}
+      if(l)a.appendChild(l);d.appendChild(a);trBtn(c,d,a);w.appendChild(d);
+    });return w;
+  }
+  feed.addEventListener('click',function(e){var c=e.target.closest('.cite');if(!c)return;e.preventDefault();
+    var d=document.getElementById('s'+c.dataset.t+'-'+c.dataset.n);if(!d)return;var det=d.closest('details');if(det)det.open=true;
+    d.scrollIntoView({behavior:'smooth',block:'center'});d.classList.add('flash');setTimeout(function(){d.classList.remove('flash');},1400);});
+  function ask(text){
+    if(busy||!text.trim())return;busy=true;go.disabled=true;
+    var h=feed.querySelector('.hello');if(h)h.remove();
+    feed.querySelectorAll('.chips').forEach(function(x){x.remove();});
+    var t=++turn;feed.appendChild(el('div','qb',text));
+    var th=el('div','think','מחפש בשיחות ומנסח תשובה…');feed.appendChild(th);th.scrollIntoView({block:'end'});
+    fetch(API+'?v=34&mode=chat',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({key:KEY,q:text,h:hist.slice(-4)})})
+    .then(function(r){return r.json().then(function(j){return{ok:r.ok,s:r.status,j:j};});})
+    .then(function(x){busy=false;go.disabled=false;th.remove();
+      if(!x.ok){if(x.s===401||x.s===403){try{localStorage.removeItem('chat-key');}catch(e){}KEY=null;gate();}
+        feed.appendChild(el('div','err',x.j.error||'שגיאה, נסו שוב'));return;}
+      var j=x.j,box=el('div','ab');box.appendChild(el('div','lbl','✨ תשובת AI על סמך המקורות — כדאי לבדוק במקור'));
+      var at=el('div');at.innerHTML=render(j.answer||'',t);box.appendChild(at);
+      var list=(j.results||[]).filter(function(r){return r&&r.x;});if(list.length)box.appendChild(srcs(list,t));
+      feed.appendChild(box);
+      if(j.follow&&j.follow.length){var ch=el('div','chips');j.follow.forEach(function(f){var b=el('button',null,f);b.type='button';b.onclick=function(){ask(f);};ch.appendChild(b);});feed.appendChild(ch);}
+      hist.push({q:text,a:(j.answer||'').replace(/\[\d+\]/g,'').slice(0,1500)});
+      box.scrollIntoView({block:'start',behavior:'smooth'});
+    }).catch(function(){busy=false;go.disabled=false;th.remove();feed.appendChild(el('div','err','לא הצלחתי להתחבר, נסו שוב'));});
+  }
+  document.getElementById('f').onsubmit=function(e){e.preventDefault();var v=q.value;q.value='';q.style.height='';ask(v);};
+  q.addEventListener('input',function(){q.style.height='auto';q.style.height=Math.min(q.scrollHeight,130)+'px';});
+})();
+</script>
+</body>
+</html>
