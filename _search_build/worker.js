@@ -229,10 +229,10 @@ export default {
       const em = await gEmail(b.cred);
       if (!em || !ADMINS.includes(em)) return json({ error: 'אין הרשאה' }, 403, h);
       const stub = env.USERS.get(env.USERS.idFromName('main'));
-      const r = await stub.fetch('https://do/admin?act=' + (b.act === 'set' ? 'set' : 'stats'), { method: 'POST', body: JSON.stringify(b.cfg || {}) });
+      const r = await stub.fetch('https://do/admin?act=' + (['set', 'log', 'emails'].includes(b.act) ? b.act : 'stats'), { method: 'POST', body: JSON.stringify(b.cfg || {}) });
       return json(await r.json(), 200, h);
     }
-    let chat = null, left = null;
+    let chat = null, left = null, gem = null;
     const cm = url.searchParams.get('mode');
     if (req.method === 'POST' && (cm === 'chat' || cm === 'gchat')) {
       let b; try { b = await req.json(); } catch (e) { return json({ error: 'bad request' }, 400, h); }
@@ -245,7 +245,7 @@ export default {
         const u = await env.USERS.get(env.USERS.idFromName('main')).fetch('https://do/use?e=' + encodeURIComponent(em) + '&a=' + (ADMINS.includes(em) ? 1 : 0));
         const ur = await u.json();
         if (!ur.ok) return json({ error: ur.why === 'user' ? 'הגעתם למכסה היומית (' + ur.lim + ' שאלות). חזרו מחר 🙂' : ur.why === 'blocked' ? 'הגישה שלכם לשירות הוגבלה' : 'השירות הגיע למכסה היומית הכללית, נסו שוב מחר', left: 0 }, 429, h);
-        left = ur.left;
+        left = ur.left; gem = em;
       }
       if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
       const hist = (Array.isArray(b.h) ? b.h : []).slice(-6).map(t => ({ q: String(t.q || '').slice(0, 300), a: String(t.a || '').replace(/\[\d+\]/g, '').slice(0, 1500) }));
@@ -319,6 +319,7 @@ export default {
         catch (e) { return json({ error: 'לא הצלחתי לנסח תשובה, נסו שוב בעוד רגע' }, 502, h); }
         if (debug) return json({ q, raw: answer.last, answer: a.text, results: a.used.map(r => full(txt, r)),
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70)) }, 200, h);
+        if (chat && gem) ctx.waitUntil(env.USERS.get(env.USERS.idFromName('main')).fetch('https://do/log', { method: 'POST', body: JSON.stringify({ e: gem, q: chat.q, a: a.text }) }));
         if (chat) return json({ answer: a.text, results: a.used.map(r => full(txt, r)), follow: a.follow, sq: q, left }, 200, h);
         const resp = json({ answer: a.text, results: a.used.map(r => full(txt, r)), ranked: true }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
         ctx.waitUntil(cache.put(ckey, resp.clone()));
@@ -363,6 +364,25 @@ export class Users {
     const u = new URL(req.url), day = new Date().toISOString().slice(0, 10);
     const r = (o) => new Response(JSON.stringify(o));
     const cfg = Object.assign({ user: USER_DAILY, global: GLOBAL_DAILY, vip: [], blocked: [] }, (await this.s.get('cfg')) || {});
+    if (u.pathname === '/log') {
+      const b = await req.json(), t = Date.now();
+      await this.s.put('q:' + String(t).padStart(14, '0') + ':' + Math.random().toString(36).slice(2, 6), { t, e: b.e, q: String(b.q).slice(0, 300), a: String(b.a).slice(0, 3000) });
+      if (Math.random() < 0.05) {   // ניקוי רשומות ותיקות מ-60 יום
+        const old = await this.s.list({ prefix: 'q:', end: 'q:' + String(t - 60 * 864e5).padStart(14, '0'), limit: 200 });
+        if (old.size) await this.s.delete([...old.keys()]);
+      }
+      return r({ ok: true });
+    }
+    if (u.pathname === '/admin' && u.searchParams.get('act') === 'log') {
+      const m = await this.s.list({ prefix: 'q:', reverse: true, limit: 100 });
+      return r({ log: [...m.values()] });
+    }
+    if (u.pathname === '/admin' && u.searchParams.get('act') === 'emails') {
+      const m = await this.s.list({ prefix: 'm:' });
+      const out = []; m.forEach((v, k) => out.push([k.slice(2), v.n, v.first, v.last]));
+      out.sort((a, b) => b[3] - a[3]);
+      return r({ emails: out });
+    }
     if (u.pathname === '/admin') {
       if (u.searchParams.get('act') === 'set') {
         const n = await req.json();
@@ -383,6 +403,8 @@ export class Users {
     if (!vip && cg >= cfg.global) return r({ ok: false, why: 'global' });
     if (!vip && cu >= cfg.user) return r({ ok: false, why: 'user', lim: cfg.user });
     await this.s.put(ku, cu + 1); await this.s.put(kg, cg + 1);
+    const mk = 'm:' + e, mm = (await this.s.get(mk)) || { first: Date.now(), n: 0 };
+    mm.last = Date.now(); mm.n++; await this.s.put(mk, mm);
     return r({ ok: true, left: vip ? null : cfg.user - cu - 1 });
   }
 }

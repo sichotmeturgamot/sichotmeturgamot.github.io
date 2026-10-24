@@ -229,6 +229,12 @@
         <div class="dlg-btns"><button class="btn btn-main" type="button" onclick="aiqSave()">שמירה</button> <button class="btn" type="button" onclick="aiqLoad()">רענון</button></div>
         <h3 style="margin-top:18px">מי שאל היום</h3>
         <div id="aiq-users" style="font-size:.9rem"></div>
+        <h3 style="margin-top:18px">כל המיילים שנכנסו</h3>
+        <div class="dlg-btns"><button class="btn" type="button" onclick="aiqEmails()">טען רשימה</button></div>
+        <div id="aiq-emails" style="font-size:.9rem"></div>
+        <h3 style="margin-top:18px">שאלות ותשובות אחרונות (נשמרות 60 יום)</h3>
+        <div class="dlg-btns"><button class="btn" type="button" onclick="aiqLog()">טען שאלות</button></div>
+        <div id="aiq-log" style="font-size:.9rem"></div>
       </div>
     </div>
     </div><!-- /atab-aiq -->
@@ -1420,6 +1426,12 @@ async function aiqSave() {
   const L = id => $(id).value.split(/\s+/).filter(Boolean);
   try { aiqShow(await aiqCall('set', { user: $('aiq-user').value, global: $('aiq-global').value, vip: L('aiq-vip'), blocked: L('aiq-blocked') })); await aiqLoad(); alert('נשמר'); } catch (e) { alert(e.message); }
 }
+
+function aiqEsc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+async function aiqEmails(){try{const j=await aiqCall('emails');const f=t=>new Date(t).toLocaleDateString('he-IL');
+  $('aiq-emails').innerHTML='<p>'+j.emails.length+' מיילים</p>'+j.emails.map(x=>'<div>'+aiqEsc(x[0])+' — '+x[1]+' שאלות · אחרון: '+f(x[3])+'</div>').join('')+'<textarea class="en" rows="3" readonly style="margin-top:8px">'+aiqEsc(j.emails.map(x=>x[0]).join(', '))+'</textarea>';}catch(e){alert(e.message);}}
+async function aiqLog(){try{const j=await aiqCall('log');
+  $('aiq-log').innerHTML=j.log.length?j.log.map(x=>'<details style="border-top:1px solid #e8e2d4;padding:8px 0"><summary><b>'+aiqEsc(x.q)+'</b><br><small>'+aiqEsc(x.e)+' · '+new Date(x.t).toLocaleString('he-IL')+'</small></summary><div style="white-space:pre-wrap;margin-top:6px">'+aiqEsc(x.a)+'</div></details>').join(''):'עדיין אין שאלות שמורות';}catch(e){alert(e.message);}}
 
 (function init() {
   const saved = localStorage.getItem('sichos-admin');
