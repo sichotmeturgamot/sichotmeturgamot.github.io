@@ -163,7 +163,7 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
       if(!x.ok){if(x.s===401){try{localStorage.removeItem('g-cred');}catch(e){}CRED=null;gInit=false;gate();}
         feed.appendChild(el('div','err',x.j.error||'שגיאה, נסו שוב'));return;}
       var j=x.j,rec={q:text,answer:j.answer||'',follow:j.follow||[],results:list0(j.results)};
-      addAns(rec,t,true);if(j.left!=null){var lf=document.getElementById('lf');if(lf)lf.textContent='נשארו '+j.left+' שאלות היום';}
+      addAns(rec,t,true);var lf=document.getElementById('lf');if(lf)lf.textContent=(j.left==null)?'אין לך הגבלה על מכסת השאלות':'נשארו '+j.left+' שאלות היום';
       if(!cur){cur={id:Date.now(),title:text.slice(0,50),ts:Date.now(),turns:[]};convs.unshift(cur);}
       cur.turns.push(rec);cur.ts=Date.now();persist();
       hist.push({q:text,a:(j.answer||'').replace(/\[\d+\]/g,'').slice(0,1500)});
