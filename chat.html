@@ -107,7 +107,7 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
     b.onclick=function(){
       if(box){var h=box.style.display!=='none';box.style.display=h?'none':'';b.textContent=h?'הצג תרגום':'הסתר תרגום';return;}
       if(busy2)return;busy2=true;b.textContent='מתרגם…';
-      fetch(API+'?v=35&tr='+c.p).then(function(r){return r.json();}).then(function(j){busy2=false;
+      fetch(API+'?v=36&tr='+c.p).then(function(r){return r.json();}).then(function(j){busy2=false;
         if(!j.tr){b.textContent='תרגם לעברית';return;}
         box=el('div','yi-tr');box.appendChild(el('div','yi-note','תרגום אוטומטי ע״י AI — לא מוגה.'));box.appendChild(el('div','txt',j.tr));d.insertBefore(box,a);b.textContent='הסתר תרגום';
       }).catch(function(){busy2=false;b.textContent='תרגם לעברית';});
@@ -145,7 +145,7 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
     feed.querySelectorAll('.chips').forEach(function(x){x.remove();});
     var t=++turn;feed.appendChild(el('div','qb',text));
     var th=el('div','think');th.innerHTML='<i></i><i></i><i></i> מחפש בשיחות ומנסח תשובה…';feed.appendChild(th);th.scrollIntoView({block:'end'});
-    fetch(API+'?v=35&mode=chat',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({key:KEY,q:text,h:hist.slice(-6)})})
+    fetch(API+'?v=36&mode=chat',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({key:KEY,q:text,h:hist.slice(-6)})})
     .then(function(r){return r.json().then(function(j){return{ok:r.ok,s:r.status,j:j};});})
     .then(function(x){busy=false;go.disabled=false;th.remove();
       if(!x.ok){if(x.s===401||x.s===403){try{localStorage.removeItem('chat-key');}catch(e){}KEY=null;gate();}
