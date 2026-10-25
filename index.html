@@ -33,6 +33,7 @@
 <style>
 .ketaim-card{border-top:3px solid var(--gold)}
 .ketaim-card .eyebrow{color:var(--gold-dark);font-size:.85rem;font-weight:700;letter-spacing:.02em;margin-bottom:4px}
+.ketaim-note{color:var(--navy);font-size:.95rem;font-weight:700;margin-bottom:6px;padding:4px 10px;border-right:3px solid var(--gold);background:rgba(184,147,62,.08);border-radius:4px}
 .ketaim-src{font-weight:700;color:var(--navy);margin-bottom:10px;font-size:1.05rem}
 .ketaim-text{font-family:'Frank Ruhl Libre',serif;font-size:1.08rem;line-height:1.9;white-space:pre-line;max-height:22em;overflow:hidden;position:relative}
 .ketaim-text.clamped::after{content:"";position:absolute;inset:auto 0 0 0;height:3em;background:linear-gradient(transparent,var(--paper))}
@@ -74,6 +75,7 @@
 <main>
   <div class="card ketaim-card" id="ketaim-card" style="display:none">
     <div class="eyebrow">קטע יומי</div>
+    <div class="ketaim-note" id="ketaim-note" style="display:none"></div>
     <div class="ketaim-src" id="ketaim-src"></div>
     <div class="ketaim-text" id="ketaim-text"></div>
     <div class="ketaim-actions">
@@ -160,6 +162,7 @@
   const pool=dated.length?dated:KETAIM;
   const k=byId[sched[iso]]||pool[dayNo%pool.length];
   const $=id=>document.getElementById(id);
+  if(byId[sched[iso]]===k && k.note){ const n=$('ketaim-note'); n.textContent=k.note; n.style.display=''; }
   $('ketaim-src').textContent=(k.src||k.title)+(!byId[sched[iso]]&&dated.length?' · נאמרה ביום זה':'');
   const html=String(k.text).replace(/\n\s*\n+/g,'\n').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/\*([^*\n]+)\*/g,'<b>$1</b>');
   $('ketaim-text').innerHTML=html;
