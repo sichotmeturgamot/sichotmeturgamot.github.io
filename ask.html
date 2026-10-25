@@ -257,7 +257,7 @@
     b.onclick = function(){
       if(box){ var h = box.style.display !== 'none'; box.style.display = h ? 'none' : ''; b.textContent = h ? 'הצג תרגום' : 'הסתר תרגום'; return; }
       if(busy) return; busy = true; b.textContent = 'מתרגם…';
-      fetch(API + '?v=36&tr=' + c.p).then(function(r){ return r.json(); }).then(function(j){
+      fetch(API + '?v=37&tr=' + c.p).then(function(r){ return r.json(); }).then(function(j){
         busy = false;
         if(!j.tr){ b.textContent = 'תרגם לעברית'; alertTr(d, j.error || 'התרגום נכשל, נסו שוב'); return; }
         box = el('div','yi-tr'); box.appendChild(el('div','yi-note','תרגום אוטומטי ע״י AI — לא מוגה. המקור ביידיש למעלה.')); box.appendChild(el('div','txt', j.tr));
@@ -272,7 +272,7 @@
       go = document.getElementById('smart-go'), st = document.getElementById('smart-status'), out = document.getElementById('smart-out');
   function el(t, c, x){ var e=document.createElement(t); if(c) e.className=c; if(x!=null) e.textContent=x; return e; }
   var kwP = null;   // אינדקס מילים קטן (במקום כל הטקסט): מילה → קטעים, ומיפוי ערכי המפתח לקטעים
-  function getKw(){ return kwP || (kwP = fetch('search-kw.json?v=36').then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(k){ k.words = Object.keys(k.v); return k; }).catch(function(e){ kwP = null; throw e; })); }
+  function getKw(){ return kwP || (kwP = fetch('search-kw.json?v=37').then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(k){ k.words = Object.keys(k.v); return k; }).catch(function(e){ kwP = null; throw e; })); }
   function hitsFor(forms, kw){   // כל הקטעים שמכילים אחת הצורות (כמו חיפוש בטקסט המלא)
     var seen = {}, out = [];
     kw.words.forEach(function(w){ if(forms.some(function(f){ return w.indexOf(f) >= 0; })) kw.v[w].forEach(function(p){ if(!seen[p]){ seen[p] = 1; out.push(p); } }); });
@@ -334,7 +334,7 @@
       // קטעים מהמפתח ומילים נדירות — נשלחים לשרת כמועמדים נוספים, ו-Claude מחליט אם הם מתאימים
       if(kw){ var seen0 = {}; ex = mafteachHits(q, kw).concat(exactHits(q, kw)).filter(function(r){ if(seen0[r.p]) return false; seen0[r.p] = 1; return true; }).slice(0, 10); }
       var xs = ex.map(function(r){ return r.m >= 0 ? r.p + ':' + r.m : r.p; }).join(',');
-      return fetch(API + '?v=36&q=' + encodeURIComponent(q) + srcQ() + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+      return fetch(API + '?v=37&q=' + encodeURIComponent(q) + srcQ() + (xs ? '&x=' + xs : '')).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
     }).then(function(x){
       go.disabled = false; sin.classList.remove('busy');
       if(!x.ok){ st.textContent = x.j.error || 'שגיאה, נסו שוב'; return; }
