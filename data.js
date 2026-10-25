@@ -867,17 +867,6 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "ליל שביעי של פסח",
-        "subtitle": "",
-        "file": "pdfs/shviee_shel_pesach_5708.pdf",
-        "pages": 2,
-        "count": 1,
-        "sortDate": "01-23",
-        "hebDate": "כ״ג תשרי",
-        "addedAt": "2026-10-25",
-        "hasPage": true
-      },
-      {
         "title": "שמחת תורה תש\"ח",
         "subtitle": "בסעודת היום",
         "file": "pdfs/simchat_tora_yom_5708.pdf",
@@ -1018,6 +1007,17 @@ const YEARS = [
         "sortDate": "08-19",
         "hebDate": "י״ט ניסן",
         "addedAt": "2026-10-22",
+        "hasPage": true
+      },
+      {
+        "title": "ליל שביעי של פסח תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/shviee_shel_pesach_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "08-21",
+        "hebDate": "כ״א ניסן",
+        "addedAt": "2026-10-25",
         "hasPage": true
       }
     ],

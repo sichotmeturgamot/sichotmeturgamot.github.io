@@ -761,16 +761,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sichotmeturgamot.com/sichos/shviee_shel_pesach_5708.html</loc>
-    <lastmod>2026-10-25</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://sichotmeturgamot.com/pdfs/shviee_shel_pesach_5708.pdf</loc>
-    <lastmod>2026-10-25</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://sichotmeturgamot.com/sichos/simchat_tora_yom_5708.html</loc>
     <lastmod>2026-10-25</lastmod>
     <priority>0.8</priority>
@@ -897,6 +887,16 @@
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/pdfs/chol_hamoed_3_pesach_5708.pdf</loc>
+    <lastmod>2026-10-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sichotmeturgamot.com/sichos/shviee_shel_pesach_5708.html</loc>
+    <lastmod>2026-10-25</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sichotmeturgamot.com/pdfs/shviee_shel_pesach_5708.pdf</loc>
     <lastmod>2026-10-25</lastmod>
     <priority>0.7</priority>
   </url>
