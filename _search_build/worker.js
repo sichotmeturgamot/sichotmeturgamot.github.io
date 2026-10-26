@@ -14,7 +14,9 @@ const K1 = 300;   // שלב 1 (ביטים) בוחר את 300 הקטעים המו
 const pop = x => { x -= (x >>> 1) & 0x55555555; x = (x & 0x33333333) + ((x >>> 2) & 0x33333333); return (((x + (x >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24; };
 const hits = new Map();
 
+let DATA = null;   // R2: קבצי החיפוש הגדולים (לא ציבוריים)
 async function getBuf(name) {
+  if (DATA) { const o = await DATA.get(name); if (o) return o.arrayBuffer(); }
   const res = await fetch(SITE + name + '?v=40', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
@@ -192,6 +194,7 @@ async function gEmail(cred) {
 
 export default {
   async fetch(req, env, ctx) {
+    if (env.DATA) DATA = env.DATA;
     const origin = req.headers.get('Origin') || '';
     const h = cors(origin);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
