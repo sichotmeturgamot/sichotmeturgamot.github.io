@@ -735,17 +735,6 @@ const YEARS = [
     "complete": false,
     "sichos": [
       {
-        "title": "כ\"ט אלול תש\"ז, ערב ראש השנה תש\"ח",
-        "subtitle": "אחרי התרת נדרים",
-        "file": "pdfs/Erev_rosh_hashana_achary_hatarat_nedarim_5708.pdf",
-        "pages": 2,
-        "count": 1,
-        "sortDate": "01-01",
-        "hebDate": "א׳ תשרי",
-        "addedAt": "2026-08-13",
-        "hasPage": true
-      },
-      {
         "title": "ערב ראש השנה, והנהגות בסעודות ראש השנה",
         "subtitle": "",
         "file": "pdfs/erev_rosh_hashana_vhanhagot_5708.pdf",
@@ -754,6 +743,17 @@ const YEARS = [
         "sortDate": "01-01",
         "hebDate": "א׳ תשרי",
         "addedAt": "2026-08-31",
+        "hasPage": true
+      },
+      {
+        "title": "כ\"ט אלול תש\"ז, ערב ראש השנה תש\"ח",
+        "subtitle": "אחרי התרת נדרים",
+        "file": "pdfs/Erev_rosh_hashana_achary_hatarat_nedarim_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "01-01",
+        "hebDate": "א׳ תשרי",
+        "addedAt": "2026-08-13",
         "hasPage": true
       },
       {
