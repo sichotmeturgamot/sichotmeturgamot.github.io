@@ -260,9 +260,21 @@ async function begin() {
 }
 
 // ---------- זום (צביטה) ----------
+function anchorAt(fx, fy) {
+  let best = null, bd = 1e9;
+  for (const r of recs) {
+    const b = r.el.getBoundingClientRect(); if (b.bottom < -50 || b.top > innerHeight + 50) continue;
+    const d = fy < b.top ? b.top - fy : fy > b.bottom ? fy - b.bottom : 0; if (d < bd) { bd = d; best = { el: r.el, fx: (fx - b.left) / b.width, fy: (fy - b.top) / b.height }; }
+  }
+  return best;
+}
+function keepAnchor(a, fx, fy) {
+  if (!a) return; const b = a.el.getBoundingClientRect();
+  viewer.scrollLeft += (b.left + a.fx * b.width) - fx; viewer.scrollTop += (b.top + a.fy * b.height) - fy;
+}
 function setZoom(z, fx, fy) {
-  z = clamp(z, 1, 4); const r = viewer.getBoundingClientRect(), cx = viewer.scrollLeft + (fx - r.left), cy = viewer.scrollTop + (fy - r.top), s = z / Z;
-  Z = z; inner.style.width = (baseW * Z) + 'px'; viewer.scrollLeft = cx * s - (fx - r.left); viewer.scrollTop = cy * s - (fy - r.top);
+  z = clamp(z, 1, 4); const a = anchorAt(fx, fy);
+  Z = z; inner.style.width = (baseW * Z) + 'px'; keepAnchor(a, fx, fy);
 }
 let reT = null; const reRender = () => { clearTimeout(reT); reT = setTimeout(() => recs.forEach(r => { if (r.rendered) renderCanvas(r); }), 200); };
 const distOf = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
@@ -283,8 +295,9 @@ viewer.addEventListener('touchstart', e => {
 viewer.addEventListener('touchmove', e => { if (pinch && e.touches.length === 2) { e.preventDefault(); pinchApply(midOf(e), distOf(e)); } }, { passive: false });
 function pinchEnd() {
   if (!pinch) return; const p = pinch; pinch = null; multiAt = Date.now();
+  const a = anchorAt(p.m.x, p.m.y);
   inner.style.transform = ''; inner.style.transformOrigin = ''; inner.style.willChange = '';
-  setZoom(p.z0 * p.k, p.m0.x, p.m0.y); viewer.scrollLeft += p.m0.x - p.m.x; viewer.scrollTop += p.m0.y - p.m.y; reRender();
+  Z = p.z0 * p.k; inner.style.width = (baseW * Z) + 'px'; keepAnchor(a, p.m.x, p.m.y); reRender();
 }
 viewer.addEventListener('touchend', e => { if (e.touches.length < 2) pinchEnd(); }, { passive: true });
 viewer.addEventListener('touchcancel', pinchEnd, { passive: true });
