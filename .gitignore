@@ -4,3 +4,14 @@
 /search-bits.bin
 /search-texts.bin
 /search-meta.json
+
+# טקסטים של ספרים שלא תורגמו על ידי: לא במאגר הציבורי; גיבוי ב-R2 (backup/_search_build.tgz)
+/_search_build/ak*/
+/_search_build/ld*/
+/_search_build/zich*/
+/_search_build/sh57*/
+/_search_build/sh5680/
+/_search_build/sh5688/
+/_search_build/rsh8/
+/_search_build/ik8/
+/_search_build/descs.json
