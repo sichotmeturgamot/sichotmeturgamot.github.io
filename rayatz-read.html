@@ -86,6 +86,7 @@ const BOOK = params.get('book') || 'tarpach-tartzaa';
 const startPage = parseInt(params.get('page'), 10) || 1;
 const $ = id => document.getElementById(id);
 const book = RAYATZ.books.find(b => b.id === BOOK);
+if (book && book.ro) { const h = document.getElementById('hint'); if (h) h.textContent = 'קריאה בלבד • להגדלה: צביטה'; }
 const viewer = $('viewer'), inner = $('pagesInner');
 $('title').textContent = params.get('title') || (book && book.title) || '';
 document.title = (params.get('title') || 'קריאה') + ' — מרכז הריי״ץ';
@@ -165,7 +166,7 @@ function paintPage(rec) {
 const paintAll = () => recs.forEach(r => paintPage(r));
 
 async function loadBoxes(rec) {
-  if (rec.boxes || rec.loading) return; rec.loading = true;
+  if ((book && book.ro) || rec.boxes || rec.loading) return; rec.loading = true;
   try {
     const j = await api('/yid/boxes?book=' + BOOK + '&page=' + rec.n);
     if (!j.ok) { rec.loading = false; return; }

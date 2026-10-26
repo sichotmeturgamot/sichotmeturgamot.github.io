@@ -62,7 +62,7 @@
   // כל השנים מכל הספרים ברשימה אחת (הספר נקבע אוטומטית לפי השיחה)
   const years = [], extras = [];
   RAYATZ.books.forEach(b => b.sections.forEach(s => {
-    const list = /^תר/.test(s.id) ? years : extras;
+    const list = /^(ה׳)?(תר|תש|ש״ת)/.test(s.id) ? years : extras;
     let t = list.find(x => x.id === s.id); if (!t) { t = { id: s.id, items: [] }; list.push(t); }
     s.sichos.forEach(x => t.items.push(Object.assign({ book: b.id }, x)));
   }));
