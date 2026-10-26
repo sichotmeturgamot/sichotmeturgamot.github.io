@@ -26,7 +26,9 @@
   .w { position:absolute; display:block; white-space:nowrap; color:transparent; overflow:hidden; transform-origin:100% 50%; direction:rtl; cursor:text; }
   .page, .page img, .layer { user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
   .page img::selection { background:transparent; }
-  .w { user-select:text; -webkit-user-select:text; }
+  .w { user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; -webkit-tap-highlight-color:transparent; cursor:pointer; border-radius:3px; }
+  .w.sel { background:var(--gold-bg); }
+  .w.anchor { background:rgba(184,147,62,.75); }
   .w::selection { background:var(--gold-bg); color:transparent; }
   .w.fn { user-select:none; -webkit-user-select:none; }
   body.debug .w { outline:1px solid rgba(40,120,200,.55); }
@@ -48,7 +50,7 @@
 
 <header>
   <h1>ניסוי: סימון בסריקה ← תרגום אמיתי</h1>
-  <p>ספר השיחות תרפ״ח–תרצ״א, עמ׳ 55–59. הדפדפן מחזיק רק תמונות ותיבות ריקות. הסימון נשלח כמספרי מילים ל-Worker האמיתי, שמוצא את הקטע ב-R2 ומתרגם עם Claude. הגולש מקבל רק תרגום.</p>
+  <p>ספר השיחות תרפ״ח–תרצ״א, עמ׳ 55–59. הדפדפן מחזיק רק תמונות ותיבות ריקות. לסימון: הקישו על המילה הראשונה ואז על האחרונה. הסימון נשלח כמספרי מילים ל-Worker האמיתי, שמוצא את הקטע ב-R2 ומתרגם עם Claude. הגולש מקבל רק תרגום.</p>
   <div class="bar">
     <label><input type="checkbox" id="dbg"> הצג תיבות זיהוי</label>
     <span id="stat">טוען תיבות מה-Worker…</span>
@@ -92,7 +94,7 @@ async function init() {
         const [x, y, w, h, id] = b, s = document.createElement('span');
         s.className = 'w' + (id < 0 ? ' fn' : '');
         if (id >= 0) s.textContent = '·'.repeat(Math.max(1, Math.round(w / (h * 0.5))));
-        else s.addEventListener('pointerdown', () => show('הערות שוליים אינן ניתנות לתרגום. סמנו מתוך גוף השיחה.', true));
+        else s.addEventListener('pointerdown', () => show('הערות שוליים אינן ניתנות לתרגום. הקישו על מילה מגוף השיחה.', true));
         layers[i].el.appendChild(s); spans.push({ s, pi: i, x, y, w, h, id });
       });
     }
@@ -101,22 +103,35 @@ async function init() {
 }
 init();
 document.getElementById('dbg').onchange = e => document.body.classList.toggle('debug', e.target.checked);
-document.getElementById('close').onclick = () => { panel.hidden = true; getSelection().removeAllRanges(); };
-document.addEventListener('copy', e => { if (getSelection().toString()) e.preventDefault(); });
+document.getElementById('close').onclick = () => { clearSel(); };
 
-let timer, cur = null;
-document.addEventListener('selectionchange', () => { clearTimeout(timer); timer = setTimeout(onSel, 350); });
-function onSel() {
-  const sel = getSelection(); if (!sel.rangeCount || sel.isCollapsed) return;
-  const r = sel.getRangeAt(0), hit = spans.filter(o => r.intersectsNode(o.s)); if (!hit.length) return;
-  const body = hit.filter(o => o.id >= 0);
-  if (!body.length) { show('הסימון נמצא בהערות שוליים. סמנו מתוך גוף השיחה.', true); return; }
-  cur = { from: Math.min(...body.map(o => o.id)), to: Math.max(...body.map(o => o.id)) };
-  const n = cur.to - cur.from + 1;
-  if (n < MINW) { show('הסימון קצר מדי (פחות מ-' + MINW + ' מילים). למילים בודדות אפשר להשתמש במילון.', true); return; }
-  show('נבחרו כ-' + n + ' מילים. לחצו "תרגם".', false, 'יישלח ל-Worker: מילים ' + cur.from + '–' + cur.to + ' (מספרים בלבד)');
+let cur = null, anchorId = null;
+function paint(lo, hi) {
+  spans.forEach(o => {
+    o.s.classList.toggle('sel', hi != null && o.id >= 0 && o.id >= lo && o.id <= hi);
+    o.s.classList.toggle('anchor', hi == null && o.id >= 0 && o.id === lo);
+  });
+}
+function clearSel() { anchorId = null; cur = null; paint(-1, null); panel.hidden = true; }
+function onTap(id) {
+  if (anchorId === null || cur) { anchorId = id; cur = null; paint(id, null); show('סימנתם את המילה הראשונה. הקישו על המילה האחרונה.', false); return; }
+  const lo = Math.min(anchorId, id), hi = Math.max(anchorId, id);
+  cur = { from: lo, to: hi }; paint(lo, hi);
+  const n = hi - lo + 1;
+  if (n < MINW) { cur = null; anchorId = null; show('הסימון קצר מדי (פחות מ-' + MINW + ' מילים). למילים בודדות אפשר להשתמש במילון. הקישו שוב על מילה ראשונה.', true); return; }
+  show('נבחרו כ-' + n + ' מילים. לחצו "תרגם".', false, 'יישלח ל-Worker: מילים ' + lo + '–' + hi + ' (מספרים בלבד)');
   goBtn.hidden = false;
 }
+// הקשה אמינה במגע: pointerdown+pointerup על אותה מילה, בלי תזוזה משמעותית (גלילה אינה הקשה)
+let pd = null;
+pagesEl.addEventListener('pointerdown', e => { pd = { w: e.target.closest('.w'), x: e.clientX, y: e.clientY }; }, { passive: true });
+pagesEl.addEventListener('pointerup', e => {
+  if (!pd) return;
+  const w = e.target.closest('.w'), moved = Math.hypot(e.clientX - pd.x, e.clientY - pd.y);
+  const o = w && spans.find(q => q.s === w);
+  if (moved <= 12) { if (o && w === pd.w) { if (o.id >= 0) onTap(o.id); } else if (!w) clearSel(); }
+  pd = null;
+}, { passive: true });
 const ERR = { short: 'הסימון קצר מדי.', long: 'הסימון ארוך מדי. סמנו פחות.', nomatch: 'לא הצלחתי לזהות היכן הסימון. נסו לסמן שוב, והקפידו לכלול בתחילה ובסוף מילים מגוף השיחה.', order: 'סדר הסימון לא תקין, נסו שוב.', rate: 'עברתם את מכסת התרגומים לשעה. נסו מאוחר יותר.', upstream: 'שגיאה זמנית בשירות התרגום. נסו שוב.', 'book-missing': 'נתוני הספר לא נמצאו.', server: 'שגיאה בשרת.' };
 goBtn.onclick = async () => {
   if (!cur) return; goBtn.hidden = true; trEl.hidden = false; trEl.textContent = 'מתרגם…';
