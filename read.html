@@ -59,15 +59,16 @@
   /* כפתורי פעולה + טוסט */
   #actions {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 60;
-    display: none; gap: 10px;
+    display: none; gap: 8px; max-width: calc(100vw - 16px);
   }
   #actions.show { display: flex; }
   #actions button {
     background: #b8933e; color: #fff; border: none; border-radius: 26px;
-    padding: 13px 22px; font-size: .95rem; font-family: 'Heebo', sans-serif; font-weight: 500;
+    padding: 12px 16px; font-size: .92rem; font-family: 'Heebo', sans-serif; font-weight: 500;
     box-shadow: 0 6px 20px rgba(0,0,0,.45); cursor: pointer; white-space: nowrap;
   }
-  #share { background: #1a2942; border: 1px solid #b8933e; }
+  #share, #qimg { background: #1a2942; border: 1px solid #b8933e; }
+  @media (max-width: 400px){ #actions button { padding: 11px 12px; font-size: .86rem; } }
   #toast {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 70;
     background: #1a2942; color: #fff; border: 1px solid #b8933e; border-radius: 24px;
@@ -100,6 +101,7 @@
 <div id="actions">
   <button id="cite">📋 העתק ציטוט</button>
   <button id="share">🔗 שתף ציטוט</button>
+  <button id="qimg">🖼 תמונה</button>
 </div>
 <div id="toast"></div>
 
@@ -251,6 +253,7 @@ function currentCitation(){
   if (!out) return null;
   const name = title.replace(/^שיחת\s+/,'').trim();
   const link = location.origin + location.pathname + '?file=' + encodeURIComponent(file) + '&title=' + encodeURIComponent(title);
+  lastQ = { text: out, name, link };
   return 'קטע משיחת ' + name + ':\n\n“' + out + '”\n\n' + link;
 }
 function toast(t){ actionsEl.classList.remove('show'); toastEl.textContent=t; toastEl.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>toastEl.classList.remove('show'),2200); }
@@ -262,6 +265,12 @@ citeBtn.addEventListener('click', async ()=>{
   const c = currentCitation(); if(!c) return;
   toast(await copyText(c) ? 'הציטוט הועתק ✓' : 'לא ניתן להעתיק במכשיר זה');
   clearSel();
+});
+let lastQ = null;
+$('qimg').addEventListener('click', async ()=>{
+  if (!currentCitation() || !lastQ || !window.QuoteImage) return;
+  const q = lastQ; clearSel();
+  try { await QuoteImage.open(q); } catch(e){ toast('לא ניתן ליצור תמונה במכשיר זה'); }
 });
 shareBtn.addEventListener('click', async ()=>{
   const c = currentCitation(); if(!c) return;
@@ -391,5 +400,6 @@ async function start(){
   addEventListener('pageshow', function(){ document.body.style.opacity=''; document.body.style.transform=''; });
 })();
 </script>
+<script src="quote-img.js?v=2"></script>
 </body>
 </html>
