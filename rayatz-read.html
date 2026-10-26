@@ -225,7 +225,10 @@ copyBtn.onclick = async () => {
 async function begin() {
   if (started) return; if (!getKey()) { gate(); return; }
   started = true;
-  try { await loadPdfjs(); pdf = await pdfjsLib.getDocument(book.pdf).promise; } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.'); return; }
+  try { await loadPdfjs(); const pr = await fetch(API + '/yid/pdf?book=' + BOOK, { headers: { 'x-key': getKey() } });
+    if (pr.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
+    if (!pr.ok) throw new Error('pdf ' + pr.status);
+    pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await pr.arrayBuffer()) }).promise; } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.'); return; }
   const first = await pdf.getPage(1), vp = first.getViewport({ scale: 1 });
   baseW = Math.min(viewer.clientWidth || 600, 900);
   inner.style.width = baseW + 'px';
