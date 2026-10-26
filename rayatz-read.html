@@ -86,6 +86,7 @@ const BOOK = params.get('book') || 'tarpach-tartzaa';
 const startPage = parseInt(params.get('page'), 10) || 1;
 const $ = id => document.getElementById(id);
 const book = RAYATZ.books.find(b => b.id === BOOK);
+if (book && book.nt) { const h = document.getElementById('hint'); if (h) h.textContent = 'התרגום לספר הזה בהכנה • להגדלה: צביטה'; }
 if (book && book.ro) { const h = document.getElementById('hint'); if (h) h.textContent = 'קריאה בלבד • להגדלה: צביטה'; }
 const viewer = $('viewer'), inner = $('pagesInner');
 $('title').textContent = params.get('title') || (book && book.title) || '';
@@ -220,7 +221,8 @@ $('close').onclick = clearSel;
 
 const ERR = { short: 'הסימון קצר מדי.', long: 'הסימון ארוך מדי. סמנו פחות.', nomatch: 'לא הצלחתי לזהות היכן הסימון. נסו לסמן שוב, והקפידו שהמילה הראשונה והאחרונה יהיו מגוף השיחה.', order: 'סדר הסימון לא תקין, נסו שוב.', rate: 'עברתם את מכסת התרגומים לשעה. נסו מאוחר יותר.', upstream: 'שגיאה זמנית בשירות התרגום. נסו שוב.', 'book-missing': 'נתוני הספר לא נמצאו.', server: 'שגיאה בשרת.' };
 goBtn.onclick = async () => {
-  if (!cur) return; goBtn.hidden = true; trEl.hidden = false; trEl.textContent = 'מתרגם…';
+  if (!cur) return;
+  if (book && book.nt) { goBtn.hidden = true; say('התרגום לספר הזה עדיין לא זמין: הטקסט בהכנה. הסימון עובד לצורך בדיקה בלבד.', true); return; } goBtn.hidden = true; trEl.hidden = false; trEl.textContent = 'מתרגם…';
   try {
     const j = await api('/yid/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ book: BOOK, from: cur.from, to: cur.to }) });
     if (j.ok) { trEl.textContent = j.translation; trnote.hidden = false; copyBtn.hidden = false; smsg.textContent = 'התרגום מוכן.'; smeta.textContent = 'תורגמו ' + j.words + ' מילים' + (j.cached ? ' (מהמטמון)' : ''); }
