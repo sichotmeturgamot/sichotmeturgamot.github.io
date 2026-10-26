@@ -266,8 +266,11 @@
     }
 
     // טעינת קובץ המילון (מבנה: יידיש|עברית|אנגלית) — המפתח לחיפוש מחושב מהיידיש
-    fetch('milon_en.txt?v=' + Date.now())
-      .then(r => r.text())
+    // המילון מוגש מהשרת (נשמר ב-R2); בדפדפן הוא נשמר ומתעדכן אוטומטית כשהקובץ משתנה
+    const MILON_API = 'https://sichos-search.doviber.workers.dev/?mode=milon';
+    fetch(MILON_API)
+      .then(r => { if (!r.ok) throw new Error('milon ' + r.status); return r.text(); })
+      .catch(() => fetch('milon_en.txt?v=' + Date.now()).then(r => r.text()))
       .then(txt => {
         const lines = txt.split('\n');
         for (const line of lines) {

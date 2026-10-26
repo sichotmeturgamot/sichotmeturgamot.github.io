@@ -207,6 +207,14 @@ export default {
     }
     if (origin && !ALLOWED.includes(origin)) return json({ error: 'forbidden' }, 403, h);
 
+    if (url.searchParams.get('mode') === 'milon') {          // קובץ המילון מ-R2 — הדפדפן בודק עדכון בכל טעינה (ETag)
+      const key = 'dictionary/milon_en.txt', m = env.DATA && await env.DATA.head(key);
+      if (!m) return json({ error: 'not found' }, 404, h);
+      const hd = { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', 'ETag': m.httpEtag, ...h };
+      if (req.headers.get('If-None-Match') === m.httpEtag) return new Response(null, { status: 304, headers: hd });
+      const o = await env.DATA.get(key);
+      return new Response(o.body, { headers: hd });
+    }
     if (url.searchParams.has('tr')) {                       // תרגום קטע ביידיש — רק לפי בקשה
       const p = parseInt(url.searchParams.get('tr'), 10);
       const tkey = new Request('https://cache.sichos/tr1?p=' + p + '&v=' + (url.searchParams.get('v') || ''));
