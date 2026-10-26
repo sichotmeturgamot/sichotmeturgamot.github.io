@@ -22,7 +22,7 @@
   .hlayer, .layer { position:absolute; inset:0; }
   .hlayer { z-index:2; pointer-events:none; }
   .layer { z-index:3; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
-  .w { position:absolute; display:block; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+  .w { position:absolute; display:block; pointer-events:none; -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
   .hl { position:absolute; background:rgba(184,147,62,.42); border-radius:4px; mix-blend-mode:multiply; }
   .hl.a { background:rgba(184,147,62,.8); }
 
@@ -194,16 +194,26 @@ function onTap(id) {
   cur = { from: lo, to: hi };
   say('נבחרו כ-' + n + ' מילים. לחצו "תרגם".'); goBtn.hidden = false;
 }
-let pd = null;
-inner.addEventListener('pointerdown', e => { pd = { w: e.target.closest('.w'), x: e.clientX, y: e.clientY }; }, { passive: true });
-inner.addEventListener('pointerup', e => {
-  if (!pd) return;
-  const w = e.target.closest('.w'), moved = Math.hypot(e.clientX - pd.x, e.clientY - pd.y);
-  if (moved <= 12) {
-    if (w && w === pd.w) { const id = parseInt(w.dataset.id, 10); if (id >= 0) onTap(id); else toast('הערות שוליים אינן ניתנות לתרגום'); }
-    else if (!w) clearSel();
+let pd = null, multiAt = 0;
+function hitWord(cx, cy) {
+  const pe = document.elementFromPoint(cx, cy), pgEl = pe && pe.closest ? pe.closest('.page') : null;
+  const rec = pgEl && recs[+pgEl.dataset.n - 1]; if (!rec || !rec.boxes) return null;
+  const r = pgEl.getBoundingClientRect(), px = (cx - r.left) / r.width * rec.W, py = (cy - r.top) / r.height * rec.H;
+  let best = null, bd = 1e9;
+  for (const b of rec.boxes) {
+    const dx = Math.max(b.x - px, 0, px - (b.x + b.w)), dy = Math.max(b.y - py, 0, py - (b.y + b.h)), d = Math.hypot(dx, dy);
+    if (d < bd && d <= b.h * 0.55) { bd = d; best = b; }
   }
-  pd = null;
+  return best;
+}
+inner.addEventListener('pointerdown', e => { pd = (e.isPrimary && Date.now() - multiAt > 350) ? { x: e.clientX, y: e.clientY } : null; }, { passive: true });
+inner.addEventListener('pointercancel', () => { pd = null; }, { passive: true });
+inner.addEventListener('pointerup', e => {
+  if (!pd || pinch || Date.now() - multiAt < 350) { pd = null; return; }
+  const moved = Math.hypot(e.clientX - pd.x, e.clientY - pd.y); pd = null;
+  if (moved > 10) return;
+  const b = hitWord(e.clientX, e.clientY); if (!b) return;
+  if (b.id >= 0) onTap(b.id); else toast('הערות שוליים אינן ניתנות לתרגום');
 }, { passive: true });
 $('close').onclick = clearSel;
 
@@ -258,9 +268,26 @@ let reT = null; const reRender = () => { clearTimeout(reT); reT = setTimeout(() 
 const distOf = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
 const midOf = e => ({ x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 });
 let pinch = null;
-viewer.addEventListener('touchstart', e => { if (e.touches.length === 2) { pinch = { d0: distOf(e), z0: Z }; e.preventDefault(); } }, { passive: false });
-viewer.addEventListener('touchmove', e => { if (pinch && e.touches.length === 2) { e.preventDefault(); const m = midOf(e); setZoom(pinch.z0 * distOf(e) / pinch.d0, m.x, m.y); } }, { passive: false });
-viewer.addEventListener('touchend', e => { if (e.touches.length < 2 && pinch) { pinch = null; reRender(); } }, { passive: true });
+function pinchApply(m, d) {
+  const k = clamp(pinch.z0 * d / pinch.d0, 1, 4) / pinch.z0; pinch.k = k; pinch.m = m;
+  inner.style.transform = 'translate(' + (m.x - pinch.m0.x) + 'px,' + (m.y - pinch.m0.y) + 'px) scale(' + k + ')';
+}
+viewer.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    multiAt = Date.now(); pd = null; const m = midOf(e), ir = inner.getBoundingClientRect();
+    pinch = { d0: distOf(e), z0: Z, k: 1, m0: m, m: m };
+    inner.style.transformOrigin = (m.x - ir.left) + 'px ' + (m.y - ir.top) + 'px'; inner.style.willChange = 'transform';
+    e.preventDefault();
+  }
+}, { passive: false });
+viewer.addEventListener('touchmove', e => { if (pinch && e.touches.length === 2) { e.preventDefault(); pinchApply(midOf(e), distOf(e)); } }, { passive: false });
+function pinchEnd() {
+  if (!pinch) return; const p = pinch; pinch = null; multiAt = Date.now();
+  inner.style.transform = ''; inner.style.transformOrigin = ''; inner.style.willChange = '';
+  setZoom(p.z0 * p.k, p.m0.x, p.m0.y); viewer.scrollLeft += p.m0.x - p.m.x; viewer.scrollTop += p.m0.y - p.m.y; reRender();
+}
+viewer.addEventListener('touchend', e => { if (e.touches.length < 2) pinchEnd(); }, { passive: true });
+viewer.addEventListener('touchcancel', pinchEnd, { passive: true });
 viewer.addEventListener('wheel', e => { if (e.ctrlKey) { e.preventDefault(); setZoom(Z * (e.deltaY < 0 ? 1.1 : 0.9), e.clientX, e.clientY); reRender(); } }, { passive: false });
 
 if (book) begin();
