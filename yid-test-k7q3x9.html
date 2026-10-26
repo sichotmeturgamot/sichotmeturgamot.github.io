@@ -124,7 +124,7 @@ goBtn.onclick = async () => {
     const r = await fetch(API + '/yid/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ book: BOOK, from: cur.from, to: cur.to }) });
     const j = await r.json();
     if (j.ok) { trEl.textContent = j.translation; meta.textContent = 'תורגמו ' + j.words + ' מילים' + (j.cached ? ' (מהמטמון)' : ''); }
-    else { trEl.hidden = true; show(ERR[j.error] || ('שגיאה: ' + j.error), true); }
+    else { trEl.hidden = true; show(ERR[j.error] || ('שגיאה: ' + j.error), true, j.detail ? 'פרטים: ' + j.detail : ''); }
   } catch (e) { trEl.hidden = true; show('אין חיבור ל-Worker (' + e.message + '). ייתכן חסימת CORS.', true); }
 };
 </script>
