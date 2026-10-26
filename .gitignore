@@ -1,0 +1,6 @@
+
+# קבצי חיפוש גדולים: נשמרים ב-R2 (sichos-data) ולא ב-GitHub; מעלים עם _search_build/upload_r2.sh
+/search-vectors.bin
+/search-bits.bin
+/search-texts.bin
+/search-meta.json
