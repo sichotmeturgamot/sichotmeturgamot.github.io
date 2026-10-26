@@ -156,8 +156,8 @@ ${chat.hist.map(t => `שאלה: ${t.q}\nתשובה: ${t.a}`).join('\n\n')}
   let out = (await claude(env, prompt, 6000, 55000)).trim();
   answer.last = out;
   let follow = [];
-  const fm = out.match(/\n\s*\**המשך:?\**\s*:?\s*(.+)\s*$/);
-  if (fm) { follow = fm[1].split('|').map(s => s.trim().replace(/^[-•\d.]+\s*/, '')).filter(Boolean).slice(0, 3); out = out.slice(0, fm.index).trim(); }
+  const fm = out.match(/(?:^|\n)[ \t>#*_-]*המשך[*_]*[ \t]*[:：][*_]*[ \t]*([\s\S]*)$/);
+  if (fm) { follow = fm[1].split(/\||\n/).map(s => s.trim().replace(/^[-•*\d.)\s]+/, '').replace(/[*_]+$/, '').trim()).filter(Boolean).slice(0, 3); out = out.slice(0, fm.index).trim(); }
   // מספור מחדש לפי סדר ההופעה
   const map = new Map(), used = [];
   const text = out.replace(/\[(\d+)\]/g, (all, d) => {
@@ -263,7 +263,7 @@ export default {
 
     const mode = (chat || cm === 'answer') ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r', 'z'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v36?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v37?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = (debug || chat) ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
@@ -324,8 +324,9 @@ export default {
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70)) }, 200, h);
         if (chat && gem) ctx.waitUntil(env.USERS.get(env.USERS.idFromName('main')).fetch('https://do/log', { method: 'POST', body: JSON.stringify({ e: gem, q: chat.q, a: a.text }) }));
         if (chat) return json({ answer: a.text, results: a.used.map(r => full(txt, r)), follow: a.follow, sq: q, left }, 200, h);
-        const resp = json({ answer: a.text, results: a.used.map(r => full(txt, r)), ranked: true }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
-        ctx.waitUntil(cache.put(ckey, resp.clone()));
+        const rs = a.used.map(r => full(txt, r)), whole = rs.every(r => r.x);
+        const resp = json({ answer: a.text, results: rs, ranked: true }, 200, { ...h, 'Cache-Control': whole ? 'public, max-age=86400' : 'no-store' });
+        if (whole) ctx.waitUntil(cache.put(ckey, resp.clone()));
         return resp;
       }
       // בלי Claude: קודם עד 4 מועמדים מהדפדפן (מפתח/מילים נדירות), ואחריהם הקרובים ביותר לפי משמעות
