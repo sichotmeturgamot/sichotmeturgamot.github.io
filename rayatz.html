@@ -16,6 +16,7 @@
 .years button { font:inherit; font-family:'Frank Ruhl Libre',serif; font-size:1.1rem; font-weight:700; color:var(--navy); background:var(--paper); border:1.5px solid var(--line); border-radius:12px; padding:8px 20px; cursor:pointer; }
 .years button small { display:block; font-family:'Heebo',sans-serif; font-weight:400; font-size:.74rem; color:var(--muted); }
 .years button.on { background:var(--navy); color:var(--cream); border-color:var(--navy); }
+.years.books { margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--line); }
 .years button.on small { color:#d9cfae; }
 .list { margin-top:14px; border-top:1px solid var(--line); }
 .row { display:flex; align-items:center; gap:12px; padding:12px 4px; border-bottom:1px solid var(--line-soft); color:var(--text); }
@@ -55,28 +56,29 @@
 <script src="rayatz-data.js"></script>
 <script>
 (function () {
-  const B = RAYATZ.books[0], box = document.getElementById('book');
+  const BOOKS = RAYATZ.books, box = document.getElementById('book');
   const LANG = { yi: ['אידיש', 'yi'], he: ['לשון הקודש', 'he'], mixed: ['אידיש ולה״ק', 'yi'] };
   const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  let h = '<h2>' + esc(B.title) + '</h2><div class="note">' + B.sections.reduce((n, s) => n + s.sichos.length, 0) + ' שיחות · בחרו שנה</div><div class="years" id="years">';
-  B.sections.forEach((s, i) => { h += '<button data-i="' + i + '">' + esc(s.id) + '<small>' + s.sichos.length + ' שיחות</small></button>'; });
-  h += '</div><div class="list" id="list" hidden></div>';
-  box.innerHTML = h;
-  const list = document.getElementById('list'), btns = [...document.querySelectorAll('#years button')];
-  function show(i) {
-    btns.forEach((b, j) => b.classList.toggle('on', j === i));
-    const s = B.sections[i];
-    list.hidden = false;
-    list.innerHTML = s.sichos.map(x => {
+  const get = (k, d) => { try { return sessionStorage.getItem(k) || d; } catch (e) { return d; } };
+  const put = (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} };
+  function render(bi, yi) {
+    const B = BOOKS[bi]; put('rayatz-book', bi); put('rayatz-year', yi);
+    let h = '';
+    if (BOOKS.length > 1) { h += '<div class="years books">'; BOOKS.forEach((b, i) => { h += '<button data-b="' + i + '" class="' + (i === bi ? 'on' : '') + '">' + esc(b.title.replace('ספר השיחות ', '')) + '</button>'; }); h += '</div>'; }
+    h += '<h2>' + esc(B.title) + '</h2><div class="note">' + B.sections.reduce((n, s) => n + s.sichos.length, 0) + ' פריטים · בחרו שנה</div><div class="years">';
+    B.sections.forEach((s, i) => { h += '<button data-i="' + i + '" class="' + (i === yi ? 'on' : '') + '">' + esc(s.id) + '<small>' + s.sichos.length + ' פריטים</small></button>'; });
+    h += '</div><div class="list">';
+    B.sections[yi].sichos.forEach(x => {
       const l = LANG[x.lang] || LANG.yi, pg = x.ps === x.pe ? 'עמ׳ ' + x.ps : 'עמ׳ ' + x.ps + '–' + x.pe;
       const href = 'rayatz-read.html?book=' + B.id + '&page=' + x.pdf + '&title=' + encodeURIComponent(x.t);
-      return '<a class="row" href="' + href + '"><span class="t">' + esc(x.t) + '</span><span class="tag ' + l[1] + '">' + l[0] + '</span><span class="p">' + pg + '</span></a>';
-    }).join('');
-    try { sessionStorage.setItem('rayatz-year', i); } catch (e) {}
+      h += '<a class="row" href="' + href + '"><span class="t">' + esc(x.t) + '</span><span class="tag ' + l[1] + '">' + l[0] + '</span><span class="p">' + pg + '</span></a>';
+    });
+    box.innerHTML = h + '</div>';
+    box.querySelectorAll('[data-b]').forEach(b => b.addEventListener('click', () => render(+b.dataset.b, 0)));
+    box.querySelectorAll('[data-i]').forEach(b => b.addEventListener('click', () => render(bi, +b.dataset.i)));
   }
-  btns.forEach((b, i) => b.addEventListener('click', () => show(i)));
-  let start = 0; try { start = parseInt(sessionStorage.getItem('rayatz-year'), 10) || 0; } catch (e) {}
-  show(Math.min(start, B.sections.length - 1));
+  const bi = Math.min(+get('rayatz-book', 0) || 0, BOOKS.length - 1);
+  render(bi, Math.min(+get('rayatz-year', 0) || 0, BOOKS[bi].sections.length - 1));
 })();
 </script>
 </body>

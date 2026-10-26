@@ -239,11 +239,15 @@ async function begin() {
     if (pr.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
     if (!pr.ok) throw new Error('pdf ' + pr.status);
     pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await pr.arrayBuffer()) }).promise; } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.'); return; }
-  const first = await pdf.getPage(1), vp = first.getViewport({ scale: 1 });
+  const ratios = [];
+  for (let n = 1; n <= pdf.numPages; n += 40) {
+    const grp = []; for (let k = n; k < Math.min(n + 40, pdf.numPages + 1); k++) grp.push(pdf.getPage(k).then(pg => { const v = pg.getViewport({ scale: 1 }); ratios[k] = v.width + '/' + v.height; pg.cleanup && pg.cleanup(); }));
+    await Promise.all(grp);
+  }
   baseW = Math.min(viewer.clientWidth || 600, 900);
   inner.style.width = baseW + 'px';
   for (let n = 1; n <= pdf.numPages; n++) {
-    const el = document.createElement('div'); el.className = 'page'; el.style.aspectRatio = vp.width + '/' + vp.height; el.dataset.n = n;
+    const el = document.createElement('div'); el.className = 'page'; el.style.aspectRatio = ratios[n]; el.dataset.n = n;
     el.innerHTML = '<span class="plabel">קובץ ' + n + '</span><canvas></canvas><div class="hlayer"></div><div class="layer"></div>';
     inner.appendChild(el);
     recs.push({ n, el, canvas: el.querySelector('canvas'), hl: el.querySelector('.hlayer'), layer: el.querySelector('.layer'), rendered: false });
