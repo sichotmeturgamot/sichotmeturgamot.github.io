@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>קריאה — מרכז הריי״ץ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { background:#525659; font-family:'Heebo',sans-serif; display:flex; flex-direction:column; overflow:hidden; }
+  .bar { flex:0 0 auto; background:#1a2942; color:#fff; display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:2px solid #b8933e; }
+  .bar .title { font-family:'Frank Ruhl Libre',serif; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; }
+  .bar a, .bar button { color:#fff; text-decoration:none; font:inherit; font-size:.85rem; background:transparent; border:1px solid rgba(255,255,255,.55); border-radius:8px; padding:6px 14px; white-space:nowrap; cursor:pointer; }
+  #hint { flex:0 0 auto; color:#cfd3da; text-align:center; font-size:.78rem; padding:8px 16px; line-height:1.4; }
+  #viewer { flex:1 1 auto; overflow:auto; direction:ltr; touch-action:pan-x pan-y; -webkit-overflow-scrolling:touch; }
+  #pagesInner { margin:0 auto; padding:12px 0 120px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .page { position:relative; width:100%; background:#fff; box-shadow:0 4px 18px rgba(0,0,0,.4); }
+  .page canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .plabel { position:absolute; top:4px; left:6px; z-index:4; font-size:11px; background:rgba(0,0,0,.55); color:#fff; padding:1px 7px; border-radius:8px; pointer-events:none; }
+  .hlayer, .layer { position:absolute; inset:0; }
+  .hlayer { z-index:2; pointer-events:none; }
+  .layer { z-index:3; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+  .w { position:absolute; display:block; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+  .hl { position:absolute; background:rgba(184,147,62,.42); border-radius:4px; mix-blend-mode:multiply; }
+  .hl.a { background:rgba(184,147,62,.8); }
+
+  #sheet { position:fixed; inset-inline:0; bottom:0; z-index:60; display:none; background:#fffdf9; color:#2a2723; border-top:2px solid #b8933e; padding:12px 16px calc(14px + env(safe-area-inset-bottom)); max-height:62vh; overflow:auto; box-shadow:0 -6px 22px rgba(0,0,0,.35); direction:rtl; }
+  #sheet.show { display:block; }
+  #sheet .in { max-width:760px; margin:0 auto; }
+  #smsg { font-size:.95rem; }
+  #smsg.err { color:#a33a34; }
+  #smeta { font-size:.76rem; color:#8a7d61; margin:3px 0 8px; }
+  #tr { white-space:pre-wrap; font-family:'Frank Ruhl Libre',serif; font-size:1.15rem; line-height:1.9; margin:8px 0; padding:10px 12px; border-radius:8px; background:rgba(169,132,60,.1); }
+  #trnote { font-size:.74rem; color:#8a7d61; margin-bottom:8px; }
+  .btns { display:flex; gap:8px; flex-wrap:wrap; }
+  .b { font:inherit; font-size:.92rem; border:1px solid #b8933e; background:#b8933e; color:#fff; border-radius:22px; padding:8px 20px; cursor:pointer; }
+  .b.alt { background:transparent; color:#2a2723; border-color:#d9d1c0; }
+  #toast { position:fixed; left:50%; transform:translateX(-50%); bottom:22px; z-index:70; background:#1a2942; color:#fff; border:1px solid #b8933e; border-radius:24px; padding:10px 20px; font-size:.92rem; display:none; }
+  #toast.show { display:block; }
+
+  #gate { position:fixed; inset:0; z-index:100; background:#1a2942; display:none; align-items:center; justify-content:center; padding:24px; direction:rtl; }
+  #gate.show { display:flex; }
+  #gate .g { background:#fffdf9; border-radius:14px; padding:24px 22px; width:100%; max-width:340px; text-align:center; }
+  #gate h2 { font-family:'Frank Ruhl Libre',serif; color:#17233d; margin-bottom:6px; }
+  #gate p { font-size:.88rem; color:#8a7d61; margin-bottom:14px; }
+  #gate input { width:100%; font:inherit; padding:10px 12px; border:1.5px solid #d9d1c0; border-radius:10px; margin-bottom:12px; direction:ltr; text-align:center; }
+  #gate .e { color:#a33a34; font-size:.85rem; min-height:1.2em; margin-bottom:6px; }
+  #msg { color:#fff; text-align:center; padding:60px 20px; font-size:1.05rem; margin:auto; display:none; }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <button type="button" id="back">→ חזור</button>
+  <span class="title" id="title">טוען…</span>
+  <a href="rayatz.html">לרשימה</a>
+</div>
+<div id="hint">לתרגום: הקישו על המילה הראשונה ואז על האחרונה • להגדלה: צביטה</div>
+<div id="viewer"><div id="pagesInner"></div></div>
+<div id="msg"></div>
+
+<div id="sheet"><div class="in">
+  <div id="smsg"></div>
+  <div id="smeta"></div>
+  <div id="tr" hidden></div>
+  <div id="trnote" hidden>תרגום אוטומטי (AI) מתוך ספר השיחות. התרגום אינו מוגה.</div>
+  <div class="btns"><button class="b" id="go" hidden>תרגם</button><button class="b" id="copy" hidden>העתק תרגום</button><button class="b alt" id="close">סגור</button></div>
+</div></div>
+<div id="toast"></div>
+
+<div id="gate"><div class="g">
+  <h2>מרכז הריי״ץ</h2>
+  <p>הגישה לאזור זה מוגבלת. הזינו את קוד הגישה.</p>
+  <input type="password" id="key" autocomplete="off" placeholder="קוד גישה">
+  <div class="e" id="gerr"></div>
+  <button class="b" id="gok">כניסה</button>
+</div></div>
+
+<script src="rayatz-data.js"></script>
+<script type="module">
+const API = 'https://sichos-translate.doviber.workers.dev';
+const params = new URLSearchParams(location.search);
+const BOOK = params.get('book') || 'tarpach-tartzaa';
+const startPage = parseInt(params.get('page'), 10) || 1;
+const $ = id => document.getElementById(id);
+const book = RAYATZ.books.find(b => b.id === BOOK);
+const viewer = $('viewer'), inner = $('pagesInner');
+$('title').textContent = params.get('title') || (book && book.title) || '';
+document.title = (params.get('title') || 'קריאה') + ' — מרכז הריי״ץ';
+$('back').onclick = () => { if (history.length > 1) history.back(); else location.href = 'rayatz.html'; };
+function toast(t) { const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('show'), 2200); }
+function fatal(t) { viewer.style.display = 'none'; $('hint').style.display = 'none'; const m = $('msg'); m.style.display = 'block'; m.textContent = t; }
+if (!book) fatal('הספר לא נמצא.');
+
+// ---------- קוד גישה ----------
+const KEYN = 'rayatz-key';
+const getKey = () => { try { return localStorage.getItem(KEYN) || ''; } catch (e) { return ''; } };
+let started = false;
+function gate(err) {
+  $('gate').classList.add('show'); $('gerr').textContent = err || ''; $('key').focus();
+}
+$('gok').onclick = () => {
+  const v = $('key').value.trim(); if (!v) return;
+  try { localStorage.setItem(KEYN, v); } catch (e) {}
+  location.reload();
+};
+$('key').addEventListener('keydown', e => { if (e.key === 'Enter') $('gok').click(); });
+async function api(path, opt) {
+  const r = await fetch(API + path, Object.assign({}, opt, { headers: Object.assign({ 'x-key': getKey() }, (opt && opt.headers) || {}) }));
+  if (r.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} gate('הקוד שגוי. נסו שוב.'); throw new Error('unauthorized'); }
+  return r.json();
+}
+
+// ---------- PDF.js ----------
+let pdfjsLib;
+async function loadPdfjs() {
+  const CDN = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/';
+  try { pdfjsLib = await import('/pdf.min.mjs'); pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'; }
+  catch (e) { pdfjsLib = await import(CDN + 'build/pdf.min.mjs'); pdfjsLib.GlobalWorkerOptions.workerSrc = CDN + 'build/pdf.worker.min.mjs'; }
+}
+const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const MAX_SIDE = IS_IOS ? 4000 : 8192, MAX_AREA = (IS_IOS ? 16 : 60) * 1024 * 1024;
+const dpr = window.devicePixelRatio || 1, clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+let pdf = null, baseW = 600, Z = 1, recs = [];
+
+async function renderCanvas(rec) {
+  if (!rec.pdfPage) rec.pdfPage = await pdf.getPage(rec.n);
+  const base = rec.pdfPage.getViewport({ scale: 1 });
+  let rs = (baseW * Z * dpr) / base.width, w = base.width * rs, h = base.height * rs;
+  rs *= Math.min(MAX_SIDE / w, MAX_SIDE / h, Math.sqrt(MAX_AREA / (w * h)), 1);
+  const vp = rec.pdfPage.getViewport({ scale: rs });
+  if (rec.task) { try { rec.task.cancel(); } catch (e) {} }
+  rec.canvas.width = Math.floor(vp.width); rec.canvas.height = Math.floor(vp.height);
+  const task = rec.pdfPage.render({ canvasContext: rec.canvas.getContext('2d'), viewport: vp });
+  rec.task = task; rec.rendered = true;
+  try { await task.promise; } catch (e) {}
+  if (rec.task === task) rec.task = null;
+}
+function dropCanvas(rec) { if (rec.task) { try { rec.task.cancel(); } catch (e) {} rec.task = null; } rec.canvas.width = 1; rec.canvas.height = 1; rec.rendered = false; }
+
+// ---------- תיבות מילים (בלי טקסט) והדגשה ----------
+const sel = { lo: null, hi: null };      // מזהי מילים
+function med(a) { const b = a.slice().sort((x, y) => x - y); return b[b.length >> 1]; }
+function paintPage(rec) {
+  rec.hl.innerHTML = '';
+  if (!rec.boxes || sel.lo === null) return;
+  const anchorOnly = sel.hi === null, hi = anchorOnly ? sel.lo : sel.hi;
+  const items = rec.boxes.filter(b => b.id >= 0 && b.id >= sel.lo && b.id <= hi); if (!items.length) return;
+  const mh = med(items.map(o => o.h)), rows = [];
+  items.slice().sort((a, b) => (a.y + a.h / 2) - (b.y + b.h / 2)).forEach(o => { const yc = o.y + o.h / 2, r = rows[rows.length - 1]; if (r && Math.abs(yc - r.yc) < mh * 0.6) { r.items.push(o); r.yc = (r.yc * (r.items.length - 1) + yc) / r.items.length; } else rows.push({ yc, items: [o] }); });
+  const add = seg => {
+    const x0 = Math.min(...seg.map(o => o.x)) - 2, x1 = Math.max(...seg.map(o => o.x + o.w)) + 2, mH = med(seg.map(o => o.h)), h = mH * 1.25, y = med(seg.map(o => o.y)) - mH * 0.12, d = document.createElement('div');
+    d.className = 'hl' + (anchorOnly ? ' a' : '');
+    d.style.cssText = 'left:' + x0 / rec.W * 100 + '%;top:' + y / rec.H * 100 + '%;width:' + (x1 - x0) / rec.W * 100 + '%;height:' + h / rec.H * 100 + '%';
+    rec.hl.appendChild(d);
+  };
+  rows.forEach(r => {
+    const it = r.items.slice().sort((a, b) => a.x - b.x); let seg = [it[0]];
+    for (let i = 1; i < it.length; i++) { if (it[i].x - (seg[seg.length - 1].x + seg[seg.length - 1].w) > mh * 1.5) { add(seg); seg = [it[i]]; } else seg.push(it[i]); }
+    add(seg);
+  });
+}
+const paintAll = () => recs.forEach(r => paintPage(r));
+
+async function loadBoxes(rec) {
+  if (rec.boxes || rec.loading) return; rec.loading = true;
+  try {
+    const j = await api('/yid/boxes?book=' + BOOK + '&page=' + rec.n);
+    if (!j.ok) { rec.loading = false; return; }
+    rec.W = j.W; rec.H = j.H; rec.boxes = j.boxes.map(b => ({ x: b[0], y: b[1], w: b[2], h: b[3], id: b[4] }));
+    const frag = document.createDocumentFragment();
+    rec.boxes.forEach(o => {
+      const s = document.createElement('span'); s.className = 'w'; o.el = s; s.dataset.id = o.id;
+      s.style.cssText = 'left:' + o.x / rec.W * 100 + '%;top:' + o.y / rec.H * 100 + '%;width:' + o.w / rec.W * 100 + '%;height:' + o.h / rec.H * 100 + '%';
+      frag.appendChild(s);
+    });
+    rec.layer.appendChild(frag); paintPage(rec);
+  } catch (e) { rec.loading = false; }
+}
+
+// ---------- בחירה בהקשה: ראשונה ואחרונה ----------
+const MINW = 5;
+const sheet = $('sheet'), smsg = $('smsg'), smeta = $('smeta'), trEl = $('tr'), goBtn = $('go'), copyBtn = $('copy'), trnote = $('trnote');
+function say(text, err, meta) { sheet.classList.add('show'); smsg.textContent = text; smsg.className = err ? 'err' : ''; smeta.textContent = meta || ''; goBtn.hidden = true; copyBtn.hidden = true; trEl.hidden = true; trnote.hidden = true; }
+function clearSel() { sel.lo = sel.hi = null; cur = null; paintAll(); sheet.classList.remove('show'); }
+let cur = null, anchor = null;
+function onTap(id) {
+  if (anchor === null || cur) { anchor = id; cur = null; sel.lo = id; sel.hi = null; paintAll(); say('סימנתם את המילה הראשונה. הקישו על המילה האחרונה.'); return; }
+  const lo = Math.min(anchor, id), hi = Math.max(anchor, id), n = hi - lo + 1;
+  sel.lo = lo; sel.hi = hi; paintAll();
+  if (n < MINW) { anchor = null; sel.lo = sel.hi = null; paintAll(); say('הסימון קצר מדי (פחות מ-' + MINW + ' מילים). למילים בודדות אפשר להשתמש במילון. הקישו שוב על מילה ראשונה.', true); return; }
+  cur = { from: lo, to: hi };
+  say('נבחרו כ-' + n + ' מילים. לחצו "תרגם".'); goBtn.hidden = false;
+}
+let pd = null;
+inner.addEventListener('pointerdown', e => { pd = { w: e.target.closest('.w'), x: e.clientX, y: e.clientY }; }, { passive: true });
+inner.addEventListener('pointerup', e => {
+  if (!pd) return;
+  const w = e.target.closest('.w'), moved = Math.hypot(e.clientX - pd.x, e.clientY - pd.y);
+  if (moved <= 12) {
+    if (w && w === pd.w) { const id = parseInt(w.dataset.id, 10); if (id >= 0) onTap(id); else toast('הערות שוליים אינן ניתנות לתרגום'); }
+    else if (!w) clearSel();
+  }
+  pd = null;
+}, { passive: true });
+$('close').onclick = clearSel;
+
+const ERR = { short: 'הסימון קצר מדי.', long: 'הסימון ארוך מדי. סמנו פחות.', nomatch: 'לא הצלחתי לזהות היכן הסימון. נסו לסמן שוב, והקפידו שהמילה הראשונה והאחרונה יהיו מגוף השיחה.', order: 'סדר הסימון לא תקין, נסו שוב.', rate: 'עברתם את מכסת התרגומים לשעה. נסו מאוחר יותר.', upstream: 'שגיאה זמנית בשירות התרגום. נסו שוב.', 'book-missing': 'נתוני הספר לא נמצאו.', server: 'שגיאה בשרת.' };
+goBtn.onclick = async () => {
+  if (!cur) return; goBtn.hidden = true; trEl.hidden = false; trEl.textContent = 'מתרגם…';
+  try {
+    const j = await api('/yid/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ book: BOOK, from: cur.from, to: cur.to }) });
+    if (j.ok) { trEl.textContent = j.translation; trnote.hidden = false; copyBtn.hidden = false; smsg.textContent = 'התרגום מוכן.'; smeta.textContent = 'תורגמו ' + j.words + ' מילים' + (j.cached ? ' (מהמטמון)' : ''); }
+    else { trEl.hidden = true; say(ERR[j.error] || ('שגיאה: ' + j.error), true, j.detail ? 'פרטים: ' + j.detail : ''); }
+  } catch (e) { if (e.message !== 'unauthorized') { trEl.hidden = true; say('אין חיבור לשרת התרגום.', true); } }
+};
+copyBtn.onclick = async () => {
+  const t = trEl.textContent + '\n\n(תרגום אוטומטי מתוך ספר השיחות — לא מוגה)';
+  try { await navigator.clipboard.writeText(t); toast('התרגום הועתק ✓'); } catch (e) { toast('לא ניתן להעתיק במכשיר זה'); }
+};
+
+// ---------- בניית הקורא ----------
+async function begin() {
+  if (started) return; if (!getKey()) { gate(); return; }
+  started = true;
+  try { await loadPdfjs(); pdf = await pdfjsLib.getDocument(book.pdf).promise; } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.'); return; }
+  const first = await pdf.getPage(1), vp = first.getViewport({ scale: 1 });
+  baseW = Math.min(viewer.clientWidth || 600, 900);
+  inner.style.width = baseW + 'px';
+  for (let n = 1; n <= pdf.numPages; n++) {
+    const el = document.createElement('div'); el.className = 'page'; el.style.aspectRatio = vp.width + '/' + vp.height; el.dataset.n = n;
+    el.innerHTML = '<span class="plabel">קובץ ' + n + '</span><canvas></canvas><div class="hlayer"></div><div class="layer"></div>';
+    inner.appendChild(el);
+    recs.push({ n, el, canvas: el.querySelector('canvas'), hl: el.querySelector('.hlayer'), layer: el.querySelector('.layer'), rendered: false });
+  }
+  const io = new IntersectionObserver(es => es.forEach(en => {
+    const rec = recs[+en.target.dataset.n - 1];
+    if (en.isIntersecting) { renderCanvas(rec); loadBoxes(rec); } else if (rec.rendered) dropCanvas(rec);
+  }), { root: viewer, rootMargin: '1400px 0px' });
+  recs.forEach(r => io.observe(r.el));
+  const target = recs[clamp(startPage, 1, recs.length) - 1].el;
+  viewer.scrollTop = target.offsetTop - inner.offsetTop - 6;
+  setTimeout(() => { viewer.scrollTop = target.offsetTop - inner.offsetTop - 6; }, 400);
+  window.__io = io;
+}
+
+// ---------- זום (צביטה) ----------
+function setZoom(z, fx, fy) {
+  z = clamp(z, 1, 4); const r = viewer.getBoundingClientRect(), cx = viewer.scrollLeft + (fx - r.left), cy = viewer.scrollTop + (fy - r.top), s = z / Z;
+  Z = z; inner.style.width = (baseW * Z) + 'px'; viewer.scrollLeft = cx * s - (fx - r.left); viewer.scrollTop = cy * s - (fy - r.top);
+}
+let reT = null; const reRender = () => { clearTimeout(reT); reT = setTimeout(() => recs.forEach(r => { if (r.rendered) renderCanvas(r); }), 200); };
+const distOf = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+const midOf = e => ({ x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 });
+let pinch = null;
+viewer.addEventListener('touchstart', e => { if (e.touches.length === 2) { pinch = { d0: distOf(e), z0: Z }; e.preventDefault(); } }, { passive: false });
+viewer.addEventListener('touchmove', e => { if (pinch && e.touches.length === 2) { e.preventDefault(); const m = midOf(e); setZoom(pinch.z0 * distOf(e) / pinch.d0, m.x, m.y); } }, { passive: false });
+viewer.addEventListener('touchend', e => { if (e.touches.length < 2 && pinch) { pinch = null; reRender(); } }, { passive: true });
+viewer.addEventListener('wheel', e => { if (e.ctrlKey) { e.preventDefault(); setZoom(Z * (e.deltaY < 0 ? 1.1 : 0.9), e.clientX, e.clientY); reRender(); } }, { passive: false });
+
+if (book) begin();
+</script>
+</body>
+</html>
