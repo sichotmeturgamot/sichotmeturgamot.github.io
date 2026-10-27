@@ -130,6 +130,7 @@ let pdf = null, baseW = 600, Z = 1, recs = [];
 async function renderCanvas(rec) {
   if (!rec.pdfPage) rec.pdfPage = await pdf.getPage(rec.n);
   const base = rec.pdfPage.getViewport({ scale: 1 });
+  rec.el.style.aspectRatio = base.width + '/' + base.height;
   let rs = (baseW * Z * dpr) / base.width, w = base.width * rs, h = base.height * rs;
   rs *= Math.min(MAX_SIDE / w, MAX_SIDE / h, Math.sqrt(MAX_AREA / (w * h)), 1);
   const vp = rec.pdfPage.getViewport({ scale: rs });
@@ -239,15 +240,19 @@ copyBtn.onclick = async () => {
 async function begin() {
   if (started) return; if (!getKey()) { gate(); return; }
   started = true;
-  try { await loadPdfjs(); const pr = await fetch(API + '/yid/pdf?book=' + BOOK, { headers: { 'x-key': getKey() } });
-    if (pr.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
-    if (!pr.ok) throw new Error('pdf ' + pr.status);
-    pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await pr.arrayBuffer()) }).promise; } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.'); return; }
-  const ratios = [];
-  for (let n = 1; n <= pdf.numPages; n += 40) {
-    const grp = []; for (let k = n; k < Math.min(n + 40, pdf.numPages + 1); k++) grp.push(pdf.getPage(k).then(pg => { const v = pg.getViewport({ scale: 1 }); ratios[k] = v.width + '/' + v.height; pg.cleanup && pg.cleanup(); }));
-    await Promise.all(grp);
-  }
+  try {
+    await loadPdfjs();
+    const hdr = { 'x-key': getKey() };
+    try { pdf = await pdfjsLib.getDocument({ url: API + '/yid/pdf?book=' + BOOK, httpHeaders: hdr, rangeChunkSize: 1 << 20, disableAutoFetch: true, disableStream: true }).promise; }
+    catch (e1) {
+      if (e1 && e1.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
+      const pr = await fetch(API + '/yid/pdf?book=' + BOOK, { headers: hdr });   // גיבוי: הורדה מלאה
+      if (pr.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
+      if (!pr.ok) throw new Error('pdf ' + pr.status);
+      pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await pr.arrayBuffer()) }).promise;
+    }
+  } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.'); return; }
+  const ratios = []; { const pg1 = await pdf.getPage(1), v1 = pg1.getViewport({ scale: 1 }); const r1 = v1.width + '/' + v1.height; for (let k = 1; k <= pdf.numPages; k++) ratios[k] = r1; }
   baseW = Math.min(viewer.clientWidth || 600, 900);
   inner.style.width = baseW + 'px';
   for (let n = 1; n <= pdf.numPages; n++) {
