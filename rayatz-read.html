@@ -222,6 +222,7 @@ $('close').onclick = clearSel;
 const ERR = { short: 'הסימון קצר מדי.', long: 'הסימון ארוך מדי. סמנו פחות.', nomatch: 'לא הצלחתי לזהות היכן הסימון. נסו לסמן שוב, והקפידו שהמילה הראשונה והאחרונה יהיו מגוף השיחה.', order: 'סדר הסימון לא תקין, נסו שוב.', rate: 'עברתם את מכסת התרגומים לשעה. נסו מאוחר יותר.', upstream: 'שגיאה זמנית בשירות התרגום. נסו שוב.', 'book-missing': 'נתוני הספר לא נמצאו.', server: 'שגיאה בשרת.' };
 goBtn.onclick = async () => {
   if (!cur) return;
+  if (book && book.ready && !book.ready.some(r => cur.from >= r[0] && cur.to <= r[1])) { goBtn.hidden = true; say('התרגום לשנה זו עדיין לא זמין: הטקסט בהכנה.', true); return; }
   if (book && book.nt) { goBtn.hidden = true; say('התרגום לספר הזה עדיין לא זמין: הטקסט בהכנה. הסימון עובד לצורך בדיקה בלבד.', true); return; } goBtn.hidden = true; trEl.hidden = false; trEl.textContent = 'מתרגם…';
   try {
     const j = await api('/yid/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ book: BOOK, from: cur.from, to: cur.to }) });
