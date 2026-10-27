@@ -226,7 +226,7 @@ goBtn.onclick = async () => {
   if (book && book.nt) { goBtn.hidden = true; say('התרגום לספר הזה עדיין לא זמין: הטקסט בהכנה. הסימון עובד לצורך בדיקה בלבד.', true); return; } goBtn.hidden = true; trEl.hidden = false; trEl.textContent = 'מתרגם…';
   try {
     const j = await api('/yid/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ book: BOOK, from: cur.from, to: cur.to }) });
-    if (j.ok) { trEl.textContent = String(j.translation).replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[a-z][^>]*>/gi, '').replace(/[ \t]*\n(?!\n)[ \t]*/g, ' ').trim(); trnote.hidden = false; copyBtn.hidden = false; smsg.textContent = 'התרגום מוכן.'; smeta.textContent = 'תורגמו ' + j.words + ' מילים' + (j.cached ? ' (מהמטמון)' : ''); }
+    if (j.ok) { trEl.textContent = String(j.translation).replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[a-z][^>]*>/gi, '').replace(/[ \t]*\n(?!\n)[ \t]*/g, ' ').trim(); trnote.hidden = false; copyBtn.hidden = false; smsg.textContent = 'התרגום מוכן.'; smeta.textContent = 'תורגמו ' + j.words + ' מילים' + (j.expanded ? ' (הורחב לגבולות פסקה)' : '') + (j.cached ? ' (שמור)' : ''); }
     else { trEl.hidden = true; say(ERR[j.error] || ('שגיאה: ' + j.error), true, j.detail ? 'פרטים: ' + j.detail : ''); }
   } catch (e) { if (e.message !== 'unauthorized') { trEl.hidden = true; say('אין חיבור לשרת התרגום.', true); } }
 };
