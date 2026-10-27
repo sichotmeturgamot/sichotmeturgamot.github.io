@@ -66,6 +66,10 @@
     let t = list.find(x => x.id === s.id); if (!t) { t = { id: s.id, items: [] }; list.push(t); }
     s.sichos.forEach(x => t.items.push(Object.assign({ book: b.id }, x)));
   }));
+  // מיון השנים לפי סדר כרונולוגי (גימטריא של האותיות), כי הכרכים השונים משתלבים בשנים
+  const G = { א: 1, ב: 2, ג: 3, ד: 4, ה: 5, ו: 6, ז: 7, ח: 8, ט: 9, י: 10, כ: 20, ל: 30, מ: 40, נ: 50, ס: 60, ע: 70, פ: 80, צ: 90, ץ: 90, ך: 20, ם: 40, ן: 50, ף: 80, ק: 100, ר: 200, ש: 300, ת: 400 };
+  const yn = id => id.replace(/^ה׳/, '').split('').reduce((n, c) => n + (G[c] || 0), 0);
+  years.sort((a, b) => yn(a.id) - yn(b.id));
   const SECS = years.concat(extras);
   const total = SECS.reduce((n, s) => n + s.items.length, 0);
   const get = (k, d) => { try { return sessionStorage.getItem(k) || d; } catch (e) { return d; } };
