@@ -17,7 +17,7 @@ const hits = new Map();
 let DATA = null;   // R2: קבצי החיפוש הגדולים (לא ציבוריים)
 async function getBuf(name) {
   if (DATA) { const o = await DATA.get(name); if (o) return o.arrayBuffer(); }
-  const res = await fetch(SITE + name + '?v=41', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=42', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -59,13 +59,13 @@ function cors(origin) {
 }
 const json = (o, status, h) => new Response(JSON.stringify(o), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', ...h } });
 
-async function claude(env, prompt, maxTokens, ms) {
+async function claude(env, prompt, maxTokens, ms, model, effort) {
   const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms || 25000);
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', signal: ctl.signal,
       headers: { 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, output_config: { effort: 'low' }, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ model: model || MODEL, max_tokens: maxTokens, output_config: { effort: effort || 'low' }, messages: [{ role: 'user', content: prompt }] })
     });
     const j = await r.json();
     if (!r.ok) throw new Error((j.error && j.error.message) || ('status ' + r.status));
@@ -170,17 +170,23 @@ ${chat.hist.map(t => `שאלה: ${t.q}\nתשובה: ${t.a}`).join('\n\n')}
 
 // קטעים ביידיש: הכותרת מסתיימת ב"· אידיש". תרגום — רק בלחיצה על "תרגם", ונשמר במטמון
 function isYi(txt, np, ns, p) { return / · אידיש$/.test(txt(2 * np + ns + p).split('\t')[2] || ''); }
+const TR_MODEL = 'claude-sonnet-5-5';
 async function translate(env, x) {
-  const prompt = `תרגם לעברית את הקטע הבא מתוך אגרות קודש של כ"ק אדמו"ר הריי"צ, שנכתב ביידיש.
-- תרגום נאמן ומדויק, בעברית ברורה בסגנון ספרי חסידות חב"ד (לשון הקודש מודרנית ומכובדת).
-- מילים, ביטויים וציטוטים שכבר בעברית/ארמית — השאר כמו שהם.
-- שמור על חלוקת הפסקאות, על שורות הפתיחה והחתימה, ועל ראשי התיבות.
+  const prompt = `תרגם לעברית את הקטע הבא מתוך ספר השיחות של כ"ק אדמו"ר הריי"צ (קה"ת), שנכתב ביידיש (לעיתים עם מילים וציטוטים בלשון הקודש ובארמית).
+הכללים:
+- תרגום נאמן ומדויק, משפט אחר משפט. אל תסכם, אל תקצר, אל תפרש, אל תשמיט מילים ואל תוסיף מילים שאינן במקור (כגון "לאחרונה", "כידוע", "לפני כמה זמן"). אם משהו במקור לא ברור — תרגם אותו כלשונו ואל תנחש.
+- שים לב לזמנים, לגופים ולמספרים. דברי המספר בגוף ראשון נשארים בגוף ראשון. קרובי משפחה (טאטע, זיידע, מומע וכד') — תרגם כלשונם (אבי, זקני, דודתי וכו').
+- מילים, ביטויים וציטוטים שכבר בעברית/ארמית — השאר כמו שהם, בלי לתרגם.
+- שמות אנשים ומקומות, ראשי תיבות וכינויים (אדמו"ר הזקן, הצמח צדק, מהר"ש, הרש"ב, ר' פלוני) — כפי שהם.
+- עברית ברורה ותקנית בסגנון ספרי חסידות חב"ד (לשון הקודש מודרנית ומכובדת), בתחביר עברי טבעי ולא העתקה מילולית של מבנה המשפט היידי.
+- שמור על חלוקת הפסקאות ועל מספור הסעיפים (א. ב. ג.).
 - אל תוסיף הסברים או הערות. החזר רק את התרגום.
 
 <קטע>
 ${x}
 </קטע>`;
-  return (await claude(env, prompt, 4000, 55000)).trim();
+  try { return (await claude(env, prompt, 4000, 55000, TR_MODEL, 'medium')).trim(); }
+  catch (e) { return (await claude(env, prompt, 4000, 40000)).trim(); }   // גיבוי: המודל הרגיל
 }
 
 async function gEmail(cred) {
@@ -217,7 +223,7 @@ export default {
     }
     if (url.searchParams.has('tr')) {                       // תרגום קטע ביידיש — רק לפי בקשה
       const p = parseInt(url.searchParams.get('tr'), 10);
-      const tkey = new Request('https://cache.sichos/tr1?p=' + p + '&v=' + (url.searchParams.get('v') || ''));
+      const tkey = new Request('https://cache.sichos/tr2?p=' + p + '&v=' + (url.searchParams.get('v') || ''));
       const hit = await caches.default.match(tkey);
       if (hit) { const r = new Response(hit.body, hit); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
       const ip = (req.headers.get('CF-Connecting-IP') || 'x') + '#t', now = Date.now();
