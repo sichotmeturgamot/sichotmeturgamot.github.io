@@ -109,7 +109,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028l"></script>
+<script src="rayatz-data.js?v=20261028m"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -148,6 +148,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   const DAY_END = new RegExp('(?:^|[\\s־–-])((?:' + DAYS + ')(?:\\s*[־–-]\\s*(?:' + DAYS + '))?)(?:\\s+[בד])?\\s*$');
   // תיבת התאריך בכרטיס: [שורה עליונה, שורה תחתונה]
   function dateBox(x) {
+    if (x.d) return x.d;
     const m = monthMatch(x.t), yr = x.year && x.year !== 'ללא שנה' ? x.year.replace(/^ה׳/, '') : '';
     if (!m) return [yr || '•', ''];
     const txt = m.text, isMonthName = MONTHS.some(mm => mm[0] === txt) || txt === 'מרחשון' || /^(?:מנחם[\s־]?)?אב$/.test(txt);
@@ -161,7 +162,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   // ---------- בניית הנתונים ----------
   const ITEMS = [], SERIES = [];
   const serOf = b => b.series || (b.id.indexOf('ld-') === 0 ? 'לקוטי דיבורים' : 'ספר השיחות');
-  const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות)\s*-?\s*/, '').trim();
+  const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות|ספר הזכרונות)\s*-?\s*/, '').trim();
   let seq = 0;
   RAYATZ.books.forEach(b => {
     const sname = serOf(b);
@@ -174,7 +175,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
       let P = S.parts.find(p => p.name === label); if (!P) { P = { name: label, extra, first: seq, items: [] }; S.parts.push(P); }
       sec.sichos.forEach(x => {
         const it = Object.assign({}, x, { ro: !!b.ro, book: b.id, series: sname, part: label, year: isYear ? sec.id : yearOfTitle(x.t), seq: seq++ });
-        it.month = monthOf(x.t); ITEMS.push(it); P.items.push(it);
+        it.month = monthOf(x.t); if (!b.undated) ITEMS.push(it); P.items.push(it);
       });
     });
   });
@@ -196,7 +197,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     if (x.series === 'לקוטי דיבורים') t = inPart ? t.replace(/^לקוטי דיבורים ח״[א-ה],\s*/, '') : t.replace(/^לקוטי דיבורים\s+/, '');
     return t;
   }
-  const serLabel = n => n === 'לקוטי דיבורים' ? 'לקוטי דיבורים מתורגם' : n;
+  const serLabel = n => (n === 'לקוטי דיבורים' || n === 'ספר הזכרונות') ? n + ' מתורגם' : n;
   const volName = x => { const p = x.part.replace(/\s*\(לה״ק\)\s*$/, ''); return serLabel(x.series) + ' ' + p; };
   const CHEV = '<svg class="rz-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
   function card(x, opt) {
