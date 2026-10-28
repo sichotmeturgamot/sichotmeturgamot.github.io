@@ -10,27 +10,55 @@
 <meta name="theme-color" content="#1a2942">
 <style>
 .pv { display:inline-block; margin-top:14px; font-size:.82rem; color:var(--gold-dark); background:rgba(169,132,60,.12); border:1px solid var(--gold-soft); border-radius:20px; padding:3px 14px; }
-.book h2 { margin-bottom:4px; }
-.book .note { color:var(--muted); font-size:.92rem; margin-bottom:16px; }
-.years { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:6px; }
-.years button { font:inherit; font-family:'Frank Ruhl Libre',serif; font-size:1.1rem; font-weight:700; color:var(--navy); background:var(--paper); border:1.5px solid var(--line); border-radius:12px; padding:8px 20px; cursor:pointer; }
-.years button small { display:block; font-family:'Heebo',sans-serif; font-weight:400; font-size:.74rem; color:var(--muted); }
-.years button.on { background:var(--navy); color:var(--cream); border-color:var(--navy); }
-.years.books { margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--line); }
-.years button.on small { color:#d9cfae; }
-.list { margin-top:14px; border-top:1px solid var(--line); }
-.row { display:flex; align-items:center; gap:12px; padding:12px 4px; border-bottom:1px solid var(--line-soft); color:var(--text); }
+.hint { color:var(--muted); font-size:.9rem; margin-top:14px; }
+#app h2 { margin-bottom:4px; }
+#app .note { color:var(--muted); font-size:.92rem; margin-bottom:14px; }
+/* מתג מצבים */
+.seg { display:flex; border:1.5px solid var(--navy); border-radius:12px; overflow:hidden; margin-bottom:16px; }
+.seg button { flex:1; font:inherit; font-weight:700; padding:10px 8px; background:var(--paper); color:var(--navy); border:0; cursor:pointer; }
+.seg button + button { border-right:1.5px solid var(--navy); }
+.seg button.on { background:var(--navy); color:var(--cream); }
+/* גלילה צדדית של שנים */
+.ystrip { display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; margin-bottom:6px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; scrollbar-width:thin; scrollbar-color:var(--gold-soft) transparent; }
+.ystrip button { flex:0 0 auto; scroll-snap-align:center; font:inherit; font-family:'Frank Ruhl Libre',serif; font-size:1.05rem; font-weight:700; color:var(--navy); background:var(--paper); border:1.5px solid var(--line); border-radius:12px; padding:6px 16px; cursor:pointer; text-align:center; }
+.ystrip button small { display:block; font-family:'Heebo',sans-serif; font-weight:400; font-size:.7rem; color:var(--muted); }
+.ystrip button.on { background:var(--navy); color:var(--cream); border-color:var(--navy); }
+.ystrip button.on small { color:#d9cfae; }
+/* מצב שנים: פס חודשים בימין */
+.yv { display:grid; grid-template-columns:74px minmax(0,1fr); gap:12px; align-items:start; }
+.rail { overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--gold-soft) transparent; }
+.rail::-webkit-scrollbar { width:6px; } .rail::-webkit-scrollbar-thumb { background:var(--gold-soft); border-radius:3px; }
+.mrail { position:sticky; top:8px; max-height:calc(100vh - 24px); }
+.rail button { display:block; width:100%; font:inherit; text-align:right; background:transparent; color:var(--navy); border:0; border-right:3px solid transparent; padding:9px 8px; cursor:pointer; line-height:1.25; }
+.rail button small { display:block; font-size:.7rem; color:var(--muted); }
+.rail button.on { background:rgba(169,132,60,.14); border-right-color:var(--gold); font-weight:700; }
+.rail button.zero { opacity:.38; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+.chips button { font:inherit; font-size:.8rem; padding:3px 12px; border-radius:16px; border:1.5px solid var(--line); background:var(--paper); color:var(--muted); cursor:pointer; }
+.chips button.on { background:rgba(23,35,61,.08); color:var(--navy); border-color:var(--navy); font-weight:700; }
+.mh { font-family:'Frank Ruhl Libre',serif; font-weight:700; color:var(--gold-dark); font-size:1rem; padding:14px 2px 4px; border-bottom:2px solid var(--gold-soft); scroll-margin-top:12px; }
+.mh:first-child { padding-top:2px; }
+/* מצב סדרות: סדרות | חלקים | רשימה */
+.sv { display:grid; grid-template-columns:88px 104px minmax(0,1fr); gap:8px; align-items:start; }
+.sv .rail { position:sticky; top:8px; max-height:calc(100vh - 24px); border-left:1px solid var(--line); }
+.sv .scol button { font-family:'Frank Ruhl Libre',serif; font-weight:700; font-size:1rem; }
+.sv .pcol button { font-size:.88rem; }
+@media (min-width:760px) { .sv { grid-template-columns:170px 230px minmax(0,1fr); } .yv { grid-template-columns:96px minmax(0,1fr); } }
+.yh { font-size:.78rem; font-weight:700; color:var(--gold-dark); background:rgba(169,132,60,.1); border-radius:8px; padding:2px 10px; margin:12px 0 2px; display:inline-block; }
+.list { border-top:1px solid var(--line); }
+.row { display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; padding:11px 4px; border-bottom:1px solid var(--line-soft); color:var(--text); }
 .row:hover { background:rgba(169,132,60,.07); }
-.row .t { flex:1; font-family:'Frank Ruhl Libre',serif; font-size:1.08rem; color:var(--navy); line-height:1.5; }
-.row .p { font-size:.82rem; color:var(--muted); white-space:nowrap; }
-.tag { font-size:.72rem; border-radius:10px; padding:1px 9px; white-space:nowrap; border:1px solid var(--line); color:var(--muted); }
+.row .t { flex:1 1 180px; min-width:0; overflow-wrap:anywhere; font-family:'Frank Ruhl Libre',serif; font-size:1.05rem; color:var(--navy); line-height:1.45; }
+.row .meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; min-width:0; max-width:100%; }
+.row .p { font-size:.8rem; color:var(--muted); }
+.tag { font-size:.7rem; border-radius:10px; padding:1px 8px; white-space:nowrap; border:1px solid var(--line); color:var(--muted); }
 .tag.yi { color:#7a4a14; border-color:#d9b27a; background:#fbf1e1; }
 .tag.he { color:#2c5a3a; border-color:#b5d3bd; background:#eef7f0; }
-.hint { color:var(--muted); font-size:.9rem; margin-top:14px; }
+.tag.sr { color:var(--navy); border-color:#b9c0d0; background:#eef0f6; }
+.empty { color:var(--muted); padding:18px 4px; }
 </style>
 </head>
 <body>
-
 <nav class="topnav">
   <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
   <div class="links">
@@ -49,44 +77,126 @@
 </div>
 
 <main>
-  <div class="card book" id="book"></div>
+  <div class="card" id="app"></div>
   <p class="hint">לתרגום קטע: בתוך הקורא, הקישו על המילה הראשונה ואז על האחרונה, ולחצו "תרגם". הטקסט המקורי אינו נשמר בדפדפן; מתקבל תרגום אוטומטי בלבד.</p>
 </main>
 
 <script src="rayatz-data.js?v=20261027c"></script>
 <script>
 (function () {
-  const box = document.getElementById('book');
+  const app = document.getElementById('app');
   const LANG = { yi: ['אידיש', 'yi'], he: ['לשון הקודש', 'he'], mixed: ['אידיש ולה״ק', 'yi'] };
-  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  // כל השנים מכל הספרים ברשימה אחת (הספר נקבע אוטומטית לפי השיחה)
-  const years = [], extras = [];
-  RAYATZ.books.forEach(b => b.sections.forEach(s => {
-    const list = /^(ה׳)?(תר|תש|ש״ת)/.test(s.id) ? years : extras;
-    let t = list.find(x => x.id === s.id); if (!t) { t = { id: s.id, items: [] }; list.push(t); }
-    s.sichos.forEach(x => t.items.push(Object.assign({ book: b.id }, x)));
-  }));
-  // מיון השנים לפי סדר כרונולוגי (גימטריא של האותיות), כי הכרכים השונים משתלבים בשנים
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  // ---------- גימטריא ושנים ----------
   const G = { א: 1, ב: 2, ג: 3, ד: 4, ה: 5, ו: 6, ז: 7, ח: 8, ט: 9, י: 10, כ: 20, ל: 30, מ: 40, נ: 50, ס: 60, ע: 70, פ: 80, צ: 90, ץ: 90, ך: 20, ם: 40, ן: 50, ף: 80, ק: 100, ר: 200, ש: 300, ת: 400 };
   const yn = id => id.replace(/^ה׳/, '').split('').reduce((n, c) => n + (G[c] || 0), 0);
-  years.sort((a, b) => yn(a.id) - yn(b.id));
-  const SECS = years.concat(extras);
-  const total = SECS.reduce((n, s) => n + s.items.length, 0);
-  const get = (k, d) => { try { return sessionStorage.getItem(k) || d; } catch (e) { return d; } };
-  function render(yi) {
-    try { sessionStorage.setItem('rayatz-year', yi); } catch (e) {}
-    let h = '<h2>שיחות הריי״ץ ביידיש</h2><div class="note">' + total + ' פריטים · בחרו שנה</div><div class="years">';
-    SECS.forEach((s, i) => { h += '<button data-i="' + i + '" class="' + (i === yi ? 'on' : '') + '">' + esc(s.id) + '<small>' + s.items.length + ' פריטים</small></button>'; });
-    h += '</div><div class="list">';
-    SECS[yi].items.forEach(x => {
-      const l = LANG[x.lang] || LANG.yi, pg = x.ps === x.pe ? 'עמ׳ ' + x.ps : 'עמ׳ ' + x.ps + '–' + x.pe;
-      const href = 'rayatz-read.html?book=' + x.book + '&page=' + x.pdf + '&title=' + encodeURIComponent(x.t);
-      h += '<a class="row" href="' + href + '"><span class="t">' + esc(x.t) + '</span><span class="tag ' + l[1] + '">' + l[0] + '</span><span class="p">' + pg + '</span></a>';
+  const YEAR_SEC = /^(ה׳)?(תר|תש|ש״ת)/;
+  const YEAR_IN = /(?:ה׳)?(?:ש״ת|ת[רש][א-ת]?״[א-ת])/;
+  const yearOfTitle = t => { const m = YEAR_IN.exec(t); if (!m) return null; const b = m[0].replace(/^ה׳/, ''); return (yn(b) >= 700 ? 'ה׳' : '') + b; };
+  // ---------- חודשים ----------
+  const MONTHS = [
+    ['תשרי', /תשרי|ראש השנה|ר״ה|יום כפור|יום כיפור|יו״כ|סוכות|הושענא|שמיני עצרת|שמחת תורה|שמח״ת|שמע״צ|שבת שובה|שבת בראשית/],
+    ['חשון', /מרחשון|חשון|(?:^|[\s,.])מ״ח(?=[\s,.]|$)/],
+    ['כסלו', /כסלו|חנוכה/],
+    ['טבת', /טבת/],
+    ['שבט', /שבט/],
+    ['אדר', /אדר|פורים/],
+    ['ניסן', /ניסן|פסח(?!\s*שני)/],
+    ['אייר', /אייר|ל״?ג בעומר|פסח שני/],
+    ['סיון', /סיון|שבועות/],
+    ['תמוז', /תמוז|יום הגאולה/],
+    ['אב', /מנחם[־\s]?אב|מנ״א|תשעה באב|ט״ו באב|(?:^|[\s־,])אב(?=[\s,.]|$)/],
+    ['אלול', /אלול|ש״[קפ] ראה/]
+  ];
+  const NOM = MONTHS.length; // 12 = ללא חודש
+  const monthOf = t => { let best = NOM, at = 1e9; MONTHS.forEach((m, i) => { const r = m[1].exec(t); if (r && r.index < at) { at = r.index; best = i; } }); return best; };
+  // ---------- בניית הנתונים ----------
+  const ITEMS = [], SERIES = [];
+  const serOf = b => b.series || (b.id.indexOf('ld-') === 0 ? 'לקוטי דיבורים' : 'ספר השיחות');
+  const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות)\s*-?\s*/, '').trim();
+  let seq = 0;
+  RAYATZ.books.forEach(b => {
+    const sname = serOf(b);
+    let S = SERIES.find(s => s.name === sname); if (!S) { S = { name: sname, parts: [] }; SERIES.push(S); }
+    b.sections.forEach(sec => {
+      const isYear = YEAR_SEC.test(sec.id);
+      const label = isYear ? cleanPart(b.title) : cleanPart(sec.id) || sec.id;
+      const extra = !isYear && /הוספות|רשימת המאסר/.test(sec.id);
+      let P = S.parts.find(p => p.name === label); if (!P) { P = { name: label, extra, first: seq, items: [] }; S.parts.push(P); }
+      sec.sichos.forEach(x => {
+        const it = Object.assign({}, x, { book: b.id, series: sname, part: label, year: isYear ? sec.id : yearOfTitle(x.t), seq: seq++ });
+        it.month = monthOf(x.t); ITEMS.push(it); P.items.push(it);
+      });
     });
-    box.innerHTML = h + '</div>';
-    box.querySelectorAll('[data-i]').forEach(b => b.addEventListener('click', () => render(+b.dataset.i)));
+  });
+  SERIES.forEach(S => S.parts.sort((a, b) => (a.extra - b.extra) || (S.name === 'ספר השיחות' && !a.extra ? Math.min(...a.items.map(i => i.year ? yn(i.year) : 9e3)) - Math.min(...b.items.map(i => i.year ? yn(i.year) : 9e3)) : a.first - b.first)));
+  const YEARS = []; ITEMS.forEach(i => { if (i.year && YEARS.indexOf(i.year) < 0) YEARS.push(i.year); });
+  YEARS.sort((a, b) => yn(a) - yn(b));
+  if (ITEMS.some(i => !i.year)) YEARS.push('ללא שנה');
+  const yearKey = i => i.year || 'ללא שנה';
+  // ---------- מצב ----------
+  const st = { mode: 'years', year: 0, month: -1, hide: {}, series: 0, part: 0 };
+  try { const o = JSON.parse(localStorage.getItem('rayatz-ui') || '{}'); ['mode', 'year', 'series', 'part'].forEach(k => { if (o[k] != null) st[k] = o[k]; }); } catch (e) {}
+  const save = () => { try { localStorage.setItem('rayatz-ui', JSON.stringify({ mode: st.mode, year: st.year, series: st.series, part: st.part })); } catch (e) {} };
+  const href = x => 'rayatz-read.html?book=' + x.book + '&page=' + x.pdf + '&title=' + encodeURIComponent(x.t);
+  function row(x, showSeries) {
+    const l = LANG[x.lang] || LANG.yi, pg = x.ps === x.pe ? 'עמ׳ ' + x.ps : 'עמ׳ ' + x.ps + '–' + x.pe;
+    return '<a class="row" href="' + href(x) + '"><span class="t">' + esc(x.t) + '</span><span class="meta">' + (showSeries ? '<span class="tag sr">' + esc(x.series) + '</span>' : '') + '<span class="tag ' + l[1] + '">' + l[0] + '</span><span class="p">' + pg + '</span></span></a>';
   }
-  render(Math.min(+get('rayatz-year', 0) || 0, SECS.length - 1));
+  const head = () => '<div class="seg"><button data-mode="years" class="' + (st.mode === 'years' ? 'on' : '') + '">לפי שנים</button><button data-mode="series" class="' + (st.mode === 'series' ? 'on' : '') + '">לפי סדרות</button></div>';
+  // ---------- לפי שנים ----------
+  function viewYears() {
+    st.year = Math.max(0, Math.min(st.year, YEARS.length - 1));
+    const yk = YEARS[st.year];
+    const all = ITEMS.filter(i => yearKey(i) === yk);
+    const sers = SERIES.filter(s => all.some(i => i.series === s.name));
+    const vis = all.filter(i => !st.hide[i.series]).sort((a, b) => (a.month - b.month) || (a.seq - b.seq));
+    const cnt = new Array(NOM + 1).fill(0); vis.forEach(i => cnt[i.month]++);
+    let h = head() + '<div class="ystrip" id="ystrip">';
+    YEARS.forEach((y, i) => { h += '<button data-y="' + i + '" class="' + (i === st.year ? 'on' : '') + '">' + esc(y) + '<small>' + ITEMS.filter(x => yearKey(x) === y).length + '</small></button>'; });
+    h += '</div><div class="yv"><div class="rail mrail" id="mrail">';
+    MONTHS.concat([['ללא חודש']]).forEach((m, i) => { if (i === NOM && !cnt[i]) return; h += '<button data-m="' + i + '" class="' + (cnt[i] ? '' : 'zero') + '">' + m[0] + (cnt[i] ? '<small>' + cnt[i] + '</small>' : '') + '</button>'; });
+    h += '</div><div>';
+    if (sers.length > 1) { h += '<div class="chips">'; sers.forEach(s => { h += '<button data-s="' + esc(s.name) + '" class="' + (st.hide[s.name] ? '' : 'on') + '">' + esc(s.name) + '</button>'; }); h += '</div>'; }
+    h += '<div class="list">';
+    let cur = -1;
+    vis.forEach(x => { if (x.month !== cur) { cur = x.month; h += '<div class="mh" id="mh' + cur + '">' + (cur === NOM ? 'ללא חודש' : MONTHS[cur][0]) + '</div>'; } h += row(x, sers.length > 1); });
+    if (!vis.length) h += '<div class="empty">אין פריטים להצגה.</div>';
+    app.innerHTML = '<h2>מרכז הריי״ץ — ' + esc(yk) + '</h2><div class="note">' + ITEMS.length + ' פריטים · בחרו שנה, וחודש בצד</div>' + h + '</div></div></div>';
+    const strip = document.getElementById('ystrip'), on = strip.querySelector('.on'); if (on) strip.scrollLeft = on.offsetLeft - strip.clientWidth / 2 + on.offsetWidth / 2 - (strip.offsetLeft || 0) - (strip.parentNode.offsetLeft || 0) * 0;
+    bind();
+    // סימון חודש פעיל לפי הגלילה
+    const rail = document.getElementById('mrail'), heads = [...app.querySelectorAll('.mh')];
+    if (heads.length && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const i = e.target.id.slice(2); rail.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === i)); const b = rail.querySelector('[data-m="' + i + '"]'); if (b) b.scrollIntoView({ block: 'nearest' }); } }), { rootMargin: '-15% 0px -75% 0px' });
+      heads.forEach(hd => io.observe(hd));
+    }
+  }
+  // ---------- לפי סדרות ----------
+  function viewSeries() {
+    st.series = Math.max(0, Math.min(st.series, SERIES.length - 1));
+    const S = SERIES[st.series]; st.part = Math.max(0, Math.min(st.part, S.parts.length - 1));
+    const P = S.parts[st.part];
+    let h = head() + '<div class="sv"><div class="rail scol">';
+    SERIES.forEach((s, i) => { h += '<button data-sr="' + i + '" class="' + (i === st.series ? 'on' : '') + '">' + esc(s.name) + '<small>' + s.parts.reduce((n, p) => n + p.items.length, 0) + ' פריטים</small></button>'; });
+    h += '</div><div class="rail pcol">';
+    S.parts.forEach((p, i) => { h += '<button data-p="' + i + '" class="' + (i === st.part ? 'on' : '') + '">' + esc(p.name) + '<small>' + p.items.length + ' פריטים</small></button>'; });
+    h += '</div><div><div class="list">';
+    let cy = '';
+    P.items.forEach(x => { const y = x.year || ''; if (y && y !== cy) { cy = y; h += '<div class="yh">' + esc(y) + '</div>'; } h += row(x, false); });
+    app.innerHTML = '<h2>' + esc(S.name) + ' — ' + esc(P.name) + '</h2><div class="note">' + P.items.length + ' פריטים</div>' + h + '</div></div></div>';
+    bind();
+  }
+  function bind() {
+    app.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { st.mode = b.dataset.mode; save(); draw(); window.scrollTo(0, 0); }));
+    app.querySelectorAll('[data-y]').forEach(b => b.addEventListener('click', () => { st.year = +b.dataset.y; save(); draw(); }));
+    app.querySelectorAll('[data-s]').forEach(b => b.addEventListener('click', () => { st.hide[b.dataset.s] = !st.hide[b.dataset.s]; draw(); }));
+    app.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { const t = document.getElementById('mh' + b.dataset.m); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+    app.querySelectorAll('[data-sr]').forEach(b => b.addEventListener('click', () => { st.series = +b.dataset.sr; st.part = 0; save(); draw(); }));
+    app.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { st.part = +b.dataset.p; save(); draw(); }));
+  }
+  function draw() { if (st.mode === 'series') viewSeries(); else viewYears(); }
+  draw();
 })();
 </script>
 </body>
