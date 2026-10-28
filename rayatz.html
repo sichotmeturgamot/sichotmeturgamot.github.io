@@ -38,7 +38,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
 .rz-area::-webkit-scrollbar { display:none; }
 .rz-rail::-webkit-scrollbar { width:4px; } .rz-rail::-webkit-scrollbar-thumb { background:#cbc2ac; border:0; border-radius:3px; }
 .rz-rail .year-chip { padding:8px 6px; font-size:.95rem; line-height:1.3; text-align:center; }
-.rz-months { width:96px; } .rz-series { width:128px; } .rz-parts { width:132px; }
+.rz-months { width:96px; } .rz-series { width:128px; } .rz-parts { width:110px; }
 .rz-rail .year-chip small { display:block; font-family:'Heebo',sans-serif; font-size:.68rem; font-weight:400; color:var(--muted); margin-top:1px; }
 .rz-rail .year-chip.active small { color:#d9cfae; }
 .rz-area { flex:1; min-width:0; }
@@ -109,7 +109,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028f"></script>
+<script src="rayatz-data.js?v=20261028g"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -231,25 +231,17 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   }
   // ---------- לפי סדרות ----------
   function viewSeries() {
-    const S = SERIES.find(s => s.name === st.series);
-    if (!S) {
-      let h = '<div class="rz-cards">';
-      SERIES.forEach(s => { const n = s.parts.reduce((a, p) => a + p.items.length, 0); h += '<button class="rz-card" data-sr="' + esc(s.name) + '"><h3>' + esc(s.name) + '</h3><p>' + esc(SER_DESC[s.name] || '') + '</p><p>' + s.parts.length + ' חלקים · ' + noun(n) + '</p></button>'; });
-      app.innerHTML = h + '</div>';
-      return bind();
-    }
-    const P = S.parts.find(p => p.name === st.part);
-    let h = '<div class="rz-body"><div class="rz-rail rz-series">';
+    const S = SERIES.find(s => s.name === st.series) || SERIES[0];
+    st.series = S.name;
+    const P = S.parts.find(p => p.name === st.part) || S.parts[0];
+    st.part = P.name;
+    let h = '<div class="rz-years" id="rzs">';
     SERIES.forEach(s => { h += '<button class="year-chip' + (s === S ? ' active' : '') + '" data-sr="' + esc(s.name) + '">' + esc(s.name) + '</button>'; });
-    h += '</div><div class="rz-rail rz-parts">';
+    h += '</div><div class="rz-body"><div class="rz-rail rz-parts">';
     S.parts.forEach(p => { h += '<button class="year-chip' + (p === P ? ' active' : '') + '" data-p="' + esc(p.name) + '">' + esc(p.name) + '<small>' + p.items.length + '</small></button>'; });
     h += '</div><div class="rz-area">';
-    if (!P) h += '<div class="rz-intro"><b>' + esc(S.name) + '</b>בחרו חלק מהרשימה</div>';
-    else {
-      const multiY = new Set(P.items.map(i => i.year)).size > 1;
-      h += '<div class="year-panel-head"><h2>' + esc(S.name) + ' · ' + esc(P.name) + '</h2><span class="count-tag">' + noun(P.items.length) + '</span></div>';
-      P.items.forEach(x => { h += card(x, { year: multiY, inPart: true }); });
-    }
+    const multiY = new Set(P.items.map(i => i.year)).size > 1;
+    P.items.forEach(x => { h += card(x, { year: multiY, inPart: true }); });
     app.innerHTML = h + '</div></div>';
     bind();
   }
