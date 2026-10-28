@@ -65,7 +65,8 @@
     function draw() {
       el.innerHTML = '';
       var css = 'font:inherit;font-size:.82rem;border:1px solid #b8933e;background:transparent;color:#17233d;border-radius:18px;padding:4px 12px;cursor:pointer;text-decoration:none;display:inline-block;margin:0 3px';
-      if (!S) { var b = document.createElement('button'); b.type = 'button'; b.style.cssText = css; b.textContent = '👤 התחברות לאזור האישי'; b.onclick = modal; el.appendChild(b); return; }
+      if (!S) { var b = document.createElement('button'); b.type = 'button'; b.style.cssText = css; b.textContent = opt.compact ? '👤 התחברות' : '👤 התחברות לאזור האישי'; b.title = 'התחברות לאזור האישי'; b.onclick = modal; el.appendChild(b); return; }
+      if (opt.compact) { var a2 = document.createElement('a'); a2.href = 'rayatz-me.html'; a2.style.cssText = css; a2.title = S.email; a2.textContent = '👤 האזור שלי'; el.appendChild(a2); return; }
       var t = document.createElement('span'); t.style.cssText = 'font-size:.8rem;color:#8a7d61;margin:0 4px'; t.textContent = S.email; el.appendChild(t);
       if (!opt.noLink) { var a = document.createElement('a'); a.href = 'rayatz-me.html'; a.style.cssText = css; a.textContent = 'האזור שלי'; el.appendChild(a); }
       var o = document.createElement('button'); o.type = 'button'; o.style.cssText = css + ';border-color:#d9d1c0'; o.textContent = 'יציאה'; o.onclick = signOut; el.appendChild(o);
