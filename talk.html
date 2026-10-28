@@ -79,22 +79,32 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
 </head>
 <body>
 <div class="top"><div class="tt"><small>ב״ה</small><b>שיחה עם השיחות</b><small id="lf" style="color:#e9dfc4;font-size:.7rem"></small></div><div><button id="lst" type="button">שיחות קודמות</button> <button id="new" type="button">שיחה חדשה</button></div></div>
-<div id="panel" hidden><div class="ph"><b>שיחות קודמות</b><button id="pc" type="button">✕</button></div><div id="pl"></div></div>
+<div id="panel" hidden><div class="ph"><b>שיחות קודמות</b><button id="pc" type="button">✕</button></div><div id="pu" style="padding:6px 12px;text-align:center"></div><div id="pl"></div></div>
 <div id="lock" hidden><p style="font-family:'Frank Ruhl Libre',serif;font-size:1.2rem">כדי לשאול, התחברו עם חשבון גוגל.<br><small style="color:var(--muted)">המייל משמש להגבלת מספר השאלות היומי, והשאלות והתשובות נשמרות אצלנו עד 60 יום לצורך שיפור השירות.</small></p><div id="gbtn" style="display:flex;justify-content:center;margin:18px 0"></div><div id="lerr" class="err"></div></div>
 <div id="feed"><div class="hello"><h2>במה תרצו לעיין?</h2><p>שאלו על השיחות והאגרות, ואפשר להמשיך ולשאול — אני זוכר את מהלך השיחה.</p><div class="about">התשובות מנוסחות ע״י AI על סמך המקורות באתר, עם קישורים לבדיקה במקור. אפשר לסנן את מקור החיפוש בשורה שלמטה. בשלב הניסוי מוגבל מספר השאלות היומי לכל משתמש. <button type="button" id="reqbtn">רוצים להסיר את ההגבלה? פנו אלינו</button><div id="req"><textarea id="reqtxt" placeholder="כתבו כמה מילים: מי אתם ולמה תרצו יותר שאלות"></textarea><br><button type="button" id="reqsend">שליחה</button></div></div><div class="chips" id="starters"></div><div class="about" style="margin-top:22px;font-size:.78rem">כל החומר שבחיפוש שייך להוצאת קה״ת, וכל הזכויות שמורות לה.<br><a href="privacy.html">מדיניות פרטיות</a> · <a href="terms.html">תנאי שימוש</a></div></div></div>
 <div id="bar"><div id="srow"><span>חיפוש ב:</span><button type="button" data-src="">הכל</button><button type="button" data-src="s">ספר השיחות</button><button type="button" data-src="l">לקוטי דיבורים</button><button type="button" data-src="z">ספר הזכרונות</button><button type="button" data-src="r">רשימות ואגרות</button></div><form id="f"><textarea id="q" rows="1" placeholder="כתבו שאלה…"></textarea><button class="send" id="go" type="submit" aria-label="שלח">➤</button></form></div>
+<script src="rayatz-auth.js?v=20261028s"></script>
 <script>
 (function(){
   var CLIENT_ID='696641021937-mqm27b0nkh18t82oh17su951btii7l3f.apps.googleusercontent.com', API='https://sichos-search.doviber.workers.dev', KEY=null, hist=[], turn=0, busy=false, convs=[], cur=null;
   try{convs=JSON.parse(localStorage.getItem('chat-convs')||'[]');}catch(e){convs=[];}
   function persist(){try{localStorage.setItem('chat-convs',JSON.stringify(convs.slice(0,30)));}catch(e){}}
+  /* אזור אישי (אופציונלי): סנכרון שיחות לחשבון המחובר */
+  function sync(c){try{if(window.RZ&&RZ.user)RZ.call('/me/chat',{conv:c}).catch(function(){});}catch(e){}}
+  function pull(){if(!(window.RZ&&RZ.user))return;
+    RZ.call('/me/chats').then(function(j){if(!j||!j.ok)return;var ch=false;
+      j.convs.forEach(function(c){c.id=Number(c.id);var l=convs.filter(function(k){return k.id===c.id;})[0];
+        if(!l){convs.push(c);ch=true;}else if(c.ts>l.ts&&c.turns.length>=l.turns.length){Object.assign(l,c);ch=true;}});
+      convs.forEach(function(c){if(!j.convs.some(function(s){return Number(s.id)===c.id;}))sync(c);});
+      if(ch){convs.sort(function(a,b){return b.ts-a.ts;});persist();}
+    }).catch(function(){});}
   var feed=document.getElementById('feed'), q=document.getElementById('q'), go=document.getElementById('go'), lock=document.getElementById('lock'), bar=document.getElementById('bar');
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
   function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   var CRED=null;
   try{var sv=JSON.parse(localStorage.getItem('g-cred')||'null');if(sv&&sv.exp>Date.now())CRED=sv.c;}catch(e){}
   function jwtExp(c){try{return JSON.parse(atob(c.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).exp*1000;}catch(e){return 0;}}
-  function setCred(c){CRED=c;try{localStorage.setItem('g-cred',JSON.stringify({c:c,exp:jwtExp(c)}));}catch(e){}gate();}
+  function setCred(c){CRED=c;try{localStorage.setItem('g-cred',JSON.stringify({c:c,exp:jwtExp(c)}));}catch(e){}gate();if(window.RZ)RZ.adopt().then(pull);}
   function gate(){var ok=!!CRED;lock.hidden=ok;feed.hidden=!ok;bar.hidden=!ok;if(!ok)initG();}
 
   var SRC='';try{SRC=localStorage.getItem('ai-src')||'';}catch(e){}
@@ -118,6 +128,7 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
     google.accounts.id.prompt();
   }
   gate();
+  if(window.RZ){RZ.mount(document.getElementById('pu'));RZ.ready.then(pull);RZ.onChange(function(s){if(s)pull();});}
   function starters(){var c=document.getElementById('starters');if(!c)return;['מה סיפר הרבי הריי״צ על ילדותו?','איך התייחס לעבודת התפילה?','סיפורים על מסירות נפש'].forEach(function(t){var b=el('button',null,t);b.type='button';b.onclick=function(){ask(t);};c.appendChild(b);});}
   starters();
   function fresh(){hist=[];turn=0;cur=null;feed.innerHTML=HELLO_HTML;document.getElementById('starters').innerHTML='';starters();}
@@ -126,7 +137,7 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
   var panel=document.getElementById('panel'),pl=document.getElementById('pl');
   function drawList(){pl.innerHTML='';if(!convs.length){pl.appendChild(el('div','empty','עדיין אין שיחות שמורות'));return;}
     convs.forEach(function(c){var d=el('div','it'+(cur&&cur.id===c.id?' on':''));var sp=el('span',null,c.title);sp.appendChild(el('small',null,new Date(c.ts).toLocaleDateString('he-IL')+' · '+c.turns.length+' שאלות'));d.appendChild(sp);
-      var x=el('button',null,'🗑');x.type='button';x.onclick=function(e){e.stopPropagation();convs=convs.filter(function(k){return k.id!==c.id;});persist();if(cur&&cur.id===c.id)fresh();drawList();};d.appendChild(x);
+      var x=el('button',null,'🗑');x.type='button';x.onclick=function(e){e.stopPropagation();convs=convs.filter(function(k){return k.id!==c.id;});persist();if(window.RZ&&RZ.user)RZ.call('/me/delete',{chat:String(c.id)}).catch(function(){});if(cur&&cur.id===c.id)fresh();drawList();};d.appendChild(x);
       d.onclick=function(){load(c);panel.hidden=true;};pl.appendChild(d);});}
   document.getElementById('lst').onclick=function(){drawList();panel.hidden=false;};
   document.getElementById('pc').onclick=function(){panel.hidden=true;};
@@ -186,7 +197,7 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
       var j=x.j,rec={q:text,answer:j.answer||'',follow:j.follow||[],results:list0(j.results)};
       addAns(rec,t,true);var lf=document.getElementById('lf');if(lf)lf.textContent=(j.left==null)?'אין לך הגבלה על מכסת השאלות':'נשארו '+j.left+' שאלות היום';
       if(!cur){cur={id:Date.now(),title:text.slice(0,50),ts:Date.now(),turns:[]};convs.unshift(cur);}
-      cur.turns.push(rec);cur.ts=Date.now();persist();
+      cur.turns.push(rec);cur.ts=Date.now();persist();sync(cur);
       hist.push({q:text,a:(j.answer||'').replace(/\[\d+\]/g,'').slice(0,1500)});
       window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
     }).catch(function(){busy=false;go.disabled=false;th.remove();feed.appendChild(el('div','err','לא הצלחתי להתחבר, נסו שוב'));});

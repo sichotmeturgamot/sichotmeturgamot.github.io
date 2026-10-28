@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>האזור שלי — מרכז הריי״ץ</title>
+<title>האזור שלי</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css">
@@ -40,10 +40,10 @@
   <div id="meBody"></div>
 </main>
 <script src="rayatz-data.js?v=20261028q"></script>
-<script src="rayatz-auth.js?v=20261028r"></script>
+<script src="rayatz-auth.js?v=20261028s"></script>
 <script>
 (function () {
-  var body = document.getElementById('meBody'), items = [], q = '';
+  var body = document.getElementById('meBody'), items = [], chats = [], tab = 'tr', q = '';
   var bookTitle = {}; try { RAYATZ.books.forEach(function (b) { bookTitle[b.id] = b.title; }); } catch (e) {}
   function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
   function msg(t, btn) {
@@ -53,12 +53,16 @@
   }
   function draw() {
     if (!RZ.user) { msg('האזור האישי שומר את היסטוריית התרגומים שלכם, וזמין מכל מכשיר.\nהתחברו עם חשבון Google כדי להתחיל.', { label: '👤 התחברות', fn: RZ.login }); return; }
-    var list = items.filter(function (x) { return !q || (x.title + ' ' + x.translation).indexOf(q) >= 0; });
     body.innerHTML = '';
+    var tabs = el('div', 'me-tools'); tabs.style.justifyContent = 'center';
+    [['tr', 'תרגומים'], ['chat', 'שאלות AI']].forEach(function (t) { var b = el('button', 'me-btn', t[1]); b.type = 'button'; if (tab === t[0]) { b.style.background = '#17233d'; b.style.color = '#fff'; } b.onclick = function () { tab = t[0]; q = ''; draw(); }; tabs.appendChild(b); });
+    if (tab === 'chat') { body.appendChild(tabs); drawChats(); return; }
+    var list = items.filter(function (x) { return !q || (x.title + ' ' + x.translation).indexOf(q) >= 0; });
+    body.appendChild(tabs);
     var tools = el('div', 'me-tools'), s = el('input'); s.type = 'search'; s.placeholder = 'חיפוש בתרגומים שלי…'; s.value = q;
     s.oninput = function () { q = s.value.trim(); var pos = s.selectionStart; draw(); var n = body.querySelector('input'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } };
     tools.appendChild(s);
-    if (items.length) { var da = el('button', 'me-btn danger', 'מחיקת כל ההיסטוריה'); da.type = 'button'; da.onclick = function () { if (!confirm('למחוק את כל היסטוריית התרגומים? אי אפשר לשחזר.')) return; RZ.call('/me/delete', { all: true }).then(function () { items = []; draw(); }); }; tools.appendChild(da); }
+    if (items.length) { var da = el('button', 'me-btn danger', 'מחיקת כל ההיסטוריה'); da.type = 'button'; da.onclick = function () { if (!confirm('למחוק את כל היסטוריית התרגומים? אי אפשר לשחזר.')) return; RZ.call('/me/delete', { all: true, kind: 'tr' }).then(function () { items = []; draw(); }); }; tools.appendChild(da); }
     body.appendChild(tools);
     if (!list.length) { body.appendChild(el('div', 'me-empty', items.length ? 'לא נמצאו תרגומים תואמים.' : 'עדיין אין תרגומים שמורים.\nבקורא, סמנו קטע ולחצו "תרגם" והוא יישמר כאן אוטומטית.')); }
     list.forEach(function (x) {
@@ -75,13 +79,35 @@
     });
     body.appendChild(el('div', 'me-note', 'התרגומים נשמרים בחשבון שלכם אצלנו, ואינם גלויים לאחרים. אפשר למחוק כל תרגום או את כולם בכל עת.'));
   }
+  function drawChats() {
+    var list = chats.filter(function (c) { return !q || (c.title + ' ' + c.turns.map(function (t) { return t.q + ' ' + t.answer; }).join(' ')).indexOf(q) >= 0; });
+    var tools = el('div', 'me-tools'), s = el('input'); s.type = 'search'; s.placeholder = 'חיפוש בשאלות ובתשובות…'; s.value = q;
+    s.oninput = function () { q = s.value.trim(); var pos = s.selectionStart; draw(); var n = body.querySelector('input'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } };
+    tools.appendChild(s);
+    if (chats.length) { var da = el('button', 'me-btn danger', 'מחיקת כל השיחות'); da.type = 'button'; da.onclick = function () { if (!confirm('למחוק את כל שיחות ה-AI השמורות? אי אפשר לשחזר.')) return; RZ.call('/me/delete', { all: true, kind: 'chat' }).then(function () { chats = []; draw(); }); }; tools.appendChild(da); }
+    body.appendChild(tools);
+    if (!list.length) body.appendChild(el('div', 'me-empty', chats.length ? 'לא נמצאו שיחות תואמות.' : 'עדיין אין שיחות AI שמורות.\nשיחות מ"שיחה עם השיחות" יישמרו כאן אוטומטית כשאתם מחוברים.'));
+    list.forEach(function (c) {
+      var d = el('div', 'me-card'); d.appendChild(el('h3', null, c.title || 'שיחה'));
+      d.appendChild(el('div', 'me-meta', new Date(c.ts).toLocaleDateString('he-IL') + ' · ' + c.turns.length + ' שאלות'));
+      var det = el('div'); det.hidden = true;
+      c.turns.forEach(function (t) { var qq = el('div', 'me-tr', t.q); qq.style.fontWeight = '700'; qq.style.marginTop = '8px'; det.appendChild(qq); det.appendChild(el('div', 'me-tr', (t.answer || '').replace(/\[\d+\]/g, ''))); });
+      d.appendChild(det);
+      var a = el('div', 'me-acts');
+      var more = el('button', 'me-btn', 'הצג'); more.type = 'button'; more.onclick = function () { det.hidden = !det.hidden; more.textContent = det.hidden ? 'הצג' : 'הסתר'; }; a.appendChild(more);
+      var op = el('a', 'me-btn', 'המשך בשיחה'); op.href = 'talk.html'; a.appendChild(op);
+      var rm = el('button', 'me-btn danger', 'מחק'); rm.type = 'button'; rm.onclick = function () { RZ.call('/me/delete', { chat: String(c.id) }).then(function () { chats = chats.filter(function (y) { return y.id !== c.id; }); draw(); }); }; a.appendChild(rm);
+      d.appendChild(a); body.appendChild(d);
+    });
+    body.appendChild(el('div', 'me-note', 'השיחות נשמרות בחשבון שלכם אצלנו, ואינן גלויות לאחרים. אפשר למחוק כל שיחה או את כולן בכל עת.'));
+  }
   function load() {
     if (!RZ.user) { draw(); return; }
     msg('טוען…');
-    RZ.call('/me/history').then(function (j) {
-      if (!j.ok) { msg(j.error === 'unauthorized' ? 'יש להזין קודם את קוד הגישה במרכז הריי״ץ.' : 'שגיאה בטעינה.'); return; }
-      items = j.items || []; draw();
-    }).catch(function (e) { if (e.message === 'login-required') draw(); else msg(e.message === 'unauthorized' ? 'יש להזין קודם את קוד הגישה במרכז הריי״ץ.' : 'אין חיבור לשרת.'); });
+    Promise.all([RZ.call('/me/history'), RZ.call('/me/chats')]).then(function (r) {
+      if (!r[0].ok) { msg('שגיאה בטעינה.'); return; }
+      items = r[0].items || []; chats = (r[1].convs || []); draw();
+    }).catch(function (e) { if (e.message === 'login-required') draw(); else msg('אין חיבור לשרת.'); });
   }
   body.style.whiteSpace = 'pre-line';
   RZ.mount(document.getElementById('meUser'), { noLink: true });

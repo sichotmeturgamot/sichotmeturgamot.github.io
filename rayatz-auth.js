@@ -19,7 +19,7 @@
   }
   // אם המשתמש כבר מחובר ב"שיחה עם השיחות" (אותו דפדפן) — מתחברים אוטומטית
   async function adopt() {
-    if (S || !ls(KEYN)) return;
+    if (S) return;
     try { var g = JSON.parse(ls('g-cred') || 'null'); if (g && g.c && g.exp > Date.now() + 60000) await exchange(g.c); } catch (e) {}
   }
   function gis(cb) {
@@ -45,7 +45,7 @@
         gInit = true;
         google.accounts.id.initialize({ client_id: CLIENT_ID, auto_select: false, callback: function (r) {
           exchange(r.credential).then(function () { m.style.display = 'none'; }).catch(function (e) {
-            document.getElementById('rz-lerr').textContent = e.message === 'unauthorized' ? 'יש להזין קודם את קוד הגישה למרכז.' : 'ההתחברות נכשלה. נסו שוב.';
+            document.getElementById('rz-lerr').textContent = 'ההתחברות נכשלה. נסו שוב.';
           });
         } });
       }
@@ -72,5 +72,5 @@
     }
     subs.push(draw); draw();
   }
-  window.RZ = { get user() { return S; }, mount: mount, login: modal, logout: signOut, call: call, onChange: function (f) { subs.push(f); }, authHeader: function () { return S ? { 'Authorization': 'Bearer ' + S.session } : {}; }, ready: adopt() };
+  window.RZ = { adopt: adopt, get user() { return S; }, mount: mount, login: modal, logout: signOut, call: call, onChange: function (f) { subs.push(f); }, authHeader: function () { return S ? { 'Authorization': 'Bearer ' + S.session } : {}; }, ready: adopt() };
 })();
