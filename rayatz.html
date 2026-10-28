@@ -109,7 +109,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028o"></script>
+<script src="rayatz-data.js?v=20261028p"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -162,7 +162,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   // ---------- בניית הנתונים ----------
   const ITEMS = [], SERIES = [];
   const serOf = b => b.series || (b.id.indexOf('ld-') === 0 ? 'לקוטי דיבורים' : 'ספר השיחות');
-  const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות|ספר הזכרונות)\s*-?\s*/, '').trim();
+  const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות|ספר הזכרונות|אגרות קודש)\s*-?\s*/, '').trim();
   let seq = 0;
   RAYATZ.books.forEach(b => {
     const sname = serOf(b);
@@ -175,7 +175,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
       let P = S.parts.find(p => p.name === label); if (!P) { P = { name: label, extra, first: seq, items: [] }; S.parts.push(P); }
       sec.sichos.forEach(x => {
         const it = Object.assign({}, x, { ro: !!b.ro, book: b.id, series: sname, part: label, year: isYear ? sec.id : yearOfTitle(x.t), seq: seq++ });
-        it.month = monthOf(x.t); if (!b.undated) ITEMS.push(it); P.items.push(it);
+        it.month = x.m != null ? x.m : monthOf(x.t); if (!b.undated && !x.nd) ITEMS.push(it); P.items.push(it);
       });
     });
   });
@@ -184,7 +184,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   YEARS.sort((a, b) => yn(a) - yn(b));
   if (ITEMS.some(i => !i.year)) YEARS.push('ללא שנה');
   const yearKey = i => i.year || 'ללא שנה';
-  const SER_DESC = { 'ספר השיחות': 'שיחות הריי״ץ לפי שנים, מתוך כרכי קה״ת — ביידיש ובלשון הקודש', 'לקוטי דיבורים': 'חמשת חלקי לקוטי דיבורים בתרגום ללשון הקודש, וההוספות' };
+  const SER_DESC = { 'ספר השיחות': 'שיחות הריי״ץ לפי שנים, מתוך כרכי קה״ת — ביידיש ובלשון הקודש', 'לקוטי דיבורים': 'חמשת חלקי לקוטי דיבורים בתרגום ללשון הקודש, וההוספות', 'אגרות קודש': 'אגרות קודש כ״ק אדמו״ר מוהריי״צ, כל אגרת לפי תאריך' };
   const noun = n => n === 1 ? 'פריט אחד' : n + ' פריטים';
   // ---------- מצב (נשמר רק בתוך הביקור) ----------
   const st = { mode: 'years', year: null, month: null, series: null, part: null };
@@ -204,7 +204,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     const meta = [];
     if (opt.year && x.year) meta.push(esc(x.year));
     if (!opt.inPart) meta.push(esc(volName(x)));
-    if (!x.d && x.series !== 'לקוטי דיבורים') meta.push('<span class="rz-lang">' + (LANG[x.lang] || LANG.yi) + '</span>');
+    if (!x.d && x.series !== 'לקוטי דיבורים' && x.series !== 'אגרות קודש') meta.push('<span class="rz-lang">' + (LANG[x.lang] || LANG.yi) + '</span>');
     const tr = !x.ro && x.lang !== 'he' ? '<br><span class="rz-tr">זמין תרגום לעברית</span>' : '';
     const d = dateBox(x);
     return '<div class="rz-item"><span class="rz-main"><h3>' + esc(showTitle(x, opt.inPart)) + '</h3><span class="rz-sub">' + meta.join(' · ') + tr + '</span></span><a class="rz-date" href="' + href(x) + '" aria-label="פתח"><b' + (d[0].length > 6 ? ' class="sm"' : '') + '>' + esc(d[0]) + '</b>' + (d[1] ? '<span>' + esc(d[1]) + '</span>' : '') + '</a></div>';
