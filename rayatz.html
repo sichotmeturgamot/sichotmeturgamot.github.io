@@ -109,7 +109,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028i"></script>
+<script src="rayatz-data.js?v=20261028j"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -232,14 +232,19 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     const on = document.querySelector('#rzy .active'); if (on) on.scrollIntoView({ block: 'nearest', inline: 'center' });
   }
   // ---------- לפי סדרות ----------
+  // סדרות מתוכננות שעדיין אין בהן כרכים — מוצגות ככפתור עם הודעת "בקרוב"
+  const PLANNED = ['אגרות קודש'];
   function viewSeries() {
-    const S = SERIES.find(s => s.name === st.series) || SERIES[0];
-    st.series = S.name;
+    const names = SERIES.map(s => s.name).concat(PLANNED.filter(n => !SERIES.some(s => s.name === n)));
+    if (names.indexOf(st.series) < 0) st.series = names[0];
+    const S = SERIES.find(s => s.name === st.series);
+    let h = '<div class="rz-years" id="rzs">';
+    names.forEach(n => { h += '<button class="year-chip' + (n === st.series ? ' active' : '') + '" data-sr="' + esc(n) + '">' + esc(serLabel(n)) + '</button>'; });
+    h += '</div>';
+    if (!S) { app.innerHTML = h + '<div class="rz-intro"><b>' + esc(st.series) + '</b>הכרכים יתווספו בקרוב</div>'; return bind(); }
     const P = S.parts.find(p => p.name === st.part) || S.parts[0];
     st.part = P.name;
-    let h = '<div class="rz-years" id="rzs">';
-    SERIES.forEach(s => { h += '<button class="year-chip' + (s === S ? ' active' : '') + '" data-sr="' + esc(s.name) + '">' + esc(serLabel(s.name)) + '</button>'; });
-    h += '</div><div class="rz-body"><div class="rz-rail rz-parts">';
+    h += '<div class="rz-body"><div class="rz-rail rz-parts">';
     S.parts.forEach(p => { h += '<button class="year-chip' + (p === P ? ' active' : '') + '" data-p="' + esc(p.name) + '">' + esc(p.name) + '<small>' + p.items.length + '</small></button>'; });
     h += '</div><div class="rz-area">';
     const multiY = new Set(P.items.map(i => i.year)).size > 1;
