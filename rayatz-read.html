@@ -79,6 +79,7 @@
 </div></div>
 
 <script src="rayatz-data.js?v=20261028q"></script>
+<script src="rayatz-auth.js?v=20261028r"></script>
 <script type="module">
 const API = 'https://sichos-translate.doviber.workers.dev';
 const params = new URLSearchParams(location.search);
@@ -188,13 +189,13 @@ const MINW = 5;
 const sheet = $('sheet'), smsg = $('smsg'), smeta = $('smeta'), trEl = $('tr'), goBtn = $('go'), copyBtn = $('copy'), trnote = $('trnote');
 function say(text, err, meta) { sheet.classList.add('show'); smsg.textContent = text; smsg.className = err ? 'err' : ''; smeta.textContent = meta || ''; goBtn.hidden = true; copyBtn.hidden = true; trEl.hidden = true; trnote.hidden = true; }
 function clearSel() { sel.lo = sel.hi = null; cur = null; paintAll(); sheet.classList.remove('show'); }
-let cur = null, anchor = null;
+let cur = null, anchor = null, anchorPage = 1, tapPage = 1;
 function onTap(id) {
-  if (anchor === null || cur) { anchor = id; cur = null; sel.lo = id; sel.hi = null; paintAll(); say('סימנתם את המילה הראשונה. הקישו על המילה האחרונה.'); return; }
+  if (anchor === null || cur) { anchor = id; cur = null; sel.lo = id; sel.hi = null; anchorPage = tapPage; paintAll(); say('סימנתם את המילה הראשונה. הקישו על המילה האחרונה.'); return; }
   const lo = Math.min(anchor, id), hi = Math.max(anchor, id), n = hi - lo + 1;
   sel.lo = lo; sel.hi = hi; paintAll();
   if (n < MINW) { anchor = null; sel.lo = sel.hi = null; paintAll(); say('הסימון קצר מדי (פחות מ-' + MINW + ' מילים). למילים בודדות אפשר להשתמש במילון. הקישו שוב על מילה ראשונה.', true); return; }
-  cur = { from: lo, to: hi };
+  cur = { from: lo, to: hi, page: Math.min(anchorPage, tapPage) };
   say('נבחרו כ-' + n + ' מילים. לחצו "תרגם".'); goBtn.hidden = false;
 }
 let pd = null, multiAt = 0;
@@ -207,6 +208,7 @@ function hitWord(cx, cy) {
     const dx = Math.max(b.x - px, 0, px - (b.x + b.w)), dy = Math.max(b.y - py, 0, py - (b.y + b.h)), d = Math.hypot(dx, dy);
     if (d < bd && d <= b.h * 0.55) { bd = d; best = b; }
   }
+  if (best) tapPage = rec.n;
   return best;
 }
 inner.addEventListener('pointerdown', e => { pd = (e.isPrimary && Date.now() - multiAt > 350) ? { x: e.clientX, y: e.clientY } : null; }, { passive: true });
@@ -226,8 +228,8 @@ goBtn.onclick = async () => {
   if (book && book.ready && !book.ready.some(r => cur.from >= r[0] && cur.to <= r[1])) { goBtn.hidden = true; say('התרגום לשנה זו עדיין לא זמין: הטקסט בהכנה.', true); return; }
   if (book && book.nt) { goBtn.hidden = true; say('התרגום לספר הזה עדיין לא זמין: הטקסט בהכנה. הסימון עובד לצורך בדיקה בלבד.', true); return; } goBtn.hidden = true; trEl.hidden = false; trEl.textContent = 'מתרגם…';
   try {
-    const j = await api('/yid/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ book: BOOK, from: cur.from, to: cur.to }) });
-    if (j.ok) { trEl.textContent = String(j.translation).replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[a-z][^>]*>/gi, '').replace(/[ \t]*\n(?!\n)[ \t]*/g, ' ').trim(); trnote.hidden = false; copyBtn.hidden = false; smsg.textContent = 'התרגום מוכן.'; smeta.textContent = 'תורגמו ' + j.words + ' מילים' + (j.expanded ? (j.gran === 'sentence' ? ' (הורחב לגבולות משפט)' : ' (הורחב לגבולות פסקה)') : '') + (j.cached ? ' (שמור)' : ''); }
+    const j = await api('/yid/translate', { method: 'POST', headers: Object.assign({ 'content-type': 'application/json' }, window.RZ ? RZ.authHeader() : {}), body: JSON.stringify({ book: BOOK, from: cur.from, to: cur.to, meta: { p: cur.page, t: $('title').textContent.slice(0, 140) } }) });
+    if (j.ok) { trEl.textContent = String(j.translation).replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[a-z][^>]*>/gi, '').replace(/[ \t]*\n(?!\n)[ \t]*/g, ' ').trim(); trnote.hidden = false; copyBtn.hidden = false; smsg.textContent = 'התרגום מוכן.'; smeta.textContent = 'תורגמו ' + j.words + ' מילים' + (j.expanded ? (j.gran === 'sentence' ? ' (הורחב לגבולות משפט)' : ' (הורחב לגבולות פסקה)') : '') + (j.cached ? ' (שמור)' : '') + (j.saved ? ' · נשמר באזור האישי' : ''); }
     else { trEl.hidden = true; say(ERR[j.error] || ('שגיאה: ' + j.error), true, j.detail ? 'פרטים: ' + j.detail : ''); }
   } catch (e) { if (e.message !== 'unauthorized') { trEl.hidden = true; say('אין חיבור לשרת התרגום.', true); } }
 };

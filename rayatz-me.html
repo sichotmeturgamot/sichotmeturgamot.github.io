@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>האזור שלי — מרכז הריי״ץ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#1a2942">
+<style>
+.me-wrap { max-width:760px; margin:0 auto; padding:18px 16px 60px; }
+.me-head { text-align:center; margin-bottom:16px; }
+.me-head h1 { font-size:1.7rem; }
+.me-user { margin-top:8px; }
+.me-tools { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:14px 0 10px; flex-wrap:wrap; }
+.me-tools input { flex:1; min-width:160px; font:inherit; padding:8px 12px; border:1.5px solid var(--line); border-radius:10px; background:var(--paper); }
+.me-btn { font:inherit; font-size:.85rem; border:1px solid var(--gold); background:transparent; color:var(--navy); border-radius:18px; padding:6px 14px; cursor:pointer; text-decoration:none; display:inline-block; }
+.me-btn.danger { border-color:#c9a5a2; color:#a33a34; }
+.me-card { background:var(--paper); border:1px solid var(--line); border-inline-start:3px solid var(--gold); border-radius:10px; padding:12px 14px; margin-bottom:10px; }
+.me-card h3 { font-family:'Frank Ruhl Libre',serif; font-size:1.05rem; font-weight:500; color:var(--navy); line-height:1.45; }
+.me-meta { font-size:.76rem; color:var(--muted); margin:2px 0 8px; }
+.me-tr { white-space:pre-wrap; font-family:'Frank Ruhl Libre',serif; font-size:1.05rem; line-height:1.85; color:#2a2723; }
+.me-tr.clamp { display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+.me-acts { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.me-empty { text-align:center; color:var(--muted); padding:36px 10px; line-height:1.8; }
+.me-note { font-size:.76rem; color:var(--muted); text-align:center; margin-top:18px; line-height:1.6; }
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <div class="links"></div>
+</nav>
+<main class="me-wrap">
+  <div class="me-head">
+    <h1>האזור שלי</h1>
+    <div class="me-user" id="meUser"></div>
+  </div>
+  <div id="meBody"></div>
+</main>
+<script src="rayatz-data.js?v=20261028q"></script>
+<script src="rayatz-auth.js?v=20261028r"></script>
+<script>
+(function () {
+  var body = document.getElementById('meBody'), items = [], q = '';
+  var bookTitle = {}; try { RAYATZ.books.forEach(function (b) { bookTitle[b.id] = b.title; }); } catch (e) {}
+  function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+  function msg(t, btn) {
+    body.innerHTML = ''; var d = el('div', 'me-empty', t);
+    if (btn) { d.appendChild(document.createElement('br')); var b = el('button', 'me-btn', btn.label); b.type = 'button'; b.onclick = btn.fn; d.appendChild(b); }
+    body.appendChild(d);
+  }
+  function draw() {
+    if (!RZ.user) { msg('האזור האישי שומר את היסטוריית התרגומים שלכם, וזמין מכל מכשיר.\nהתחברו עם חשבון Google כדי להתחיל.', { label: '👤 התחברות', fn: RZ.login }); return; }
+    var list = items.filter(function (x) { return !q || (x.title + ' ' + x.translation).indexOf(q) >= 0; });
+    body.innerHTML = '';
+    var tools = el('div', 'me-tools'), s = el('input'); s.type = 'search'; s.placeholder = 'חיפוש בתרגומים שלי…'; s.value = q;
+    s.oninput = function () { q = s.value.trim(); var pos = s.selectionStart; draw(); var n = body.querySelector('input'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } };
+    tools.appendChild(s);
+    if (items.length) { var da = el('button', 'me-btn danger', 'מחיקת כל ההיסטוריה'); da.type = 'button'; da.onclick = function () { if (!confirm('למחוק את כל היסטוריית התרגומים? אי אפשר לשחזר.')) return; RZ.call('/me/delete', { all: true }).then(function () { items = []; draw(); }); }; tools.appendChild(da); }
+    body.appendChild(tools);
+    if (!list.length) { body.appendChild(el('div', 'me-empty', items.length ? 'לא נמצאו תרגומים תואמים.' : 'עדיין אין תרגומים שמורים.\nבקורא, סמנו קטע ולחצו "תרגם" והוא יישמר כאן אוטומטית.')); }
+    list.forEach(function (x) {
+      var c = el('div', 'me-card');
+      c.appendChild(el('h3', null, x.title || bookTitle[x.book] || x.book));
+      c.appendChild(el('div', 'me-meta', (bookTitle[x.book] && x.title ? bookTitle[x.book] + ' · ' : '') + 'עמוד ' + (x.page || '') + ' · ' + new Date(x.ts).toLocaleDateString('he-IL') + ' ' + new Date(x.ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })));
+      var t = el('div', 'me-tr clamp', x.translation); c.appendChild(t);
+      var a = el('div', 'me-acts');
+      var more = el('button', 'me-btn', 'הצג הכל'); more.type = 'button'; more.onclick = function () { var on = t.classList.toggle('clamp'); more.textContent = on ? 'הצג הכל' : 'הסתר'; }; a.appendChild(more);
+      var cp = el('button', 'me-btn', 'העתק'); cp.type = 'button'; cp.onclick = function () { (navigator.clipboard ? navigator.clipboard.writeText(x.translation + '\n\n(תרגום אוטומטי — לא מוגה)') : Promise.reject()).then(function () { cp.textContent = 'הועתק ✓'; }, function () { cp.textContent = 'לא ניתן להעתיק'; }); }; a.appendChild(cp);
+      var op = el('a', 'me-btn', 'פתח בספר'); op.href = 'rayatz-read.html?book=' + encodeURIComponent(x.book) + '&page=' + (x.page || 1) + '&title=' + encodeURIComponent(x.title || ''); a.appendChild(op);
+      var rm = el('button', 'me-btn danger', 'מחק'); rm.type = 'button'; rm.onclick = function () { RZ.call('/me/delete', { key: x.key }).then(function () { items = items.filter(function (y) { return y.key !== x.key; }); draw(); }); }; a.appendChild(rm);
+      c.appendChild(a); body.appendChild(c);
+    });
+    body.appendChild(el('div', 'me-note', 'התרגומים נשמרים בחשבון שלכם אצלנו, ואינם גלויים לאחרים. אפשר למחוק כל תרגום או את כולם בכל עת.'));
+  }
+  function load() {
+    if (!RZ.user) { draw(); return; }
+    msg('טוען…');
+    RZ.call('/me/history').then(function (j) {
+      if (!j.ok) { msg(j.error === 'unauthorized' ? 'יש להזין קודם את קוד הגישה במרכז הריי״ץ.' : 'שגיאה בטעינה.'); return; }
+      items = j.items || []; draw();
+    }).catch(function (e) { if (e.message === 'login-required') draw(); else msg(e.message === 'unauthorized' ? 'יש להזין קודם את קוד הגישה במרכז הריי״ץ.' : 'אין חיבור לשרת.'); });
+  }
+  body.style.whiteSpace = 'pre-line';
+  RZ.mount(document.getElementById('meUser'), { noLink: true });
+  var last = !!RZ.user; RZ.onChange(function () { var now = !!RZ.user; if (now !== last) { last = now; items = []; load(); } });
+  RZ.ready.then(function () { if (RZ.user && !last) { last = true; } load(); });
+  var back = document.createElement('div'); back.style.cssText = 'text-align:center;margin-top:14px'; back.innerHTML = '<a class="me-btn" href="rayatz.html">→ חזרה למרכז הריי״ץ</a>'; document.querySelector('.me-wrap').appendChild(back);
+})();
+</script>
+<script src="nav.js"></script>
+<script src="morenav.js" defer></script>
+</body>
+</html>
