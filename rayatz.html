@@ -109,7 +109,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028h"></script>
+<script src="rayatz-data.js?v=20261028i"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -196,7 +196,8 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     if (x.series === 'לקוטי דיבורים') t = inPart ? t.replace(/^לקוטי דיבורים ח״[א-ה],\s*/, '') : t.replace(/^לקוטי דיבורים\s+/, '');
     return t;
   }
-  const volName = x => { const p = x.part.replace(/\s*\(לה״ק\)\s*$/, ''); return /הוספות|רשימת המאסר/.test(x.part) ? x.series + ' · ' + p : x.series + ' ' + p; };
+  const serLabel = n => n === 'לקוטי דיבורים' ? 'לקוטי דיבורים מתורגם' : n;
+  const volName = x => { const p = x.part.replace(/\s*\(לה״ק\)\s*$/, ''); return serLabel(x.series) + ' ' + p; };
   const CHEV = '<svg class="rz-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
   function card(x, opt) {
     const meta = [];
@@ -237,7 +238,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     const P = S.parts.find(p => p.name === st.part) || S.parts[0];
     st.part = P.name;
     let h = '<div class="rz-years" id="rzs">';
-    SERIES.forEach(s => { h += '<button class="year-chip' + (s === S ? ' active' : '') + '" data-sr="' + esc(s.name) + '">' + esc(s.name) + '</button>'; });
+    SERIES.forEach(s => { h += '<button class="year-chip' + (s === S ? ' active' : '') + '" data-sr="' + esc(s.name) + '">' + esc(serLabel(s.name)) + '</button>'; });
     h += '</div><div class="rz-body"><div class="rz-rail rz-parts">';
     S.parts.forEach(p => { h += '<button class="year-chip' + (p === P ? ' active' : '') + '" data-p="' + esc(p.name) + '">' + esc(p.name) + '<small>' + p.items.length + '</small></button>'; });
     h += '</div><div class="rz-area">';
