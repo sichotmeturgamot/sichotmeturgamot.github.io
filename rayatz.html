@@ -23,6 +23,10 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
 .rz-head { position:relative; }
 #rzUser { position:absolute; top:0; right:0; margin:0 !important; }
 .rz-head h1 { padding:0 84px; }
+.rz-row { display:flex; align-items:center; justify-content:center; gap:10px; }
+.rz-qb { width:42px; height:42px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--navy); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
+.rz-qb.on { background:var(--navy); color:var(--cream); border-color:var(--navy); }
+.rz-search[hidden] { display:none; }
 .rz-search { width:100%; font:inherit; font-size:.95rem; padding:9px 14px; border:1.5px solid var(--line); border-radius:22px; background:var(--paper); color:var(--navy); direction:rtl; }
 .rz-search:focus { outline:none; border-color:var(--gold); }
 #app { flex:1 1 0; min-height:0; display:flex; flex-direction:column; overflow-y:auto; }
@@ -99,11 +103,11 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     <div id="rzUser"></div>
   </div>
   <div class="read-controls">
-    <div class="seg-toggle">
+    <div class="rz-row"><div class="seg-toggle">
       <button class="seg-btn" data-mode="years" type="button">לפי שנים</button>
       <button class="seg-btn" data-mode="series" type="button">לפי סדרות</button>
-    </div>
-    <input type="search" id="rzq" class="rz-search" placeholder="חיפוש: כותרת, פרשה, תאריך, מס׳ אגרת, פרק, מקום" autocomplete="off" enterkeyhint="search" aria-label="חיפוש">
+    </div><button type="button" id="rzqb" class="rz-qb" aria-label="חיפוש" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></div>
+    <input type="search" id="rzq" class="rz-search" hidden placeholder="חיפוש: כותרת, פרשה, תאריך, מס׳ אגרת, פרק, מקום" autocomplete="off" enterkeyhint="search" aria-label="חיפוש">
   </div>
   <div id="app"></div>
 </main>
@@ -320,9 +324,12 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     res.slice(0, MAXR).forEach(r => { h += card(r[1], { year: true }); });
     app.innerHTML = h; app.scrollTop = 0;
   }
-  const qi = document.getElementById('rzq'); let qt = null;
+  const qi = document.getElementById('rzq'), qb = document.getElementById('rzqb'); let qt = null;
+  const qopen = on => { qi.hidden = !on; qb.classList.toggle('on', on); qb.setAttribute('aria-expanded', on); if (on) qi.focus(); };
+  qb.onclick = () => { if (qi.hidden) qopen(true); else if (qi.value) { qi.value = ''; runSearch(''); qi.focus(); } else qopen(false); };
+  qi.addEventListener('blur', () => { if (!qi.value) setTimeout(() => qopen(false), 150); });
   qi.addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(() => runSearch(qi.value), 140); });
-  qi.addEventListener('keydown', e => { if (e.key === 'Escape') { qi.value = ''; runSearch(''); } });
+  qi.addEventListener('keydown', e => { if (e.key === 'Escape') { qi.value = ''; runSearch(''); qopen(false); } });
   draw();
 })();
 </script>
