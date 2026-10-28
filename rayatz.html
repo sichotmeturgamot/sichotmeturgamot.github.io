@@ -36,7 +36,7 @@
 .rz-main h3 { font-family:'Frank Ruhl Libre',serif; font-size:1.12rem; font-weight:500; line-height:1.45; color:var(--navy); margin:0 0 3px; }
 .rz-sub { display:block; font-size:.78rem; color:var(--muted); line-height:1.6; }
 .rz-tr { color:var(--gold-dark); font-weight:500; }
-.rz-date { flex:0 0 58px; height:60px; border-radius:10px; background:var(--navy); color:#e8d9b0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:'Frank Ruhl Libre',serif; line-height:1.15; padding:0 3px; transition:background .2s; }
+.rz-date { text-decoration:none; cursor:pointer; flex:0 0 58px; height:60px; border-radius:10px; background:var(--navy); color:#e8d9b0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:'Frank Ruhl Libre',serif; line-height:1.15; padding:0 3px; transition:background .2s; }
 .rz-date b { font-size:.98rem; font-weight:700; white-space:nowrap; }
 .rz-date b.sm { font-size:.8rem; }
 .rz-date span { font-size:.72rem; opacity:.85; white-space:nowrap; }
@@ -94,7 +94,7 @@
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028c"></script>
+<script src="rayatz-data.js?v=20261028d"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -189,7 +189,7 @@
     meta.push(LANG[x.lang] || LANG.yi);
     const tr = !x.ro && x.lang !== 'he' ? '<br><span class="rz-tr">זמין תרגום לעברית</span>' : '';
     const d = dateBox(x);
-    return '<a class="rz-item" href="' + href(x) + '"><span class="rz-main"><h3>' + esc(showTitle(x, opt.inPart)) + '</h3><span class="rz-sub">' + meta.join(' · ') + tr + '</span></span><span class="rz-date"><b' + (d[0].length > 6 ? ' class="sm"' : '') + '>' + esc(d[0]) + '</b>' + (d[1] ? '<span>' + esc(d[1]) + '</span>' : '') + '</span></a>';
+    return '<div class="rz-item"><span class="rz-main"><h3>' + esc(showTitle(x, opt.inPart)) + '</h3><span class="rz-sub">' + meta.join(' · ') + tr + '</span></span><a class="rz-date" href="' + href(x) + '" aria-label="פתח"><b' + (d[0].length > 6 ? ' class="sm"' : '') + '>' + esc(d[0]) + '</b>' + (d[1] ? '<span>' + esc(d[1]) + '</span>' : '') + '</a></div>';
   }
   // ---------- לפי שנים ----------
   function viewYears() {
