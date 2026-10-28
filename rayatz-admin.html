@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניהול R2 — מרכז הריי״ץ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#1a2942">
+<style>
+.ad-wrap { max-width:760px; margin:0 auto; }
+.ad-head { text-align:center; margin-bottom:18px; }
+.ad-head h1 { font-size:1.7rem; }
+.ad-head .sub { color:var(--muted); font-size:.9rem; }
+.ad-box { background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:14px; }
+.ad-box h2 { font-size:1.1rem; margin-bottom:10px; }
+.ad-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.ad-box input[type=text], .ad-box input[type=password] { flex:1; min-width:0; font:inherit; padding:9px 12px; border:1.5px solid var(--line); border-radius:8px; background:#fff; direction:ltr; text-align:left; }
+.ad-btn { font:inherit; cursor:pointer; border:none; border-radius:8px; background:var(--navy); color:#e8d9b0; padding:9px 18px; }
+.ad-btn.ghost { background:transparent; color:var(--navy); border:1.5px solid var(--line); }
+.ad-btn.del { background:transparent; color:#a33; border:1.5px solid #e3c4c4; padding:4px 10px; font-size:.85rem; }
+.ad-btn:disabled { opacity:.5; cursor:default; }
+.ad-drop { border:2px dashed var(--line); border-radius:10px; padding:22px; text-align:center; color:var(--muted); cursor:pointer; margin-top:10px; }
+.ad-drop.over { border-color:var(--gold); background:#fbf6e8; }
+.ad-q { margin-top:10px; display:flex; flex-direction:column; gap:6px; }
+.ad-qi { display:flex; align-items:center; gap:10px; font-size:.88rem; }
+.ad-qi .nm { flex:1; min-width:0; direction:ltr; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ad-qi .bar { flex:0 0 90px; height:6px; background:var(--line); border-radius:3px; overflow:hidden; }
+.ad-qi .bar i { display:block; height:100%; width:0; background:var(--gold); transition:width .15s; }
+.ad-qi .st { flex:0 0 70px; color:var(--muted); font-size:.8rem; }
+.ad-qi .st.ok { color:#2f7a3f; } .ad-qi .st.er { color:#a33; }
+.ad-path { direction:ltr; text-align:left; font-size:.9rem; color:var(--muted); margin-bottom:8px; word-break:break-all; }
+.ad-path a { cursor:pointer; color:var(--gold-dark); }
+.ad-li { display:flex; align-items:center; gap:10px; padding:8px 4px; border-bottom:1px solid var(--line); font-size:.92rem; }
+.ad-li:last-child { border-bottom:none; }
+.ad-li .nm { flex:1; min-width:0; direction:ltr; text-align:left; word-break:break-all; }
+.ad-li .nm.fo { cursor:pointer; color:var(--navy); font-weight:500; }
+.ad-li .sz { color:var(--muted); font-size:.8rem; white-space:nowrap; }
+.ad-msg { margin-top:8px; font-size:.88rem; color:var(--muted); min-height:1.2em; }
+.ad-msg.er { color:#a33; }
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <div class="links"></div>
+</nav>
+<main>
+<div class="ad-wrap">
+  <div class="ad-head">
+    <h1>ניהול קבצי R2</h1>
+    <div class="sub">העלאה, עיון ומחיקה בתוך <span dir="ltr">yiddish/</span> בלבד</div>
+  </div>
+
+  <div class="ad-box">
+    <h2>סיסמת ניהול</h2>
+    <div class="ad-row">
+      <input type="password" id="adk" placeholder="ADMIN_KEY" autocomplete="off">
+      <button class="ad-btn" id="adk-save">שמירה</button>
+    </div>
+    <div class="ad-msg" id="adk-msg">הסיסמה נשמרת רק בדפדפן הזה.</div>
+  </div>
+
+  <div class="ad-box">
+    <h2>העלאה</h2>
+    <div class="ad-row">
+      <input type="text" id="up-path" value="yiddish/" spellcheck="false" aria-label="תיקייה ביעד">
+    </div>
+    <div class="ad-msg">הקבצים יועלו לתיקייה הזאת, והיא נוצרת אוטומטית. למשל <span dir="ltr">yiddish/ld-1/</span></div>
+    <div class="ad-drop" id="drop">גררו קבצים לכאן או לחצו לבחירה</div>
+    <input type="file" id="files" multiple hidden>
+    <div class="ad-q" id="queue"></div>
+  </div>
+
+  <div class="ad-box">
+    <h2>מה יש ב-R2</h2>
+    <div class="ad-path" id="crumb"></div>
+    <div id="list"><div class="ad-msg">מזינים סיסמה כדי לראות.</div></div>
+    <div class="ad-row" style="margin-top:10px"><button class="ad-btn ghost" id="refresh">רענון</button></div>
+  </div>
+</div>
+</main>
+
+<script>
+(function () {
+  const API = 'https://sichos-translate.doviber.workers.dev';
+  const KEYN = 'rayatz-admin-key';
+  const $ = id => document.getElementById(id);
+  const getK = () => { try { return localStorage.getItem(KEYN) || ''; } catch (e) { return ''; } };
+  const setK = v => { try { localStorage.setItem(KEYN, v); } catch (e) {} };
+  const fmt = n => n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : n >= 1024 ? Math.round(n / 1024) + ' KB' : n + ' B';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let cur = 'yiddish/';
+
+  $('adk').value = getK();
+  $('adk-save').onclick = () => { setK($('adk').value.trim()); $('adk-msg').textContent = 'נשמר.'; $('adk-msg').className = 'ad-msg'; load(cur); };
+
+  async function call(path, opt) {
+    const r = await fetch(API + path, Object.assign({}, opt, { headers: Object.assign({ 'x-admin': getK() }, (opt && opt.headers) || {}) }));
+    let j = null; try { j = await r.json(); } catch (e) {}
+    if (!r.ok || !j || !j.ok) throw new Error((j && j.error) || ('HTTP ' + r.status));
+    return j;
+  }
+  const errText = e => e.message === 'unauthorized' ? 'סיסמה שגויה' : e.message === 'admin-disabled' ? 'ADMIN_KEY לא הוגדר ב-Worker' : e.message;
+
+  async function load(prefix) {
+    cur = prefix; $('up-path').value = prefix;
+    const parts = prefix.split('/').filter(Boolean); let acc = '', c = '';
+    parts.forEach((p, i) => { acc += p + '/'; c += (i ? ' / ' : '') + '<a data-p="' + esc(acc) + '">' + esc(p) + '</a>'; });
+    $('crumb').innerHTML = c;
+    $('crumb').querySelectorAll('a').forEach(a => a.onclick = () => load(a.dataset.p));
+    if (!getK()) return;
+    $('list').innerHTML = '<div class="ad-msg">טוען…</div>';
+    try {
+      const j = await call('/admin/list?prefix=' + encodeURIComponent(prefix));
+      let h = '';
+      j.folders.forEach(f => { h += '<div class="ad-li"><span class="nm fo" data-p="' + esc(f) + '">📁 ' + esc(f.slice(prefix.length)) + '</span></div>'; });
+      j.files.forEach(f => { h += '<div class="ad-li"><span class="nm">' + esc(f.key.slice(prefix.length)) + '</span><span class="sz">' + fmt(f.size) + '</span><button class="ad-btn del" data-k="' + esc(f.key) + '">מחיקה</button></div>'; });
+      $('list').innerHTML = h || '<div class="ad-msg">ריק.</div>';
+      $('list').querySelectorAll('.fo').forEach(a => a.onclick = () => load(a.dataset.p));
+      $('list').querySelectorAll('[data-k]').forEach(b => b.onclick = async () => {
+        const k = b.dataset.k;
+        if (!confirm('למחוק לצמיתות?\n' + k)) return;
+        try { await call('/admin/delete', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key: k }) }); load(cur); }
+        catch (e) { $('list').insertAdjacentHTML('afterbegin', '<div class="ad-msg er">' + esc(errText(e)) + '</div>'); }
+      });
+    } catch (e) { $('list').innerHTML = '<div class="ad-msg er">' + esc(errText(e)) + '</div>'; }
+  }
+  $('refresh').onclick = () => load(cur);
+
+  // ---- העלאה ----
+  const drop = $('drop'), inp = $('files');
+  drop.onclick = () => inp.click();
+  inp.onchange = () => { upload([...inp.files]); inp.value = ''; };
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => upload([...e.dataTransfer.files]));
+
+  function sendOne(file, key, bar, st) {
+    return new Promise(res => {
+      const x = new XMLHttpRequest();
+      x.open('PUT', API + '/admin/put?key=' + encodeURIComponent(key));
+      x.setRequestHeader('x-admin', getK());
+      x.upload.onprogress = e => { if (e.lengthComputable) bar.style.width = (100 * e.loaded / e.total) + '%'; };
+      x.onload = () => { let j = null; try { j = JSON.parse(x.responseText); } catch (e) {} if (x.status === 200 && j && j.ok) { bar.style.width = '100%'; st.textContent = 'הועלה'; st.className = 'st ok'; res(true); } else { st.textContent = errText(new Error((j && j.error) || 'HTTP ' + x.status)); st.className = 'st er'; res(false); } };
+      x.onerror = () => { st.textContent = 'שגיאת רשת'; st.className = 'st er'; res(false); };
+      x.send(file);
+    });
+  }
+  async function upload(list) {
+    if (!getK()) { alert('קודם מזינים ושומרים סיסמת ניהול'); return; }
+    let base = $('up-path').value.trim().replace(/^\/+/, ''); if (base && !base.endsWith('/')) base += '/';
+    if (!base.startsWith('yiddish/')) { alert('היעד חייב להתחיל ב-yiddish/'); return; }
+    let any = false;
+    for (const f of list) {
+      const key = base + f.name;
+      const row = document.createElement('div'); row.className = 'ad-qi';
+      row.innerHTML = '<span class="nm">' + esc(key) + '</span><span class="bar"><i></i></span><span class="st">' + fmt(f.size) + '</span>';
+      $('queue').prepend(row);
+      if (await sendOne(f, key, row.querySelector('i'), row.querySelector('.st'))) any = true;
+    }
+    if (any) load(base);
+  }
+  load(cur);
+})();
+</script>
+</body>
+</html>
