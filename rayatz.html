@@ -109,7 +109,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028g"></script>
+<script src="rayatz-data.js?v=20261028h"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -168,8 +168,9 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     let S = SERIES.find(s => s.name === sname); if (!S) { S = { name: sname, parts: [] }; SERIES.push(S); }
     b.sections.forEach(sec => {
       const isYear = YEAR_SEC.test(sec.id);
-      const label = isYear ? cleanPart(b.title) : cleanPart(sec.id) || sec.id;
-      const extra = !isYear && /הוספות|רשימת המאסר/.test(sec.id);
+      // כל הוספה מוצגת בכרך שבו היא מודפסת — החלק הוא הכרך
+      const label = cleanPart(b.title).replace(/\s*\(לה״ק\)\s*$/, '') || b.title;
+      const extra = false;
       let P = S.parts.find(p => p.name === label); if (!P) { P = { name: label, extra, first: seq, items: [] }; S.parts.push(P); }
       sec.sichos.forEach(x => {
         const it = Object.assign({}, x, { ro: !!b.ro, book: b.id, series: sname, part: label, year: isYear ? sec.id : yearOfTitle(x.t), seq: seq++ });
@@ -241,7 +242,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     S.parts.forEach(p => { h += '<button class="year-chip' + (p === P ? ' active' : '') + '" data-p="' + esc(p.name) + '">' + esc(p.name) + '<small>' + p.items.length + '</small></button>'; });
     h += '</div><div class="rz-area">';
     const multiY = new Set(P.items.map(i => i.year)).size > 1;
-    P.items.forEach(x => { h += card(x, { year: multiY, inPart: true }); });
+    P.items.slice().sort((a, b) => a.pdf - b.pdf || a.seq - b.seq).forEach(x => { h += card(x, { year: multiY, inPart: true }); });
     app.innerHTML = h + '</div></div>';
     bind();
   }
