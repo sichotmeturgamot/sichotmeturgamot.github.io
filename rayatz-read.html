@@ -78,7 +78,7 @@
   <button class="b" id="gok">כניסה</button>
 </div></div>
 
-<script src="rayatz-data.js?v=20261028p"></script>
+<script src="rayatz-data.js?v=20261028q"></script>
 <script type="module">
 const API = 'https://sichos-translate.doviber.workers.dev';
 const params = new URLSearchParams(location.search);
@@ -171,7 +171,7 @@ async function loadBoxes(rec) {
   if ((book && book.ro) || rec.boxes || rec.loading) return; rec.loading = true;
   try {
     const j = await api('/yid/boxes?book=' + BOOK + '&page=' + rec.n + '&v=2');
-    if (!j.ok) { rec.loading = false; return; }
+    if (!j.ok) { if (j.error === 'no-page') rec.boxes = []; rec.loading = false; return; }
     rec.W = j.W; rec.H = j.H; rec.boxes = j.boxes.map(b => ({ x: b[0], y: b[1], w: b[2], h: b[3], id: b[4] }));
     const frag = document.createDocumentFragment();
     rec.boxes.forEach(o => {
