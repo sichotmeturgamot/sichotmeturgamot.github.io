@@ -94,7 +94,7 @@
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028d"></script>
+<script src="rayatz-data.js?v=20261028e"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -208,7 +208,7 @@
     const list = all.filter(i => i.month === st.month).sort((a, b) => a.seq - b.seq);
     h += '<div class="rz-body"><div class="rz-rail rz-months">';
     months.forEach(([m, n]) => { h += '<button class="year-chip' + (m === st.month ? ' active' : '') + '" data-m="' + m + '">' + (m === NOM ? 'ללא חודש' : MONTHS[m][0]) + '<small>' + n + '</small></button>'; });
-    h += '</div><div class="rz-area"><div class="year-panel-head"><h2>' + (st.month === NOM ? '' : MONTHS[st.month][0] + ' ') + esc(st.year === 'ללא שנה' ? '' : st.year) + (st.year === 'ללא שנה' ? 'ללא שנה' : '') + '</h2><span class="count-tag">' + noun(list.length) + '</span></div>';
+    h += '</div><div class="rz-area">';
     list.forEach(x => { h += card(x, { series: true }); });
     app.innerHTML = h + '</div></div>';
     bind();
