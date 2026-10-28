@@ -20,6 +20,8 @@ body { height:100dvh; min-height:0; max-height:100dvh; box-sizing:border-box; ov
 main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; padding-top:12px; padding-bottom:10px; }
 .rz-head { margin-bottom:8px; } .rz-head .orn, .rz-head .sub { display:none; } .rz-head h1 { font-size:1.5rem; margin-top:0; line-height:1.3; } .rz-head .badge { margin-top:4px; font-size:.72rem; }
 .read-controls { margin:2px 0 10px; }
+.rz-search { width:100%; font:inherit; font-size:.95rem; padding:9px 14px; margin-bottom:8px; border:1.5px solid var(--line); border-radius:22px; background:var(--paper); color:var(--navy); direction:rtl; }
+.rz-search:focus { outline:none; border-color:var(--gold); }
 #app { flex:1 1 0; min-height:0; display:flex; flex-direction:column; overflow-y:auto; }
 #app:has(.rz-body) { overflow:hidden; }
 #app > * { flex:0 0 auto; }
@@ -94,6 +96,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     <div id="rzUser" style="margin-top:8px"></div>
   </div>
   <div class="read-controls">
+    <input type="search" id="rzq" class="rz-search" placeholder="חיפוש: כותרת, פרשה, תאריך, מס׳ אגרת, פרק, מקום…" autocomplete="off" enterkeyhint="search" aria-label="חיפוש">
     <div class="seg-toggle">
       <button class="seg-btn" data-mode="years" type="button">לפי שנים</button>
       <button class="seg-btn" data-mode="series" type="button">לפי סדרות</button>
@@ -163,7 +166,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     return [txt, MONTHS[m.i][0]];
   }
   // ---------- בניית הנתונים ----------
-  const ITEMS = [], SERIES = [];
+  const ITEMS = [], SERIES = [], ALL = [];
   const serOf = b => b.series || (b.id.indexOf('ld-') === 0 ? 'לקוטי דיבורים' : 'ספר השיחות');
   const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות|ספר הזכרונות|אגרות קודש)\s*-?\s*/, '').trim();
   let seq = 0;
@@ -178,7 +181,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
       let P = S.parts.find(p => p.name === label); if (!P) { P = { name: label, extra, first: seq, items: [] }; S.parts.push(P); }
       sec.sichos.forEach(x => {
         const it = Object.assign({}, x, { ro: !!b.ro, book: b.id, series: sname, part: label, year: isYear ? sec.id : yearOfTitle(x.t), seq: seq++ });
-        it.month = x.m != null ? x.m : monthOf(x.t); if (!b.undated && !x.nd) ITEMS.push(it); P.items.push(it);
+        it.month = x.m != null ? x.m : monthOf(x.t); if (!b.undated && !x.nd) ITEMS.push(it); P.items.push(it); ALL.push(it);
       });
     });
   });
@@ -272,6 +275,51 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     if (st.mode === 'series') viewSeries(); else viewYears();
   }
   document.querySelectorAll('.seg-btn').forEach(b => b.onclick = () => { st.mode = b.dataset.mode; save(); draw(); });
+  // ---------- חיפוש ----------
+  // מנרמל: בלי ניקוד וגרשיים; מפרידים לרווח. כך "רנ״ז" = "רנז" ו"י״א כסלו" = "יא כסלו"
+  const NQ = s => String(s).replace(/[֑-ׇ]/g, '').replace(/[״׳"'`]/g, '').replace(/[־\-–—,.:;()\[\]?!/]/g, ' ').replace(/\s+/g, ' ').trim().replace(/(^| )(?:שפ|שק|שבק)(?= |$)/g, '$1שבת');   // ש״פ / ש״ק / שבת קודש = שבת
+  const STOP = new Set(['פרשת', 'פרשה', 'בפרשת', 'שיחת']);
+  ALL.forEach(it => {
+    let alias = '';
+    const am = /^אגרת\s+([א-ת״׳"']+)/.exec(it.t);
+    if (am) { it.num = yn(am[1].replace(/[״׳"']/g, '')); alias = 'אגרת ' + it.num; }
+    else if (it.d && it.d[0] === 'פרק' && it.d[1]) { it.num = yn(String(it.d[1]).replace(/[״׳"']/g, '')); alias = 'פרק ' + it.num; }
+    it.tq = ' ' + NQ(it.t) + ' ';
+    it.q = ' ' + NQ([it.t, it.series, it.part, it.year || '', (it.d || []).join(' '), alias].join(' ')) + ' ';
+  });
+  const hit = (q, tok) => tok.length <= 2 ? q.indexOf(' ' + tok) >= 0 : q.indexOf(tok) >= 0;
+  function runSearch(raw) {
+    const rts = raw.trim().split(/\s+/), toks = [], nv = [], strict = [];
+    rts.forEach((r, i) => {
+      const t = NQ(r); if (!t || STOP.has(t)) return;
+      const pre = i > 0 ? NQ(rts[i - 1]) : '', isH = /^[א-ת]+$/.test(t) && t.length <= 4;
+      const cand = isH && (/[״׳"']/.test(r) || pre === 'פרק' || pre === 'אגרת');
+      toks.push(t); nv.push(cand ? yn(t) : 0); strict.push(cand && (pre === 'פרק' || pre === 'אגרת'));
+    });
+    const seg = document.querySelector('.seg-toggle');
+    if (!toks.length) { if (seg) seg.style.display = ''; draw(); return; }
+    if (seg) seg.style.display = 'none';
+    const res = [];
+    ALL.forEach(it => {
+      let sc = 0;
+      for (let k = 0; k < toks.length; k++) {
+        const t = toks[k];
+        if (/^\d+$/.test(t) && it.num === +t) { sc += 6; continue; }
+        if (nv[k] && it.num != null) { if (it.num === nv[k]) { sc += 6; continue; } if (strict[k]) return; }
+        else if (nv[k] && strict[k]) return;
+        if (hit(it.tq, t)) sc += 2; else if (hit(it.q, t)) sc += 1; else return;
+      }
+      res.push([sc, it]);
+    });
+    res.sort((a, b) => b[0] - a[0] || a[1].seq - b[1].seq);
+    const MAXR = 100;
+    let h = '<div class="rz-intro" style="padding:8px 0 12px">' + (res.length ? '<b style="font-size:1rem">' + (res.length === 1 ? 'תוצאה אחת' : res.length + ' תוצאות') + '</b>' + (res.length > MAXR ? 'מוצגות ' + MAXR + ' הראשונות. דייקו את החיפוש.' : '') : '<b>לא נמצאו תוצאות</b>נסו מילה אחרת, למשל שם פרשה, חודש או מספר אגרת.') + '</div>';
+    res.slice(0, MAXR).forEach(r => { h += card(r[1], { year: true }); });
+    app.innerHTML = h; app.scrollTop = 0;
+  }
+  const qi = document.getElementById('rzq'); let qt = null;
+  qi.addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(() => runSearch(qi.value), 140); });
+  qi.addEventListener('keydown', e => { if (e.key === 'Escape') { qi.value = ''; runSearch(''); } });
   draw();
 })();
 </script>
