@@ -29,8 +29,17 @@
 .rz-area { flex:1; min-width:0; }
 .rz-area .year-panel-head { margin-top:0; }
 .rz-area .year-panel-head h2 { font-size:1.35rem; }
-.sicha .yr-tag { margin-inline-start:6px; }
-.rz-meta { font-size:.78rem; color:var(--muted); }
+.rz-item { display:flex; align-items:center; gap:12px; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:9px; color:var(--text); text-decoration:none; transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.rz-item:active { transform:scale(.99); }
+@media (hover:hover) { .rz-item:hover { transform:translateY(-2px); box-shadow:0 10px 24px -16px rgba(23,35,61,.35); border-inline-start-color:var(--gold-dark); } .rz-item:hover .rz-date { background:var(--navy-light); } }
+.rz-main { flex:1; min-width:0; }
+.rz-main h3 { font-family:'Frank Ruhl Libre',serif; font-size:1.12rem; font-weight:500; line-height:1.45; color:var(--navy); margin:0 0 3px; }
+.rz-sub { display:block; font-size:.78rem; color:var(--muted); line-height:1.6; }
+.rz-tr { color:var(--gold-dark); font-weight:500; }
+.rz-date { flex:0 0 58px; height:60px; border-radius:10px; background:var(--navy); color:#e8d9b0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:'Frank Ruhl Libre',serif; line-height:1.15; padding:0 3px; transition:background .2s; }
+.rz-date b { font-size:.98rem; font-weight:700; white-space:nowrap; }
+.rz-date b.sm { font-size:.8rem; }
+.rz-date span { font-size:.72rem; opacity:.85; white-space:nowrap; }
 .rz-intro { text-align:center; padding:34px 18px; color:var(--muted); font-size:.95rem; }
 .rz-intro b { display:block; font-family:'Frank Ruhl Libre',serif; color:var(--navy); font-size:1.15rem; font-weight:500; margin-bottom:4px; }
 /* כרטיסי סדרות בפתיחה */
@@ -46,8 +55,10 @@
   .rz-months { width:62px; } .rz-series { width:74px; } .rz-parts { width:72px; }
   .rz-rail .year-chip { font-size:.86rem; padding:8px 3px; }
   .rz-series .year-chip { font-size:.8rem; }
-  .rz-area .sicha { padding:12px 13px; gap:10px; }
-  .rz-area .sicha-info h3 { font-size:1.02rem; }
+  .rz-item { padding:11px 12px; gap:11px; }
+  .rz-date { flex-basis:54px; height:56px; }
+  .rz-date b { font-size:.9rem; } .rz-date b.sm { font-size:.76rem; }
+  .rz-main h3 { font-size:1.02rem; }
   .rz-area .year-panel-head h2 { font-size:1.15rem; }
 }
 </style>
@@ -97,12 +108,12 @@
   const yearOfTitle = t => { const m = YEAR_IN.exec(t); if (!m) return null; const b = m[0].replace(/^ה׳/, ''); return (yn(b) >= 700 ? 'ה׳' : '') + b; };
   // ---------- חודשים ----------
   const MONTHS = [
-    ['תשרי', /תשרי|ראש השנה|ר״ה|יום כפור|יום כיפור|יו״כ|סוכות|הושענא|שמיני עצרת|שמחת תורה|שמח״ת|שמע״צ|שבת שובה|שבת בראשית/],
+    ['תשרי', /תשרי|ראש השנה|ר״ה|יום כפור|יום כיפור|הכיפורים|יו״כ|סוכות|הושענא|שמיני עצרת|שמחת תורה|שמח״ת|שמע״צ|שבת שובה|שבת בראשית/],
     ['חשון', /מרחשון|חשון|(?:^|[\s,.])מ״ח(?=[\s,.]|$)/],
     ['כסלו', /כסלו|חנוכה/],
     ['טבת', /טבת/],
     ['שבט', /שבט/],
-    ['אדר', /אדר|פורים/],
+    ['אדר', /אדר|(?<!כי)פורים/],
     ['ניסן', /ניסן|פסח(?!\s*שני)/],
     ['אייר', /אייר|ל״?ג בעומר|פסח שני/],
     ['סיון', /סיון|שבועות/],
@@ -111,7 +122,23 @@
     ['אלול', /אלול|ש״[קפ] ראה/]
   ];
   const NOM = MONTHS.length; // 12 = ללא חודש
-  const monthOf = t => { let best = NOM, at = 1e9; MONTHS.forEach((m, i) => { const r = m[1].exec(t); if (r && r.index < at) { at = r.index; best = i; } }); return best; };
+  const monthMatch = t => { let best = null; MONTHS.forEach((m, i) => { const r = m[1].exec(t); if (r && (!best || r.index < best.idx)) best = { i, idx: r.index, text: r[0].replace(/^[\s,.]+/, '') }; }); return best; };
+  const monthOf = t => { const m = monthMatch(t); return m ? m.i : NOM; };
+  // מספרי ימים בחודש (א–ל), עם או בלי גרשיים — לזיהוי "י״ב", "יב", "כ׳" וכו'
+  const DAYS = (() => { const o = 'אבגדהוזחט', t = { 10: 'י', 20: 'כ', 30: 'ל' }, r = []; for (let n = 1; n <= 30; n++) { let w; if (n === 15) w = 'טו'; else if (n === 16) w = 'טז'; else if (n < 10) w = o[n - 1]; else if (n % 10 === 0) w = t[n]; else w = t[Math.floor(n / 10) * 10] + o[n % 10 - 1]; if (n === 18) r.push('ח״?י'); r.push(w.length > 1 ? w[0] + '״?' + w[1] : w + '[׳״]?'); } return r.sort((a, b) => b.length - a.length).join('|'); })();
+  const DAY_END = new RegExp('(?:^|[\\s־–-])((?:' + DAYS + ')(?:\\s*[־–-]\\s*(?:' + DAYS + '))?)(?:\\s+[בד])?\\s*$');
+  // תיבת התאריך בכרטיס: [שורה עליונה, שורה תחתונה]
+  function dateBox(x) {
+    const m = monthMatch(x.t), yr = x.year && x.year !== 'ללא שנה' ? x.year.replace(/^ה׳/, '') : '';
+    if (!m) return [yr || '•', ''];
+    const txt = m.text, isMonthName = MONTHS.some(mm => mm[0] === txt) || txt === 'מרחשון' || /^(?:מנחם[\s־]?)?אב$/.test(txt);
+    const dm = isMonthName ? DAY_END.exec(x.t.slice(0, m.idx)) : null;
+    if (dm) return [dm[1].replace(/\s+/g, ''), MONTHS[m.i][0]];
+    if (isMonthName) return [MONTHS[m.i][0], yr];
+    const w = txt.split(/\s+/);
+    if (w.length > 1) return [w[0], w.slice(1).join(' ')];
+    return [txt, MONTHS[m.i][0]];
+  }
   // ---------- בניית הנתונים ----------
   const ITEMS = [], SERIES = [];
   const serOf = b => b.series || (b.id.indexOf('ld-') === 0 ? 'לקוטי דיבורים' : 'ספר השיחות');
@@ -126,7 +153,7 @@
       const extra = !isYear && /הוספות|רשימת המאסר/.test(sec.id);
       let P = S.parts.find(p => p.name === label); if (!P) { P = { name: label, extra, first: seq, items: [] }; S.parts.push(P); }
       sec.sichos.forEach(x => {
-        const it = Object.assign({}, x, { book: b.id, series: sname, part: label, year: isYear ? sec.id : yearOfTitle(x.t), seq: seq++ });
+        const it = Object.assign({}, x, { ro: !!b.ro, book: b.id, series: sname, part: label, year: isYear ? sec.id : yearOfTitle(x.t), seq: seq++ });
         it.month = monthOf(x.t); ITEMS.push(it); P.items.push(it);
       });
     });
@@ -149,11 +176,16 @@
     if (x.series === 'לקוטי דיבורים') t = inPart ? t.replace(/^לקוטי דיבורים ח״[א-ה],\s*/, '') : t.replace(/^לקוטי דיבורים\s+/, '');
     return t;
   }
+  const volName = x => { const p = x.part.replace(/\s*\(לה״ק\)\s*$/, ''); return /הוספות|רשימת המאסר/.test(x.part) ? x.series + ' · ' + p : x.series + ' ' + p; };
+  const CHEV = '<svg class="rz-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
   function card(x, opt) {
-    const pg = x.ps === x.pe ? 'עמ׳ ' + x.ps : 'עמ׳ ' + x.ps + '–' + x.pe;
-    const tag = opt.series ? '<span class="yr-tag">' + esc(x.series) + '</span>' : (opt.year && x.year ? '<span class="yr-tag">' + esc(x.year) + '</span>' : '');
-    return '<div class="sicha"><div class="sicha-info"><h3>' + esc(showTitle(x, opt.inPart)) + tag + '</h3><span class="rz-meta">' + pg + ' · ' + (LANG[x.lang] || LANG.yi) + '</span></div>' +
-      '<div class="btns"><a class="btn btn-navy btn-sm" href="' + href(x) + '">לקריאה</a></div></div>';
+    const meta = [];
+    if (opt.year && x.year) meta.push(esc(x.year));
+    if (!opt.inPart) meta.push(esc(volName(x)));
+    meta.push(LANG[x.lang] || LANG.yi);
+    const tr = x.ro ? '<span class="rz-ro">קריאה בלבד</span>' : '<span class="rz-tr">תרגום בהקשה</span>';
+    const d = dateBox(x);
+    return '<a class="rz-item" href="' + href(x) + '"><span class="rz-main"><h3>' + esc(showTitle(x, opt.inPart)) + '</h3><span class="rz-sub">' + meta.join(' · ') + '<br>' + tr + '</span></span><span class="rz-date"><b' + (d[0].length > 6 ? ' class="sm"' : '') + '>' + esc(d[0]) + '</b>' + (d[1] ? '<span>' + esc(d[1]) + '</span>' : '') + '</span></a>';
   }
   // ---------- לפי שנים ----------
   function viewYears() {
@@ -226,7 +258,7 @@
   (function () {
     if (!('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .08 });
-    const hook = () => document.querySelectorAll('#app .sicha:not(.reveal), #app .rz-card:not(.reveal)').forEach((el, i) => { el.classList.add('reveal'); el.style.transitionDelay = (Math.min(i, 6) * 60) + 'ms'; io.observe(el); });
+    const hook = () => document.querySelectorAll('#app .rz-item:not(.reveal), #app .rz-card:not(.reveal)').forEach((el, i) => { el.classList.add('reveal'); el.style.transitionDelay = (Math.min(i, 6) * 60) + 'ms'; io.observe(el); });
     hook(); new MutationObserver(hook).observe(document.getElementById('app'), { childList: true, subtree: true });
   })();
 </script>
