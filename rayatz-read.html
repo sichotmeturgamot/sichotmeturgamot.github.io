@@ -251,7 +251,7 @@ async function begin() {
       if (!pr.ok) throw new Error('pdf ' + pr.status);
       pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await pr.arrayBuffer()) }).promise;
     }
-  } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.'); return; }
+  } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.' + ' [' + String((e && e.message) || e).slice(0, 80) + ']'); return; }
   const ratios = []; { const pg1 = await pdf.getPage(1), v1 = pg1.getViewport({ scale: 1 }); const r1 = v1.width + '/' + v1.height; for (let k = 1; k <= pdf.numPages; k++) ratios[k] = r1; }
   baseW = Math.min(viewer.clientWidth || 600, 900);
   inner.style.width = baseW + 'px';
