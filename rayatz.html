@@ -183,9 +183,9 @@
     if (opt.year && x.year) meta.push(esc(x.year));
     if (!opt.inPart) meta.push(esc(volName(x)));
     meta.push(LANG[x.lang] || LANG.yi);
-    const tr = x.ro ? '<span class="rz-ro">קריאה בלבד</span>' : '<span class="rz-tr">תרגום בהקשה</span>';
+    const tr = !x.ro && x.lang !== 'he' ? '<br><span class="rz-tr">זמין תרגום לעברית</span>' : '';
     const d = dateBox(x);
-    return '<a class="rz-item" href="' + href(x) + '"><span class="rz-main"><h3>' + esc(showTitle(x, opt.inPart)) + '</h3><span class="rz-sub">' + meta.join(' · ') + '<br>' + tr + '</span></span><span class="rz-date"><b' + (d[0].length > 6 ? ' class="sm"' : '') + '>' + esc(d[0]) + '</b>' + (d[1] ? '<span>' + esc(d[1]) + '</span>' : '') + '</span></a>';
+    return '<a class="rz-item" href="' + href(x) + '"><span class="rz-main"><h3>' + esc(showTitle(x, opt.inPart)) + '</h3><span class="rz-sub">' + meta.join(' · ') + tr + '</span></span><span class="rz-date"><b' + (d[0].length > 6 ? ' class="sm"' : '') + '>' + esc(d[0]) + '</b>' + (d[1] ? '<span>' + esc(d[1]) + '</span>' : '') + '</span></a>';
   }
   // ---------- לפי שנים ----------
   function viewYears() {
