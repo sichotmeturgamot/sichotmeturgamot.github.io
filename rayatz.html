@@ -109,7 +109,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028m"></script>
+<script src="rayatz-data.js?v=20261028n"></script>
 <script>
 (function () {
   const app = document.getElementById('app');
@@ -204,7 +204,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     const meta = [];
     if (opt.year && x.year) meta.push(esc(x.year));
     if (!opt.inPart) meta.push(esc(volName(x)));
-    meta.push('<span class="rz-lang">' + (LANG[x.lang] || LANG.yi) + '</span>');
+    if (!x.d) meta.push('<span class="rz-lang">' + (LANG[x.lang] || LANG.yi) + '</span>');
     const tr = !x.ro && x.lang !== 'he' ? '<br><span class="rz-tr">זמין תרגום לעברית</span>' : '';
     const d = dateBox(x);
     return '<div class="rz-item"><span class="rz-main"><h3>' + esc(showTitle(x, opt.inPart)) + '</h3><span class="rz-sub">' + meta.join(' · ') + tr + '</span></span><a class="rz-date" href="' + href(x) + '" aria-label="פתח"><b' + (d[0].length > 6 ? ' class="sm"' : '') + '>' + esc(d[0]) + '</b>' + (d[1] ? '<span>' + esc(d[1]) + '</span>' : '') + '</a></div>';
