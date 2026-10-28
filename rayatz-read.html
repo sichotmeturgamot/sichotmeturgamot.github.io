@@ -212,7 +212,7 @@ function hitWord(cx, cy) {
 inner.addEventListener('pointerdown', e => { pd = (e.isPrimary && Date.now() - multiAt > 350) ? { x: e.clientX, y: e.clientY } : null; }, { passive: true });
 inner.addEventListener('pointercancel', () => { pd = null; }, { passive: true });
 inner.addEventListener('pointerup', e => {
-  if (!pd || pinch || Date.now() - multiAt < 350) { pd = null; return; }
+  if ((book && book.ro) || !pd || pinch || Date.now() - multiAt < 350) { pd = null; return; }   // בחירה ותרגום — רק בספרי אידיש עם טקסט
   const moved = Math.hypot(e.clientX - pd.x, e.clientY - pd.y); pd = null;
   if (moved > 10) return;
   const b = hitWord(e.clientX, e.clientY); if (!b) return;
