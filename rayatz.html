@@ -181,7 +181,6 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   const CFG = window.RZ_CONFIG || {};
   if (CFG.live) { const w = document.getElementById('rzWip'); if (w) w.style.display = 'none'; const h = document.querySelector('h1'); if (h) h.textContent = 'תורת אדמו״ר הריי״ץ'; document.title = 'תורת אדמו״ר הריי״ץ'; }
   const HIDE = CFG.live ? (CFG.hide || []) : [];
-  RAYATZ.books = RAYATZ.books.filter(b => HIDE.indexOf(b.series || '') < 0);
   // ---------- השיחות המתורגמות: נקראות ישירות מ־data.js, כך שכל שיחה חדשה מופיעה כאן מיד ----------
   (function () {
     const hq = t => String(t).replace(/''/g, '״').replace(/"/g, '״').replace(/'/g, '׳');
@@ -207,6 +206,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   })();
   const ITEMS = [], SERIES = [], ALL = [];
   const serOf = b => b.series || (b.id.indexOf('ld-') === 0 ? 'לקוטי דיבורים' : 'ספר השיחות');
+  RAYATZ.books = RAYATZ.books.filter(b => HIDE.indexOf(serOf(b)) < 0);
   const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות|ספר הזכרונות|אגרות קודש|רשימות|קונטרס)\s*-?\s*/, '').trim();
   let seq = 0;
   RAYATZ.books.forEach(b => {
