@@ -113,7 +113,7 @@
   RZ.mount(document.getElementById('meUser'), { noLink: true });
   var last = !!RZ.user; RZ.onChange(function () { var now = !!RZ.user; if (now !== last) { last = now; items = []; load(); } });
   RZ.ready.then(function () { if (RZ.user && !last) { last = true; } load(); });
-  var back = document.createElement('div'); back.style.cssText = 'text-align:center;margin-top:14px'; back.innerHTML = '<a class="me-btn" href="rayatz.html">→ חזרה למרכז הריי״ץ</a>'; document.querySelector('.me-wrap').appendChild(back);
+  var back = document.createElement('div'); back.style.cssText = 'text-align:center;margin-top:14px'; back.innerHTML = '<a class="me-btn" href="rayatz.html">→ חזרה לקריאה</a>'; document.querySelector('.me-wrap').appendChild(back);
 })();
 </script>
 <script src="rz-config.js?v=1"></script>

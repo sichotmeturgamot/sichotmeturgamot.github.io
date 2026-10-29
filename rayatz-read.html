@@ -71,7 +71,7 @@
 <div id="toast"></div>
 
 <div id="gate"><div class="g">
-  <h2>מרכז הריי״ץ</h2>
+  <h2 id="rzh2">מרכז הריי״ץ</h2>
   <p>הגישה לאזור זה מוגבלת. הזינו את קוד הגישה.</p>
   <input type="password" id="key" autocomplete="off" placeholder="קוד גישה">
   <div class="e" id="gerr"></div>
@@ -92,7 +92,8 @@ if (book && book.nt) { const h = document.getElementById('hint'); if (h) h.textC
 if (book && book.ro) { const h = document.getElementById('hint'); if (h) h.textContent = 'קריאה בלבד • להגדלה: צביטה'; }
 const viewer = $('viewer'), inner = $('pagesInner');
 $('title').textContent = params.get('title') || (book && book.title) || '';
-document.title = (params.get('title') || 'קריאה') + ' — מרכז הריי״ץ';
+if (window.RZ_CONFIG && window.RZ_CONFIG.live) { var hh = document.getElementById('rzh2'); if (hh) hh.textContent = 'קריאה'; }
+document.title = (params.get('title') || 'קריאה') + ((window.RZ_CONFIG && window.RZ_CONFIG.live) ? '' : ' — מרכז הריי״ץ');
 $('back').onclick = () => { if (history.length > 1) history.back(); else location.href = 'rayatz.html'; };
 function toast(t) { const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('show'), 2200); }
 function fatal(t) { viewer.style.display = 'none'; $('hint').style.display = 'none'; const m = $('msg'); m.style.display = 'block'; m.textContent = t; }
