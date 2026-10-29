@@ -120,7 +120,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261029d"></script>
+<script src="rayatz-data.js?v=20261029e"></script>
 <script src="rayatz-auth.js?v=20261028t"></script>
 <script>if(window.RZ)RZ.mount(document.getElementById("rzUser"), { compact: true });</script>
 <script>
@@ -175,7 +175,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   // ---------- בניית הנתונים ----------
   const ITEMS = [], SERIES = [], ALL = [];
   const serOf = b => b.series || (b.id.indexOf('ld-') === 0 ? 'לקוטי דיבורים' : 'ספר השיחות');
-  const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות|ספר הזכרונות|אגרות קודש)\s*-?\s*/, '').trim();
+  const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות|ספר הזכרונות|אגרות קודש|רשימות|קונטרס)\s*-?\s*/, '').trim();
   let seq = 0;
   RAYATZ.books.forEach(b => {
     const sname = serOf(b);
@@ -197,7 +197,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   YEARS.sort((a, b) => yn(a) - yn(b));
   if (ITEMS.some(i => !i.year)) YEARS.push('ללא שנה');
   const yearKey = i => i.year || 'ללא שנה';
-  const SER_DESC = { 'שיחות מתורגמות': 'שיחות הריי״ץ שתורגמו בעמוד זה לעברית, מתוך הקובצים המתורגמים באתר', 'ספר השיחות': 'שיחות הריי״ץ לפי שנים, מתוך כרכי קה״ת — ביידיש ובלשון הקודש', 'לקוטי דיבורים': 'חמשת חלקי לקוטי דיבורים בתרגום ללשון הקודש, וההוספות', 'אגרות קודש': 'אגרות קודש כ״ק אדמו״ר מוהריי״צ, כל אגרת לפי תאריך' };
+  const SER_DESC = { 'רשימות': 'חוברות הרשימות וקונטרסים של הריי״ץ — קריאה בלבד', 'שיחות מתורגמות': 'שיחות הריי״ץ שתורגמו בעמוד זה לעברית, מתוך הקובצים המתורגמים באתר', 'ספר השיחות': 'שיחות הריי״ץ לפי שנים, מתוך כרכי קה״ת — ביידיש ובלשון הקודש', 'לקוטי דיבורים': 'חמשת חלקי לקוטי דיבורים בתרגום ללשון הקודש, וההוספות', 'אגרות קודש': 'אגרות קודש כ״ק אדמו״ר מוהריי״צ, כל אגרת לפי תאריך' };
   const noun = n => n === 1 ? 'פריט אחד' : n + ' פריטים';
   // ---------- מצב (נשמר רק בתוך הביקור) ----------
   const st = { mode: 'years', year: null, month: null, series: null, part: null };
