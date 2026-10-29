@@ -1,1 +1,1 @@
-window.RZ_CONFIG={"live":true,"hide":["אגרות קודש","רשימות"]};
+window.RZ_CONFIG={"live":false,"hide":["אגרות קודש","רשימות"]};
