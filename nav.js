@@ -2,13 +2,13 @@
 // עדכון סדר/פריטי התפריט נעשה כאן, במקום אחד, ומשפיע על כל העמודים.
 (function () {
   var page = (location.pathname.split('/').pop() || 'index.html');
-  var RZLIVE = !!(window.RZ_CONFIG && window.RZ_CONFIG.live);   // מרכז הריי״ץ מחליף את עמוד הקריאה (מתג בעמוד הניהול)
+  var RZLIVE = !!(window.RZ_CONFIG && window.RZ_CONFIG.live);   // מרכז הריי״ץ נוסף כעמוד נפרד «תורת אדמו״ר הריי״ץ» (מתג בעמוד הניהול)
   if (page === 'search.html' || page === 'answer.html') page = 'ask.html';   // המפתחות שייכים ללשונית "חיפוש" (ברירת המחדל: שאלה)
 
   // סדר התפריט העליון (שולחני)
   var links = [
     ['index.html',     'ראשי'],
-    [RZLIVE ? 'rayatz.html' : 'sichos.html', 'קריאת השיחות'],
+    ['sichos.html',    'קריאת השיחות'],
     ['milon.html',     'מילון'],
     ['stories.html',   'סיפורים ופתגמים'],
     ['ask.html',       'חיפוש'],
@@ -17,6 +17,7 @@
     ['about.html',     'אודות'],
     ['feedback.html',  'פידבק']
   ];
+  if (RZLIVE) links.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ']);   // עמוד נוסף לצד קריאת השיחות
   var linksHtml = links.map(function (l) {
     return '<a href="' + l[0] + '"' + (l[0] === page ? ' class="active"' : '') + '>' + l[1] + '</a>';
   }).join('');
@@ -31,7 +32,7 @@
   // סרגל תחתון (טלפון): ראשי, קריאה, מילון, חיפוש (מפתחות + שאלה), עוד — "עדכונים/תרומה/פידבק" בתוך "עוד"
   var bItems = [
     ['index.html',  'ראשי',   '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'],
-    [RZLIVE ? 'rayatz.html' : 'sichos.html', 'קריאה',  '<path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/>'],
+    ['sichos.html', 'קריאה',  '<path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/>'],
     ['milon.html',  'מילון',  '<path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/>'],
     ['ask.html',    'חיפוש', '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>']
   ];

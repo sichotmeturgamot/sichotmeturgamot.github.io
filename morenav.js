@@ -11,6 +11,8 @@
     { href: '#share',        label: 'שיתוף והתקנה',  icon: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>', share: true }
   ];
 
+  if (window.RZ_CONFIG && window.RZ_CONFIG.live) items.unshift({ href: 'rayatz.html', label: 'תורת אדמו״ר הריי״ץ', icon: '<path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/>' });
+
   var sheetPages = ['subscribe.html', 'donate.html', 'feedback.html', 'about.html'];
 
   var backdrop = document.createElement('div');
