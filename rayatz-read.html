@@ -78,7 +78,8 @@
   <button class="b" id="gok">כניסה</button>
 </div></div>
 
-<script src="rayatz-data.js?v=20261029f"></script>
+<script src="rz-config.js?v=1"></script>
+<script src="rayatz-data.js?v=20261029g"></script>
 <script src="rayatz-auth.js?v=20261028t"></script>
 <script type="module">
 const API = 'https://sichos-translate.doviber.workers.dev';
@@ -240,7 +241,7 @@ copyBtn.onclick = async () => {
 
 // ---------- בניית הקורא ----------
 async function begin() {
-  if (started) return; if (!getKey()) { gate(); return; }
+  if (started) return; if (!getKey() && !(window.RZ_CONFIG && window.RZ_CONFIG.live)) { gate(); return; }
   started = true;
   try {
     await loadPdfjs();

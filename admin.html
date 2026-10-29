@@ -130,6 +130,7 @@
       <button type="button" class="adm-tab" data-atab="settings">הגדרות</button>
       <button type="button" class="adm-tab" data-atab="design">עיצוב</button>
       <button type="button" class="adm-tab" data-atab="aiq">חיפוש AI</button>
+      <button type="button" class="adm-tab" data-atab="rayatz">מרכז הריי״ץ</button>
     </div>
 
     <div class="adm-panel on" id="atab-sichos">
@@ -238,6 +239,16 @@
       </div>
     </div>
     </div><!-- /atab-aiq -->
+
+    <div class="adm-panel" id="atab-rayatz">
+    <div class="card">
+      <h2>מרכז הריי״ץ — פתיחה באתר</h2>
+      <p style="font-size:.85rem;color:var(--muted)">הכפתור מחליף את עמוד הקריאה הקיים (״קריאה״ בתפריט) במרכז הריי״ץ, מסתיר את הסדרות «רשימות» ו«אגרות קודש», ומסיר את תגית ״בבנייה״. הפעולה הפיכה: לחיצה נוספת מחזירה הכל כמו שהיה.</p>
+      <p id="rz-state" style="font-weight:700">טוען מצב…</p>
+      <div class="row"><button type="button" id="rz-toggle" class="btn" disabled>—</button></div>
+      <p style="font-size:.8rem;color:var(--muted)">שימו לב: כדי שגולשים יוכלו לקרוא את הספרים (ולא רק אתה), צריך גם למחוק את הסוד ACCESS_KEY ב-Worker ב-Cloudflare. בלי זה יתבקש קוד גישה.</p>
+    </div>
+    </div><!-- /atab-rayatz -->
 
     <div class="adm-panel" id="atab-design">
     <div class="card">
@@ -1238,6 +1249,7 @@ document.querySelectorAll('.adm-tab').forEach(btn => {
     const p = $('atab-' + btn.dataset.atab);
     if (p) p.classList.add('on');
     if (btn.dataset.atab === 'mafteach') mfLoadData();
+    if (btn.dataset.atab === 'rayatz') rzLoad();
   });
 });
 
@@ -1441,6 +1453,37 @@ async function aiqLog(){try{const j=await aiqCall('log');
     login();
   }
 })();
+
+// ---------- מרכז הריי״ץ: מתג פתיחה באתר (rz-config.js) ----------
+let rzCfg = null, rzSha = null;
+async function rzLoad() {
+  try {
+    const f = await gh(repoPath('contents/rz-config.js?ref=' + cfg.branch));
+    rzSha = f.sha;
+    const t = dec(f.content), b = t.indexOf('{'), e = t.lastIndexOf('}');
+    rzCfg = JSON.parse(t.slice(b, e + 1));
+  } catch (err) { rzCfg = null; $('rz-state').textContent = 'שגיאה בטעינה: ' + err.message; return; }
+  rzDraw();
+}
+function rzDraw() {
+  const live = !!(rzCfg && rzCfg.live);
+  $('rz-state').textContent = live ? 'מצב נוכחי: מרכז הריי״ץ פתוח באתר (מחליף את עמוד הקריאה)' : 'מצב נוכחי: מרכז הריי״ץ סגור — עמוד הקריאה הרגיל פעיל';
+  const bt = $('rz-toggle'); bt.disabled = false; bt.textContent = live ? 'החזר את עמוד הקריאה הרגיל' : 'העבר את מרכז הריי״ץ לעמוד הקריאה';
+}
+async function rzToggle() {
+  if (!rzCfg) return;
+  const next = Object.assign({}, rzCfg, { live: !rzCfg.live });
+  if (!confirm(next.live ? 'להעביר את מרכז הריי״ץ לעמוד הקריאה באתר?' : 'להחזיר את עמוד הקריאה הרגיל?')) return;
+  $('rz-toggle').disabled = true;
+  try {
+    setStatus('מעדכן…', 'busy');
+    const out = 'window.RZ_CONFIG=' + JSON.stringify(next) + ';\n';
+    const r = await gh(repoPath('contents/rz-config.js'), { method: 'PUT', body: { message: next.live ? 'מרכז הריי״ץ: פתיחה באתר' : 'מרכז הריי״ץ: חזרה לעמוד הקריאה הרגיל', content: enc(out), branch: cfg.branch, sha: rzSha } });
+    rzSha = r.content.sha; rzCfg = next; rzDraw();
+    setStatus('עודכן ✓ (יופיע באתר תוך כדקה-שתיים; ייתכן שצריך לרענן)', 'ok');
+  } catch (err) { setStatus('שגיאה: ' + err.message, 'err'); rzDraw(); }
+}
+document.addEventListener('click', e => { if (e.target && e.target.id === 'rz-toggle') rzToggle(); });
 </script>
 </body>
 </html>

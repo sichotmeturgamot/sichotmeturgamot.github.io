@@ -61,6 +61,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
 .rz-sub { display:block; font-size:.78rem; color:var(--muted); line-height:1.6; }
 .rz-lang { font-family:'Frank Ruhl Libre',serif; font-size:.86rem; font-weight:500; color:var(--navy); }
 .rz-tr { color:var(--gold-dark); font-weight:500; }
+.rz-txt { display:inline-block; border:1px solid var(--gold,#b8933e); color:var(--gold-dark); border-radius:999px; padding:0 .55rem; font-size:.78rem; line-height:1.5; text-decoration:none; }
 .rz-date { text-decoration:none; cursor:pointer; flex:0 0 58px; height:60px; border-radius:10px; background:var(--navy); color:#e8d9b0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-family:'Frank Ruhl Libre',serif; line-height:1.15; padding:0 3px; transition:background .2s; }
 .rz-date b { font-size:.98rem; font-weight:700; white-space:nowrap; }
 .rz-date b.sm { font-size:.8rem; }
@@ -99,7 +100,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     <div class="orn">✦</div>
     <h1>מרכז הריי״ץ</h1>
     <div class="sub">ספרי הריי״ץ מתוך הסריקה, עם תרגום ללשון הקודש בהקשה</div>
-    <span class="badge wip">בבנייה · גלוי לבעל האתר בלבד</span>
+    <span class="badge wip" id="rzWip">בבנייה · גלוי לבעל האתר בלבד</span>
     <div id="rzUser"></div>
   </div>
   <div class="read-controls">
@@ -120,7 +121,10 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261029f"></script>
+<script src="rz-config.js?v=1"></script>
+<script src="rayatz-data.js?v=20261029g"></script>
+<script src="data.js"></script>
+<script>window.SICHOS_DATA = YEARS;</script>
 <script src="rayatz-auth.js?v=20261028t"></script>
 <script>if(window.RZ)RZ.mount(document.getElementById("rzUser"), { compact: true });</script>
 <script>
@@ -173,6 +177,34 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     return [txt, MONTHS[m.i][0]];
   }
   // ---------- בניית הנתונים ----------
+  // ---------- מתג "פתיחה לציבור" (rz-config.js, נשלט מעמוד הניהול) ----------
+  const CFG = window.RZ_CONFIG || {};
+  if (CFG.live) { const w = document.getElementById('rzWip'); if (w) w.style.display = 'none'; }
+  const HIDE = CFG.live ? (CFG.hide || []) : [];
+  RAYATZ.books = RAYATZ.books.filter(b => HIDE.indexOf(b.series || '') < 0);
+  // ---------- השיחות המתורגמות: נקראות ישירות מ־data.js, כך שכל שיחה חדשה מופיעה כאן מיד ----------
+  (function () {
+    const hq = t => String(t).replace(/''/g, '״').replace(/"/g, '״').replace(/'/g, '׳');
+    const MN = [['תשרי', 0], ['חשון', 1], ['כסלו', 2], ['טבת', 3], ['שבט', 4], ['אדר', 5], ['ניסן', 6], ['אייר', 7], ['סיון', 8], ['תמוז', 9], ['אב', 10], ['אלול', 11]];
+    const trBooks = [];
+    (window.SICHOS_DATA || []).forEach(y => {
+      const yid = hq(y.year), sichos = [];
+      (y.sichos || []).forEach(x => {
+        if (x.hidden) return;
+        const hd = String(x.hebDate || '').replace('מרחשון', 'חשון').replace('מנחם־', '').replace('מר־', '');
+        const parts = hd.split(' '), day = parts[0], mon = parts.slice(1).join(' ');
+        const hit = MN.find(m => mon.indexOf(m[0]) === 0), m = hit ? hit[1] : 12;
+        const file = String(x.file || '');
+        sichos.push({ t: hq(x.title) + (x.subtitle ? ' — ' + hq(x.subtitle) : ''), lang: 'he', ro: true, nd: false, m: m, d: hit ? [day, mon] : [yid, ''],
+          href: 'read.html?file=' + file + '&title=' + encodeURIComponent(hq(x.title)),
+          txt: x.hasPage ? 'sichos/' + file.replace(/^pdfs\//, '').replace(/\.pdf$/i, '') + '.html' : '' });
+      });
+      if (sichos.length) trBooks.push({ id: 'tr-' + yid, title: yid, pages: 0, ro: true, series: 'ספר השיחות', sections: [{ id: yid, sichos: sichos }] });
+    });
+    RAYATZ.books = RAYATZ.books.filter(b => b.id.indexOf('tr-') !== 0);
+    const at = RAYATZ.books.findIndex(b => b.id.indexOf('ld-') === 0);
+    RAYATZ.books.splice(at < 0 ? RAYATZ.books.length : at, 0, ...trBooks);
+  })();
   const ITEMS = [], SERIES = [], ALL = [];
   const serOf = b => b.series || (b.id.indexOf('ld-') === 0 ? 'לקוטי דיבורים' : 'ספר השיחות');
   const cleanPart = s => s.replace(/^(לקוטי דיבורים|ספר השיחות|ספר הזכרונות|אגרות קודש|רשימות|קונטרס)\s*-?\s*/, '').trim();
@@ -218,6 +250,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     if (opt.year && x.year) meta.push(esc(x.year));
     if (!opt.inPart) meta.push(esc(volName(x)));
     if (!x.d && x.series !== 'לקוטי דיבורים' && x.series !== 'אגרות קודש') meta.push('<span class="rz-lang">' + (LANG[x.lang] || LANG.yi) + '</span>');
+    if (x.txt) meta.push('<a class="rz-txt" href="' + esc(x.txt) + '">טקסט</a>');
     const tr = !x.ro && x.lang !== 'he' ? '<br><span class="rz-tr">זמין תרגום לעברית</span>' : '';
     const d = dateBox(x);
     return '<div class="rz-item"><span class="rz-main"><h3>' + esc(showTitle(x, opt.inPart)) + '</h3><span class="rz-sub">' + meta.join(' · ') + tr + '</span></span><a class="rz-date" href="' + href(x) + '" aria-label="פתח"><b' + (d[0].length > 6 ? ' class="sm"' : '') + '>' + esc(d[0]) + '</b>' + (d[1] ? '<span>' + esc(d[1]) + '</span>' : '') + '</a></div>';
@@ -247,7 +280,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   }
   // ---------- לפי סדרות ----------
   // סדרות מתוכננות שעדיין אין בהן כרכים — מוצגות ככפתור עם הודעת "בקרוב"
-  const PLANNED = ['אגרות קודש', 'ספר הזכרונות', 'רשימות'];
+  const PLANNED = ['אגרות קודש', 'ספר הזכרונות', 'רשימות'].filter(n => HIDE.indexOf(n) < 0);
   function viewSeries() {
     const names = SERIES.map(s => s.name).concat(PLANNED.filter(n => !SERIES.some(s => s.name === n)));
     if (names.indexOf(st.series) < 0) st.series = names[0];
