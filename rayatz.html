@@ -120,7 +120,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 
-<script src="rayatz-data.js?v=20261028r"></script>
+<script src="rayatz-data.js?v=20261029a"></script>
 <script src="rayatz-auth.js?v=20261028t"></script>
 <script>if(window.RZ)RZ.mount(document.getElementById("rzUser"), { compact: true });</script>
 <script>
@@ -197,13 +197,13 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   YEARS.sort((a, b) => yn(a) - yn(b));
   if (ITEMS.some(i => !i.year)) YEARS.push('ללא שנה');
   const yearKey = i => i.year || 'ללא שנה';
-  const SER_DESC = { 'ספר השיחות': 'שיחות הריי״ץ לפי שנים, מתוך כרכי קה״ת — ביידיש ובלשון הקודש', 'לקוטי דיבורים': 'חמשת חלקי לקוטי דיבורים בתרגום ללשון הקודש, וההוספות', 'אגרות קודש': 'אגרות קודש כ״ק אדמו״ר מוהריי״צ, כל אגרת לפי תאריך' };
+  const SER_DESC = { 'שיחות מתורגמות': 'שיחות הריי״ץ שתורגמו בעמוד זה לעברית, מתוך הקובצים המתורגמים באתר', 'ספר השיחות': 'שיחות הריי״ץ לפי שנים, מתוך כרכי קה״ת — ביידיש ובלשון הקודש', 'לקוטי דיבורים': 'חמשת חלקי לקוטי דיבורים בתרגום ללשון הקודש, וההוספות', 'אגרות קודש': 'אגרות קודש כ״ק אדמו״ר מוהריי״צ, כל אגרת לפי תאריך' };
   const noun = n => n === 1 ? 'פריט אחד' : n + ' פריטים';
   // ---------- מצב (נשמר רק בתוך הביקור) ----------
   const st = { mode: 'years', year: null, month: null, series: null, part: null };
   try { Object.assign(st, JSON.parse(sessionStorage.getItem('rayatz-ui2') || '{}')); } catch (e) {}
   const save = () => { try { sessionStorage.setItem('rayatz-ui2', JSON.stringify(st)); } catch (e) {} };
-  const href = x => 'rayatz-read.html?book=' + x.book + '&page=' + x.pdf + '&title=' + encodeURIComponent(x.t);
+  const href = x => x.href ? x.href : 'rayatz-read.html?book=' + x.book + '&page=' + x.pdf + '&title=' + encodeURIComponent(x.t);
   // כותרת לתצוגה: בלי שם הסדרה (מופיע בתגית/בכותרת) ובלי השנה בסוגריים בסוף
   function showTitle(x, inPart) {
     let t = x.t.replace(/\s*\((?:ה׳)?(?:ש״ת|ת[רש][א-ת]?״[א-ת])\)\s*$/, '');
