@@ -190,7 +190,7 @@ async function loadBoxes(rec) {
 const MINW = 5;
 const sheet = $('sheet'), smsg = $('smsg'), smeta = $('smeta'), trEl = $('tr'), goBtn = $('go'), copyBtn = $('copy'), trnote = $('trnote');
 function say(text, err, meta) { sheet.classList.add('show'); smsg.textContent = text; smsg.className = err ? 'err' : ''; smeta.textContent = meta || ''; goBtn.hidden = true; copyBtn.hidden = true; trEl.hidden = true; trnote.hidden = true; }
-function clearSel() { sel.lo = sel.hi = null; cur = null; paintAll(); sheet.classList.remove('show'); }
+function clearSel() { sel.lo = sel.hi = null; cur = null; anchor = null; paintAll(); sheet.classList.remove('show'); }
 let cur = null, anchor = null, anchorPage = 1, tapPage = 1;
 function onTap(id) {
   if (anchor === null || cur) { anchor = id; cur = null; sel.lo = id; sel.hi = null; anchorPage = tapPage; paintAll(); say('סימנתם את המילה הראשונה. הקישו על המילה האחרונה.'); return; }
