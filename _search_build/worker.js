@@ -17,7 +17,7 @@ const hits = new Map();
 let DATA = null;   // R2: קבצי החיפוש הגדולים (לא ציבוריים)
 async function getBuf(name) {
   if (DATA) { const o = await DATA.get(name); if (o) return o.arrayBuffer(); }
-  const res = await fetch(SITE + name + '?v=44', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=45', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -277,7 +277,7 @@ export default {
 
     const mode = (chat || cm === 'answer') ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r', 'z'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v40?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v41?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = (debug || chat) ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
