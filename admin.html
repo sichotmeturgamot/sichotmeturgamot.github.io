@@ -640,6 +640,15 @@ function renderSichaPage(s, yearName, td) {
     publisher: { '@type': 'Organization', name: 'ספר השיחות מתורגם ללה״ק', url: base + '/' }
   }).replace(/</g, '\\u003c');
   const pageTitle = title + ' – שיחות אדמו״ר הריי״צ | ספר השיחות מתורגם ללה״ק';
+  const nb = sichaNeighbors(s);
+  const nbLink = (x, cls, label) => x
+    ? `<a class="${cls}" href="/sichos/${encodeURIComponent(sichaSlug(x.s.file))}.html"><small>${label}</small>${esc(x.s.title)}</a>`
+    : '<span></span>';
+  const navHtml = `  <nav class="sicha-nav" aria-label="ניווט בין השיחות">
+    ${nbLink(nb.prev, 'prev', '→ השיחה הקודמת')}
+    <a class="all" href="/sichos/#${yearAnchor(yearName)}">כל שיחות ${esc(yearName)}</a>
+    ${nbLink(nb.next, 'next', 'השיחה הבאה ←')}
+  </nav>`;
   return `<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -697,6 +706,12 @@ ${ld}
   .notes .back { color:var(--gold-ink); text-decoration:none; font-size:.85em; }
   .notes li:target { background:#f3e9cf; border-radius:4px; }
   .bottom { text-align:center; }
+  .sicha-nav { display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:stretch; border-top:1px solid var(--line); padding-top:18px; }
+  .sicha-nav a { text-decoration:none; color:var(--navy); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.92rem; line-height:1.4; display:flex; flex-direction:column; gap:2px; }
+  .sicha-nav a small { color:var(--gold-ink); font-size:.78rem; }
+  .sicha-nav .next { text-align:left; }
+  .sicha-nav .all { justify-content:center; text-align:center; white-space:nowrap; }
+  @media (max-width:560px) { .sicha-nav { grid-template-columns:1fr 1fr; } .sicha-nav .all { grid-column:1 / -1; order:3; } }
   footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
   footer a { color:var(--gold-ink); text-decoration:none; }
   @media (max-width:480px) { .text { padding:20px 16px 22px; font-size:1.05rem; } }
@@ -709,7 +724,7 @@ ${ld}
 </div>
 <main>
   <header class="head">
-    <div class="crumb"><a href="/sichos.html">קריאת השיחות</a> › שנת ${esc(yearName)}</div>
+    <div class="crumb"><a href="/sichos/">כל השיחות</a> › <a href="/sichos/#${yearAnchor(yearName)}">שנת ${esc(yearName)}</a></div>
     <h1>${esc(title)}</h1>
     <div class="meta">${meta.join('')}</div>
     ${(s.subtitle || '').trim() ? `<p class="sub">${esc(s.subtitle.trim())}</p>` : ''}
@@ -719,6 +734,7 @@ ${ld}
     </div>
   </header>
 ${textHtml ? `  <article class="text" lang="he">\n${textHtml}\n  </article>\n  <div class="bottom"><a class="btn btn-read" href="${readUrl}">לקריאת השיחה כ־PDF</a></div>` : ''}
+${navHtml}
 </main>
 <footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
 </body>
@@ -738,6 +754,7 @@ function renderSitemap() {
   const urls = [
     { loc: base + '/', pri: '1.0' },
     { loc: base + '/sichos.html', pri: '0.8' },
+    { loc: base + '/sichos/', pri: '0.9' },
     { loc: base + '/milon.html', pri: '0.8' },
     { loc: base + '/search.html', pri: '0.8' },
     { loc: base + '/subscribe.html', pri: '0.6' },
@@ -746,17 +763,117 @@ function renderSitemap() {
   data.YEARS.forEach(y => y.sichos.forEach(s => {
     if (s.hidden) return;
     if (s.hasPage) urls.push({ loc: base + '/sichos/' + sichaSlug(s.file) + '.html', pri: '0.8' });
-    // קובץ ה-PDF עצמו — שם נמצא הטקסט המלא של השיחה, וגוגל יודע לאנדקס אותו
-    if (s.file && /\.pdf$/i.test(s.file)) {
-      const pdfPath = String(s.file).split('/').map(encodeURIComponent).join('/');
-      urls.push({ loc: base + '/' + pdfPath, pri: '0.7' });
-    }
+    // קובצי ה-PDF לא נכנסים למפה: הם כפולים של דף השיחה (שבו אותו טקסט), וחסומים לסריקה ב-robots.txt
   }));
   const body = urls.map(u => '  <url>\n    <loc>' + u.loc + '</loc>\n    <lastmod>' + today + '</lastmod>\n    <priority>' + u.pri + '</priority>\n  </url>').join('\n');
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + '\n</urlset>\n';
 }
 function sitemapEntry() {
   return { path: 'sitemap.xml', mode: '100644', type: 'blob', content: renderSitemap() };
+}
+
+/* ---------- קישורים פנימיים (SEO): רשימת כל השיחות + שיחה קודמת/הבאה ----------
+   גוגל מגלה עמודים דרך קישורים רגילים ב-HTML. רשימת השיחות ב-sichos.html נבנית ב-JavaScript,
+   ולכן נבנה כאן עמוד סטטי sichos/index.html עם קישור לכל דף שיחה, ובכל דף שיחה — קודמת/הבאה. */
+const HEB_VAL = { 'א':1,'ב':2,'ג':3,'ד':4,'ה':5,'ו':6,'ז':7,'ח':8,'ט':9,'י':10,'כ':20,'ך':20,'ל':30,'מ':40,'ם':40,'נ':50,'ן':50,'ס':60,'ע':70,'פ':80,'ף':80,'צ':90,'ץ':90,'ק':100,'ר':200,'ש':300,'ת':400 };
+function hebYearNum(name) { return [...String(name || '')].reduce((n, c) => n + (HEB_VAL[c] || 0), 0); }
+function yearAnchor(name) { return 'y' + hebYearNum(name); }
+/* כל השיחות שיש להן דף, לפי סדר כרונולוגי (שנה, ואז תאריך בשנה). keep = שיחה שתישאר ברשימה גם אם מוסתרת */
+function sichaOrder(keep) {
+  const out = [];
+  data.YEARS.slice().sort((a, b) => hebYearNum(a.year) - hebYearNum(b.year)).forEach(y => {
+    y.sichos.filter(s => (s === keep || (!s.hidden && s.hasPage)) && s.file)
+      .sort((a, b) => (a.sortDate || '9999').localeCompare(b.sortDate || '9999'))
+      .forEach(s => out.push({ s, year: y.year }));
+  });
+  return out;
+}
+function sichaNeighbors(s) {
+  const list = sichaOrder(s), i = list.findIndex(x => x.s === s);
+  if (i < 0) return { prev: null, next: null };
+  const vis = x => x && x.s !== s && !x.s.hidden && x.s.hasPage;
+  let p = i - 1; while (p >= 0 && !vis(list[p])) p--;
+  let n = i + 1; while (n < list.length && !vis(list[n])) n++;
+  return { prev: list[p] || null, next: list[n] || null };
+}
+/* דפי השכנים (קודמת/הבאה) — נבנים מחדש כשמוסיפים, מוחקים, משנים שם או מסתירים שיחה */
+async function neighborPages(nb, skip) {
+  const out = [];
+  for (const x of [nb.prev, nb.next]) if (x && x.s !== skip && !x.s.hidden && x.s.hasPage) out.push(await pageEntry(x.s, x.year));
+  return out;
+}
+function renderSichosIndex() {
+  const base = siteBase();
+  const groups = [];
+  sichaOrder().forEach(x => {
+    let g = groups[groups.length - 1];
+    if (!g || g.year !== x.year) { g = { year: x.year, items: [] }; groups.push(g); }
+    g.items.push(x.s);
+  });
+  const total = groups.reduce((n, g) => n + g.items.length, 0);
+  const desc = 'רשימת כל ' + total + ' השיחות של כ״ק אדמו״ר הריי״צ מליובאוויטש המתורגמות ללשון הקודש באתר, לפי שנים: ' + groups.map(g => g.year).join(', ') + '.';
+  const body = groups.map(g => `  <section id="${yearAnchor(g.year)}">
+    <h2>שנת ${esc(g.year)} <small>(${g.items.length})</small></h2>
+    <ul>
+${g.items.map(s => `      <li><a href="/sichos/${encodeURIComponent(sichaSlug(s.file))}.html">${esc(s.title)}</a>${(s.subtitle || '').trim() ? ` <span class="st">– ${esc(s.subtitle.trim())}</span>` : ''}</li>`).join('\n')}
+    </ul>
+  </section>`).join('\n');
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כל השיחות לפי שנים – שיחות אדמו״ר הריי״צ | ספר השיחות מתורגם ללה״ק</title>
+<meta name="description" content="${esc(desc)}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="${base}/sichos/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="כל השיחות לפי שנים – שיחות אדמו״ר הריי״צ">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${base}/sichos/">
+<meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
+<meta property="og:locale" content="he_IL">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --navy:#1a2942; --gold:#b8933e; --gold-ink:#93690f; --paper:#faf7f0; --card:#fff; --line:#e8e2d4; --ink:#2a2a2a; --muted:#6b6b6b; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Heebo',Arial,sans-serif; background:var(--paper); color:var(--ink); line-height:1.7; }
+  .topbar { background:var(--navy); border-bottom:3px solid var(--gold); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .topbar .brand { color:#fff; font-family:'Frank Ruhl Libre',serif; font-size:1.1rem; }
+  .topbar a { color:#fff; text-decoration:none; font-size:.85rem; border:1px solid rgba(255,255,255,.5); border-radius:8px; padding:5px 12px; white-space:nowrap; }
+  main { max-width:860px; margin:0 auto; padding:28px 16px 40px; display:flex; flex-direction:column; gap:18px; }
+  h1 { font-family:'Frank Ruhl Libre',serif; color:var(--navy); font-size:clamp(1.6rem,4vw,2.1rem); text-align:center; }
+  .lead { text-align:center; color:var(--muted); }
+  .lead a, li a { color:var(--navy); }
+  section { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 22px; }
+  h2 { font-family:'Frank Ruhl Libre',serif; color:var(--navy); font-size:1.3rem; margin-bottom:8px; }
+  h2 small { color:var(--muted); font-size:.8rem; font-family:'Heebo',sans-serif; }
+  ul { padding-inline-start:1.2em; display:flex; flex-direction:column; gap:4px; }
+  li::marker { color:var(--gold); }
+  li a { text-decoration:none; font-weight:500; }
+  li a:hover { text-decoration:underline; }
+  .st { color:var(--muted); font-size:.9rem; }
+  footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
+  footer a { color:var(--gold-ink); text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="brand">ספר השיחות מתורגם ללה״ק</span>
+  <a href="/index.html">לאתר ←</a>
+</div>
+<main>
+  <h1>כל השיחות לפי שנים</h1>
+  <p class="lead">${total} שיחות של כ״ק אדמו״ר הריי״צ, מתורגמות ללשון הקודש מאידיש · <a href="/sichos.html">לעמוד הקריאה</a></p>
+${body}
+</main>
+<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
+</body>
+</html>
+`;
+}
+function indexEntry() {
+  return { path: 'sichos/index.html', mode: '100644', type: 'blob', content: renderSichosIndex() };
 }
 
 /* בונה/מרענן דף נחיתה לכל השיחות (למעט מוסתרות) ומעדכן את מפת האתר — בקומיט אחד */
@@ -773,7 +890,7 @@ async function generateAllPages() {
       entries.push(await pageEntry(s, y.year));
       n++;
     }
-    entries.push(sitemapEntry(), dataEntry());
+    entries.push(sitemapEntry(), indexEntry(), dataEntry());
     await gitCommit(entries, 'בניית דפי נחיתה לכל השיחות (' + n + ') + עדכון מפת אתר');
     render();
     setStatus('נבנו ' + n + ' דפים, ומפת האתר עודכנה ✓', 'ok');
@@ -982,7 +1099,7 @@ async function saveSicha() {
       sortYear(yi);
       setStatus('שומר…', 'busy');
       if (td) extra.push(textEntry(entry.file, td));
-      await gitCommit([...extra, await pageEntry(entry, data.YEARS[yi].year, td), sitemapEntry(), dataEntry()], 'עריכת שיחה: ' + title);
+      await gitCommit([...extra, await pageEntry(entry, data.YEARS[yi].year, td), sitemapEntry(), indexEntry(), ...(await neighborPages(sichaNeighbors(entry), entry)), dataEntry()], 'עריכת שיחה: ' + title);
     } else {
       let name = $('s-filename').value.trim();
       if (!fileInput) return setStatus('חסר קובץ PDF', 'err');
@@ -1004,6 +1121,8 @@ async function saveSicha() {
         ...(td ? [textEntry(entry.file, td)] : []),
         await pageEntry(entry, data.YEARS[yi].year, td),
         sitemapEntry(),
+        indexEntry(),
+        ...(await neighborPages(sichaNeighbors(entry), entry)),
         dataEntry()
       ], 'הוספת שיחה: ' + title);
       window.__lastPageUrl = siteBase() + '/sichos/' + sichaSlug(entry.file) + '.html';
@@ -1027,8 +1146,9 @@ async function removeSicha(yi, si) {
     const delEntries = [{ path: s.file, mode: '100644', type: 'blob', sha: null }];
     if (s.hasPage) delEntries.push(pageDeleteEntry(s.file));
     if (await getFileSha(sichaTextPath(s.file))) delEntries.push({ path: sichaTextPath(s.file), mode: '100644', type: 'blob', sha: null });
+    const nb = sichaNeighbors(s);
     data.YEARS[yi].sichos.splice(si, 1);
-    delEntries.push(sitemapEntry(), dataEntry());
+    delEntries.push(sitemapEntry(), indexEntry(), ...(await neighborPages(nb, s)), dataEntry());
     await gitCommit(delEntries, 'מחיקת שיחה: ' + s.title);
     render(); setStatus('נמחק', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
@@ -1055,7 +1175,7 @@ async function renameSicha(yi, si) {
       // קובץ טקסט השיחה עובר יחד עם השם
       const oldTxt = sichaTextPath(oldPath), txtSha = await getFileSha(oldTxt);
       if (txtSha) renEntries.push({ path: sichaTextPath(s.file), mode: '100644', type: 'blob', sha: txtSha }, { path: oldTxt, mode: '100644', type: 'blob', sha: null });
-      renEntries.push(pageDeleteEntry(oldPath), await pageEntry(s, data.YEARS[yi2].year), sitemapEntry());
+      renEntries.push(pageDeleteEntry(oldPath), await pageEntry(s, data.YEARS[yi2].year), sitemapEntry(), indexEntry(), ...(await neighborPages(sichaNeighbors(s), s)));
     }
     // עדכון קישורי המפתח (search.html) לשם הקובץ החדש — כדי שלא יישברו
     try {
@@ -1092,7 +1212,7 @@ async function toggleHidden(yi, si) {
   if (!s.hidden) delete s.hidden;
   try {
     setStatus('שומר…', 'busy');
-    await gitCommit([sitemapEntry(), dataEntry()], (s.hidden ? 'הסתרת' : 'הצגת') + ' שיחה: ' + s.title);
+    await gitCommit([sitemapEntry(), indexEntry(), ...(await neighborPages(sichaNeighbors(s), s)), dataEntry()], (s.hidden ? 'הסתרת' : 'הצגת') + ' שיחה: ' + s.title);
     render(); setStatus('נשמר', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }

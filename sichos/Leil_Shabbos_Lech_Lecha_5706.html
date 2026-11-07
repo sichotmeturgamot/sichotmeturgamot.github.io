@@ -55,6 +55,12 @@
   .notes .back { color:var(--gold-ink); text-decoration:none; font-size:.85em; }
   .notes li:target { background:#f3e9cf; border-radius:4px; }
   .bottom { text-align:center; }
+  .sicha-nav { display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:stretch; border-top:1px solid var(--line); padding-top:18px; }
+  .sicha-nav a { text-decoration:none; color:var(--navy); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.92rem; line-height:1.4; display:flex; flex-direction:column; gap:2px; }
+  .sicha-nav a small { color:var(--gold-ink); font-size:.78rem; }
+  .sicha-nav .next { text-align:left; }
+  .sicha-nav .all { justify-content:center; text-align:center; white-space:nowrap; }
+  @media (max-width:560px) { .sicha-nav { grid-template-columns:1fr 1fr; } .sicha-nav .all { grid-column:1 / -1; order:3; } }
   footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
   footer a { color:var(--gold-ink); text-decoration:none; }
   @media (max-width:480px) { .text { padding:20px 16px 22px; font-size:1.05rem; } }
@@ -67,7 +73,7 @@
 </div>
 <main>
   <header class="head">
-    <div class="crumb"><a href="/sichos.html">קריאת השיחות</a> › שנת תש״ו</div>
+    <div class="crumb"><a href="/sichos/">כל השיחות</a> › <a href="/sichos/#y706">שנת תש״ו</a></div>
     <h1>ליל ש&quot;פ לך</h1>
     <div class="meta"><span>י״ב מרחשון</span><span>שנת תש״ו</span><span>2 עמודים ב־PDF</span></div>
     
@@ -113,6 +119,11 @@
 <li id="fn17">&quot;לשון כמה מזקני החסידים לאחרי שקו&quot;ט עמוקה בעניני דא&quot;ח ובכ&quot;ז לא נחה דעתם בהבנת הענין לתכליתה, אלא שהונח (אָפגעלייגט) אצלם הענין בודאות ובבהירות&quot; (לקו&quot;ש חלק כא ע&#39; 334 הע&#39; 88). וראה שיחות: י&quot;ב תמוז תשי&quot;א, אחש&quot;פ וכ&quot;ף מנ&quot;א תשי&quot;ג (תורת מנחם התוועדויות ח&quot;ג ע&#39; 221. ח&quot;ח ע&#39; 113. ח&quot;ט ע&#39; 108). במק&quot;א (שיחת י&quot;ב תמוז תשכ&quot;ז. ועוד) הובא פתגם זה בשם החסיד רד&quot;צ חן (ראה אודותו בספר השיחות תש&quot;ו־ה&#39;שי&quot;ת ע&#39; 425). <a class="back" href="#r17" aria-label="חזרה לטקסט">↩</a></li></ol></section></div>
   </article>
   <div class="bottom"><a class="btn btn-read" href="/read.html?file=pdfs%2FLeil_Shabbos_Lech_Lecha_5706.pdf&title=%D7%9C%D7%99%D7%9C%20%D7%A9%22%D7%A4%20%D7%9C%D7%9A">לקריאת השיחה כ־PDF</a></div>
+  <nav class="sicha-nav" aria-label="ניווט בין השיחות">
+    <a class="prev" href="/sichos/Leil_Shabbos_Noach_5706.html"><small>→ השיחה הקודמת</small>ש&quot;פ נח בסעודת הלילה</a>
+    <a class="all" href="/sichos/#y706">כל שיחות תש״ו</a>
+    <a class="next" href="/sichos/Leil_Shabbos_Vayeira_20_MarCheshvan_5706.html"><small>השיחה הבאה ←</small>ליל ש&quot;פ וירא, כ&#39; מר־חשון תש&quot;ו</a>
+  </nav>
 </main>
 <footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
 </body>

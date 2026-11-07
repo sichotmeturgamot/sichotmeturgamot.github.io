@@ -55,6 +55,12 @@
   .notes .back { color:var(--gold-ink); text-decoration:none; font-size:.85em; }
   .notes li:target { background:#f3e9cf; border-radius:4px; }
   .bottom { text-align:center; }
+  .sicha-nav { display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:stretch; border-top:1px solid var(--line); padding-top:18px; }
+  .sicha-nav a { text-decoration:none; color:var(--navy); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.92rem; line-height:1.4; display:flex; flex-direction:column; gap:2px; }
+  .sicha-nav a small { color:var(--gold-ink); font-size:.78rem; }
+  .sicha-nav .next { text-align:left; }
+  .sicha-nav .all { justify-content:center; text-align:center; white-space:nowrap; }
+  @media (max-width:560px) { .sicha-nav { grid-template-columns:1fr 1fr; } .sicha-nav .all { grid-column:1 / -1; order:3; } }
   footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
   footer a { color:var(--gold-ink); text-decoration:none; }
   @media (max-width:480px) { .text { padding:20px 16px 22px; font-size:1.05rem; } }
@@ -67,7 +73,7 @@
 </div>
 <main>
   <header class="head">
-    <div class="crumb"><a href="/sichos.html">קריאת השיחות</a> › שנת תש&quot;ח</div>
+    <div class="crumb"><a href="/sichos/">כל השיחות</a> › <a href="/sichos/#y708">שנת תש&quot;ח</a></div>
     <h1>טבת תש&quot;ח</h1>
     <div class="meta"><span>א׳ טבת</span><span>שנת תש&quot;ח</span><span>1 עמוד ב־PDF</span></div>
     <p class="sub">להת&#39; הנוסעים לאירופא</p>
@@ -90,6 +96,11 @@
 <section class="notes" aria-label="הערות"><h3>הערות</h3><ol><li id="fn1">1 בסוף חודש טבת תש&quot;ח נשלחו הת&#39; הרב יצחק זלמן פאזנער והרב מנחם מענדל בוימגארטן לבקר את אחב&quot;י במדינות אירופא בכלל ומחנות הריכוז באשכנז ואוסטריא בפרט (ראה אגרות־קודש ח&quot;ט ע&#39; שפד. חי&quot;ג ע&#39; תנג. אגרות־קודש כ&quot;ק אדמו&quot;ר ח&quot;ב ע&#39; רצב. וש&quot;נ). <a class="back" href="#r1" aria-label="חזרה לטקסט">↩</a></li></ol></section></div>
   </article>
   <div class="bottom"><a class="btn btn-read" href="/read.html?file=pdfs%2Ftevet_5708.pdf&title=%D7%98%D7%91%D7%AA%20%D7%AA%D7%A9%22%D7%97">לקריאת השיחה כ־PDF</a></div>
+  <nav class="sicha-nav" aria-label="ניווט בין השיחות">
+    <a class="prev" href="/sichos/19_kislev_5708.html"><small>→ השיחה הקודמת</small>י&quot;ט כסלו תש&quot;ח</a>
+    <a class="all" href="/sichos/#y708">כל שיחות תש&quot;ח</a>
+    <a class="next" href="/sichos/16_adar_a_5708.html"><small>השיחה הבאה ←</small>שיחת יום ה&#39; ט&quot;ז אדר ראשון תש&quot;ח</a>
+  </nav>
 </main>
 <footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
 </body>

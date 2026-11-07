@@ -55,6 +55,12 @@
   .notes .back { color:var(--gold-ink); text-decoration:none; font-size:.85em; }
   .notes li:target { background:#f3e9cf; border-radius:4px; }
   .bottom { text-align:center; }
+  .sicha-nav { display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:stretch; border-top:1px solid var(--line); padding-top:18px; }
+  .sicha-nav a { text-decoration:none; color:var(--navy); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.92rem; line-height:1.4; display:flex; flex-direction:column; gap:2px; }
+  .sicha-nav a small { color:var(--gold-ink); font-size:.78rem; }
+  .sicha-nav .next { text-align:left; }
+  .sicha-nav .all { justify-content:center; text-align:center; white-space:nowrap; }
+  @media (max-width:560px) { .sicha-nav { grid-template-columns:1fr 1fr; } .sicha-nav .all { grid-column:1 / -1; order:3; } }
   footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
   footer a { color:var(--gold-ink); text-decoration:none; }
   @media (max-width:480px) { .text { padding:20px 16px 22px; font-size:1.05rem; } }
@@ -67,7 +73,7 @@
 </div>
 <main>
   <header class="head">
-    <div class="crumb"><a href="/sichos.html">קריאת השיחות</a> › שנת תש״ז</div>
+    <div class="crumb"><a href="/sichos/">כל השיחות</a> › <a href="/sichos/#y707">שנת תש״ז</a></div>
     <h1>ליל ב&#39; דחג הפסח תש&quot;ז</h1>
     <div class="meta"><span>ט״ו ניסן</span><span>שנת תש״ז</span><span>4 עמודים ב־PDF</span></div>
     
@@ -171,6 +177,11 @@
 <li id="fn38">38 ראה הגש&quot;פ הנ&quot;ל ע&#39; מב: &quot;מזיגת כוס זה [כוס של אלי&#39;] אחר בהמ&quot;ז (חוץ מזמנים ידועים — שיחת חה&quot;פ תש&quot;ג [ספר השיחות תש&quot;ג ע&#39; 58]&quot;. בשנות תש&quot;ג, תש&quot;ד ותש&quot;ה מזג רבינו את כוסו של אליהו לפני ברכת המזון (ספר השיחות תש&quot;ג שם. תש&quot;ד ע&#39; 92. תש&quot;ה ע&#39; 84). בליל א&#39; דחה&quot;פ תש&quot;ח, וב&#39; הלילות דחה&quot;פ תש&quot;ט — אחר ברכת המזון (לקמן ע&#39; 200. ע&#39; 318). וראה ספר השיחות תשמ&quot;ט ח&quot;א ע&#39; 391 הערה 78: &quot;מזיגת כוסו של אליהו . . שייכת לחלקו השני של הסדר שקשור עם גאולה העתידה, שלכן מזיגת הכוס בדרך כלל היא לאחרי ברכת המזון, ורק בזמנים ידועים היו מוזגים הכוס לפני ברכת המזון&quot;. ובשוה&quot;ג שם: &quot;ולאחרונה — נהגו כן (למזוג לפני ברכת המזון) בכל פעם&quot;. וראה גם שיחת ש&quot;פ קרח תשד&quot;מ (התוועדויות תשד&quot;מ ח&quot;ג ע&#39; 2037). <a class="back" href="#r38" aria-label="חזרה לטקסט">↩</a></li></ol></section></div>
   </article>
   <div class="bottom"><a class="btn btn-read" href="/read.html?file=pdfs%2Fleyl_b_pesach_5707.pdf&title=%D7%9C%D7%99%D7%9C%20%D7%91'%20%D7%93%D7%97%D7%92%20%D7%94%D7%A4%D7%A1%D7%97%20%D7%AA%D7%A9%22%D7%96">לקריאת השיחה כ־PDF</a></div>
+  <nav class="sicha-nav" aria-label="ניווט בין השיחות">
+    <a class="prev" href="/sichos/Seder_reshon_chag_hpesach_5707.html"><small>→ השיחה הקודמת</small>סדר הראשון של חג הפסח תש&quot;ז</a>
+    <a class="all" href="/sichos/#y707">כל שיחות תש״ז</a>
+    <a class="next" href="/sichos/shviei_shel_pesach_5707.html"><small>השיחה הבאה ←</small>ליל שביעי של פסח תש&quot;ז</a>
+  </nav>
 </main>
 <footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
 </body>
