@@ -646,7 +646,7 @@ function renderSichaPage(s, yearName, td) {
     : '<span></span>';
   const navHtml = `  <nav class="sicha-nav" aria-label="ניווט בין השיחות">
     ${nbLink(nb.prev, 'prev', '→ השיחה הקודמת')}
-    <a class="all" href="/sichos/#${yearAnchor(yearName)}">כל שיחות ${esc(yearName)}</a>
+    <a class="all" href="/sichos/index.html#${yearAnchor(yearName)}">כל שיחות ${esc(yearName)}</a>
     ${nbLink(nb.next, 'next', 'השיחה הבאה ←')}
   </nav>`;
   return `<!DOCTYPE html>
@@ -724,7 +724,7 @@ ${ld}
 </div>
 <main>
   <header class="head">
-    <div class="crumb"><a href="/sichos/">כל השיחות</a> › <a href="/sichos/#${yearAnchor(yearName)}">שנת ${esc(yearName)}</a></div>
+    <div class="crumb"><a href="/sichos/index.html">כל השיחות</a> › <a href="/sichos/index.html#${yearAnchor(yearName)}">שנת ${esc(yearName)}</a></div>
     <h1>${esc(title)}</h1>
     <div class="meta">${meta.join('')}</div>
     ${(s.subtitle || '').trim() ? `<p class="sub">${esc(s.subtitle.trim())}</p>` : ''}
@@ -754,7 +754,7 @@ function renderSitemap() {
   const urls = [
     { loc: base + '/', pri: '1.0' },
     { loc: base + '/sichos.html', pri: '0.8' },
-    { loc: base + '/sichos/', pri: '0.9' },
+    { loc: base + '/sichos/index.html', pri: '0.9' },
     { loc: base + '/milon.html', pri: '0.8' },
     { loc: base + '/search.html', pri: '0.8' },
     { loc: base + '/subscribe.html', pri: '0.6' },
@@ -826,11 +826,11 @@ ${g.items.map(s => `      <li><a href="/sichos/${encodeURIComponent(sichaSlug(s.
 <title>כל השיחות לפי שנים – שיחות אדמו״ר הריי״צ | ספר השיחות מתורגם ללה״ק</title>
 <meta name="description" content="${esc(desc)}">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="${base}/sichos/">
+<link rel="canonical" href="${base}/sichos/index.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="כל השיחות לפי שנים – שיחות אדמו״ר הריי״צ">
 <meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${base}/sichos/">
+<meta property="og:url" content="${base}/sichos/index.html">
 <meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
 <meta property="og:locale" content="he_IL">
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
