@@ -139,6 +139,23 @@ async function api(path, opt) {
   return r.json();
 }
 
+// ---------- מצב מדידה (?diag=1): זמני רשת וציור על המסך ----------
+const DIAG = params.get('diag') === '1', T0 = performance.now();
+let dlog = null;
+function dl(t) { if (!DIAG) return; if (!dlog) { dlog = document.createElement('pre'); dlog.style.cssText = 'position:fixed;left:0;right:0;bottom:0;max-height:45vh;overflow:auto;z-index:99;margin:0;background:rgba(0,0,0,.82);color:#9f9;font:11px/1.35 monospace;padding:6px;direction:ltr;text-align:left;white-space:pre-wrap'; document.body.appendChild(dlog); }
+  dlog.textContent = '\u200E' + ((performance.now() - T0) / 1000).toFixed(1) + 's ' + t + '\n' + dlog.textContent; }
+if (DIAG) {
+  const of = window.fetch.bind(window);
+  window.fetch = async (u, o) => {
+    const url = String(u && u.url || u), rg = o && o.headers && (o.headers.Range || o.headers.range || (o.headers.get && o.headers.get('Range')));
+    const t = performance.now(), r = await of(u, o);
+    if (/\/yid\//.test(url)) { const tag = url.includes('/yid/pdf') ? 'pdf ' + (rg ? rg.replace('bytes=', '') : 'FULL') : url.includes('/yid/boxes') ? 'boxes p' + (/page=(\d+)/.exec(url) || [])[1] : url.split('?')[0].split('/').pop();
+      dl(tag + ' → ' + r.status + ' head ' + Math.round(performance.now() - t) + 'ms');
+      if (rg) r.clone().arrayBuffer().then(b => dl(tag + ' body ' + (b.byteLength >> 10) + 'KB total ' + Math.round(performance.now() - t) + 'ms')).catch(() => {}); }
+    return r;
+  };
+}
+
 // ---------- PDF.js ----------
 let pdfjsLib;
 async function loadPdfjs() {
@@ -152,7 +169,9 @@ const dpr = window.devicePixelRatio || 1, clamp = (v, a, b) => Math.min(Math.max
 let pdf = null, baseW = 600, Z = 1, recs = [];
 
 async function renderCanvas(rec) {
+  const t0 = performance.now();
   if (!rec.pdfPage) rec.pdfPage = await pdf.getPage(rec.n);
+  const t1 = performance.now();
   const base = rec.pdfPage.getViewport({ scale: 1 });
   rec.el.style.aspectRatio = base.width + '/' + base.height;
   let rs = (baseW * Z * dpr) / base.width, w = base.width * rs, h = base.height * rs;
@@ -162,7 +181,7 @@ async function renderCanvas(rec) {
   rec.canvas.width = Math.floor(vp.width); rec.canvas.height = Math.floor(vp.height);
   const task = rec.pdfPage.render({ canvasContext: rec.canvas.getContext('2d'), viewport: vp });
   rec.task = task; rec.rendered = true;
-  try { await task.promise; if (rec.task === task) rec.el.classList.add('done'); } catch (e) {}
+  try { await task.promise; if (rec.task === task) rec.el.classList.add('done'); dl('page ' + rec.n + ': getPage ' + Math.round(t1 - t0) + 'ms, draw ' + Math.round(performance.now() - t1) + 'ms (' + rec.canvas.width + '×' + rec.canvas.height + ')'); } catch (e) { dl('page ' + rec.n + ' cancelled'); }
   if (rec.task === task) rec.task = null;
 }
 function dropCanvas(rec) { if (rec.task) { try { rec.task.cancel(); } catch (e) {} rec.task = null; } rec.canvas.width = 1; rec.canvas.height = 1; rec.rendered = false; rec.el.classList.remove('done'); }
