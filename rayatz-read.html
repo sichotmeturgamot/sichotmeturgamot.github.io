@@ -318,10 +318,21 @@ async function begin() {
   loadBoxes(trec);
   await renderCanvas(trec); hideLoader();
   viewer.scrollTop = target.offsetTop - inner.offsetTop - 6;
-  const io = new IntersectionObserver(es => es.forEach(en => {
+  // תור ציור: עד 2 עמודים בבת אחת, קודם הקרוב ביותר למרכז המסך (כדי שלא יתחרו על רשת איטית)
+  const want = new Set(); let active = 0;
+  const dist = r => { const b = r.el.getBoundingClientRect(), v = viewer.getBoundingClientRect(); return Math.abs((b.top + b.bottom) / 2 - (v.top + v.bottom) / 2); };
+  const pump = () => {
+    while (active < 2 && want.size) {
+      let best = null; want.forEach(r => { if (!best || dist(r) < dist(best)) best = r; });
+      want.delete(best); active++;
+      renderCanvas(best).finally(() => { active--; pump(); });
+    }
+  };
+  viewer.addEventListener('scroll', () => { if (want.size) pump(); }, { passive: true });
+  const io = new IntersectionObserver(es => { es.forEach(en => {
     const rec = recs[+en.target.dataset.n - 1];
-    if (en.isIntersecting) { if (!rec.rendered) renderCanvas(rec); loadBoxes(rec); } else if (rec.rendered) dropCanvas(rec);
-  }), { root: viewer, rootMargin: '900px 0px' });
+    if (en.isIntersecting) { if (!rec.rendered) want.add(rec); loadBoxes(rec); } else { want.delete(rec); if (rec.rendered) dropCanvas(rec); }
+  }); pump(); }, { root: viewer, rootMargin: '900px 0px' });
   recs.forEach(r => io.observe(r.el));
   window.__io = io;
 }
