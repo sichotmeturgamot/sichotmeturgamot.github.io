@@ -47,6 +47,16 @@
   #gate p { font-size:.88rem; color:#8a7d61; margin-bottom:14px; }
   #gate input { width:100%; font:inherit; padding:10px 12px; border:1.5px solid #d9d1c0; border-radius:10px; margin-bottom:12px; direction:ltr; text-align:center; }
   #gate .e { color:#a33a34; font-size:.85rem; min-height:1.2em; margin-bottom:6px; }
+  #loader { position:fixed; inset:0; z-index:50; display:none; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:#fff; background:rgba(82,86,89,.92); text-align:center; padding:20px; pointer-events:none; }
+  #loader.show { display:flex; }
+  #loader .sp { width:46px; height:46px; border:4px solid rgba(255,255,255,.25); border-top-color:#b8933e; border-radius:50%; animation:rzspin .8s linear infinite; }
+  #loader .t { font-size:1rem; }
+  #loader .s { font-size:.8rem; color:#cfd3da; min-height:1.2em; }
+  #loader .pb { width:180px; height:5px; border-radius:3px; background:rgba(255,255,255,.2); overflow:hidden; display:none; }
+  #loader .pb i { display:block; height:100%; width:0; background:#b8933e; transition:width .2s; }
+  .page::after { content:''; position:absolute; top:50%; left:50%; width:30px; height:30px; margin:-15px 0 0 -15px; border:3px solid rgba(26,41,66,.15); border-top-color:#b8933e; border-radius:50%; animation:rzspin .8s linear infinite; z-index:1; }
+  .page.done::after { display:none; }
+  @keyframes rzspin { to { transform:rotate(360deg); } }
   #msg { color:#fff; text-align:center; padding:60px 20px; font-size:1.05rem; margin:auto; display:none; }
 </style>
 </head>
@@ -60,6 +70,7 @@
 <div id="hint">לתרגום: הקישו על המילה הראשונה ואז על האחרונה • להגדלה: צביטה</div>
 <div id="viewer"><div id="pagesInner"></div></div>
 <div id="msg"></div>
+<div id="loader"><div class="sp"></div><div class="t" id="ldt">טוען את הקובץ…</div><div class="pb" id="ldpb"><i></i></div><div class="s" id="lds"></div></div>
 
 <div id="sheet"><div class="in">
   <div id="smsg"></div>
@@ -96,7 +107,18 @@ if (window.RZ_CONFIG && window.RZ_CONFIG.live) { var hh = document.getElementByI
 document.title = (params.get('title') || 'קריאה') + ((window.RZ_CONFIG && window.RZ_CONFIG.live) ? '' : ' — מרכז הריי״ץ');
 $('back').onclick = () => { if (history.length > 1) history.back(); else location.href = 'rayatz.html'; };
 function toast(t) { const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('show'), 2200); }
-function fatal(t) { viewer.style.display = 'none'; $('hint').style.display = 'none'; const m = $('msg'); m.style.display = 'block'; m.textContent = t; }
+let ldTimers = [];
+function showLoader(t) {
+  $('ldt').textContent = t || 'טוען את הקובץ…'; $('lds').textContent = ''; $('ldpb').style.display = 'none'; $('loader').classList.add('show');
+  ldTimers.forEach(clearTimeout);
+  ldTimers = [setTimeout(() => { $('lds').textContent = 'עדיין טוען, הקובץ גדול…'; }, 6000), setTimeout(() => { $('lds').textContent = 'החיבור איטי, עוד רגע…'; }, 15000)];
+}
+function loaderProgress(p) {
+  if (!p || !p.total || p.loaded > p.total) return;
+  const pc = Math.round(p.loaded / p.total * 100); $('ldpb').style.display = 'block'; $('ldpb').firstChild.style.width = pc + '%'; $('lds').textContent = pc + '%';
+}
+function hideLoader() { ldTimers.forEach(clearTimeout); ldTimers = []; $('loader').classList.remove('show'); }
+function fatal(t) { hideLoader(); viewer.style.display = 'none'; $('hint').style.display = 'none'; const m = $('msg'); m.style.display = 'block'; m.textContent = t; }
 if (!book) fatal('הספר לא נמצא.');
 
 // ---------- קוד גישה ----------
@@ -141,10 +163,11 @@ async function renderCanvas(rec) {
   rec.canvas.width = Math.floor(vp.width); rec.canvas.height = Math.floor(vp.height);
   const task = rec.pdfPage.render({ canvasContext: rec.canvas.getContext('2d'), viewport: vp });
   rec.task = task; rec.rendered = true;
-  try { await task.promise; } catch (e) {}
+  try { await task.promise; if (rec.task === task) rec.el.classList.add('done'); } catch (e) {}
   if (rec.task === task) rec.task = null;
+  if (rec.onDone) { const f = rec.onDone; rec.onDone = null; f(); }
 }
-function dropCanvas(rec) { if (rec.task) { try { rec.task.cancel(); } catch (e) {} rec.task = null; } rec.canvas.width = 1; rec.canvas.height = 1; rec.rendered = false; }
+function dropCanvas(rec) { if (rec.task) { try { rec.task.cancel(); } catch (e) {} rec.task = null; } rec.canvas.width = 1; rec.canvas.height = 1; rec.rendered = false; rec.el.classList.remove('done'); }
 
 // ---------- תיבות מילים (בלי טקסט) והדגשה ----------
 const sel = { lo: null, hi: null };      // מזהי מילים
@@ -243,17 +266,23 @@ copyBtn.onclick = async () => {
 // ---------- בניית הקורא ----------
 async function begin() {
   if (started) return; if (!getKey() && !(window.RZ_CONFIG && window.RZ_CONFIG.live)) { gate(); return; }
-  started = true;
+  started = true; showLoader();
   try {
     await loadPdfjs();
     const hdr = { 'x-key': getKey() };
-    try { pdf = await pdfjsLib.getDocument({ url: API + '/yid/pdf?book=' + BOOK, httpHeaders: hdr, rangeChunkSize: 1 << 20, disableAutoFetch: true, disableStream: true }).promise; }
+    try { const lt = pdfjsLib.getDocument({ url: API + '/yid/pdf?book=' + BOOK, httpHeaders: hdr, rangeChunkSize: 1 << 20, disableAutoFetch: true, disableStream: true }); pdf = await lt.promise; }
     catch (e1) {
-      if (e1 && e1.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
+      if (e1 && e1.status === 401) { hideLoader(); try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
+      $('ldt').textContent = 'מוריד את הקובץ…';
       const pr = await fetch(API + '/yid/pdf?book=' + BOOK, { headers: hdr });   // גיבוי: הורדה מלאה
-      if (pr.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
+      if (pr.status === 401) { hideLoader(); try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
       if (!pr.ok) throw new Error('pdf ' + pr.status);
-      pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await pr.arrayBuffer()) }).promise;
+      const total = +pr.headers.get('content-length') || 0, chunks = []; let got = 0;
+      if (pr.body && pr.body.getReader) { const rd = pr.body.getReader(); for (;;) { const { done, value } = await rd.read(); if (done) break; chunks.push(value); got += value.length; loaderProgress({ loaded: got, total }); } }
+      else chunks.push(new Uint8Array(await pr.arrayBuffer()));
+      const buf = new Uint8Array(chunks.reduce((a, c) => a + c.length, 0)); let off = 0; chunks.forEach(c => { buf.set(c, off); off += c.length; });
+      $('ldt').textContent = 'פותח את הקובץ…';
+      pdf = await pdfjsLib.getDocument({ data: buf }).promise;
     }
   } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.' + ' [' + String((e && e.message) || e).slice(0, 80) + ']'); return; }
   const ratios = []; { const pg1 = await pdf.getPage(1), v1 = pg1.getViewport({ scale: 1 }); const r1 = v1.width + '/' + v1.height; for (let k = 1; k <= pdf.numPages; k++) ratios[k] = r1; }
@@ -270,7 +299,8 @@ async function begin() {
     if (en.isIntersecting) { renderCanvas(rec); loadBoxes(rec); } else if (rec.rendered) dropCanvas(rec);
   }), { root: viewer, rootMargin: '1400px 0px' });
   recs.forEach(r => io.observe(r.el));
-  const target = recs[clamp(startPage, 1, recs.length) - 1].el;
+  const trec = recs[clamp(startPage, 1, recs.length) - 1], target = trec.el;
+  $('ldt').textContent = 'מציג את העמוד…'; trec.onDone = hideLoader; setTimeout(hideLoader, 12000);
   viewer.scrollTop = target.offsetTop - inner.offsetTop - 6;
   setTimeout(() => { viewer.scrollTop = target.offsetTop - inner.offsetTop - 6; }, 400);
   window.__io = io;
