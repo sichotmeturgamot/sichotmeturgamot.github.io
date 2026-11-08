@@ -164,7 +164,6 @@ async function renderCanvas(rec) {
   rec.task = task; rec.rendered = true;
   try { await task.promise; if (rec.task === task) rec.el.classList.add('done'); } catch (e) {}
   if (rec.task === task) rec.task = null;
-  if (rec.onDone) { const f = rec.onDone; rec.onDone = null; f(); }
 }
 function dropCanvas(rec) { if (rec.task) { try { rec.task.cancel(); } catch (e) {} rec.task = null; } rec.canvas.width = 1; rec.canvas.height = 1; rec.rendered = false; rec.el.classList.remove('done'); }
 
@@ -269,7 +268,7 @@ async function begin() {
   try {
     await loadPdfjs();
     const hdr = { 'x-key': getKey() };
-    try { const lt = pdfjsLib.getDocument({ url: API + '/yid/pdf?book=' + BOOK, httpHeaders: hdr, rangeChunkSize: 1 << 20, disableAutoFetch: true, disableStream: true }); pdf = await lt.promise; }
+    try { const lt = pdfjsLib.getDocument({ url: API + '/yid/pdf?book=' + BOOK, httpHeaders: hdr, rangeChunkSize: 1 << 18, disableAutoFetch: true, disableStream: true }); pdf = await lt.promise; }
     catch (e1) {
       if (e1 && e1.status === 401) { hideLoader(); try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
       $('ldt').textContent = 'מוריד את הקובץ…';
@@ -293,15 +292,18 @@ async function begin() {
     inner.appendChild(el);
     recs.push({ n, el, canvas: el.querySelector('canvas'), hl: el.querySelector('.hlayer'), layer: el.querySelector('.layer'), rendered: false });
   }
+  // קודם העמוד המבוקש בלבד, ורק אחריו העמודים שמסביב (כדי שלא יתחרו על הרשת)
+  const trec = recs[clamp(startPage, 1, recs.length) - 1], target = trec.el;
+  $('ldt').textContent = 'מציג את העמוד…'; setTimeout(hideLoader, 15000);
+  viewer.scrollTop = target.offsetTop - inner.offsetTop - 6;
+  loadBoxes(trec);
+  await renderCanvas(trec); hideLoader();
+  viewer.scrollTop = target.offsetTop - inner.offsetTop - 6;
   const io = new IntersectionObserver(es => es.forEach(en => {
     const rec = recs[+en.target.dataset.n - 1];
-    if (en.isIntersecting) { renderCanvas(rec); loadBoxes(rec); } else if (rec.rendered) dropCanvas(rec);
-  }), { root: viewer, rootMargin: '1400px 0px' });
+    if (en.isIntersecting) { if (!rec.rendered) renderCanvas(rec); loadBoxes(rec); } else if (rec.rendered) dropCanvas(rec);
+  }), { root: viewer, rootMargin: '900px 0px' });
   recs.forEach(r => io.observe(r.el));
-  const trec = recs[clamp(startPage, 1, recs.length) - 1], target = trec.el;
-  $('ldt').textContent = 'מציג את העמוד…'; trec.onDone = hideLoader; setTimeout(hideLoader, 12000);
-  viewer.scrollTop = target.offsetTop - inner.offsetTop - 6;
-  setTimeout(() => { viewer.scrollTop = target.offsetTop - inner.offsetTop - 6; }, 400);
   window.__io = io;
 }
 
