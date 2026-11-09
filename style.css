@@ -130,7 +130,7 @@ a { color: var(--gold-dark); text-decoration: none; }
   margin: 8px 0 16px;
 }
 .year-panel-head h2 { font-size: 1.5rem; }
-.badge { font-size: .76rem; padding: 3px 12px; border-radius: 999px; font-weight: 500; }
+.badge { font-size: .76rem; padding: 3px 6px; text-align: center; border-radius: 999px; font-weight: 500; }
 .badge.done { background: #e8efe4; color: var(--green); }
 .badge.wip { background: #f4ecd7; color: var(--gold-dark); }
 .count-tag { font-size: .8rem; color: var(--muted); }
@@ -225,7 +225,7 @@ input.en { direction: ltr; text-align: left; }
   .bottomnav a {
     display: flex; flex-direction: column; align-items: center; gap: 3px;
     color: rgba(255,255,255,.66); text-decoration: none;
-    font-size: .68rem; padding: 3px 12px;
+    font-size: .68rem; padding: 3px 6px; text-align: center;
     transition: color .15s;
   }
   .bottomnav a svg { width: 21px; height: 21px; }
