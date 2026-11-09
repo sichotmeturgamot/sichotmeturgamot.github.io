@@ -17,7 +17,7 @@
     ['about.html',     'אודות'],
     ['feedback.html',  'פידבק']
   ];
-  if (RZLIVE) { links.splice(1, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ']); links[2][1] = 'השיחות המתורגמות'; }   // עמוד ראשי לכל תורת הריי״ץ + עמוד נפרד לשיחות המתורגמות
+  if (RZLIVE) links.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ']);   // עמוד נוסף לצד קריאת השיחות
   var linksHtml = links.map(function (l) {
     return '<a href="' + l[0] + '"' + (l[0] === page ? ' class="active"' : '') + '>' + l[1] + '</a>';
   }).join('');
@@ -36,7 +36,6 @@
     ['milon.html',  'מילון',  '<path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/>'],
     ['ask.html',    'חיפוש', '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>']
   ];
-  if (RZLIVE) bItems[1] = ['rayatz.html', 'תורת הריי״ץ', bItems[1][2]];   // «השיחות המתורגמות» עוברות ל«עוד»
   var bHtml = bItems.map(function (b) {
     return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + b[2] + '</svg><span>' + b[1] + '</span></a>';
