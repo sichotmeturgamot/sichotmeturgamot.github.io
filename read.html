@@ -26,6 +26,7 @@
   }
   .bar a.line { background: transparent; border: 1px solid rgba(255,255,255,.55); }
 
+  @media (max-width: 600px) { #pr { display: none; } }
   #hint { flex: 0 0 auto; color: #cfd3da; text-align: center; font-size: .78rem; padding: 8px 16px; line-height: 1.4; }
 
   #viewer {
@@ -102,6 +103,7 @@
 <div class="bar">
   <button type="button" id="back-btn" class="line" style="color:#fff;background:transparent;border:1px solid rgba(255,255,255,.55);border-radius:8px;padding:6px 14px;font:inherit;cursor:pointer">→ חזור</button>
   <span class="title" id="title">טוען…</span>
+  <a id="pr" href="#" target="_blank" rel="noopener" title="פותח את קובץ ה-PDF המקורי בתצוגת הדפדפן, להדפסה באיכות מלאה">🖨 הדפסה באיכות מלאה</a>
   <a id="dl" download>הורדה ⬇</a>
   <a class="line" href="index.html">לאתר</a>
 </div>
@@ -143,6 +145,7 @@ const actionsEl = $('actions'), citeBtn = $('cite'), shareBtn = $('share');
 $('title').textContent = title;
 document.title = title + ' — ספר השיחות מתורגם ללה״ק';
 $('dl').href = file;
+$('pr').href = file;
 
 function showError(html){ viewer.style.display='none'; $('hint').style.display='none'; $('msg').style.display='block'; $('msg').innerHTML=html; }
 if (!file || file.indexOf('//')!==-1 || file.indexOf('..')!==-1 || !/\.pdf$/i.test(file)) showError('לא נמצא קובץ להצגה.');
