@@ -299,6 +299,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     P.items.slice().sort((a, b) => (a.book === b.book ? 0 : ((a.ps != null ? a.ps : a.pdf) - (b.ps != null ? b.ps : b.pdf))) || a.pdf - b.pdf || a.seq - b.seq).forEach(x => { h += card(x, { year: multiY, inPart: true }); });
     app.innerHTML = h + '</div></div>';
     bind();
+    document.querySelectorAll('#rzs .active, .rz-parts .active').forEach(on => on.scrollIntoView({ block: 'nearest', inline: 'center' }));
   }
   function bind() {
     app.querySelectorAll('[data-y]').forEach(b => b.onclick = () => { st.year = b.dataset.y; st.month = null; go(); });
