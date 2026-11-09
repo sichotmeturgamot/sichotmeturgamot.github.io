@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>קריאת השיחות — ספר השיחות של אדמו״ר הריי״צ מתורגם ללשון הקודש</title>
+<title>שיחות מתורגמות — ספר השיחות של אדמו״ר הריי״צ מתורגם ללשון הקודש</title>
 <meta name="description" content="קריאת שיחותיו של כ״ק אדמו״ר הריי״צ מליובאוויטש, מתורגמות מאידיש ללשון הקודש — לפי שנה או לפי חודש, לקריאה ולהורדה כ-PDF.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://sichotmeturgamot.com/sichos.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="קריאת השיחות — ספר השיחות של אדמו״ר הריי״צ">
+<meta property="og:title" content="שיחות מתורגמות — ספר השיחות של אדמו״ר הריי״צ">
 <meta property="og:description" content="שיחותיו של אדמו״ר הריי״צ מתורגמות ללשון הקודש, מסודרות לפי שנה ולפי חודש — לקריאה ולהורדה.">
 <meta property="og:url" content="https://sichotmeturgamot.com/sichos.html">
 <meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
 <meta property="og:locale" content="he_IL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="קריאת השיחות — ספר השיחות של אדמו״ר הריי״צ">
+<meta name="twitter:title" content="שיחות מתורגמות — ספר השיחות של אדמו״ר הריי״צ">
 <meta name="twitter:description" content="שיחות אדמו״ר הריי״צ מתורגמות ללשון הקודש — לפי שנה ולפי חודש.">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"CollectionPage","name":"קריאת השיחות — ספר השיחות","description":"שיחותיו של כ״ק אדמו״ר הריי״צ מליובאוויטש מתורגמות מאידיש ללשון הקודש, לקריאה ולהורדה.","inLanguage":"he","url":"https://sichotmeturgamot.com/sichos.html","isPartOf":{"@type":"WebSite","name":"ספר השיחות מתורגם ללה״ק","url":"https://sichotmeturgamot.com/"}}
+{"@context":"https://schema.org","@type":"CollectionPage","name":"שיחות מתורגמות — ספר השיחות","description":"שיחותיו של כ״ק אדמו״ר הריי״צ מליובאוויטש מתורגמות מאידיש ללשון הקודש, לקריאה ולהורדה.","inLanguage":"he","url":"https://sichotmeturgamot.com/sichos.html","isPartOf":{"@type":"WebSite","name":"ספר השיחות מתורגם ללה״ק","url":"https://sichotmeturgamot.com/"}}
 </script>
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css">
@@ -32,6 +32,15 @@
 <meta property="og:image:width" content="600">
 <meta property="og:image:height" content="600">
 <meta name="twitter:image" content="https://sichotmeturgamot.com/og-image.png">
+<style>
+.read-controls { align-items:center; justify-content:center; gap:10px; }
+.sq-btn { width:42px; height:42px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--navy); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; padding:0; flex:0 0 auto; }
+.sq-btn.on { background:var(--navy); color:var(--cream); border-color:var(--navy); }
+.sq-input[hidden] { display:none; }
+.sq-input { display:block; width:100%; max-width:560px; margin:0 auto 14px; font:inherit; font-size:.95rem; padding:9px 14px; border:1.5px solid var(--line); border-radius:22px; background:var(--paper); color:var(--navy); direction:rtl; }
+.sq-input:focus { outline:none; border-color:var(--gold); }
+.sq-none { text-align:center; color:var(--muted); padding:26px 0; }
+</style>
 </head>
 <body>
 
@@ -39,7 +48,7 @@
   <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
   <div class="links">
     <a href="index.html">ראשי</a>
-    <a href="sichos.html" class="active">קריאת השיחות</a>
+    <a href="sichos.html" class="active">שיחות מתורגמות</a>
     <a href="milon.html">מילון</a>
     <a href="subscribe.html">הצטרפות לעדכונים</a>
     <a href="donate.html">תרומה</a>
@@ -50,7 +59,7 @@
 <main class="read-main">
   <div style="text-align:center;margin-bottom:22px">
     <div style="color:var(--gold);font-size:1.1rem;letter-spacing:.35em">✦</div>
-    <h1 style="font-size:1.9rem;margin-top:4px">קריאת השיחות</h1>
+    <h1 style="font-size:1.9rem;margin-top:4px">שיחות מתורגמות</h1>
   </div>
   <div class="read-layout">
     <div class="read-controls">
@@ -58,7 +67,9 @@
         <button class="seg-btn on" id="mode-year" type="button">לפי שנה</button>
         <button class="seg-btn" id="mode-month" type="button">לפי חודש</button>
       </div>
+      <button type="button" id="sq-btn" class="sq-btn" aria-label="חיפוש בשיחות המתורגמות" aria-expanded="false" title="חיפוש בשיחות המתורגמות"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button>
     </div>
+    <input type="search" id="sq" class="sq-input" hidden placeholder="חיפוש בשיחות המתורגמות: כותרת, תאריך, פרשה, שנה" autocomplete="off" enterkeyhint="search" aria-label="חיפוש בשיחות המתורגמות">
     <div class="read-body">
       <div class="chip-strip" id="years-grid"></div>
       <div class="sichos-area" id="year-panel"></div>
@@ -249,6 +260,8 @@
   // מתג שנה / חודש
   function setMode(m) {
     mode = m;
+    const sqi = document.getElementById('sq'), sqb = document.getElementById('sq-btn');
+    if (sqi && !sqi.hidden) { sqi.hidden = true; sqi.value = ''; sqb.classList.remove('on'); sqb.setAttribute('aria-expanded', 'false'); }
     document.getElementById('mode-year').classList.toggle('on', m === 'year');
     document.getElementById('mode-month').classList.toggle('on', m === 'month');
     buildStrip();
@@ -261,6 +274,41 @@
   document.getElementById('mode-year').addEventListener('click', () => setMode('year'));
   document.getElementById('mode-month').addEventListener('click', () => setMode('month'));
   setMode('year');
+
+  // ---------- חיפוש: רק במאגר השיחות המתורגמות (YEARS מתוך data.js) ----------
+  (function () {
+    const btn = document.getElementById('sq-btn'), inp = document.getElementById('sq');
+    const strip = s => String(s || '').replace(/[\u0591-\u05C7]/g, '').replace(/[״"׳'`]/g, '').replace(/[־\-–—]/g, ' ').replace(/\s+/g, ' ').trim();
+    const SHAB = /(^|\s)(ש\s?פ|ש\s?ק|שבק)(?=\s|$)/g;
+    const nz = s => strip(s).replace(SHAB, '$1שבת').replace(/(^|\s)(פרשת|פרשה)\s/g, '$1');
+    const idx = [];
+    YEARS.forEach(y => visible(y).forEach(s => {
+      idx.push({ s, year: y.year, k: nz([s.title, s.subtitle, s.hebDate, y.year].join(' ')) });
+    }));
+    let timer = 0;
+    function run() {
+      const q = nz(inp.value);
+      if (!q) { restore(); return; }
+      const ws = q.split(' ').filter(Boolean);
+      const hits = idx.filter(e => ws.every(w => {
+        const words = e.k.split(' ');
+        return w.length <= 2 ? words.some(x => x.indexOf(w) === 0) : e.k.indexOf(w) >= 0;
+      }));
+      document.querySelectorAll('.year-chip.active').forEach(el => el.classList.remove('active'));
+      panel.innerHTML = '<div class="year-panel-head"><h2>תוצאות חיפוש</h2><span class="count-tag">' + hits.length + ' ' + (hits.length === 1 ? 'שיחה' : 'שיחות') + '</span></div>' +
+        (hits.length ? hits.slice(0, 100).map(h => sichaCard(h.s, h.year)).join('') : '<div class="sq-none">לא נמצאו שיחות מתורגמות מתאימות.</div>');
+    }
+    function restore() {
+      const chip = grid.querySelector('.year-chip.active') || [...grid.querySelectorAll('.year-chip:not(.empty)')].pop();
+      if (chip) chip.click();
+    }
+    btn.addEventListener('click', () => {
+      const open = inp.hidden;
+      inp.hidden = !open; btn.classList.toggle('on', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) inp.focus(); else { inp.value = ''; restore(); }
+    });
+    inp.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(run, 150); });
+  })();
 
   function openViewer(file, title) {
     document.getElementById('viewer-title').textContent = title;

@@ -65,6 +65,14 @@
     function draw() {
       el.innerHTML = '';
       var css = 'font:inherit;font-size:.82rem;border:1px solid #b8933e;background:transparent;color:#17233d;border-radius:18px;padding:4px 12px;cursor:pointer;text-decoration:none;display:inline-block;margin:0 3px';
+      if (opt.nav) {   // כפתור בסרגל העליון של האתר (רקע כחול כהה): אייקון, ובמסך רחב גם טקסט
+        var n = document.createElement(S ? 'a' : 'button');
+        if (S) { n.href = 'rayatz-me.html'; n.title = S.email; } else { n.type = 'button'; n.title = 'התחברות לאזור האישי'; n.onclick = modal; }
+        n.className = 'rz-navbtn' + (S ? ' in' : '');
+        n.setAttribute('aria-label', S ? 'האזור שלי' : 'התחברות לאזור האישי');
+        n.innerHTML = '<span aria-hidden="true">👤</span><span class="rz-navlbl">' + (S ? 'האזור שלי' : 'התחברות') + '</span>';
+        el.appendChild(n); return;
+      }
       if (!S) { var b = document.createElement('button'); b.type = 'button'; b.style.cssText = css; b.textContent = opt.compact ? '👤 התחברות' : '👤 התחברות לאזור האישי'; b.title = 'התחברות לאזור האישי'; b.onclick = modal; el.appendChild(b); return; }
       if (opt.compact) { var a2 = document.createElement('a'); a2.href = 'rayatz-me.html'; a2.style.cssText = css; a2.title = S.email; a2.textContent = '👤 האזור שלי'; el.appendChild(a2); return; }
       var t = document.createElement('span'); t.style.cssText = 'font-size:.8rem;color:#8a7d61;margin:0 4px'; t.textContent = S.email; el.appendChild(t);

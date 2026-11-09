@@ -8,7 +8,7 @@
   // סדר התפריט העליון (שולחני)
   var links = [
     ['index.html',     'ראשי'],
-    ['sichos.html',    'קריאת השיחות'],
+    ['sichos.html',    'שיחות מתורגמות'],
     ['milon.html',     'מילון'],
     ['stories.html',   'סיפורים ופתגמים'],
     ['ask.html',       'חיפוש'],
@@ -17,12 +17,30 @@
     ['about.html',     'אודות'],
     ['feedback.html',  'פידבק']
   ];
-  if (RZLIVE) links.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ']);   // עמוד נוסף לצד קריאת השיחות
+  if (RZLIVE) links.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ']);   // עמוד נוסף לצד שיחות מתורגמות
   var linksHtml = links.map(function (l) {
     return '<a href="' + l[0] + '"' + (l[0] === page ? ' class="active"' : '') + '>' + l[1] + '</a>';
   }).join('');
 
   var top = document.querySelector('.topnav');
+
+  // כפתור «האזור שלי» / «התחברות» בפינה הימנית העליונה של כל עמוד (צד ימין = תחילת השורה בעברית)
+  if (top && !top.querySelector('.rz-navuser')) {
+    var st0 = document.createElement('style');
+    st0.textContent = '.topnav{position:sticky}' +
+      '.rz-navuser{display:inline-flex;align-items:center;flex:0 0 auto}' +
+      '.rz-navbtn{font:inherit;font-size:.84rem;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--gold,#b8933e);background:transparent;color:#e8d9b0;border-radius:18px;padding:4px 12px;cursor:pointer;text-decoration:none;line-height:1.3}' +
+      '.rz-navbtn:hover{background:rgba(232,217,176,.12)}.rz-navbtn.in{background:rgba(232,217,176,.12)}' +
+      '@media (max-width:640px){.rz-navuser{position:absolute;inset-inline-start:10px;top:50%;transform:translateY(-50%)}' +
+      '.rz-navbtn{width:34px;height:34px;padding:0;justify-content:center;border-radius:50%}.rz-navlbl{display:none}}';
+    document.head.appendChild(st0);
+    var ub = document.createElement('div'); ub.className = 'rz-navuser';
+    top.insertBefore(ub, top.firstChild);
+    var mountUser = function () { if (window.RZ) RZ.mount(ub, { nav: true }); };
+    if (window.RZ) mountUser();
+    else { var sc0 = document.createElement('script'); sc0.src = 'rayatz-auth.js?v=20261109a'; sc0.onload = mountUser; document.head.appendChild(sc0); }
+  }
+
   if (top) {
     var box = top.querySelector('.links');
     if (!box) { box = document.createElement('div'); box.className = 'links'; top.appendChild(box); }
@@ -32,7 +50,7 @@
   // סרגל תחתון (טלפון): ראשי, קריאה, מילון, חיפוש (מפתחות + שאלה), עוד — "עדכונים/תרומה/פידבק" בתוך "עוד"
   var bItems = [
     ['index.html',  'ראשי',   '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'],
-    ['sichos.html', 'קריאה',  '<path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/>'],
+    ['sichos.html', 'שיחות',  '<path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/>'],
     ['milon.html',  'מילון',  '<path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/>'],
     ['ask.html',    'חיפוש', '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>']
   ];
@@ -85,6 +103,6 @@
     btn.setAttribute('aria-label', 'חזרה');
     btn.innerHTML = '<span aria-hidden="true">→</span> חזור';
     btn.addEventListener('click', function () { window.sichosGoBack(page === 'read.html' ? 'sichos.html' : 'index.html'); });
-    top.insertBefore(btn, top.firstChild);
+    var ubx = top.querySelector('.rz-navuser'); top.insertBefore(btn, ubx ? ubx.nextSibling : top.firstChild);
   })();
 
