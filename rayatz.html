@@ -122,7 +122,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
 </nav>
 
 <script src="rz-config.js?v=1"></script>
-<script src="rayatz-data.js?v=20261109b"></script>
+<script src="rayatz-data.js?v=20261109c"></script>
 <script src="data.js"></script>
 <script>window.SICHOS_DATA = YEARS;</script>
 <script src="rayatz-auth.js?v=20261028t"></script>
@@ -215,7 +215,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     b.sections.forEach(sec => {
       const isYear = YEAR_SEC.test(sec.id);
       // כל הוספה מוצגת בכרך שבו היא מודפסת — החלק הוא הכרך
-      const label = cleanPart(b.title).replace(/\s*\(לה״ק\)\s*$/, '') || b.title;
+      const label = b.vol || cleanPart(b.title).replace(/\s*\(לה״ק\)\s*$/, '') || b.title;
       const extra = false;
       let P = S.parts.find(p => p.name === label); if (!P) { P = { name: label, extra, first: seq, items: [] }; S.parts.push(P); }
       sec.sichos.forEach(x => {
