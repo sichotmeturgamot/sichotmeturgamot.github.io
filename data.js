@@ -1030,6 +1030,17 @@ const YEARS = [
         "hebDate": "כ״ב ניסן",
         "addedAt": "2026-11-09",
         "hasPage": true
+      },
+      {
+        "title": "יום שבת קודש, אחרון של פסח תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/yom_acharon_shel_pesach_5708.pdf",
+        "pages": 4,
+        "count": 1,
+        "sortDate": "08-22",
+        "hebDate": "כ״ב ניסן",
+        "addedAt": "2026-11-09",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
