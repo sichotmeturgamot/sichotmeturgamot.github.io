@@ -1019,6 +1019,17 @@ const YEARS = [
         "hebDate": "כ״א ניסן",
         "addedAt": "2026-10-25",
         "hasPage": true
+      },
+      {
+        "title": "ליל שבת קודש, אחרון של פסח תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/leyl_acharon_shel_pesach_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "08-22",
+        "hebDate": "כ״ב ניסן",
+        "addedAt": "2026-11-09",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
