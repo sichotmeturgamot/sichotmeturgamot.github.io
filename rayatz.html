@@ -292,7 +292,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     const P = S.parts.find(p => p.name === st.part) || S.parts[0];
     st.part = P.name;
     h += '<div class="rz-body"><div class="rz-rail rz-parts">';
-    S.parts.forEach(p => { h += '<button class="year-chip' + (p === P ? ' active' : '') + '" data-p="' + esc(p.name) + '">' + esc(p.name.replace(/^ספר המאמרים\s*/, '')) + '<small>' + p.items.length + '</small></button>'; });
+    S.parts.forEach(p => { h += '<button class="year-chip' + (p === P ? ' active' : '') + '" data-p="' + esc(p.name) + '">' + esc(p.name.replace(/^ספר המאמרים\s*/, '')) + '</button>'; });
     h += '</div><div class="rz-area">';
     const multiY = new Set(P.items.map(i => i.year)).size > 1;
     P.items.slice().sort((a, b) => (a.book === b.book ? 0 : ((a.ps != null ? a.ps : a.pdf) - (b.ps != null ? b.ps : b.pdf))) || a.pdf - b.pdf || a.seq - b.seq).forEach(x => { h += card(x, { year: multiY, inPart: true }); });
