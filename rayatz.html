@@ -76,9 +76,9 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
 @media (max-width:640px) {
   .rz-head h1 { font-size:1.65rem; }
   .rz-body { gap:10px; }
-  .rz-months { width:62px; } .rz-series { width:74px; } .rz-parts { width:72px; }
+  .rz-months { width:62px; } .rz-series { width:74px; } .rz-parts { width:84px; }
   .rz-rail .year-chip { font-size:.86rem; padding:8px 3px; }
-  .rz-parts .year-chip { font-size:.84rem; white-space:nowrap; }
+  .rz-parts .year-chip { font-size:.8rem; white-space:normal; overflow-wrap:anywhere; line-height:1.2; }
   .rz-series .year-chip { font-size:.8rem; }
   .rz-item { padding:11px 12px; gap:11px; }
   .rz-date { flex-basis:54px; height:56px; }
@@ -294,7 +294,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     const P = S.parts.find(p => p.name === st.part) || S.parts[0];
     st.part = P.name;
     h += '<div class="rz-body"><div class="rz-rail rz-parts">';
-    S.parts.forEach(p => { h += '<button class="year-chip' + (p === P ? ' active' : '') + '" data-p="' + esc(p.name) + '">' + esc(p.name.replace(/^ספר המאמרים\s*/, '')) + '</button>'; });
+    S.parts.forEach(p => { h += '<button class="year-chip' + (p === P ? ' active' : '') + '" data-p="' + esc(p.name) + '">' + esc(p.name.replace(/^ספר המאמרים\s*/, '')).replace(/([–\-])/g, '$1<wbr>') + '</button>'; });
     h += '</div><div class="rz-area">';
     const multiY = new Set(P.items.map(i => i.year)).size > 1;
     P.items.slice().sort((a, b) => (a.book === b.book ? 0 : ((a.ps != null ? a.ps : a.pdf) - (b.ps != null ? b.ps : b.pdf))) || a.pdf - b.pdf || a.seq - b.seq).forEach(x => { h += card(x, { year: multiY, inPart: true }); });
