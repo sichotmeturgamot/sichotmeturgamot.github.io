@@ -60,7 +60,7 @@
     ['feedback.html', 'פידבק', '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'],
     ['#share', 'שיתוף והתקנה', '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>']
   ];
-  if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>']);
+  if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<path d="M2.5 21h19"/><rect x="4" y="4" width="4" height="17" rx=".6"/><rect x="9.5" y="8" width="4" height="13" rx=".6"/><path d="M15.2 21L14.6 8.4l3.8-1.2L21 21"/>']);
   var bHtml = bItems.map(function (b) {
     return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') + (b[0] === '#share' ? ' data-bshare="1"' : '') +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + b[2] + '</svg><span>' + b[1] + '</span></a>';
