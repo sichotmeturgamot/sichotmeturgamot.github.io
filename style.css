@@ -229,6 +229,8 @@ input.en { direction: ltr; text-align: left; }
     transition: color .15s;
   }
   .bottomnav a svg { width: 21px; height: 21px; }
+  .bottomnav a { flex: 1 1 0; min-width: 0; padding: 3px 2px; font-size: .62rem; line-height: 1.15; }
+  .bottomnav a span { display: block; max-width: 100%; }
   .bottomnav a.active { color: #e8d9b0; }
 }
 
