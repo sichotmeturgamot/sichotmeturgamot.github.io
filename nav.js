@@ -60,7 +60,7 @@
     ['feedback.html', 'פידבק', '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'],
     ['#share', 'שיתוף והתקנה', '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>']
   ];
-  if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<path d="M2.5 21h19"/><rect x="4" y="4" width="4" height="17" rx=".6"/><rect x="9.5" y="8" width="4" height="13" rx=".6"/><path d="M15.2 21L14.6 8.4l3.8-1.2L21 21"/>']);
+  if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<rect x="2.5" y="4" width="5" height="16" rx="1"/><path d="M2.5 8h5M2.5 16h5"/><rect x="9" y="4" width="5" height="16" rx="1"/><path d="M9 8h5M9 16h5"/><path d="M15.8 6.4l3.5-1 2.4 13.8-3.6 1z"/>']);
   var bHtml = bItems.map(function (b) {
     return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') + (b[0] === '#share' ? ' data-bshare="1"' : '') +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + b[2] + '</svg><span>' + b[1] + '</span></a>';
