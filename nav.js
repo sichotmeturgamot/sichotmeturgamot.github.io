@@ -52,18 +52,32 @@
     ['index.html',  'ראשי',   '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'],
     ['sichos.html', 'שיחות מתורגמות',  '<path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/>'],
     ['milon.html',  'מילון',  '<path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/>'],
-    ['ask.html',    'חיפוש', '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>']
+    ['ask.html',    'חיפוש', '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>'],
+    ['stories.html', 'סיפורים ופתגמים', '<path d="M7 8h10M7 12h7"/><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'],
+    ['subscribe.html', 'הצטרפות לעדכונים', '<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10 21a2 2 0 004 0"/>'],
+    ['donate.html', 'תרומה', '<path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 000-7.8z"/>'],
+    ['about.html',  'אודות', '<circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/>'],
+    ['feedback.html', 'פידבק', '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'],
+    ['#share', 'שיתוף והתקנה', '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>']
   ];
   if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>']);
   var bHtml = bItems.map(function (b) {
-    return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') +
+    return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') + (b[0] === '#share' ? ' data-bshare="1"' : '') +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + b[2] + '</svg><span>' + b[1] + '</span></a>';
   }).join('');
-  bHtml += '<a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>';
 
   var bn = document.querySelector('.bottomnav');
   if (!bn) { bn = document.createElement('nav'); bn.className = 'bottomnav'; document.body.appendChild(bn); }
   bn.innerHTML = bHtml;
+  var sh = bn.querySelector('[data-bshare]');
+  if (sh) sh.addEventListener('click', function (e) {
+    e.preventDefault();
+    var data = { title: 'ספר השיחות מתורגם ללה״ק', text: 'ספר השיחות מתורגם ללשון הקודש', url: location.origin + '/' };
+    if (navigator.share) { navigator.share(data).catch(function () {}); }
+    else if (navigator.clipboard) { navigator.clipboard.writeText(data.url); alert('הקישור הועתק'); }
+  });
+  var act = bn.querySelector('a.active');
+  if (act && act.scrollIntoView) try { bn.scrollLeft += act.getBoundingClientRect().left - bn.getBoundingClientRect().left - (bn.clientWidth - act.offsetWidth) / 2; } catch (e) {}
 })();
 
   // חזרה אחורה במחשב + תיקון עמוד שנשמר שקוף אחרי מעבר
