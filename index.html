@@ -300,6 +300,7 @@
     addEventListener('touchstart', e => {
       const v = document.getElementById('viewer-wrap');
       if (v && v.classList.contains('open')) { x0 = null; return; }
+      if (e.target.closest && e.target.closest('.bottomnav')) { x0 = null; return; }
       x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
     }, { passive: true });
     addEventListener('touchend', e => {
