@@ -121,7 +121,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
 </nav>
 
 <script src="rz-config.js?v=1"></script>
-<script src="rayatz-data.js?v=20261110i"></script>
+<script src="rayatz-data.js?v=20261111a"></script>
 <script src="data.js"></script>
 <script>window.SICHOS_DATA = YEARS;</script>
 <script src="rayatz-auth.js?v=20261109a"></script>
@@ -240,7 +240,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     if (x.series === 'לקוטי דיבורים') t = inPart ? t.replace(/^לקוטי דיבורים ח״[א-ה],\s*/, '') : t.replace(/^לקוטי דיבורים\s+/, '');
     return t;
   }
-  const serLabel = n => (n === 'לקוטי דיבורים' || n === 'ספר הזכרונות') ? n + ' מתורגם' : n;
+  const serLabel = n => n === 'לקוטי דיבורים' ? n + ' מתורגם' : n;
   const volName = x => { const p = x.part.replace(/\s*\(לה״ק\)\s*$/, ''); return serLabel(x.series) + ' ' + p; };
   const CHEV = '<svg class="rz-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
   function card(x, opt) {
