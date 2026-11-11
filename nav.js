@@ -60,7 +60,7 @@
     ['feedback.html', 'פידבק', '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'],
     ['#share', 'שיתוף והתקנה', '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>']
   ];
-  if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<path d="M2 20h3.2l1.6-16H3.6z"/><path d="M3.15 8.5h3.2M2.45 15.5h3.2"/><rect x="9.2" y="4" width="3" height="16" rx=".5"/><path d="M9.2 8.5h3M9.2 15.5h3"/><rect x="14.2" y="4" width="3" height="16" rx=".5"/><path d="M14.2 8.5h3M14.2 15.5h3"/><rect x="19.2" y="4" width="3" height="16" rx=".5"/><path d="M19.2 8.5h3M19.2 15.5h3"/>']);
+  if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<path d="M1.6 20h3.2l2.8-16H4.4z"/><path d="M3.6 8.5h3.2M2.4 15.5h3.2"/><rect x="9.2" y="4" width="3" height="16" rx=".5"/><path d="M9.2 8.5h3M9.2 15.5h3"/><rect x="14.2" y="4" width="3" height="16" rx=".5"/><path d="M14.2 8.5h3M14.2 15.5h3"/><rect x="19.2" y="4" width="3" height="16" rx=".5"/><path d="M19.2 8.5h3M19.2 15.5h3"/>']);
   var bHtml = bItems.map(function (b) {
     return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') + (b[0] === '#share' ? ' data-bshare="1"' : '') +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + b[2] + '</svg><span>' + b[1] + '</span></a>';
