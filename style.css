@@ -229,7 +229,7 @@ input.en { direction: ltr; text-align: left; }
     transition: color .15s;
   }
   .bottomnav a svg { width: 21px; height: 21px; }
-  .bottomnav { justify-content: flex-start; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .bottomnav { justify-content: flex-start; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x; }
   .bottomnav::-webkit-scrollbar { display: none; }
   .bottomnav a { flex: 0 0 auto; width: 76px; padding: 3px 2px; font-size: .68rem; line-height: 1.15; }
   .bottomnav a span { display: block; max-width: 100%; }

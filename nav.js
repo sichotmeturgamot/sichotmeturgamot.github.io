@@ -69,6 +69,16 @@
   var bn = document.querySelector('.bottomnav');
   if (!bn) { bn = document.createElement('nav'); bn.className = 'bottomnav'; document.body.appendChild(bn); }
   bn.innerHTML = bHtml;
+  // מגע על הסרגל התחתון לא מגיע למנגנון ההחלקה בין עמודים (נרשם בשלב הלכידה, לפני שאר המאזינים)
+  if (!window.__bnGuard) {
+    window.__bnGuard = true;
+    addEventListener('touchstart', function (e) {
+      var b = document.querySelector('.bottomnav');
+      if (!b || getComputedStyle(b).display === 'none') return;
+      var r = b.getBoundingClientRect(), t = e.touches[0];
+      if (t && t.clientY >= r.top - 4) e.stopImmediatePropagation();
+    }, { capture: true, passive: true });
+  }
   var sh = bn.querySelector('[data-bshare]');
   if (sh) sh.addEventListener('click', function (e) {
     e.preventDefault();
