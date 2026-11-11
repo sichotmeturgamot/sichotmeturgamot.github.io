@@ -215,7 +215,7 @@ input.en { direction: ltr; text-align: left; }
 @media (max-width: 640px) {
   .topnav { flex-direction: row; justify-content: center; }
   .topnav .links { display: none; }
-  body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  body { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
   .bottomnav {
     display: flex; position: fixed; bottom: 0; right: 0; left: 0; z-index: 60;
     background: var(--navy); border-top: 1px solid var(--gold);
@@ -228,7 +228,7 @@ input.en { direction: ltr; text-align: left; }
     font-size: .68rem; padding: 3px 6px; text-align: center;
     transition: color .15s;
   }
-  .bottomnav a svg { width: 25px; height: 25px; }
+  .bottomnav a svg { width: 28px; height: 28px; }
   .bottomnav { justify-content: flex-start; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x; }
   .bottomnav::-webkit-scrollbar { display: none; }
   .bottomnav a { flex: 0 0 auto; width: 84px; padding: 4px 2px; font-size: .78rem; line-height: 1.15; }
