@@ -122,8 +122,7 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
       var a=el('div','acts');
       if((c.s||c.x).length>420){tx.classList.add('clip');var m=el('button',null,'הצג עוד');m.type='button';m.onclick=function(){var cl=tx.classList.toggle('clip');m.textContent=cl?'הצג עוד':'הצג פחות';};a.appendChild(m);}
       var l=null;
-      if(c.u){l=el('a',null,c.u.indexOf('hebrewbooks')>=0?'לעמוד בספר ↗':'לחוברת (PDF) ↗');l.href=c.u;l.target='_blank';l.rel='noopener';}
-      else if(c.f){l=el('a',null,'לקריאת השיחה');l.href='read.html?file='+encodeURIComponent('pdfs/'+c.f+'.pdf')+'&title='+encodeURIComponent(c.t);l.target='_blank';}
+      l=window.rzSrcLink(c);
       if(l)a.appendChild(l);d.appendChild(a);trBtn(c,d,a);w.appendChild(d);
     });return w;
   }
@@ -162,5 +161,6 @@ body{background:radial-gradient(1200px 500px at 50% -120px,#fffaf0,var(--cream))
   q.addEventListener('input',function(){q.style.height='auto';q.style.height=Math.min(q.scrollHeight,130)+'px';});
 })();
 </script>
+<script src="rz-source-link.js?v=2"></script>
 </body>
 </html>
