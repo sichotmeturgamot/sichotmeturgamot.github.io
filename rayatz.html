@@ -414,9 +414,10 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   document.getElementById('rzIntroX').onclick = close;
   el.addEventListener('click', function (e) { if (e.target === el) close(); });
   try { if (sessionStorage.getItem('rz-intro-seen')) return; } catch (e) {}
+  el.classList.add('show');   // מוצג מיד; נסגר רק אם השרת מאשר גישה בלי קוד (כלומר הקוד כבר נמחק)
   fetch('https://sichos-translate.doviber.workers.dev/yid/pdf?book=tarpach-tartzaa', { headers: { Range: 'bytes=0-0' } })
-    .then(function (r) { if (r.status !== 200 && r.status !== 206) el.classList.add('show'); })
-    .catch(function () { el.classList.add('show'); });
+    .then(function (r) { if (r.status === 200 || r.status === 206) el.classList.remove('show'); })
+    .catch(function () {});
 })();
 </script>
 <script src="nav.js?v=7"></script>
