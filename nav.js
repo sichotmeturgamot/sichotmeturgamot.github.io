@@ -17,7 +17,7 @@
     ['about.html',     'אודות'],
     ['feedback.html',  'פידבק']
   ];
-  if (RZLIVE) links.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ']);   // עמוד נוסף לצד שיחות מתורגמות
+  links.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ' + (RZLIVE ? '' : ' · בקרוב')]);   // עמוד נוסף לצד שיחות מתורגמות
   var linksHtml = links.map(function (l) {
     return '<a href="' + l[0] + '"' + (l[0] === page ? ' class="active"' : '') + '>' + l[1] + '</a>';
   }).join('');
@@ -60,7 +60,7 @@
     ['feedback.html', 'פידבק', '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'],
     ['#share', 'שיתוף והתקנה', '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>']
   ];
-  if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<g stroke-width="1.2"><g transform="rotate(10 5 20)"><rect x="2" y="4" width="3" height="16" rx=".5"/><path d="M2 8.5h3M2 15.5h3"/></g><rect x="9.2" y="4" width="3" height="16" rx=".5"/><path d="M9.2 8.5h3M9.2 15.5h3"/><rect x="14.2" y="4" width="3" height="16" rx=".5"/><path d="M14.2 8.5h3M14.2 15.5h3"/><rect x="19.2" y="4" width="3" height="16" rx=".5"/><path d="M19.2 8.5h3M19.2 15.5h3"/></g>']);
+  bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ' + (RZLIVE ? '' : ' · בקרוב'), '<g stroke-width="1.2"><g transform="rotate(10 5 20)"><rect x="2" y="4" width="3" height="16" rx=".5"/><path d="M2 8.5h3M2 15.5h3"/></g><rect x="9.2" y="4" width="3" height="16" rx=".5"/><path d="M9.2 8.5h3M9.2 15.5h3"/><rect x="14.2" y="4" width="3" height="16" rx=".5"/><path d="M14.2 8.5h3M14.2 15.5h3"/><rect x="19.2" y="4" width="3" height="16" rx=".5"/><path d="M19.2 8.5h3M19.2 15.5h3"/></g>']);
   var bHtml = bItems.map(function (b) {
     return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') + (b[0] === '#share' ? ' data-bshare="1"' : '') +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + b[2] + '</svg><span>' + b[1] + '</span></a>';
