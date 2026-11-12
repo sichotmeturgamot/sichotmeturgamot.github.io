@@ -588,6 +588,23 @@ async function loadSichaText(file) {
   }
 }
 function sichaPlain(t) { return String(t || '').replace(/⟦\d+⟧/g, '').replace(/\s+/g, ' ').trim(); }
+/* ---------- פתיחת ראשי תיבות בכותרת לגוגל ----------
+   הכותרת בעמוד (H1) נשארת כמו שהיא; רק <title> ו-og:title מקבלים את הצורה המלאה,
+   כי בגוגל מחפשים "שבת פרשת וירא" ולא "ש״פ וירא". אות שימוש (ד/ב/ו/ל) נשמרת. */
+const SICHA_ABBR = [
+  ['עש"ק', 'ערב שבת קודש'], ['ש"פ', 'שבת פרשת'], ['ש"ק', 'שבת קודש'], ['מוש"ק', 'מוצאי שבת קודש'], ['מוצ"ש', 'מוצאי שבת'],
+  ['חוה"מ', 'חול המועד'], ['ר"ח', 'ראש חודש'], ['ר"ה', 'ראש השנה'], ['יוה"כ', 'יום הכיפורים'], ['יו"כ', 'יום כיפור'],
+  ['חה"ס', 'חג הסוכות'], ['חה"פ', 'חג הפסח'], ['חה"ש', 'חג השבועות'], ['שמח"ת', 'שמחת תורה'], ['שמע"צ', 'שמיני עצרת'],
+  ['אחש"פ', 'אחרון של פסח'], ['שש"פ', 'שביעי של פסח'], ['הוש"ר', 'הושענא רבה'], ['יו"ט', 'יום טוב'], ['פ\'', 'פרשת']
+];
+function sichaTitleFull(title) {
+  let t = String(title || '');
+  for (const [abbr, full] of SICHA_ABBR) {
+    const body = abbr.replace(/"/g, '(?:"|״|\'\')').replace(/'$/, '(?:\'|׳)');
+    t = t.replace(new RegExp('(^|[^א-ת])([ובדלה]{0,2})' + body + '(?![א-ת"״\'׳])', 'g'), (m, pre, pfx) => pre + pfx + full);
+  }
+  return t;
+}
 function sichaDescription(s, yearName, td) {
   const sub = (s.subtitle || '').trim();
   let lead = '';
@@ -623,6 +640,7 @@ function renderSichaPage(s, yearName, td) {
   const slug = sichaSlug(s.file);
   const url = base + '/sichos/' + slug + '.html';
   const title = s.title || '';
+  const fullTitle = sichaTitleFull(title);
   const desc = sichaDescription(s, yearName, td);
   const readUrl = '/read.html?file=' + encodeURIComponent(s.file) + '&title=' + encodeURIComponent(title);
   const pdfUrl = '/' + s.file;
@@ -634,14 +652,14 @@ function renderSichaPage(s, yearName, td) {
   const words = textHtml ? sichaPlain(textHtml.replace(/<[^>]+>/g, ' ')).split(' ').length : 0;
   const ld = JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Article',
-    headline: title, description: desc, inLanguage: 'he', url: url,
+    headline: title, ...(fullTitle !== title ? { alternativeHeadline: fullTitle } : {}), description: desc, inLanguage: 'he', url: url,
     author: { '@type': 'Person', name: 'כ״ק אדמו״ר הריי״צ מליובאוויטש' },
     isPartOf: { '@type': 'Book', name: 'ספר השיחות ' + yearName },
     ...(words ? { wordCount: words } : {}),
     encoding: { '@type': 'MediaObject', encodingFormat: 'application/pdf', contentUrl: base + pdfUrl },
     publisher: { '@type': 'Organization', name: 'ספר השיחות מתורגם ללה״ק', url: base + '/' }
   }).replace(/</g, '\\u003c');
-  const pageTitle = title + ' – שיחות אדמו״ר הריי״צ | ספר השיחות מתורגם ללה״ק';
+  const pageTitle = fullTitle + ' – שיחות אדמו״ר הריי״צ | ספר השיחות מתורגם ללה״ק';
   const nb = sichaNeighbors(s);
   const nbLink = (x, cls, label) => x
     ? `<a class="${cls}" href="/sichos/${encodeURIComponent(sichaSlug(x.s.file))}.html"><small>${label}</small>${esc(x.s.title)}</a>`
@@ -661,13 +679,13 @@ function renderSichaPage(s, yearName, td) {
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="article">
-<meta property="og:title" content="${esc(title)} – שיחות אדמו״ר הריי״צ">
+<meta property="og:title" content="${esc(fullTitle)} – שיחות אדמו״ר הריי״צ">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${url}">
 <meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
 <meta property="og:locale" content="he_IL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:title" content="${esc(fullTitle)}">
 <meta name="twitter:description" content="${esc(desc)}">
 <script type="application/ld+json">
 ${ld}
@@ -866,7 +884,7 @@ ${g.items.map(s => `      <li><a href="/sichos/${encodeURIComponent(sichaSlug(s.
 </div>
 <main>
   <h1>כל השיחות לפי שנים</h1>
-  <p class="lead">${total} שיחות של כ״ק אדמו״ר הריי״צ, מתורגמות ללשון הקודש מאידיש · <a href="/sichos.html">לעמוד הקריאה</a></p>
+  <p class="lead">${total} שיחות של כ״ק אדמו״ר הריי״צ, מתורגמות ללשון הקודש מאידיש · <a href="/sichos.html">לעמוד השיחות המתורגמות</a></p>
 ${body}
 </main>
 <footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
