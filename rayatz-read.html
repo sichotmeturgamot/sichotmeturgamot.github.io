@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>קריאה — מרכז הריי״ץ</title>
+<title>קריאה — תורת אדמו״ר הריי״ץ</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="stylesheet" href="fonts.css">
 <style>
@@ -81,7 +81,7 @@
 <div id="toast"></div>
 
 <div id="gate"><div class="g">
-  <h2 id="rzh2">מרכז הריי״ץ</h2>
+  <h2 id="rzh2">תורת אדמו״ר הריי״ץ</h2>
   <p>הגישה לאזור זה מוגבלת. הזינו את קוד הגישה.</p>
   <input type="password" id="key" autocomplete="off" placeholder="קוד גישה">
   <div class="e" id="gerr"></div>
@@ -103,7 +103,7 @@ if (book && book.ro) { const h = document.getElementById('hint'); if (h) h.textC
 const viewer = $('viewer'), inner = $('pagesInner');
 $('title').textContent = params.get('title') || (book && book.title) || '';
 if (window.RZ_CONFIG && window.RZ_CONFIG.live) { var hh = document.getElementById('rzh2'); if (hh) hh.textContent = 'תורת אדמו״ר הריי״ץ'; }
-document.title = (params.get('title') || 'קריאה') + ((window.RZ_CONFIG && window.RZ_CONFIG.live) ? '' : ' — מרכז הריי״ץ');
+document.title = (params.get('title') || 'קריאה') + ((window.RZ_CONFIG && window.RZ_CONFIG.live) ? '' : ' — תורת אדמו״ר הריי״ץ');
 $('back').onclick = () => { if (history.length > 1) history.back(); else location.href = 'rayatz.html'; };
 function toast(t) { const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('show'), 2200); }
 let ldTimers = [];
