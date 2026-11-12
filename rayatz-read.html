@@ -126,7 +126,7 @@ const getKey = () => { try { return localStorage.getItem(KEYN) || ''; } catch (e
 let started = false;
 const hadKey0 = !!getKey();   // האם נשלח קוד בבקשה הזו (בלי קוד — לא מציגים 'הקוד שגוי')
 function gate(err) {
-  if (window.RZ_CONFIG && window.RZ_CONFIG.live) { const gp = document.querySelector('#gate p'); if (gp) gp.innerHTML = 'האזור ייפתח בקרוב בעז״ה.<br>כרגע הוא גלוי רק למי שיש לו קוד גישה.'; }
+  if (window.RZ_CONFIG && window.RZ_CONFIG.live) { const gp = document.querySelector('#gate p'); if (gp) gp.textContent = 'הקריאה כאן זמינה כרגע למי שיש לו קוד גישה. הזינו את הקוד.'; }
   $('gate').classList.add('show'); $('gerr').textContent = hadKey0 ? (err || '') : ''; if (hadKey0 || !(window.RZ_CONFIG && window.RZ_CONFIG.live)) $('key').focus();
 }
 $('gok').onclick = () => {
