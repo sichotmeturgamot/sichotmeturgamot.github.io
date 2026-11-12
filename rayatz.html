@@ -88,21 +88,6 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   .rz-area .year-panel-head h2 { font-size:1.15rem; }
 }
 </style>
-<style id="rzGateCss">
-#rzGate { position:fixed; inset:0; z-index:200; background:#1a2942; display:none; align-items:center; justify-content:center; padding:24px; direction:rtl; }
-#rzGate.show { display:flex; }
-#rzGate .g { background:#fffdf9; border-radius:14px; padding:26px 22px; width:100%; max-width:360px; text-align:center; }
-#rzGate .orn { color:#b8923a; letter-spacing:.35em; }
-#rzGate h2 { font-family:'Frank Ruhl Libre',serif; color:#17233d; margin:4px 0 6px; font-size:1.5rem; }
-#rzGate .soon { display:inline-block; background:#17233d; color:#fffdf9; border-radius:20px; padding:4px 16px; font-size:.95rem; margin:4px 0 12px; }
-#rzGate p { font-size:.9rem; color:#6f6347; line-height:1.55; margin-bottom:14px; }
-#rzGate .hr { border-top:1px solid #e6dfcf; margin:14px 0 12px; }
-#rzGate .lbl { font-size:.8rem; color:#8a7d61; margin-bottom:8px; }
-#rzGate input { width:100%; font:inherit; padding:10px 12px; border:1.5px solid #d9d1c0; border-radius:10px; margin-bottom:8px; direction:ltr; text-align:center; }
-#rzGate .e { color:#a33a34; font-size:.85rem; min-height:1.2em; margin-bottom:6px; }
-#rzGate button { font:inherit; background:#17233d; color:#fffdf9; border:0; border-radius:10px; padding:10px 22px; cursor:pointer; }
-#rzGate a.home { display:block; margin-top:12px; color:#8a7d61; font-size:.85rem; }
-</style>
 </head>
 <body>
 
@@ -116,7 +101,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     <div class="orn">✦</div>
     <h1>מרכז הריי״ץ</h1>
     <div class="sub">ספרי הריי״ץ מתוך הסריקה, עם תרגום ללשון הקודש בהקשה</div>
-    <span class="badge wip" id="rzWip">ייפתח בקרוב · גלוי כרגע לבעלי קוד גישה בלבד</span>
+    <span class="badge wip" id="rzWip">בבנייה · גלוי לבעל האתר בלבד</span>
   </div>
   <div class="read-controls">
     <div class="rz-row"><div class="seg-toggle">
@@ -394,42 +379,6 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     const hook = () => document.querySelectorAll('#app .rz-item:not(.reveal), #app .rz-card:not(.reveal)').forEach((el, i) => { el.classList.add('reveal'); el.style.transitionDelay = (Math.min(i, 6) * 60) + 'ms'; io.observe(el); });
     hook(); new MutationObserver(hook).observe(document.getElementById('app'), { childList: true, subtree: true });
   })();
-</script>
-<div id="rzGate"><div class="g">
-  <div class="orn">✦</div>
-  <h2>תורת אדמו״ר הריי״ץ</h2>
-  <div class="soon">ייפתח בקרוב בעז״ה</div>
-  <p>כל כתבי כ״ק אדמו״ר הריי״ץ במקום אחד: ספרי השיחות, לקוטי דיבורים, אגרות קודש והזכרונות, עם תרגום בהקשה.<br>האזור נמצא בבנייה ועדיין אינו פתוח לציבור.</p>
-  <div class="hr"></div>
-  <div class="lbl">יש לכם קוד גישה?</div>
-  <input type="password" id="rzGateKey" autocomplete="off" placeholder="קוד גישה">
-  <div class="e" id="rzGateErr"></div>
-  <button type="button" id="rzGateOk">כניסה</button>
-  <a class="home" href="sichos.html">לשיחות המתורגמות</a>
-</div></div>
-<script>
-(function () {
-  var CFG = window.RZ_CONFIG || {}; if (CFG.live) return;
-  var API = 'https://sichos-translate.doviber.workers.dev', KEYN = 'rayatz-key';
-  var g = document.getElementById('rzGate'), inp = document.getElementById('rzGateKey'), err = document.getElementById('rzGateErr'), btn = document.getElementById('rzGateOk');
-  var bk = (window.RAYATZ && RAYATZ.books && RAYATZ.books[0] && RAYATZ.books[0].id) || 'tarpach-tartzaa';
-  function ls(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
-  async function check(k) {   // בדיקה מול השרת (בקשת בייט אחד בלבד)
-    try { var r = await fetch(API + '/yid/pdf?book=' + bk, { headers: { 'x-key': k, 'Range': 'bytes=0-0' } }); return r.status !== 401 && r.status !== 403; }
-    catch (e) { return null; }
-  }
-  g.classList.add('show');
-  async function tryKey(k, quiet) {
-    if (!k) return;
-    btn.disabled = true; var ok = await check(k); btn.disabled = false;
-    if (ok) { try { localStorage.setItem(KEYN, k); } catch (e) {} g.classList.remove('show'); }
-    else if (!quiet) err.textContent = ok === null ? 'אין חיבור לשרת. נסו שוב.' : 'הקוד שגוי. נסו שוב.';
-    else try { if (ok === false) localStorage.removeItem(KEYN); } catch (e) {}
-  }
-  btn.onclick = function () { err.textContent = ''; tryKey(inp.value.trim(), false); };
-  inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') btn.click(); });
-  tryKey(ls(KEYN), true);
-})();
 </script>
 <script src="nav.js?v=7"></script>
 <script src="morenav.js" defer></script>
