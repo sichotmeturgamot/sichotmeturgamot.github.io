@@ -33,7 +33,7 @@
     m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(15,25,45,.75);display:flex;align-items:center;justify-content:center;padding:20px;direction:rtl';
     m.innerHTML = '<div style="background:#fffdf9;border-radius:14px;padding:22px 20px;max-width:340px;width:100%;text-align:center;font-family:Heebo,sans-serif;color:#2a2723">' +
       '<h3 style="font-family:\'Frank Ruhl Libre\',serif;color:#17233d;margin-bottom:6px">האזור האישי</h3>' +
-      '<p style="font-size:.86rem;color:#8a7d61;line-height:1.5;margin-bottom:12px">התחברות אופציונלית עם חשבון Google. היא שומרת את היסטוריית התרגומים שלכם ומאפשרת לראות אותה מכל מכשיר. התרגומים נשמרים אצלנו, ואפשר למחוק אותם בכל עת.</p>' +
+      '<p style="font-size:.86rem;color:#8a7d61;line-height:1.5;margin-bottom:12px">התחברות אופציונלית עם חשבון Google, כדי שהיסטוריית התרגומים והחיפושים שלכם תהיה זמינה לכם מכל מכשיר.</p>' +
       '<div id="rz-gbtn" style="display:flex;justify-content:center;min-height:44px"></div>' +
       '<div id="rz-lerr" style="color:#a33a34;font-size:.84rem;min-height:1.2em;margin:8px 0"></div>' +
       '<button type="button" id="rz-lclose" style="font:inherit;font-size:.9rem;border:1px solid #d9d1c0;background:transparent;border-radius:20px;padding:6px 18px;cursor:pointer">סגור</button></div>';
