@@ -1,6 +1,6 @@
 /* קישור מקור בתשובות החיפוש וה-AI → העמוד המתאים ב"תורת אדמו״ר הריי״ץ" (rayatz-read.html).
    הקישור נבנה בלחיצה: טוענים את rayatz-data.js (פעם אחת), מזהים את הספר והעמוד לפי כותרת המקור,
-   ופותחים את הקורא בעמוד הנכון. אם אי אפשר לזהות — נפתח עמוד "תורת אדמו״ר הריי״ץ". */
+   ופותחים את הקורא בעמוד הנכון (באותו חלון, כדי שאפשר יהיה לחזור לתשובה). אם אי אפשר לזהות — נפתח עמוד "תורת אדמו״ר הריי״ץ". */
 (function () {
   var LABEL = 'למקור בתורת אדמו״ר הריי״ץ ↗';
   var norm = function (s) { return String(s || '').replace(/[“”„״"]/g, '״').replace(/[‘’׳']/g, '׳').replace(/\s+/g, ' ').trim(); };
@@ -66,14 +66,11 @@
       l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t);
       return l;
     }
-    l.textContent = LABEL; l.href = 'rayatz.html'; l.target = '_blank'; l.rel = 'noopener';
+    l.textContent = LABEL; l.href = 'rayatz.html';
     l.addEventListener('click', function (e) {
       e.preventDefault();
-      var w = window.open('about:blank', '_blank');   // נפתח מיד (לפני הטעינה) כדי שהדפדפן לא יחסום
-      loadData(function () {
-        var url = resolve(c);
-        if (w) { try { w.opener = null; } catch (x) {} w.location.href = url; } else location.href = url;
-      });
+      l.textContent = 'פותח…';
+      loadData(function () { location.href = resolve(c); });   // באותו חלון — כך כפתור "חזרה" מחזיר לתשובה
     });
     return l;
   };
