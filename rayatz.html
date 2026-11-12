@@ -116,7 +116,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     <div class="orn">✦</div>
     <h1>מרכז הריי״ץ</h1>
     <div class="sub">ספרי הריי״ץ מתוך הסריקה, עם תרגום ללשון הקודש בהקשה</div>
-    <span class="badge wip" id="rzWip">בבנייה · גלוי לבעל האתר בלבד</span>
+    <span class="badge wip" id="rzWip">ייפתח בקרוב · גלוי כרגע לבעלי קוד גישה בלבד</span>
   </div>
   <div class="read-controls">
     <div class="rz-row"><div class="seg-toggle">
@@ -409,15 +409,16 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
 </div></div>
 <script>
 (function () {
-  var CFG = window.RZ_CONFIG || {}; if (!CFG.live) return;   // לא פתוח מהניהול: כמו קודם, בלי מסך
+  var CFG = window.RZ_CONFIG || {}; if (CFG.live) return;
   var API = 'https://sichos-translate.doviber.workers.dev', KEYN = 'rayatz-key';
   var g = document.getElementById('rzGate'), inp = document.getElementById('rzGateKey'), err = document.getElementById('rzGateErr'), btn = document.getElementById('rzGateOk');
   var bk = (window.RAYATZ && RAYATZ.books && RAYATZ.books[0] && RAYATZ.books[0].id) || 'tarpach-tartzaa';
   function ls(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
   async function check(k) {   // בדיקה מול השרת (בקשת בייט אחד בלבד)
-    try { var r = await fetch(API + '/yid/pdf?book=' + bk, { headers: { 'x-key': k, 'Range': 'bytes=0-0' } }); if (r.status === 401 || r.status === 403) return false; return (r.status === 200 || r.status === 206) ? true : null; }
+    try { var r = await fetch(API + '/yid/pdf?book=' + bk, { headers: { 'x-key': k, 'Range': 'bytes=0-0' } }); return r.status !== 401 && r.status !== 403; }
     catch (e) { return null; }
   }
+  g.classList.add('show');
   async function tryKey(k, quiet) {
     if (!k) return;
     btn.disabled = true; var ok = await check(k); btn.disabled = false;
@@ -427,12 +428,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   }
   btn.onclick = function () { err.textContent = ''; tryKey(inp.value.trim(), false); };
   inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') btn.click(); });
-  (async function () {
-    var open = (await check('')) === true;                 // בלי קוד: אם השרת מאשר, האזור כבר פתוח — לא מציגים "בקרוב"
-    if (open) return;
-    g.classList.add('show');
-    tryKey(ls(KEYN), true);
-  })();
+  tryKey(ls(KEYN), true);
 })();
 </script>
 <script src="nav.js?v=7"></script>
