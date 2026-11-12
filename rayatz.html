@@ -88,6 +88,18 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   .rz-area .year-panel-head h2 { font-size:1.15rem; }
 }
 </style>
+<style id="rzIntroCss">
+#rzIntro { position:fixed; inset:0; z-index:200; background:rgba(26,41,66,.72); display:none; align-items:center; justify-content:center; padding:20px; direction:rtl; }
+#rzIntro.show { display:flex; }
+#rzIntro .g { position:relative; background:#fffdf9; border-radius:14px; padding:28px 22px 22px; width:100%; max-width:380px; text-align:center; max-height:90vh; overflow:auto; }
+#rzIntro .x { position:absolute; top:8px; left:10px; width:36px; height:36px; border:0; background:none; font-size:1.7rem; line-height:1; color:#8a7d61; cursor:pointer; }
+#rzIntro .orn { color:#b8923a; letter-spacing:.35em; }
+#rzIntro h2 { font-family:'Frank Ruhl Libre',serif; color:#17233d; margin:4px 0 6px; font-size:1.5rem; }
+#rzIntro .soon { display:inline-block; background:#17233d; color:#fffdf9; border-radius:20px; padding:4px 16px; font-size:.95rem; margin:4px 0 12px; }
+#rzIntro p { font-size:.92rem; color:#6f6347; line-height:1.6; margin-bottom:10px; }
+#rzIntro ul { text-align:right; font-size:.9rem; color:#4a4230; line-height:1.7; margin:0 18px 12px 0; padding:0; }
+#rzIntro .note { font-size:.82rem; color:#8a7d61; }
+</style>
 </head>
 <body>
 
@@ -379,6 +391,33 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
     const hook = () => document.querySelectorAll('#app .rz-item:not(.reveal), #app .rz-card:not(.reveal)').forEach((el, i) => { el.classList.add('reveal'); el.style.transitionDelay = (Math.min(i, 6) * 60) + 'ms'; io.observe(el); });
     hook(); new MutationObserver(hook).observe(document.getElementById('app'), { childList: true, subtree: true });
   })();
+</script>
+<div id="rzIntro"><div class="g">
+  <button type="button" class="x" id="rzIntroX" aria-label="סגירה">×</button>
+  <div class="orn">✦</div>
+  <h2>תורת אדמו״ר הריי״ץ</h2>
+  <div class="soon">ייפתח בקרוב בעז״ה</div>
+  <p>כל תורת כ״ק אדמו״ר הריי״ץ במקום אחד:</p>
+  <ul>
+    <li>ספרי השיחות, לקוטי דיבורים, ספר המאמרים</li>
+    <li>אגרות קודש, ספר הזכרונות והרשימות</li>
+    <li>קריאה בסריקה המקורית, ותרגום ללשון הקודש בהקשה על הטקסט</li>
+    <li>חיפוש, ואזור אישי עם היסטוריית תרגומים</li>
+  </ul>
+  <p class="note">האזור נמצא בבנייה, וכרגע הכניסה לשיחות היא בקוד גישה בלבד. אפשר לסגור ולעיין ברשימה.</p>
+</div></div>
+<script>
+(function () {
+  var CFG = window.RZ_CONFIG || {}; if (!CFG.live) return;
+  var el = document.getElementById('rzIntro');
+  function close() { el.classList.remove('show'); try { sessionStorage.setItem('rz-intro-seen', '1'); } catch (e) {} }
+  document.getElementById('rzIntroX').onclick = close;
+  el.addEventListener('click', function (e) { if (e.target === el) close(); });
+  try { if (sessionStorage.getItem('rz-intro-seen')) return; } catch (e) {}
+  fetch('https://sichos-translate.doviber.workers.dev/yid/pdf?book=tarpach-tartzaa', { headers: { Range: 'bytes=0-0' } })
+    .then(function (r) { if (r.status !== 200 && r.status !== 206) el.classList.add('show'); })
+    .catch(function () { el.classList.add('show'); });
+})();
 </script>
 <script src="nav.js?v=7"></script>
 <script src="morenav.js" defer></script>

@@ -124,8 +124,10 @@ if (!book) fatal('הספר לא נמצא.');
 const KEYN = 'rayatz-key';
 const getKey = () => { try { return localStorage.getItem(KEYN) || ''; } catch (e) { return ''; } };
 let started = false;
+const hadKey0 = !!getKey();   // האם נשלח קוד בבקשה הזו (בלי קוד — לא מציגים 'הקוד שגוי')
 function gate(err) {
-  $('gate').classList.add('show'); $('gerr').textContent = err || ''; $('key').focus();
+  if (window.RZ_CONFIG && window.RZ_CONFIG.live) { const gp = document.querySelector('#gate p'); if (gp) gp.innerHTML = 'האזור ייפתח בקרוב בעז״ה.<br>כרגע הוא גלוי רק למי שיש לו קוד גישה.'; }
+  $('gate').classList.add('show'); $('gerr').textContent = hadKey0 ? (err || '') : ''; if (hadKey0 || !(window.RZ_CONFIG && window.RZ_CONFIG.live)) $('key').focus();
 }
 $('gok').onclick = () => {
   const v = $('key').value.trim(); if (!v) return;
