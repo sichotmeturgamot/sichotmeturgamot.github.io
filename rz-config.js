@@ -1,1 +1,1 @@
-window.RZ_CONFIG={"live":false,"hide":[]};
+window.RZ_CONFIG={"live":true,"hide":[]};
