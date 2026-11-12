@@ -356,7 +356,7 @@
           more.onclick = function(){ open=!open; t.textContent = open ? c.x : snip; more.textContent = open ? 'הצג רק את הקטע התואם' : 'הצג את כל הסעיף'; };
           a.appendChild(more);
         }
-        var l = el('a',null, c.u ? (c.u.indexOf('hebrewbooks') >= 0 ? 'לעמוד בספר (HebrewBooks) ↗' : 'לחוברת המלאה (PDF) ↗') : 'לקריאת השיחה'); if(c.u){ l.href = c.u; l.target = '_blank'; l.rel = 'noopener'; } else if(c.f) l.href = 'read.html?file=' + encodeURIComponent('pdfs/' + c.f + '.pdf') + '&title=' + encodeURIComponent(c.t); else l = null;
+        var l = window.rzSrcLink(c);
         if(l) a.appendChild(l); d.appendChild(a); trBtn(c, d, a); return d;
       }
       list.forEach(function(r){ out.appendChild(card(r)); });
@@ -377,6 +377,7 @@
   try { var q0 = new URLSearchParams(location.search).get('q'); if(q0){ qi.value = q0; syncClear(); setTimeout(function(){ form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', {cancelable: true})); }, 0); } } catch(e){}
 })();
 </script>
+<script src="rz-source-link.js?v=1"></script>
 <script src="rz-config.js?v=2"></script>
 <script src="nav.js?v=7"></script>
 <script src="morenav.js" defer></script>
