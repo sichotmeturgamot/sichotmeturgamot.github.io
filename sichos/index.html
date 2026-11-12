@@ -33,6 +33,9 @@
   li a { text-decoration:none; font-weight:500; }
   li a:hover { text-decoration:underline; }
   .st { color:var(--muted); font-size:.9rem; }
+  .moadim .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .moadim .chips a { text-decoration:none; color:var(--navy); background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 14px; font-size:.9rem; }
+  .moadim .chips small { color:var(--muted); }
   footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
   footer a { color:var(--gold-ink); text-decoration:none; }
 </style>
@@ -45,6 +48,10 @@
 <main>
   <h1>כל השיחות לפי שנים</h1>
   <p class="lead">89 שיחות של כ״ק אדמו״ר הריי״צ, מתורגמות ללשון הקודש מאידיש · <a href="/sichos.html">לעמוד השיחות המתורגמות</a></p>
+  <section id="moadim" class="moadim">
+    <h2>לפי מועד</h2>
+    <div class="chips"><a href="/sichos/moadim/rosh-hashana.html">ראש השנה <small>(6)</small></a><a href="/sichos/moadim/yom-kippur.html">יום הכיפורים <small>(4)</small></a><a href="/sichos/moadim/sukkos.html">סוכות <small>(10)</small></a><a href="/sichos/moadim/simchas-torah.html">שמיני עצרת ושמחת תורה <small>(9)</small></a><a href="/sichos/moadim/yud-tes-kislev.html">י״ט כסלו <small>(5)</small></a><a href="/sichos/moadim/purim.html">פורים <small>(3)</small></a><a href="/sichos/moadim/pesach.html">פסח <small>(20)</small></a><a href="/sichos/moadim/shavuos.html">שבועות <small>(5)</small></a><a href="/sichos/moadim/elul.html">חודש אלול <small>(5)</small></a></div>
+  </section>
   <section id="y698">
     <h2>שנת תרצ&quot;ח <small>(1)</small></h2>
     <ul>

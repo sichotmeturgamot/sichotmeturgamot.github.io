@@ -669,6 +669,8 @@ function renderSichaPage(s, yearName, td) {
     <a class="all" href="/sichos/index.html#${yearAnchor(yearName)}">כל שיחות ${esc(yearName)}</a>
     ${nbLink(nb.next, 'next', 'השיחה הבאה ←')}
   </nav>`;
+  const myMoadim = moadimWithItems().filter(g => sichaMoadim(s).includes(g.m));
+  const moadHtml = myMoadim.length ? `  <p class="moad-links">${myMoadim.map(g => `<a href="/${moadPath(g.m)}">עוד שיחות ${esc(g.m.name)} ←</a>`).join(' · ')}</p>` : '';
   return `<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -730,6 +732,8 @@ ${ld}
   .sicha-nav a { text-decoration:none; color:var(--navy); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:.92rem; line-height:1.4; display:flex; flex-direction:column; gap:2px; }
   .sicha-nav a small { color:var(--gold-ink); font-size:.78rem; }
   .sicha-nav .next { text-align:left; }
+  .moad-links { text-align:center; font-size:.92rem; }
+  .moad-links a { color:var(--gold-ink); text-decoration:none; }
   .sicha-nav .all { justify-content:center; text-align:center; white-space:nowrap; }
   @media (max-width:560px) { .sicha-nav { grid-template-columns:1fr 1fr; } .sicha-nav .all { grid-column:1 / -1; order:3; } }
   footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
@@ -755,6 +759,7 @@ ${ld}
   </header>
 ${textHtml ? `  <article class="text" lang="he">\n${textHtml}\n  </article>\n  <div class="bottom"><a class="btn btn-read" href="${readUrl}">לקריאת השיחה כ־PDF</a></div>` : ''}
 ${navHtml}
+${moadHtml}
 </main>
 <footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
 </body>
@@ -780,6 +785,7 @@ function renderSitemap() {
     { loc: base + '/subscribe.html', pri: '0.6' },
     { loc: base + '/donate.html', pri: '0.5' }
   ];
+  moadimWithItems().forEach(g => urls.push({ loc: base + '/' + moadPath(g.m), pri: '0.8' }));
   data.YEARS.forEach(y => y.sichos.forEach(s => {
     if (s.hidden) return;
     if (s.hasPage) urls.push({ loc: base + '/sichos/' + sichaSlug(s.file) + '.html', pri: '0.8' });
@@ -831,6 +837,7 @@ function renderSichosIndex() {
     g.items.push(x.s);
   });
   const total = groups.reduce((n, g) => n + g.items.length, 0);
+  const moadim = moadimWithItems();
   const desc = 'רשימת כל ' + total + ' השיחות של כ״ק אדמו״ר הריי״צ מליובאוויטש המתורגמות ללשון הקודש באתר, לפי שנים: ' + groups.map(g => g.year).join(', ') + '.';
   const body = groups.map(g => `  <section id="${yearAnchor(g.year)}">
     <h2>שנת ${esc(g.year)} <small>(${g.items.length})</small></h2>
@@ -873,6 +880,9 @@ ${g.items.map(s => `      <li><a href="/sichos/${encodeURIComponent(sichaSlug(s.
   li a { text-decoration:none; font-weight:500; }
   li a:hover { text-decoration:underline; }
   .st { color:var(--muted); font-size:.9rem; }
+  .moadim .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .moadim .chips a { text-decoration:none; color:var(--navy); background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 14px; font-size:.9rem; }
+  .moadim .chips small { color:var(--muted); }
   footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
   footer a { color:var(--gold-ink); text-decoration:none; }
 </style>
@@ -885,12 +895,130 @@ ${g.items.map(s => `      <li><a href="/sichos/${encodeURIComponent(sichaSlug(s.
 <main>
   <h1>כל השיחות לפי שנים</h1>
   <p class="lead">${total} שיחות של כ״ק אדמו״ר הריי״צ, מתורגמות ללשון הקודש מאידיש · <a href="/sichos.html">לעמוד השיחות המתורגמות</a></p>
+${moadim.length ? `  <section id="moadim" class="moadim">
+    <h2>לפי מועד</h2>
+    <div class="chips">${moadim.map(g => `<a href="/${moadPath(g.m)}">${esc(g.m.name)} <small>(${g.items.length})</small></a>`).join('')}</div>
+  </section>` : ''}
 ${body}
 </main>
 <footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
 </body>
 </html>
 `;
+}
+/* ---------- עמודי מועדים (SEO): sichos/moadim/SLUG.html ----------
+   כל השיחות של מועד אחד מכל השנים. לא מקושרים מהתפריט — רק מעמוד "כל השיחות" ומדפי השיחות.
+   שיחה משויכת לפי מילים בכותרת (או לפי חודש ב-sortDate). עמוד נבנה רק כשיש בו 2 שיחות לפחות. */
+const MOADIM = [
+  { slug: 'rosh-hashana', name: 'ראש השנה', phrase: 'בערב ראש השנה ובימי ראש השנה', re: /ראש השנה|(^|[^א-ת])ד?ר"ה/ },
+  { slug: 'yom-kippur', name: 'יום הכיפורים', phrase: 'בערב יום הכיפורים', re: /כיפור|הכיפורים|יוה"כ/ },
+  { slug: 'sukkos', name: 'סוכות', phrase: 'בחג הסוכות ובחול המועד סוכות', re: /סוכות|הושענה|הושענא|חה"ס/ },
+  { slug: 'simchas-torah', name: 'שמיני עצרת ושמחת תורה', phrase: 'בשמיני עצרת ובשמחת תורה', re: /שמיני עצרת|שמחת תורה|שמח"ת|שמע"צ/ },
+  { slug: 'yud-tes-kislev', name: 'י״ט כסלו', phrase: 'בחג הגאולה י״ט כסלו ובכ׳ כסלו', test: s => /^(03-19|03-20)$/.test(s.sortDate || '') || /י"ט כסלו/.test(s.t) },
+  { slug: 'chanukah', name: 'חנוכה', phrase: 'בימי חנוכה', re: /חנוכה/ },
+  { slug: 'purim', name: 'פורים', phrase: 'בפורים', re: /(^|[^א-ת])פורים/ },
+  { slug: 'pesach', name: 'פסח', phrase: 'בחג הפסח — בסדרים, בחול המועד ובשביעי ואחרון של פסח', re: /פסח|חה"פ/ },
+  { slug: 'lag-baomer', name: 'ל״ג בעומר', phrase: 'בל״ג בעומר', re: /ל"ג בעומר/ },
+  { slug: 'shavuos', name: 'שבועות', phrase: 'בחג השבועות', re: /שבועות|חה"ש/ },
+  { slug: 'yud-beis-tammuz', name: 'י״ב תמוז', phrase: 'בחג הגאולה י״ב–י״ג תמוז', test: s => /^11-1[23]$/.test(s.sortDate || '') },
+  { slug: 'elul', name: 'חודש אלול', phrase: 'בחודש אלול', test: s => /^13-/.test(s.sortDate || '') }
+];
+const MOAD_MIN = 2;
+function sichaMoadim(s) {
+  const x = { sortDate: s.sortDate, t: String(s.title || '').replace(/״|''/g, '"').replace(/׳/g, "'") };
+  return MOADIM.filter(m => m.test ? m.test(x) : m.re.test(x.t));
+}
+function moadPath(m) { return 'sichos/moadim/' + m.slug + '.html'; }
+/* המועדים שיש להם עמוד (לפחות MOAD_MIN שיחות), עם השיחות שלהם בסדר כרונולוגי */
+function moadimWithItems() {
+  const order = sichaOrder();
+  return MOADIM.map(m => ({ m, items: order.filter(x => sichaMoadim(x.s).includes(m)) })).filter(g => g.items.length >= MOAD_MIN);
+}
+function hebYearsRange(items) {
+  const ys = [...new Set(items.map(x => x.year))];
+  return ys.length > 1 ? ys[0] + '–' + ys[ys.length - 1] : ys[0];
+}
+function renderMoadPage(g) {
+  const base = siteBase(), m = g.m, url = base + '/' + moadPath(m);
+  const desc = g.items.length + ' שיחות שאמר כ״ק אדמו״ר הריי״צ ' + m.phrase + ', בשנים ' + hebYearsRange(g.items) + ', מתורגמות ללשון הקודש מאידיש: ' + g.items.slice(0, 4).map(x => sichaTitleFull(x.s.title)).join('; ') + (g.items.length > 4 ? '…' : '.');
+  const others = moadimWithItems().filter(o => o.m !== m);
+  const list = g.items.map(x => `    <li><a href="/sichos/${encodeURIComponent(sichaSlug(x.s.file))}.html">${esc(x.s.title)}</a>
+      <div class="m">${[x.s.hebDate, 'שנת ' + x.year].filter(Boolean).map(esc).join(' · ')}${(x.s.subtitle || '').trim() ? ' — ' + esc(x.s.subtitle.trim()) : ''}</div></li>`).join('\n');
+  const ld = JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'שיחות ' + m.name + ' – אדמו״ר הריי״צ', description: desc, inLanguage: 'he', url,
+    hasPart: g.items.map(x => ({ '@type': 'Article', headline: x.s.title, url: base + '/sichos/' + sichaSlug(x.s.file) + '.html' }))
+  }).replace(/</g, '\\u003c');
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שיחות ${esc(m.name)} – אדמו״ר הריי״צ | ספר השיחות מתורגם ללה״ק</title>
+<meta name="description" content="${esc(desc)}">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="שיחות ${esc(m.name)} – אדמו״ר הריי״צ">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${url}">
+<meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
+<meta property="og:locale" content="he_IL">
+<script type="application/ld+json">
+${ld}
+<\/script>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --navy:#1a2942; --gold:#b8933e; --gold-ink:#93690f; --paper:#faf7f0; --card:#fff; --line:#e8e2d4; --ink:#2a2a2a; --muted:#6b6b6b; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Heebo',Arial,sans-serif; background:var(--paper); color:var(--ink); line-height:1.7; }
+  .topbar { background:var(--navy); border-bottom:3px solid var(--gold); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .topbar .brand { color:#fff; font-family:'Frank Ruhl Libre',serif; font-size:1.1rem; }
+  .topbar a { color:#fff; text-decoration:none; font-size:.85rem; border:1px solid rgba(255,255,255,.5); border-radius:8px; padding:5px 12px; white-space:nowrap; }
+  main { max-width:860px; margin:0 auto; padding:28px 16px 40px; display:flex; flex-direction:column; gap:18px; }
+  .crumb { font-size:.85rem; color:var(--muted); text-align:center; }
+  .crumb a { color:var(--gold-ink); text-decoration:none; }
+  h1 { font-family:'Frank Ruhl Libre',serif; color:var(--navy); font-size:clamp(1.6rem,4vw,2.1rem); text-align:center; }
+  .lead { text-align:center; color:var(--muted); max-width:60ch; margin:0 auto; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 22px; }
+  ul { list-style:none; display:flex; flex-direction:column; }
+  li { padding:10px 0; border-bottom:1px solid var(--line); }
+  li:last-child { border-bottom:0; }
+  li a { color:var(--navy); text-decoration:none; font-weight:500; font-family:'Frank Ruhl Libre',serif; font-size:1.1rem; }
+  li a:hover { text-decoration:underline; }
+  .m { color:var(--muted); font-size:.88rem; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .chips a { text-decoration:none; color:var(--navy); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:4px 14px; font-size:.88rem; }
+  h2 { font-family:'Frank Ruhl Libre',serif; color:var(--navy); font-size:1.1rem; text-align:center; margin-bottom:10px; }
+  footer { text-align:center; padding:0 16px 26px; color:#8a857a; font-size:.82rem; }
+  footer a { color:var(--gold-ink); text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="brand">ספר השיחות מתורגם ללה״ק</span>
+  <a href="/index.html">לאתר ←</a>
+</div>
+<main>
+  <div class="crumb"><a href="/sichos/index.html">כל השיחות</a> › <a href="/sichos/index.html#moadim">לפי מועד</a></div>
+  <h1>שיחות ${esc(m.name)}</h1>
+  <p class="lead">${g.items.length} שיחות שאמר כ״ק אדמו״ר הריי״צ ${esc(m.phrase)}, בשנים ${esc(hebYearsRange(g.items))}, מתורגמות ללשון הקודש מאידיש. לכל שיחה עמוד עם הטקסט המלא וקישור ל־PDF.</p>
+  <section>
+    <ul>
+${list}
+    </ul>
+  </section>
+${others.length ? `  <section>
+    <h2>שיחות למועדים נוספים</h2>
+    <div class="chips">${others.map(o => `<a href="/${moadPath(o.m)}">${esc(o.m.name)}</a>`).join('')}</div>
+  </section>` : ''}
+</main>
+<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
+</body>
+</html>
+`;
+}
+function moadimEntries() {
+  return moadimWithItems().map(g => ({ path: moadPath(g.m), mode: '100644', type: 'blob', content: renderMoadPage(g) }));
 }
 function indexEntry() {
   return { path: 'sichos/index.html', mode: '100644', type: 'blob', content: renderSichosIndex() };
@@ -910,7 +1038,7 @@ async function generateAllPages() {
       entries.push(await pageEntry(s, y.year));
       n++;
     }
-    entries.push(sitemapEntry(), indexEntry(), dataEntry());
+    entries.push(sitemapEntry(), indexEntry(), ...moadimEntries(), dataEntry());
     await gitCommit(entries, 'בניית דפי נחיתה לכל השיחות (' + n + ') + עדכון מפת אתר');
     render();
     setStatus('נבנו ' + n + ' דפים, ומפת האתר עודכנה ✓', 'ok');
@@ -1121,7 +1249,7 @@ async function saveSicha() {
       sortYear(yi);
       setStatus('שומר…', 'busy');
       if (td) extra.push(textEntry(entry.file, td));
-      await gitCommit([...extra, await pageEntry(entry, data.YEARS[yi].year, td), sitemapEntry(), indexEntry(), ...(await neighborPages(sichaNeighbors(entry), entry)), dataEntry()], 'עריכת שיחה: ' + title);
+      await gitCommit([...extra, await pageEntry(entry, data.YEARS[yi].year, td), sitemapEntry(), indexEntry(), ...moadimEntries(), ...(await neighborPages(sichaNeighbors(entry), entry)), dataEntry()], 'עריכת שיחה: ' + title);
     } else {
       let name = $('s-filename').value.trim();
       if (!fileInput) return setStatus('חסר קובץ PDF', 'err');
@@ -1144,6 +1272,7 @@ async function saveSicha() {
         await pageEntry(entry, data.YEARS[yi].year, td),
         sitemapEntry(),
         indexEntry(),
+        ...moadimEntries(),
         ...(await neighborPages(sichaNeighbors(entry), entry)),
         dataEntry()
       ], 'הוספת שיחה: ' + title);
@@ -1170,7 +1299,7 @@ async function removeSicha(yi, si) {
     if (await getFileSha(sichaTextPath(s.file))) delEntries.push({ path: sichaTextPath(s.file), mode: '100644', type: 'blob', sha: null });
     const nb = sichaNeighbors(s);
     data.YEARS[yi].sichos.splice(si, 1);
-    delEntries.push(sitemapEntry(), indexEntry(), ...(await neighborPages(nb, s)), dataEntry());
+    delEntries.push(sitemapEntry(), indexEntry(), ...moadimEntries(), ...(await neighborPages(nb, s)), dataEntry());
     await gitCommit(delEntries, 'מחיקת שיחה: ' + s.title);
     render(); setStatus('נמחק', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
@@ -1197,7 +1326,7 @@ async function renameSicha(yi, si) {
       // קובץ טקסט השיחה עובר יחד עם השם
       const oldTxt = sichaTextPath(oldPath), txtSha = await getFileSha(oldTxt);
       if (txtSha) renEntries.push({ path: sichaTextPath(s.file), mode: '100644', type: 'blob', sha: txtSha }, { path: oldTxt, mode: '100644', type: 'blob', sha: null });
-      renEntries.push(pageDeleteEntry(oldPath), await pageEntry(s, data.YEARS[yi2].year), sitemapEntry(), indexEntry(), ...(await neighborPages(sichaNeighbors(s), s)));
+      renEntries.push(pageDeleteEntry(oldPath), await pageEntry(s, data.YEARS[yi2].year), sitemapEntry(), indexEntry(), ...moadimEntries(), ...(await neighborPages(sichaNeighbors(s), s)));
     }
     // עדכון קישורי המפתח (search.html) לשם הקובץ החדש — כדי שלא יישברו
     try {
@@ -1234,7 +1363,7 @@ async function toggleHidden(yi, si) {
   if (!s.hidden) delete s.hidden;
   try {
     setStatus('שומר…', 'busy');
-    await gitCommit([sitemapEntry(), indexEntry(), ...(await neighborPages(sichaNeighbors(s), s)), dataEntry()], (s.hidden ? 'הסתרת' : 'הצגת') + ' שיחה: ' + s.title);
+    await gitCommit([sitemapEntry(), indexEntry(), ...moadimEntries(), ...(await neighborPages(sichaNeighbors(s), s)), dataEntry()], (s.hidden ? 'הסתרת' : 'הצגת') + ' שיחה: ' + s.title);
     render(); setStatus('נשמר', 'ok');
   } catch (e) { setStatus('שגיאה: ' + e.message + ' — מרענן נתונים', 'err'); loadAll().catch(() => {}); }
 }
