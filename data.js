@@ -1042,6 +1042,17 @@ const YEARS = [
         "hebDate": "כ״ב ניסן",
         "addedAt": "2026-11-09",
         "hasPage": true
+      },
+      {
+        "title": "ליל א' דחג השבועות תש\"ח",
+        "subtitle": "בסעודה",
+        "file": "pdfs/leyl_a_shavuot_5708.pdf",
+        "pages": 5,
+        "count": 1,
+        "sortDate": "10-06",
+        "hebDate": "ו׳ סיון",
+        "addedAt": "2026-11-14",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
