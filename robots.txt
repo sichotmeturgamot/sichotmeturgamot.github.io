@@ -1,5 +1,27 @@
 User-agent: *
 Allow: /
 Disallow: /pdfs/
+Disallow: /admin.html
+Disallow: /rayatz-admin.html
+Disallow: /chat.html
+Disallow: /talk.html
+
+# סוכני חיפוש ו-AI: מותרים במפורש
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /pdfs/
+Disallow: /admin.html
+Disallow: /rayatz-admin.html
+Disallow: /chat.html
+Disallow: /talk.html
 
 Sitemap: https://sichotmeturgamot.com/sitemap.xml
