@@ -445,6 +445,7 @@ async function gitCommitOnce(entries, message) {
   const ref = await gh(repoPath(`git/ref/heads/${cfg.branch}`));
   const headSha = ref.object.sha;
   const commit = await gh(repoPath(`git/commits/${headSha}`));
+  entries = await resolveSitemap(entries, commit.tree.sha);
   const newTree = await gh(repoPath('git/trees'), { method: 'POST', body: { base_tree: commit.tree.sha, tree: entries } });
   const nc = await gh(repoPath('git/commits'), { method: 'POST', body: { message, tree: newTree.sha, parents: [headSha] } });
   await gh(repoPath(`git/refs/heads/${cfg.branch}`), { method: 'PATCH', body: { sha: nc.sha } });
@@ -588,6 +589,23 @@ async function loadSichaText(file) {
   }
 }
 function sichaPlain(t) { return String(t || '').replace(/⟦\d+⟧/g, '').replace(/\s+/g, ' ').trim(); }
+/* ---------- סימני הערות מקוריים ----------
+   בטקסטים שנבנו מהספר המאוחד כל הערה פותחת בסימן שלה כפי שהוא בספר ("3", "*2", "*"),
+   ובגוף הטקסט הסימן המוקלד מופיע שוב מיד אחרי ⟦n⟧ (למשל "לחסידות⟦3⟧*2"). כאן מוחקים את הכפילות
+   ומציגים בכל מקום את הסימן המקורי. הערה בלי סימן בתחילתה מוצגת במספר הרץ, כמו קודם. */
+function noteMark(n) { const m = /^(\*{0,3}\d{0,3}\*{0,3})\s+/.exec(String(n || '')); return m && m[1] ? m[1] : ''; }
+function noteBody(n) { const mk = noteMark(n); return mk ? String(n).slice(mk.length).trim() : String(n || ''); }
+function cleanSichaText(td) {
+  if (!td || !td.sections) return td;
+  return { ...td, sections: td.sections.map(sec => {
+    const notes = sec.notes || [];
+    const dedupe = t => String(t || '').replace(/⟦(\d+)⟧([\d*]*)/g, (m, n, tail) => {
+      const mk = noteMark(notes[+n - 1]);
+      return '⟦' + n + '⟧' + (mk && tail === mk ? '' : tail);
+    });
+    return { ...sec, head: (sec.head || []).map(dedupe), paras: (sec.paras || []).map(p => ({ ...p, t: dedupe(p.t) })) };
+  }) };
+}
 /* ---------- פתיחת ראשי תיבות בכותרת לגוגל ----------
    הכותרת בעמוד (H1) נשארת כמו שהיא; רק <title> ו-og:title מקבלים את הצורה המלאה,
    כי בגוגל מחפשים "שבת פרשת וירא" ולא "ש״פ וירא". אות שימוש (ד/ב/ו/ל) נשמרת. */
@@ -605,19 +623,19 @@ function sichaTitleFull(title) {
   }
   return t;
 }
+/* תיאור לגוגל (עד ~160 תווים): שם השיחה ומה היא, ואחר כך כותרת המשנה או תחילת הטקסט */
 function sichaDescription(s, yearName, td) {
-  const sub = (s.subtitle || '').trim();
+  const sub = (s.subtitle || '').trim().replace(/[.\s]+$/, '');
+  const head = sichaTitleFull(s.title || '') + ' – שיחת אדמו״ר הריי״צ בתרגום ללשון הקודש. ';
   let lead = '';
   if (td && td.sections) {
     const first = td.sections.flatMap(x => x.paras || []).find(p => !p.c && sichaPlain(p.t).length > 40);
-    if (first) {
-      lead = sichaPlain(first.t).replace(/^[א-ת]{1,2}\.\s*/, '');
-      const room = 150 - (sub ? sub.length + 3 : 0);
-      if (lead.length > room) { lead = lead.slice(0, room); lead = lead.slice(0, lead.lastIndexOf(' ')) + '…'; }
-    }
+    if (first) lead = sichaPlain(first.t).replace(/^[א-ת]{1,2}\.\s*/, '');
   }
-  if (!lead) return (sub ? sub + ' ' : '') + 'מתוך ספר השיחות ' + yearName + ', מתורגם ללשון הקודש מאידיש.';
-  return (sub ? sub + ' – ' : '') + lead;
+  let body = sub ? sub + (lead ? '. ' + lead : '.') : (lead || 'מתוך ספר השיחות ' + yearName + ', מתורגם מאידיש.');
+  const room = 160 - head.length;
+  if (body.length > room) { body = body.slice(0, room); body = body.slice(0, body.lastIndexOf(' ')).replace(/[,;:.–\-\s]+$/, '') + '…'; }
+  return head + body;
 }
 function sichaTextHtml(td, title) {
   if (!td || !td.sections || !td.sections.length) return '';
@@ -625,12 +643,14 @@ function sichaTextHtml(td, title) {
   const many = td.sections.length > 1;
   return td.sections.map((sec, si) => {
     const id = n => (many ? (si + 1) + '-' : '') + n;
-    const refs = t => esc(t).replace(/⟦(\d+)⟧/g, (_, n) => `<sup><a href="#fn${id(n)}" id="r${id(n)}">${n}</a></sup>`);
+    const notes = sec.notes || [];
+    const marked = notes.some(n => noteMark(n));
+    const refs = t => esc(t).replace(/⟦(\d+)⟧/g, (_, n) => `<sup><a href="#fn${id(n)}" id="r${id(n)}">${esc(noteMark(notes[+n - 1]) || n)}</a></sup>`);
     const head = (sec.head || []).filter(h => sichaPlain(h));
     const showHead = many || (head.length && !(head.length === 1 && same(head[0], title)));
     const h = showHead && head.length ? `<h2>${head.map(refs).join('<br>')}</h2>` : '';
     const ps = (sec.paras || []).map(p => `<p${p.c ? ' class="c"' : ''}>${refs(p.t)}</p>`).join('\n');
-    const ns = (sec.notes || []).length ? `<section class="notes" aria-label="הערות"><h3>הערות</h3><ol>${sec.notes.map((n, i) => `<li id="fn${id(i + 1)}">${esc(n)} <a class="back" href="#r${id(i + 1)}" aria-label="חזרה לטקסט">↩</a></li>`).join('\n')}</ol></section>` : '';
+    const ns = notes.length ? `<section class="notes" aria-label="הערות"><h3>הערות</h3><ol${marked ? ' class="marks"' : ''}>${notes.map((n, i) => `<li id="fn${id(i + 1)}">${marked ? `<span class="mk">${esc(noteMark(n) || String(i + 1))}</span> ${esc(noteBody(n))}` : esc(n)} <a class="back" href="#r${id(i + 1)}" aria-label="חזרה לטקסט">↩</a></li>`).join('\n')}</ol></section>` : '';
     return `<div class="sec">${h}\n${ps}\n${ns}</div>`;
   }).join('\n');
 }
@@ -641,6 +661,7 @@ function renderSichaPage(s, yearName, td) {
   const url = base + '/sichos/' + slug + '.html';
   const title = s.title || '';
   const fullTitle = sichaTitleFull(title);
+  td = cleanSichaText(td);
   const desc = sichaDescription(s, yearName, td);
   const readUrl = '/read.html?file=' + encodeURIComponent(s.file) + '&title=' + encodeURIComponent(title);
   const pdfUrl = '/' + s.file;
@@ -650,16 +671,32 @@ function renderSichaPage(s, yearName, td) {
   if (s.pages) meta.push('<span>' + s.pages + (s.pages == 1 ? ' עמוד' : ' עמודים') + ' ב־PDF</span>');
   const textHtml = sichaTextHtml(td, title);
   const words = textHtml ? sichaPlain(textHtml.replace(/<[^>]+>/g, ' ')).split(' ').length : 0;
+  const ogImage = base + '/og-image-1200.png';
   const ld = JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'Article',
-    headline: title, ...(fullTitle !== title ? { alternativeHeadline: fullTitle } : {}), description: desc, inLanguage: 'he', url: url,
-    author: { '@type': 'Person', name: 'כ״ק אדמו״ר הריי״צ מליובאוויטש' },
-    isPartOf: { '@type': 'Book', name: 'ספר השיחות ' + yearName },
-    ...(words ? { wordCount: words } : {}),
-    encoding: { '@type': 'MediaObject', encodingFormat: 'application/pdf', contentUrl: base + pdfUrl },
-    publisher: { '@type': 'Organization', name: 'ספר השיחות מתורגם ללה״ק', url: base + '/' }
+    '@context': 'https://schema.org', '@graph': [{
+      '@type': 'Article',
+      headline: title, ...(fullTitle !== title ? { alternativeHeadline: fullTitle } : {}), description: desc, inLanguage: 'he', url: url,
+      mainEntityOfPage: url, image: ogImage,
+      ...(s.addedAt ? { datePublished: s.addedAt } : {}),
+      author: { '@type': 'Person', name: 'כ״ק אדמו״ר הריי״צ מליובאוויטש', alternateName: ['רבי יוסף יצחק שניאורסון', 'הרבי הריי״צ'], sameAs: 'https://he.wikipedia.org/wiki/%D7%99%D7%95%D7%A1%D7%A3_%D7%99%D7%A6%D7%97%D7%A7_%D7%A9%D7%A0%D7%99%D7%90%D7%95%D7%A8%D7%A1%D7%95%D7%9F' },
+      translationOfWork: { '@type': 'CreativeWork', name: 'ספר השיחות ' + yearName, inLanguage: 'yi' },
+      isPartOf: { '@type': 'Book', name: 'ספר השיחות ' + yearName },
+      ...(words ? { wordCount: words } : {}),
+      encoding: { '@type': 'MediaObject', encodingFormat: 'application/pdf', contentUrl: base + pdfUrl },
+      publisher: { '@type': 'Organization', name: 'ספר השיחות מתורגם ללה״ק', url: base + '/', logo: base + '/icon-512.png' }
+    }, {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'כל השיחות', item: base + '/sichos/index.html' },
+        { '@type': 'ListItem', position: 2, name: 'שנת ' + yearName, item: base + '/sichos/index.html#' + yearAnchor(yearName) },
+        { '@type': 'ListItem', position: 3, name: title }
+      ]
+    }]
   }).replace(/</g, '\\u003c');
-  const pageTitle = fullTitle + ' – שיחות אדמו״ר הריי״צ | ספר השיחות מתורגם ללה״ק';
+  // כותרת קצרה (גוגל חותך אחרי ~60 תווים): שם השיחה קודם
+  const pageTitle = fullTitle + ' | הרבי הריי״צ בעברית';
+  // דף בלי טקסט (או שיחה מוסתרת) לא נכנס לאינדקס
+  const robots = textHtml && !s.hidden ? 'index, follow' : 'noindex, follow';
   const nb = sichaNeighbors(s);
   const nbLink = (x, cls, label) => x
     ? `<a class="${cls}" href="/sichos/${encodeURIComponent(sichaSlug(x.s.file))}.html"><small>${label}</small>${esc(x.s.title)}</a>`
@@ -678,7 +715,7 @@ function renderSichaPage(s, yearName, td) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(desc)}">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="${robots}">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="article">
 <meta property="og:title" content="${esc(fullTitle)} – שיחות אדמו״ר הריי״צ">
@@ -686,13 +723,18 @@ function renderSichaPage(s, yearName, td) {
 <meta property="og:url" content="${url}">
 <meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
 <meta property="og:locale" content="he_IL">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${ogImage}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ספר השיחות מתורגם ללשון הקודש">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(fullTitle)}">
 <meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${ogImage}">
 <script type="application/ld+json">
 ${ld}
 <\/script>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts.css">
 <style>
   :root { --navy:#1a2942; --gold:#b8933e; --gold-ink:#93690f; --paper:#faf7f0; --card:#fff; --line:#e8e2d4; --ink:#2a2a2a; --muted:#6b6b6b; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -726,6 +768,8 @@ ${ld}
   .notes ol { padding-inline-start:1.6em; display:flex; flex-direction:column; gap:4px; }
   .notes li::marker { color:var(--gold-ink); font-weight:500; }
   .notes .back { color:var(--gold-ink); text-decoration:none; font-size:.85em; }
+  .notes ol.marks { list-style:none; padding-inline-start:0; }
+  .notes .mk { color:var(--gold-ink); font-weight:500; }
   .notes li:target { background:#f3e9cf; border-radius:4px; }
   .bottom { text-align:center; }
   .sicha-nav { display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:stretch; border-top:1px solid var(--line); padding-top:18px; }
@@ -744,7 +788,7 @@ ${ld}
 <body>
 <div class="topbar">
   <span class="brand">ספר השיחות מתורגם ללה״ק</span>
-  <a href="/index.html">לאתר ←</a>
+  <a href="/">לאתר ←</a>
 </div>
 <main>
   <header class="head">
@@ -761,7 +805,7 @@ ${textHtml ? `  <article class="text" lang="he">\n${textHtml}\n  </article>\n  <
 ${navHtml}
 ${moadHtml}
 </main>
-<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
+<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/">לעמוד הבית</a></footer>
 </body>
 </html>
 `;
@@ -773,15 +817,26 @@ async function pageEntry(s, yearName, td) {
 function pageDeleteEntry(file) {
   return { path: sichaPagePath(file), mode: '100644', type: 'blob', sha: null };
 }
-function renderSitemap() {
+/* מפת האתר: lastmod אמיתי לכל כתובת. prev = התאריכים מהמפה הקיימת; changed = נתיבי הקבצים שתוכנם משתנה בקומיט הזה.
+   כתובת שלא השתנתה שומרת את התאריך הקודם, כדי שגוגל יסמוך על התאריכים. */
+function sitemapPathOf(loc) { const p = loc.slice(siteBase().length + 1); return p === '' ? 'index.html' : p; }
+function parseSitemapDates(xml) {
+  const out = {};
+  String(xml || '').replace(/<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g, (m, l, d) => { out[l.trim()] = d.trim(); return m; });
+  return out;
+}
+function renderSitemap(prev = {}, changed = new Set()) {
   const base = siteBase();
   const today = new Date().toISOString().slice(0, 10);
   const urls = [
     { loc: base + '/', pri: '1.0' },
     { loc: base + '/sichos.html', pri: '0.8' },
     { loc: base + '/sichos/index.html', pri: '0.9' },
+    { loc: base + '/stories.html', pri: '0.8' },
     { loc: base + '/milon.html', pri: '0.8' },
     { loc: base + '/search.html', pri: '0.8' },
+    { loc: base + '/ask.html', pri: '0.6' },
+    { loc: base + '/about.html', pri: '0.6' },
     { loc: base + '/subscribe.html', pri: '0.6' },
     { loc: base + '/donate.html', pri: '0.5' }
   ];
@@ -791,11 +846,30 @@ function renderSitemap() {
     if (s.hasPage) urls.push({ loc: base + '/sichos/' + sichaSlug(s.file) + '.html', pri: '0.8' });
     // קובצי ה-PDF לא נכנסים למפה: הם כפולים של דף השיחה (שבו אותו טקסט), וחסומים לסריקה ב-robots.txt
   }));
-  const body = urls.map(u => '  <url>\n    <loc>' + u.loc + '</loc>\n    <lastmod>' + today + '</lastmod>\n    <priority>' + u.pri + '</priority>\n  </url>').join('\n');
+  const dateOf = loc => (changed.has(sitemapPathOf(loc)) || !prev[loc]) ? today : prev[loc];
+  const body = urls.map(u => '  <url>\n    <loc>' + u.loc + '</loc>\n    <lastmod>' + dateOf(u.loc) + '</lastmod>\n    <priority>' + u.pri + '</priority>\n  </url>').join('\n');
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + '\n</urlset>\n';
 }
+/* המפה נבנית רק ברגע השמירה (gitCommitOnce), כשידוע אילו קבצים באמת משתנים */
 function sitemapEntry() {
-  return { path: 'sitemap.xml', mode: '100644', type: 'blob', content: renderSitemap() };
+  return { path: 'sitemap.xml', mode: '100644', type: 'blob', lazySitemap: true };
+}
+async function gitBlobSha(content) {
+  const b = new TextEncoder().encode(content), h = new TextEncoder().encode('blob ' + b.length + '\0');
+  const all = new Uint8Array(h.length + b.length); all.set(h); all.set(b, h.length);
+  const d = await crypto.subtle.digest('SHA-1', all);
+  return [...new Uint8Array(d)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+async function resolveSitemap(entries, treeSha) {
+  if (!entries.some(x => x.lazySitemap)) return entries;
+  const tree = await gh(repoPath(`git/trees/${treeSha}?recursive=1`));
+  const shaOf = {}; tree.tree.forEach(t => shaOf[t.path] = t.sha);
+  const changed = new Set();
+  for (const x of entries) if (!x.lazySitemap && typeof x.content === 'string' && (await gitBlobSha(x.content)) !== shaOf[x.path]) changed.add(x.path);
+  let prev = {};
+  if (shaOf['sitemap.xml']) { const b = await gh(repoPath('git/blobs/' + shaOf['sitemap.xml'])); prev = parseSitemapDates(dec(b.content)); }
+  const xml = renderSitemap(prev, changed);
+  return entries.map(x => x.lazySitemap ? { path: x.path, mode: x.mode, type: x.type, content: xml } : x);
 }
 
 /* ---------- קישורים פנימיים (SEO): רשימת כל השיחות + שיחה קודמת/הבאה ----------
@@ -860,7 +934,7 @@ ${g.items.map(s => `      <li><a href="/sichos/${encodeURIComponent(sichaSlug(s.
 <meta property="og:url" content="${base}/sichos/index.html">
 <meta property="og:site_name" content="ספר השיחות מתורגם ללה״ק">
 <meta property="og:locale" content="he_IL">
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts.css">
 <style>
   :root { --navy:#1a2942; --gold:#b8933e; --gold-ink:#93690f; --paper:#faf7f0; --card:#fff; --line:#e8e2d4; --ink:#2a2a2a; --muted:#6b6b6b; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -890,7 +964,7 @@ ${g.items.map(s => `      <li><a href="/sichos/${encodeURIComponent(sichaSlug(s.
 <body>
 <div class="topbar">
   <span class="brand">ספר השיחות מתורגם ללה״ק</span>
-  <a href="/index.html">לאתר ←</a>
+  <a href="/">לאתר ←</a>
 </div>
 <main>
   <h1>כל השיחות לפי שנים</h1>
@@ -901,7 +975,7 @@ ${moadim.length ? `  <section id="moadim" class="moadim">
   </section>` : ''}
 ${body}
 </main>
-<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
+<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/">לעמוד הבית</a></footer>
 </body>
 </html>
 `;
@@ -966,7 +1040,7 @@ function renderMoadPage(g) {
 <script type="application/ld+json">
 ${ld}
 <\/script>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts.css">
 <style>
   :root { --navy:#1a2942; --gold:#b8933e; --gold-ink:#93690f; --paper:#faf7f0; --card:#fff; --line:#e8e2d4; --ink:#2a2a2a; --muted:#6b6b6b; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -996,7 +1070,7 @@ ${ld}
 <body>
 <div class="topbar">
   <span class="brand">ספר השיחות מתורגם ללה״ק</span>
-  <a href="/index.html">לאתר ←</a>
+  <a href="/">לאתר ←</a>
 </div>
 <main>
   <div class="crumb"><a href="/sichos/index.html">כל השיחות</a> › <a href="/sichos/index.html#moadim">לפי מועד</a></div>
@@ -1012,7 +1086,7 @@ ${others.length ? `  <section>
     <div class="chips">${others.map(o => `<a href="/${moadPath(o.m)}">${esc(o.m.name)}</a>`).join('')}</div>
   </section>` : ''}
 </main>
-<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/index.html">לעמוד הבית</a></footer>
+<footer>ספר השיחות מתורגם ללשון הקודש · השיחות מתורגמות ברשות הוצאת ספרים קה"ת · <a href="/">לעמוד הבית</a></footer>
 </body>
 </html>
 `;
