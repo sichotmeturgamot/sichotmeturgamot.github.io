@@ -91,6 +91,7 @@
   <a href="#more" id="more-tab"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg><span>עוד</span></a>
 </nav>
 <script src="quote-img.js?v=3"></script>
+<script src="data.js"></script>
 <script>
 let ITEMS = [];
 const WHO = ['הבעש"ט','המגיד ממעזריטש','אדמו"ר הזקן','אדמו"ר האמצעי','הצמח צדק','אדמו"ר מהר"ש','אדמו"ר הרש"ב','אדמו"ר הריי"צ','חסידים','אחר'];
@@ -98,6 +99,11 @@ let tab = 'story', who = '', theme = '', q = '', only = null;
 const $ = id => document.getElementById(id);
 function el(t, c, x){ const e = document.createElement(t); if(c) e.className = c; if(x != null) e.textContent = x; return e; }
 function link(it){ return 'read.html?file=' + encodeURIComponent('pdfs/' + it.f + '.pdf') + '&title=' + encodeURIComponent(it.t); }
+// בשיתוף שולחים את דף השיחה (שגוגל מאנדקס), ולא את הקורא
+function shareLink(it){
+  try { for (const y of YEARS) for (const s of y.sichos) if (s.file === 'pdfs/' + it.f + '.pdf' && s.hasPage && !s.hidden) return location.origin + '/sichos/' + encodeURIComponent(it.f) + '.html'; } catch(e) {}
+  return new URL(link(it), location.href).href;
+}
 function norm(s){ return s.replace(/[\u0591-\u05C7"'״׳]/g, ''); }
 function chips(){
   const pool = ITEMS.filter(i => i.type === tab);
@@ -129,10 +135,10 @@ function actions(it, extra){
   const a = el('div', 'acts'); if (extra) a.appendChild(extra);
   const r = el('a', null, 'לשיחה'); r.href = link(it); a.appendChild(r);
   const im = el('button', null, '🖼 תמונה'); im.type = 'button';
-  im.onclick = () => window.QuoteImage && QuoteImage.open({ text: it.text, name: it.t, link: new URL(link(it), location.href).href, note: it.type === 'story' ? it.title : '' });
+  im.onclick = () => window.QuoteImage && QuoteImage.open({ text: it.text, name: it.t, link: shareLink(it), note: it.type === 'story' ? it.title : '' });
   a.appendChild(im);
   const w = el('a', null, 'ווטסאפ'); w.target = '_blank'; w.rel = 'noopener';
-  w.href = 'https://wa.me/?text=' + encodeURIComponent((it.type === 'story' ? it.title + '\n\n' : '') + it.text + '\n\n(מתוך שיחת ' + it.t + ')\n' + new URL(link(it), location.href).href);
+  w.href = 'https://wa.me/?text=' + encodeURIComponent((it.type === 'story' ? it.title + '\n\n' : '') + it.text + '\n\n(מתוך שיחת ' + it.t + ')\n' + shareLink(it));
   a.appendChild(w); return a;
 }
 function story(it){

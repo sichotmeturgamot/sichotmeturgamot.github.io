@@ -171,7 +171,9 @@
     url='read.html?file='+encodeURIComponent(k.file)+'&title='+encodeURIComponent(k.title||k.src)+(k.page?'&page='+k.page:'');
     $('ketaim-link').href=url; $('ketaim-link').style.display='';
   }
-  const abs=url?new URL(url,location.href).href:location.origin+'/';
+  // בשיתוף שולחים את דף השיחה (שגוגל מאנדקס), ולא את הקורא
+  const sichaPage=f=>{ try{ for(const y of YEARS) for(const s of y.sichos) if(s.file===f&&s.hasPage&&!s.hidden) return location.origin+'/sichos/'+encodeURIComponent(f.replace(/^pdfs\//,'').replace(/\.pdf$/i,''))+'.html'; }catch(e){} return ''; };
+  const abs=(k.file&&sichaPage(k.file))||(url?new URL(url,location.href).href:location.origin+'/');
   const msg='קטע משיחת '+(k.src||k.title)+':\n\n'+String(k.text).trim()+'\n\n🔗 לשיחה המלאה:\n'+abs;
   $('ketaim-share').href='https://wa.me/?text='+encodeURIComponent(msg);
   if(window.QuoteImage){ const ib=$('ketaim-img'); ib.style.display=''; ib.onclick=()=>{ ib.disabled=true; QuoteImage.open({text:k.text, name:(k.src||k.title), link:abs, note:(byId[sched[iso]]===k&&k.note)||''}).catch(()=>{}).finally(()=>{ib.disabled=false;}); }; }
