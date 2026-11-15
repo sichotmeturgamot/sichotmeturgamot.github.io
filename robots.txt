@@ -25,3 +25,4 @@ Disallow: /chat.html
 Disallow: /talk.html
 
 Sitemap: https://sichotmeturgamot.com/sitemap.xml
+Sitemap: https://sichotmeturgamot.com/sitemap-topics.xml

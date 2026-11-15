@@ -17,7 +17,17 @@
 ## כלים
 - [סיפורים ופתגמים](https://sichotmeturgamot.com/stories.html): סיפורי צדיקים וחסידים ופתגמים מתוך השיחות, עם מקור
 - [מפתח ענינים, שמות ומקומות](https://sichotmeturgamot.com/search.html)
+- [כל ערכי המפתחות](https://sichotmeturgamot.com/mafteach/): דף לכל ערך, עם הקטעים מהשיחות וקישור לכל שיחה
 - [מילון אידיש–עברית](https://sichotmeturgamot.com/milon.html)
+
+## סיפורים ופתגמים לפי דמות
+- [אדמו״ר הזקן](https://sichotmeturgamot.com/stories/alter-rebbe.html)
+- [הבעש״ט](https://sichotmeturgamot.com/stories/baal-shem-tov.html)
+- [הצמח צדק](https://sichotmeturgamot.com/stories/tzemach-tzedek.html)
+- [אדמו״ר מהר״ש](https://sichotmeturgamot.com/stories/maharash.html)
+- [אדמו״ר הרש״ב](https://sichotmeturgamot.com/stories/rashab.html)
+- [אדמו״ר הריי״צ](https://sichotmeturgamot.com/stories/rayatz.html)
+- [חסידים](https://sichotmeturgamot.com/stories/chassidim.html)
 
 ## אודות
 - [אודות האתר](https://sichotmeturgamot.com/about.html)
