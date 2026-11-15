@@ -10,7 +10,7 @@
 
   function loadData(cb) {
     if (typeof RAYATZ !== 'undefined') return cb();
-    var s = document.createElement('script'); s.src = 'rayatz-data.js?v=20261115a';
+    var s = document.createElement('script'); s.src = 'rayatz-data.js?v=20261115b';
     s.onload = function () { cb(); }; s.onerror = function () { cb(); };
     document.head.appendChild(s);
   }
