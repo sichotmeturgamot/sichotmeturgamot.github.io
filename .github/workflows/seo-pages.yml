@@ -1,0 +1,77 @@
+# בונה מחדש את הדפים הסטטיים (stories/, erchim/, רשימת השיחות האחרונות בדף הבית, sitemap-topics.xml)
+# בכל עדכון של data.js / stories.json / mafteach.js או של סקריפט הבנייה.
+# מבצע commit רק כשמשהו השתנה, ושולח את הכתובות שהשתנו ל-IndexNow.
+# commit שנעשה עם GITHUB_TOKEN לא מפעיל workflow נוסף, כך שאין לולאה.
+name: עדכון דפים סטטיים
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - data.js
+      - stories.json
+      - mafteach.js
+      - _seo_build/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: בניית הדפים
+        run: node _seo_build/build.mjs
+
+      - name: שמירה (רק אם משהו השתנה)
+        id: commit
+        run: |
+          git add -A stories erchim index.html stories.html search.html sitemap-topics.xml
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "אין שינוי בדפים"
+            exit 0
+          fi
+          git diff --cached --name-only > "$RUNNER_TEMP/changed.txt"
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "עדכון אוטומטי של דפי הסיפורים, הערכים ודף הבית"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && break
+            git pull -q --rebase origin main
+          done
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: שליחה ל-IndexNow
+        if: steps.commit.outputs.changed == 'true'
+        continue-on-error: true
+        run: |
+          node -e '
+            const fs = require("fs");
+            const host = "sichotmeturgamot.com", key = "68ae61233cb7d5063c0e2a0a5084aa60";
+            const files = fs.readFileSync(process.env.RUNNER_TEMP + "/changed.txt", "utf8").split("\n").filter(f => /\.html$/.test(f));
+            const urls = files.map(f => {
+              if (f === "index.html") return "https://" + host + "/";
+              if (/(^|\/)index\.html$/.test(f)) f = f.replace(/index\.html$/, "");
+              return "https://" + host + "/" + f.split("/").map(encodeURIComponent).join("/");
+            });
+            if (!urls.length) { console.log("אין כתובות לשליחה"); process.exit(0); }
+            fs.writeFileSync("indexnow.json", JSON.stringify({ host, key, keyLocation: "https://" + host + "/" + key + ".txt", urlList: urls.slice(0, 10000) }));
+            console.log(urls.length + " כתובות");
+          '
+          [ -f indexnow.json ] && curl -sS -o /dev/null -w "IndexNow HTTP %{http_code}\n" -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" --data @indexnow.json || true
