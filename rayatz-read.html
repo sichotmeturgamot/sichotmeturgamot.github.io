@@ -170,6 +170,67 @@ const MAX_SIDE = IS_IOS ? 4000 : 8192, MAX_AREA = (IS_IOS ? 16 : 60) * 1024 * 10
 const dpr = window.devicePixelRatio || 1, clamp = (v, a, b) => Math.min(Math.max(v, a), b);
 let pdf = null, baseW = 600, Z = 1, recs = [];
 
+// ---------- טעינה בטווחים: ראש וזנב הקובץ במקביל, בלי בקשה מלאה בהתחלה ----------
+// כל סבב לשרת יקר (סינון כשר מנתב דרך חו"ל), ולכן: מבקשים את תחילת הקובץ וסופו יחד, עוד לפני ש-pdf.js נטען,
+// ובזמן פתיחת העמוד המבוקש מביאים מראש גם את הנתח שאחריו.
+const CH = 1 << 18, SZK = 'rz-pdfsize:' + BOOK;
+function rangeGet(a, b) {   // a===null: b הבתים האחרונים
+  return fetch(API + '/yid/pdf?book=' + BOOK, { headers: { 'x-key': getKey(), Range: a === null ? 'bytes=-' + b : 'bytes=' + a + '-' + b } }).then(async r => {
+    if (r.status === 401) { const e = new Error('unauthorized'); e.status = 401; throw e; }
+    if (r.status === 200) { const buf = new Uint8Array(await r.arrayBuffer()); return { a: 0, buf, size: buf.length, full: true }; }
+    if (r.status !== 206) throw new Error('pdf ' + r.status);
+    const m = /bytes (\d+)-(\d+)\/(\d+)/.exec(r.headers.get('Content-Range') || ''); if (!m) throw new Error('pdf no-range');
+    return { a: +m[1], buf: new Uint8Array(await r.arrayBuffer()), size: +m[3] };
+  });
+}
+function startRanged() {   // נקרא מיד בתחילת begin, במקביל לטעינת pdf.js
+  let known = 0; try { known = +localStorage.getItem(SZK) || 0; } catch (e) {}
+  const head = rangeGet(0, CH - 1);
+  const tail = (known > CH ? rangeGet(Math.floor((known - 1) / CH) * CH, known - 1) : rangeGet(null, CH)).catch(() => null);
+  head.catch(() => {});
+  return { head, tail, known };
+}
+async function openRanged(st) {
+  const H = await st.head;
+  if (H.full || H.buf.length >= H.size) return pdfjsLib.getDocument({ data: H.full ? H.buf : H.buf.slice(0, H.size) }).promise;
+  const size = H.size; try { localStorage.setItem(SZK, String(size)); } catch (e) {}
+  dl('size ' + (size >> 10) + 'KB');
+  const store = [];   // {a, e, p}: נתחים שכבר בדרך או הגיעו (הזנב והנתח הבא)
+  const tA = Math.floor((size - 1) / CH) * CH;   // הנתח האחרון, כפי ש-pdf.js יבקש אותו
+  store.push({ a: tA, e: size, p: st.tail.then(T => T && T.size === size && T.a <= tA && T.a + T.buf.length === size ? T.buf.subarray(tA - T.a) : null) });
+  let fail = null; const failP = new Promise((_, rej) => { fail = rej; }); failP.catch(() => {});
+  const net = async (a, e) => {
+    for (let i = 0; ; i++) {
+      try { const R = await rangeGet(a, e - 1); if (R.a !== a || R.buf.length !== e - a) throw new Error('pdf bad-range'); return R.buf; }
+      catch (err) { if (err.status === 401 || i >= 2) throw err; await new Promise(r => setTimeout(r, 500 * (i + 1))); }
+    }
+  };
+  const own = (a, e, p, tmp) => { const s = { a, e, p }; store.push(s); if (tmp) p.finally(() => { const i = store.indexOf(s); if (i >= 0) store.splice(i, 1); }).catch(() => {}); return s; };
+  const prefetch = (a) => {   // הנתח שאחרי, כל עוד העמוד הראשון עדיין לא הוצג
+    if (!warm || a >= size || store.some(s => a >= s.a && a < s.e)) return;
+    own(a, Math.min(a + CH, size), net(a, Math.min(a + CH, size)).catch(() => null), false);
+  };
+  async function serve(begin, end) {   // מה שכבר בדרך או הגיע — ממנו; השאר — בקשה אחת לכל רצף חסר
+    const parts = []; let a = begin;
+    while (a < end) {
+      const s = store.find(s => a >= s.a && a < s.e);
+      if (s) { const x = a, y = Math.min(end, s.e); parts.push(s.p.then(b => b && b.length === s.e - s.a ? b.subarray(x - s.a, y - s.a) : net(x, y))); a = y; continue; }
+      let y = end; for (const t of store) if (t.a > a && t.a < y) y = t.a;
+      parts.push(own(a, y, net(a, y), true).p); a = y;
+    }
+    prefetch(end);
+    const bs = await Promise.all(parts); if (bs.length === 1) return bs[0].slice();
+    const out = new Uint8Array(end - begin); let o = 0; for (const b of bs) { out.set(b, o); o += b.length; } return out;
+  }
+  class RT extends pdfjsLib.PDFDataRangeTransport {
+    requestDataRange(begin, end) { serve(begin, end).then(b => this.onDataRange(begin, b), err => fail(err)); }
+  }
+  const lt = pdfjsLib.getDocument({ range: new RT(size, H.buf), rangeChunkSize: CH, disableAutoFetch: true, disableStream: true });
+  const doc = await Promise.race([lt.promise, failP]);
+  doc._rzFail = failP; return doc;
+}
+let warm = true;
+
 async function renderCanvas(rec) {
   const t0 = performance.now();
   if (!rec.pdfPage) rec.pdfPage = await pdf.getPage(rec.n);
@@ -215,7 +276,7 @@ const paintAll = () => recs.forEach(r => paintPage(r));
 async function loadBoxes(rec) {
   if ((book && book.ro) || rec.boxes || rec.loading) return; rec.loading = true;
   try {
-    const j = await api('/yid/boxes?book=' + BOOK + '&page=' + rec.n + '&v=2');
+    const j = await (rec.pre || api('/yid/boxes?book=' + BOOK + '&page=' + rec.n + '&v=2')); rec.pre = null;
     if (!j.ok) { if (j.error === 'no-page') rec.boxes = []; rec.loading = false; return; }
     rec.W = j.W; rec.H = j.H; rec.boxes = j.boxes.map(b => ({ x: b[0], y: b[1], w: b[2], h: b[3], id: b[4] }));
     const frag = document.createDocumentFragment();
@@ -286,10 +347,12 @@ copyBtn.onclick = async () => {
 async function begin() {
   if (started) return; if (!getKey() && !(window.RZ_CONFIG && window.RZ_CONFIG.live)) { gate(); return; }
   started = true; showLoader();
+  const st = startRanged();   // הבקשות יוצאות עכשיו, במקביל לטעינת pdf.js
+  const sp0 = Math.max(startPage, 1), boxPre = (book && book.ro) ? null : api('/yid/boxes?book=' + BOOK + '&page=' + sp0 + '&v=2'); if (boxPre) boxPre.catch(() => {});
   try {
     await loadPdfjs();
     const hdr = { 'x-key': getKey() };
-    try { const lt = pdfjsLib.getDocument({ url: API + '/yid/pdf?book=' + BOOK, httpHeaders: hdr, rangeChunkSize: 1 << 18, disableAutoFetch: true, disableStream: true }); pdf = await lt.promise; }
+    try { pdf = await openRanged(st); dl('doc ready, ' + pdf.numPages + ' pages'); }
     catch (e1) {
       if (e1 && e1.status === 401) { hideLoader(); try { localStorage.removeItem(KEYN); } catch (e) {} started = false; gate('הקוד שגוי. נסו שוב.'); return; }
       $('ldt').textContent = 'מוריד את הקובץ…';
@@ -304,7 +367,9 @@ async function begin() {
       pdf = await pdfjsLib.getDocument({ data: buf }).promise;
     }
   } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.' + ' [' + String((e && e.message) || e).slice(0, 80) + ']'); return; }
-  const ratios = []; { const pg1 = await pdf.getPage(1), v1 = pg1.getViewport({ scale: 1 }); const r1 = v1.width + '/' + v1.height; for (let k = 1; k <= pdf.numPages; k++) ratios[k] = r1; }
+  const sp = clamp(startPage, 1, pdf.numPages), ratios = []; let pgT;
+  try { pgT = await (pdf._rzFail ? Promise.race([pdf.getPage(sp), pdf._rzFail]) : pdf.getPage(sp)); } catch (e) { fatal('לא ניתן לטעון את הקובץ כרגע. נסו לרענן.' + ' [' + String((e && e.message) || e).slice(0, 80) + ']'); return; }
+  { const v1 = pgT.getViewport({ scale: 1 }); const r1 = v1.width + '/' + v1.height; for (let k = 1; k <= pdf.numPages; k++) ratios[k] = r1; }
   baseW = Math.min(viewer.clientWidth || 600, 900);
   inner.style.width = baseW + 'px';
   for (let n = 1; n <= pdf.numPages; n++) {
@@ -317,8 +382,9 @@ async function begin() {
   const trec = recs[clamp(startPage, 1, recs.length) - 1], target = trec.el;
   $('ldt').textContent = 'מציג את העמוד…'; setTimeout(hideLoader, 15000);
   viewer.scrollTop = target.offsetTop - inner.offsetTop - 6;
+  trec.pdfPage = pgT; if (boxPre && trec.n === sp0) trec.pre = boxPre;
   loadBoxes(trec);
-  await renderCanvas(trec); hideLoader();
+  await renderCanvas(trec); warm = false; hideLoader();
   viewer.scrollTop = target.offsetTop - inner.offsetTop - 6;
   // תור ציור: עד 2 עמודים בבת אחת, קודם הקרוב ביותר למרכז המסך (כדי שלא יתחרו על רשת איטית)
   const want = new Set(); let active = 0;
