@@ -17,7 +17,7 @@
 ## כלים
 - [סיפורים ופתגמים](https://sichotmeturgamot.com/stories.html): סיפורי צדיקים וחסידים ופתגמים מתוך השיחות, עם מקור
 - [מפתח ענינים, שמות ומקומות](https://sichotmeturgamot.com/search.html)
-- [כל ערכי המפתחות](https://sichotmeturgamot.com/mafteach/): דף לכל ערך, עם הקטעים מהשיחות וקישור לכל שיחה
+- [כל ערכי המפתחות](https://sichotmeturgamot.com/erchim/): דף לכל ערך, עם הקטעים מהשיחות וקישור לכל שיחה
 - [מילון אידיש–עברית](https://sichotmeturgamot.com/milon.html)
 
 ## סיפורים ופתגמים לפי דמות

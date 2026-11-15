@@ -1,6 +1,6 @@
 // בונה דפים סטטיים שגוגל וסוכני AI יכולים לקרוא:
 //   stories/*.html   — סיפורים ופתגמים לפי דמות, נושא ומועד (מתוך stories.json)
-//   mafteach/*.html  — דף לכל ערך במפתח שיש לו 3 מקומות ומעלה (מתוך mafteach.js, קריאה בלבד)
+//   erchim/*.html (לא mafteach/ — הנתיב הזה תפוס ע"י אפליקציית המפתחות הנפרדת)  — דף לכל ערך במפתח שיש לו 3 מקומות ומעלה (מתוך mafteach.js, קריאה בלבד)
 //   index.html       — רשימת 5 השיחות האחרונות בין הסימונים LATEST-START / LATEST-END
 //   sitemap-topics.xml
 // הרצה: node _seo_build/build.mjs   (מתוך שורש המאגר). רץ גם אוטומטית ב-GitHub Actions.
@@ -200,7 +200,7 @@ topics.forEach(tp => { tp.refs = tp.ex + tp.stems.size; });
 const mTopics = [...topics.values()].filter(t => t.refs >= MIN);
 const mUsed = new Set();
 const TSUF = { i: 'ענין', n: 'שם', m: 'מקום', o: 'מוסד' };
-mTopics.forEach(t => { let s = hebSlug(t.topic) || 'topic'; if (mUsed.has(s)) s += '-' + TSUF[t.t]; mUsed.add(s); t.slug = s; t.path = '/mafteach/' + encodeURIComponent(s) + '.html'; t.file = 'mafteach/' + s + '.html'; });
+mTopics.forEach(t => { let s = hebSlug(t.topic) || 'topic'; if (mUsed.has(s)) s += '-' + TSUF[t.t]; mUsed.add(s); t.slug = s; t.path = '/erchim/' + encodeURIComponent(s) + '.html'; t.file = 'erchim/' + s + '.html'; });
 const topicPath = new Map(mTopics.map(t => [t.t + '|' + t.topic, t.path]));
 // הפניות "ראה" שמובילות לערך שיש לו דף
 const seeTo = new Map();
@@ -232,11 +232,11 @@ for (const t of mTopics) {
   if (srcList.length) {
     body += `  <section>\n    <h2>נזכר בשיחות</h2>\n    <ul class="refs">\n${srcList.map(s => { const stem = stemFromUrl(s.u); return `      <li><a href="${esc(sichaHref(stem, s.s))}">${esc(s.s)}</a></li>`; }).join('\n')}\n    </ul>\n  </section>\n`;
   }
-  body += `  <section>\n    <h2>${typeL}</h2>\n    <div class="chips"><a href="/mafteach/">כל הערכים במפתחות</a><a href="/search.html">חיפוש במפתחות</a></div>\n  </section>`;
+  body += `  <section>\n    <h2>${typeL}</h2>\n    <div class="chips"><a href="/erchim/">כל הערכים במפתחות</a><a href="/search.html">חיפוש במפתחות</a></div>\n  </section>`;
   const firstDesc = ex.map(r => r.desc).filter(Boolean).slice(0, 3).join('; ');
   const desc = cut(`${t.topic} בשיחות אדמו״ר הריי״צ – ${t.refs} ${t.ex ? 'קטעים' : 'שיחות'} מתוך ${typeL} של ספר השיחות המתורגם ללשון הקודש${firstDesc ? ': ' + firstDesc : '.'}`);
   out.set(t.file, page({ urlPath: t.path, title: `${t.topic} בשיחות אדמו״ר הריי״צ` + SUFFIX, h1, desc, lead,
-    crumbs: [{ name: 'דף הבית', href: '/' }, { name: 'מפתחות', href: '/mafteach/' }], body }));
+    crumbs: [{ name: 'דף הבית', href: '/' }, { name: 'מפתחות', href: '/erchim/' }], body }));
 }
 // דף ראשי למפתחות
 {
@@ -249,7 +249,7 @@ for (const t of mTopics) {
   }
   body += `  <section>\n    <h2>חיפוש מלא</h2>\n    <div class="chips"><a href="/search.html">לחיפוש בכל המפתחות</a><a href="/stories.html">סיפורים ופתגמים</a><a href="/sichos/index.html">כל השיחות לפי שנים</a></div>\n  </section>`;
   const h1 = 'מפתחות לשיחות אדמו״ר הריי״צ';
-  out.set('mafteach/index.html', page({ urlPath: '/mafteach/', title: h1 + SUFFIX, h1,
+  out.set('erchim/index.html', page({ urlPath: '/erchim/', title: h1 + SUFFIX, h1,
     desc: cut(`מפתח ענינים, שמות, מקומות ומוסדות לשיחות אדמו״ר הריי״צ המתורגמות ללשון הקודש: ${mTopics.length} ערכים, לכל ערך דף עם הציטוטים וקישור לשיחה.`),
     lead: `${mTopics.length} ערכים מתוך המפתחות לשיחות כ״ק אדמו״ר הריי״צ. לכל ערך דף עם הקטעים מהשיחות וקישור לשיחה המלאה.`,
     crumbs: [{ name: 'דף הבית', href: '/' }], body }));
@@ -292,7 +292,7 @@ fillMarkers('stories.html', [
   block('לפי נושא', groups.filter(g => g.kind === 'theme').sort((a, b) => b.items.length - a.items.length).map(g => chipA(g.path, g.key))),
   block('לפי מועד', groups.filter(g => g.kind === 'occ').map(g => chipA(g.path, g.key)))
 ].join('\n'));
-fillMarkers('search.html', block('ערכים מרכזיים במפתחות', [...mTopics].sort((a, b) => b.refs - a.refs).slice(0, 40).map(t => chipA(t.path, t.topic)).concat(chipA('/mafteach/', `כל ${mTopics.length} הערכים ←`))));
+fillMarkers('search.html', block('ערכים מרכזיים במפתחות', [...mTopics].sort((a, b) => b.refs - a.refs).slice(0, 40).map(t => chipA(t.path, t.topic)).concat(chipA('/erchim/', `כל ${mTopics.length} הערכים ←`))));
 
 // ---------- כתיבה + sitemap ----------
 const prevMap = new Map();
@@ -307,12 +307,12 @@ for (const [p, html] of out) {
   const old = fs.existsSync(full) ? fs.readFileSync(full, 'utf8') : null;
   const same = old === html;
   if (!same) { fs.mkdirSync(path.dirname(full), { recursive: true }); fs.writeFileSync(full, html); changed++; }
-  if (!/^(stories|mafteach)\//.test(rel)) continue;
+  if (!/^(stories|erchim)\//.test(rel)) continue;
   const loc = BASE + '/' + (rel.endsWith('index.html') ? rel.replace(/index\.html$/, '') : rel).split('/').map(encodeURIComponent).join('/');
   urls.push({ loc, lastmod: same && prevMap.get(loc) ? prevMap.get(loc) : today });
 }
 // מחיקת דפים ישנים שכבר לא נוצרים
-for (const dir of ['stories', 'mafteach']) {
+for (const dir of ['stories', 'erchim']) {
   const d = path.join(ROOT, dir);
   if (!fs.existsSync(d)) continue;
   for (const f of fs.readdirSync(d)) if (f.endsWith('.html') && !keep.has(dir + '/' + f)) { fs.unlinkSync(path.join(d, f)); changed++; }
