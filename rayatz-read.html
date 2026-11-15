@@ -149,7 +149,7 @@ function dl(t) { if (!DIAG) return; if (!dlog) { dlog = document.createElement('
 if (DIAG) {
   const of = window.fetch.bind(window);
   window.fetch = async (u, o) => {
-    const url = String(u && u.url || u), rg = o && o.headers && (o.headers.Range || o.headers.range || (o.headers.get && o.headers.get('Range')));
+    const url = String(u && u.url || u), rg = (o && o.headers && (o.headers.Range || o.headers.range || (o.headers.get && o.headers.get('Range')))) || (/[?&]r=([^&]+)/.exec(url) || [])[1];
     const t = performance.now(), r = await of(u, o);
     if (/\/yid\//.test(url)) { const tag = url.includes('/yid/pdf') ? 'pdf ' + (rg ? rg.replace('bytes=', '') : 'FULL') : url.includes('/yid/boxes') ? 'boxes p' + (/page=(\d+)/.exec(url) || [])[1] : url.split('?')[0].split('/').pop();
       dl(tag + ' → ' + r.status + ' head ' + Math.round(performance.now() - t) + 'ms');
@@ -174,8 +174,26 @@ let pdf = null, baseW = 600, Z = 1, recs = [];
 // כל סבב לשרת יקר (סינון כשר מנתב דרך חו"ל), ולכן: מבקשים את תחילת הקובץ וסופו יחד, עוד לפני ש-pdf.js נטען,
 // ובזמן פתיחת העמוד המבוקש מביאים מראש גם את הנתח שאחריו.
 const CH = 1 << 18, SZK = 'rz-pdfsize:' + BOOK;
+// קוד הגישה והטווח בתוך הכתובת (?k= ו-?r=): בקשת GET פשוטה, שהדפדפן לא שולח לפניה בקשת בדיקה מקדימה (OPTIONS).
+// אם השרת עוד לא מכיר את זה (401) — חוזרים פעם אחת לדרך הישנה, בכותרות, ונשארים בה.
+let URLK = true;
+async function getK(path, rg) {   // rg: 'a-b' או '-n'
+  const key = getKey();
+  if (URLK && key) {
+    const r = await fetch(API + path + (rg ? '&r=' + rg : '') + '&k=' + encodeURIComponent(key), { cache: 'no-store' });
+    if (r.status !== 401) return r;
+    URLK = false;
+  }
+  const hd = { 'x-key': key }; if (rg) hd.Range = 'bytes=' + rg;
+  return fetch(API + path, { headers: hd, cache: 'no-store' });
+}
+async function apiK(path) {
+  const r = await getK(path);
+  if (r.status === 401) { try { localStorage.removeItem(KEYN); } catch (e) {} gate('הקוד שגוי. נסו שוב.'); throw new Error('unauthorized'); }
+  return r.json();
+}
 function rangeGet(a, b) {   // a===null: b הבתים האחרונים
-  return fetch(API + '/yid/pdf?book=' + BOOK, { headers: { 'x-key': getKey(), Range: a === null ? 'bytes=-' + b : 'bytes=' + a + '-' + b } }).then(async r => {
+  return getK('/yid/pdf?book=' + BOOK, a === null ? '-' + b : a + '-' + b).then(async r => {
     if (r.status === 401) { const e = new Error('unauthorized'); e.status = 401; throw e; }
     if (r.status === 200) { const buf = new Uint8Array(await r.arrayBuffer()); return { a: 0, buf, size: buf.length, full: true }; }
     if (r.status !== 206) throw new Error('pdf ' + r.status);
@@ -276,7 +294,7 @@ const paintAll = () => recs.forEach(r => paintPage(r));
 async function loadBoxes(rec) {
   if ((book && book.ro) || rec.boxes || rec.loading) return; rec.loading = true;
   try {
-    const j = await (rec.pre || api('/yid/boxes?book=' + BOOK + '&page=' + rec.n + '&v=2')); rec.pre = null;
+    const j = await (rec.pre || apiK('/yid/boxes?book=' + BOOK + '&page=' + rec.n + '&v=2')); rec.pre = null;
     if (!j.ok) { if (j.error === 'no-page') rec.boxes = []; rec.loading = false; return; }
     rec.W = j.W; rec.H = j.H; rec.boxes = j.boxes.map(b => ({ x: b[0], y: b[1], w: b[2], h: b[3], id: b[4] }));
     const frag = document.createDocumentFragment();
@@ -348,7 +366,7 @@ async function begin() {
   if (started) return; if (!getKey() && !(window.RZ_CONFIG && window.RZ_CONFIG.live)) { gate(); return; }
   started = true; showLoader();
   const st = startRanged();   // הבקשות יוצאות עכשיו, במקביל לטעינת pdf.js
-  const sp0 = Math.max(startPage, 1), boxPre = (book && book.ro) ? null : api('/yid/boxes?book=' + BOOK + '&page=' + sp0 + '&v=2'); if (boxPre) boxPre.catch(() => {});
+  const sp0 = Math.max(startPage, 1), boxPre = (book && book.ro) ? null : apiK('/yid/boxes?book=' + BOOK + '&page=' + sp0 + '&v=2'); if (boxPre) boxPre.catch(() => {});
   try {
     await loadPdfjs();
     const hdr = { 'x-key': getKey() };
