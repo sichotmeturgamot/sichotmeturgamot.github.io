@@ -32,9 +32,9 @@
 <body>
 
 <nav class="topnav">
-  <a href="index.html" class="brand">ספר השיחות מתורגם ללה״ק</a>
+  <a href="/" class="brand">ספר השיחות מתורגם ללה״ק</a>
   <div class="links">
-    <a href="index.html">ראשי</a>
+    <a href="/">ראשי</a>
     <a href="sichos.html">שיחות מתורגמות</a>
     <a href="milon.html">מילון</a>
     <a href="subscribe.html" class="active">הצטרפות לעדכונים</a>
@@ -62,7 +62,7 @@
 
 
 <nav class="bottomnav">
-  <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>ראשי</span></a>
+  <a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>ראשי</span></a>
   <a href="sichos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c-2-1.5-5-2-8-2v16c3 0 6 .5 8 2 2-1.5 5-2 8-2V3c-3 0-6 .5-8 2z"/><path d="M12 5v16"/></svg><span>שיחות מתורגמות</span></a>
   <a href="milon.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M9 7h6M9 11h6"/></svg><span>מילון</span></a>
   <a href="subscribe.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10 21a2 2 0 004 0"/></svg><span>עדכונים</span></a>
@@ -162,7 +162,7 @@
   // מעברי עמוד רכים + פרלקסה
   (function () {
     document.body.classList.add('page-in');
-    const inner = ['index.html', 'sichos.html', 'subscribe.html', 'donate.html', 'help.html', 'admin.html', 'about.html', 'feedback.html', 'milon.html'];
+    const inner = ['/', 'index.html', 'sichos.html', 'subscribe.html', 'donate.html', 'help.html', 'admin.html', 'about.html', 'feedback.html', 'milon.html'];
     document.addEventListener('click', e => {
       const a = e.target.closest('a');
       if (!a || a.target === '_blank' || a.hasAttribute('download')) return;

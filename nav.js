@@ -19,7 +19,7 @@
   ];
   if (RZLIVE) links.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ']);   // עמוד נוסף לצד שיחות מתורגמות
   var linksHtml = links.map(function (l) {
-    return '<a href="' + l[0] + '"' + (l[0] === page ? ' class="active"' : '') + '>' + l[1] + '</a>';
+    return '<a href="' + (l[0] === 'index.html' ? '/' : l[0]) + '"' + (l[0] === page ? ' class="active"' : '') + '>' + l[1] + '</a>';
   }).join('');
 
   var top = document.querySelector('.topnav');
@@ -62,7 +62,7 @@
   ];
   if (RZLIVE) bItems.splice(2, 0, ['rayatz.html', 'תורת אדמו״ר הריי״ץ', '<g stroke-width="1.2"><g transform="rotate(10 5 20)"><rect x="2" y="4" width="3" height="16" rx=".5"/><path d="M2 8.5h3M2 15.5h3"/></g><rect x="9.2" y="4" width="3" height="16" rx=".5"/><path d="M9.2 8.5h3M9.2 15.5h3"/><rect x="14.2" y="4" width="3" height="16" rx=".5"/><path d="M14.2 8.5h3M14.2 15.5h3"/><rect x="19.2" y="4" width="3" height="16" rx=".5"/><path d="M19.2 8.5h3M19.2 15.5h3"/></g>']);
   var bHtml = bItems.map(function (b) {
-    return '<a href="' + b[0] + '"' + (b[0] === page ? ' class="active"' : '') + (b[0] === '#share' ? ' data-bshare="1"' : '') +
+    return '<a href="' + (b[0] === 'index.html' ? '/' : b[0]) + '"' + (b[0] === page ? ' class="active"' : '') + (b[0] === '#share' ? ' data-bshare="1"' : '') +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + b[2] + '</svg><span>' + b[1] + '</span></a>';
   }).join('');
 
