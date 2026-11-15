@@ -136,6 +136,11 @@ async function loadPdfjs(){
 
 const params = new URLSearchParams(location.search);
 const file  = params.get('file') || '';
+// בציטוט משתפים את דף השיחה (שגוגל מאנדקס) כשיש כזה; אחרת את הקורא
+let sichaPageLink = '';
+{ const m = /^pdfs\/([^/]+)\.pdf$/i.exec(file);
+  if (m) { const u = '/sichos/' + encodeURIComponent(m[1]) + '.html';
+    fetch(u, { method: 'HEAD' }).then(r => { if (r.ok) sichaPageLink = location.origin + u; }).catch(() => {}); } }
 const title = params.get('title') || 'קריאת השיחה';
 const startPage = parseInt((params.get('page') || '').replace(/[^0-9]/g,''),10) || 0;
 
@@ -268,7 +273,7 @@ function currentCitation(){
   out = out.replace(/­/g,'').replace(/[ \t]+/g,' ').replace(/ +([.,;:!?])/g,'$1').replace(/ *\n */g,'\n').replace(/\n{3,}/g,'\n\n').trim();
   if (!out) return null;
   const name = title.replace(/^שיחת\s+/,'').trim();
-  const link = location.origin + location.pathname + '?file=' + encodeURIComponent(file) + '&title=' + encodeURIComponent(title);
+  const link = sichaPageLink || (location.origin + location.pathname + '?file=' + encodeURIComponent(file) + '&title=' + encodeURIComponent(title));
   lastQ = { text: out, name, link };
   return 'קטע משיחת ' + name + ':\n\n“' + out + '”\n\n' + link;
 }
