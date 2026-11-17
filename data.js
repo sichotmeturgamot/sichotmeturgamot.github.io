@@ -1053,6 +1053,16 @@ const YEARS = [
         "hebDate": "ו׳ סיון",
         "addedAt": "2026-11-14",
         "hasPage": true
+      },
+      {
+        "title": "שיחה - קיץ תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/summer_5708.pdf",
+        "pages": 2,
+        "count": 1,
+        "sortDate": "11-05",
+        "hebDate": "קיץ",
+        "addedAt": "2026-11-17"
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
