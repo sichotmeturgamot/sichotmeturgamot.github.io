@@ -1061,8 +1061,9 @@ const YEARS = [
         "pages": 2,
         "count": 1,
         "sortDate": "11-05",
-        "hebDate": "קיץ",
-        "addedAt": "2026-11-17"
+        "hebDate": "ה׳ תמוז",
+        "addedAt": "2026-11-17",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
