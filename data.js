@@ -1061,7 +1061,7 @@ const YEARS = [
         "pages": 2,
         "count": 1,
         "sortDate": "11-05",
-        "hebDate": "ה׳ תמוז",
+        "hebDate": "קיץ",
         "addedAt": "2026-11-17",
         "hasPage": true
       }
