@@ -3,318 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>החנות: המילונית והמילון יידיש–עברית</title>
+<title>החנות</title>
 <!-- דף נסתר: לא לקשר אליו, לא להכניס למפת האתר, ל-llms.txt או ל-IndexNow -->
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="המילונית, מילון כיס אלקטרוני, והמילון יידיש–עברי לכתבי חב״ד בספר מודפס.">
 <meta name="theme-color" content="#17233d">
 <link rel="stylesheet" href="fonts.css">
-<link rel="preload" as="image" href="shop/front-800.webp">
-<style>
-:root {
-  --navy: #17233d;
-  --navy-2: #26324e;
-  --gold: #a9843c;
-  --gold-soft: #c2a05a;
-  --gold-dark: #856527;
-  --cream: #f6f1e6;
-  --paper: #fffdf9;
-  --line: #e5dcc6;
-  --chip: #efe7d6;
-  --text: #2a2723;
-  --muted: #7a6e55;
-  --display: "Frank Ruhl Libre", "David Libre", "Times New Roman", serif;
-  --body: "Heebo", "Arial Hebrew", Arial, sans-serif;
-  color-scheme: light;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { background: var(--cream); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.65; }
-img, video { display: block; max-width: 100%; }
-a { color: var(--gold-dark); }
-
-.bar { background: var(--navy); border-bottom: 1px solid var(--gold); }
-.bar .in { max-width: 900px; margin: 0 auto; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.bar .name { color: #e8d9b0; font-family: var(--display); font-weight: 500; font-size: 1.1rem; }
-.bar a { color: #d8c79d; font-size: .9rem; text-decoration: none; }
-.bar a:hover { color: #fff; }
-
-.wrap { max-width: 900px; margin: 0 auto; padding: 0 16px; }
-section { padding: 36px 0; }
-section + section { border-top: 1px solid var(--line); }
-h1, h2, h3 { font-family: var(--display); color: var(--navy); font-weight: 700; line-height: 1.2; text-wrap: balance; }
-h2 { font-size: clamp(24px, 4.4vw, 32px); text-align: center; margin-bottom: 6px; }
-.sub { text-align: center; color: var(--muted); margin-bottom: 20px; text-wrap: balance; }
-.eyebrow { color: var(--gold-dark); font-size: 13px; font-weight: 500; letter-spacing: .04em; text-align: center; }
-
-/* hero */
-.hero { padding-top: 28px; text-align: center; }
-.hero h1 { font-size: clamp(30px, 6.4vw, 48px); margin: 4px 0 10px; }
-.hero .lead { color: var(--muted); font-size: clamp(16px, 2.6vw, 19px); max-width: 34em; margin: 0 auto; text-wrap: balance; }
-.hero figure { position: relative; margin: 18px auto 6px; max-width: 820px; }
-.hero img { width: 100%; height: auto; }
-.cta { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-.btn { display: inline-block; font: 500 16px var(--body); text-decoration: none; padding: 10px 22px; border-radius: 10px; border: 1px solid var(--navy); }
-.btn.primary { background: var(--navy); color: #f3e8cb; }
-.btn.ghost { background: transparent; color: var(--navy); }
-.btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-
-.tag { position: absolute; top: 8px; inset-inline-start: 8px; background: rgba(23,35,61,.82); color: #f3e8cb; font-size: 12px; padding: 2px 10px; border-radius: 999px; }
-
-/* facts */
-.facts { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.fact { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; }
-.fact .ic { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 10px; background: var(--navy); color: var(--gold-soft); display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 17px; }
-.fact b { display: block; color: var(--navy); font-size: 17px; }
-.fact span { color: var(--muted); font-size: 15px; }
-@media (min-width: 640px) { .facts { grid-template-columns: 1fr 1fr; } }
-
-/* demo */
-.demo-frame { width: 100%; height: 820px; border: 0; display: block; background: var(--cream); border-radius: 14px; }
-
-/* video */
-.video { position: relative; max-width: 820px; margin: 0 auto; border-radius: 14px; overflow: hidden; background: var(--paper); border: 1px solid var(--line); }
-.video video { width: 100%; height: auto; aspect-ratio: 16 / 9; background: #ece6d8; }
-
-/* gallery */
-.gallery { display: grid; grid-template-columns: 1fr; gap: 14px; }
-@media (min-width: 640px) { .gallery { grid-template-columns: 1fr 1fr; } }
-.shot { position: relative; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-.shot a { display: block; }
-.shot img { width: 100%; height: auto; aspect-ratio: 2400 / 1743; object-fit: cover; }
-.shot figcaption { padding: 8px 14px 10px; font-size: 14.5px; color: var(--muted); }
-.slot { border: 2px dashed var(--gold-soft); background: repeating-linear-gradient(135deg, #fbf7ee 0 14px, #f6efe0 14px 28px); border-radius: 14px; aspect-ratio: 2400 / 1743; display: grid; place-items: center; text-align: center; padding: 16px; color: var(--muted); }
-.slot b { display: block; color: var(--navy); font-family: var(--display); font-size: 19px; margin-bottom: 2px; }
-.slot small { font-size: 13px; }
-
-/* order */
-.order { background: var(--navy); color: #eadfc3; border-radius: 16px; padding: 26px 18px; text-align: center; }
-.order h2 { color: #f3e8cb; }
-.order .sub { color: #c9bb98; }
-.order .price { font-family: var(--display); font-size: 22px; color: var(--gold-soft); margin: 6px 0 14px; }
-.order .soon { display: inline-block; border: 1px dashed var(--gold-soft); color: #f3e8cb; border-radius: 10px; padding: 10px 22px; font-weight: 500; }
-.order ul { list-style: none; margin: 18px auto 0; max-width: 26em; text-align: start; display: grid; gap: 6px; font-size: 15px; color: #d9cca8; }
-.order li::before { content: "◆"; color: var(--gold); font-size: 10px; margin-inline-end: 8px; vertical-align: 2px; }
-
-footer { text-align: center; color: var(--muted); font-size: 14px; padding: 26px 16px 40px; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-
-/* store */
-.hero.store { padding-bottom: 28px; }
-.products { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 22px; text-align: start; }
-@media (min-width: 640px) { .products { grid-template-columns: 1fr 1fr; } }
-.pcard { position: relative; display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; text-decoration: none; color: inherit; transition: box-shadow .15s, transform .15s; }
-.pcard:hover { box-shadow: 0 6px 18px rgba(23,35,61,.12); transform: translateY(-2px); }
-.pcard:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-.pcard .pic { position: relative; background: #f1ece0; aspect-ratio: 4 / 3; overflow: hidden; }
-.pcard .pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-.pcard .pic.book img { padding: 12px 0; filter: drop-shadow(0 6px 10px rgba(0,0,0,.2)); }
-.pcard .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
-.pcard h3 { font-size: 22px; }
-.pcard p { color: var(--muted); font-size: 15px; }
-.pcard .meta { margin-top: auto; padding-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.pcard .pr { color: var(--gold-dark); font-weight: 500; font-size: 15px; }
-.pcard .go { color: var(--navy); font-weight: 500; font-size: 15px; }
-.prod-head { text-align: center; padding-top: 8px; }
-.prod-head .num { display: inline-block; background: var(--navy); color: var(--gold-soft); font-family: var(--display); font-weight: 700; border-radius: 999px; padding: 2px 14px; font-size: 14px; margin-bottom: 6px; }
-.prod-head h2 { font-size: clamp(28px, 5.4vw, 40px); }
-.book-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
-@media (min-width: 700px) { .book-wrap { grid-template-columns: 300px minmax(0, 1fr); } }
-.book-wrap > * { min-width: 0; }
-.cover { position: relative; max-width: 300px; margin: 0 auto; }
-.cover img { width: 100%; height: auto; border-radius: 4px; box-shadow: 0 10px 24px rgba(0,0,0,.2); }
-.book-text h3 { font-size: 26px; margin-bottom: 6px; }
-.book-text p { margin-bottom: 12px; }
-.ticks { list-style: none; display: grid; gap: 8px; margin: 6px 0 14px; }
-.ticks li { padding-inline-start: 20px; position: relative; }
-.ticks li::before { content: "◆"; position: absolute; inset-inline-start: 0; top: 1px; color: #8b1e2c; font-size: 11px; }
-.specs { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 4px; font-size: 15px; }
-.specs div { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dotted var(--line); padding: 3px 0; }
-.specs div:last-child { border-bottom: 0; }
-.specs span { color: var(--muted); }
-.ph { color: var(--gold-dark); font-style: normal; }
-.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold-soft), transparent); margin: 10px 0; border: 0; }
-</style>
+<link rel="stylesheet" href="shop/shop.css">
 </head>
 <body>
-
-<div class="bar"><div class="in">
-  <span class="name">החנות</span>
-  <a href="/">לאתר ספר השיחות ←</a>
-</div></div>
-
+<header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
 <main class="wrap">
-
-  <section class="hero store">
-    <div class="eyebrow">יידיש של חב״ד, בעברית</div>
+  <div class="store-head">
     <h1>החנות</h1>
-    <p class="lead">שני כלים ללומדי שיחות, מאמרים ואגרות קודש ביידיש: מילון כיס אלקטרוני, ומילון מודפס.</p>
-    <div class="products">
-      <a class="pcard" href="#milonit">
-        <div class="pic"><img src="shop/front-800.webp" width="800" height="581" alt="המילונית, מילון כיס אלקטרוני" fetchpriority="high"></div>
-        <div class="body">
-          <h3>המילונית</h3>
-          <p>מכשיר בגודל כרטיס אשראי. מקלידים מילה ביידיש ומקבלים פירוש בעברית.</p>
-          <div class="meta"><span class="pr">המחיר בקרוב</span><span class="go">לפרטים ←</span></div>
-        </div>
-      </a>
-      <a class="pcard" href="#milon">
-        <div class="pic book"><img src="shop/book-cover-450.webp" width="450" height="708" alt="כריכת הספר מילון אידיש–עברי לכתבי חב״ד"></div>
-        <div class="body">
-          <h3>מילון אידיש–עברי לכתבי חב״ד</h3>
-          <p>ספר מודפס, למעלה מ-19,000 ערכים, כל מילה בכתיב שבו היא מודפסת בספרים.</p>
-          <div class="meta"><span class="pr">המחיר בקרוב</span><span class="go">לפרטים ←</span></div>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <section id="milonit" class="hero">
-    <div class="prod-head">
-      <span class="num">מוצר 1</span>
-      <h2>המילונית</h2>
-      <p class="sub">מילון כיס לספרות חב״ד. מכשיר קטן בגודל כרטיס אשראי, עם כעשרים אלף ערכים: מקלידים מילה ביידיש ומקבלים את פירושה בעברית.</p>
-    </div>
-    <figure>
-      <img src="shop/angle-800.webp" srcset="shop/angle-800.webp 800w, shop/angle-1600.webp 1600w" sizes="(max-width: 900px) 100vw, 820px" width="1600" height="1162" alt="המילונית: מכשיר כיס עם מסך, מקלדת עם אותיות עבריות ומדבקות בכחול וזהב" loading="lazy">
-      <span class="tag">הדמיה</span>
-    </figure>
-    <div class="cta">
-      <a class="btn primary" href="#demo">נסו את המילונית</a>
-      <a class="btn ghost" href="#order">הזמנה</a>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-why">
-    <h2 id="h-why">מה יש במילונית</h2>
-    <p class="sub">כלי עזר ללימוד שיחות ומאמרים ביידיש.</p>
-    <div class="facts">
-      <div class="fact"><div class="ic">א</div><div><b>כעשרים אלף ערכים</b><span>מילון יידיש–עברית שנבנה לספרות חב״ד.</span></div></div>
-      <div class="fact"><div class="ic">ב</div><div><b>בגודל כרטיס אשראי</b><span>84 על 54 מ״מ. נכנס לכיס, יושב ליד הספר.</span></div></div>
-      <div class="fact"><div class="ic">ג</div><div><b>מקלדת עברית ומסך צבעוני</b><span>מקלידים מילה ולוחצים אישור. יש גם טריוויה לתרגול מילים.</span></div></div>
-      <div class="fact"><div class="ic">ד</div><div><b>נטען ב-USB-C</b><span>אותו חיבור כמו ברוב הטלפונים החדשים.</span></div></div>
-    </div>
-  </section>
-
-  <section id="demo" aria-labelledby="h-demo">
-    <h2 id="h-demo">נסו בעצמכם</h2>
-    <p class="sub">הקלידו מילה ביידיש, או לחצו על מקשי המכשיר שבתמונה.</p>
-    <iframe class="demo-frame" id="demoFrame" src="milonit-demo.html" loading="lazy" title="הדגמה חיה של המילונית"></iframe>
-  </section>
-
-  <section aria-labelledby="h-video">
-    <h2 id="h-video">המילונית בפעולה</h2>
-    <p class="sub">חיפוש מילה וטריוויה, בכמה שניות.</p>
-    <div class="video">
-      <video controls muted playsinline preload="none" poster="shop/poster-1280.webp" width="1280" height="720">
-        <source src="shop/milonit-video.mp4" type="video/mp4">
-      </video>
-      <span class="tag">הדמיה</span>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-gallery">
-    <h2 id="h-gallery">תמונות</h2>
-    <p class="sub">בינתיים הדמיות. צילומים של המכשיר עצמו יעלו בקרוב.</p>
-    <div class="gallery">
-      <figure class="shot">
-        <a href="shop/front-1600.webp" target="_blank" rel="noopener"><img src="shop/front-800.webp" srcset="shop/front-800.webp 800w, shop/front-1600.webp 1600w" sizes="(max-width: 640px) 100vw, 440px" width="800" height="581" loading="lazy" alt="חזית המילונית: מסך, מקלדת עם אותיות עבריות ומדבקות"></a>
-        <figcaption>מלפנים</figcaption>
-        <span class="tag">הדמיה</span>
-      </figure>
-      <figure class="shot">
-        <a href="shop/back-1600.webp" target="_blank" rel="noopener"><img src="shop/back-800.webp" srcset="shop/back-800.webp 800w, shop/back-1600.webp 1600w" sizes="(max-width: 640px) 100vw, 440px" width="800" height="581" loading="lazy" alt="גב המילונית: קוד QR לאתר ושדה לשם ולטלפון של הבעלים"></a>
-        <figcaption>מאחור, עם מקום לשם ולטלפון</figcaption>
-        <span class="tag">הדמיה</span>
-      </figure>
-      <figure class="shot">
-        <a href="shop/size-1600.webp" target="_blank" rel="noopener"><img src="shop/size-800.webp" srcset="shop/size-800.webp 800w, shop/size-1600.webp 1600w" sizes="(max-width: 640px) 100vw, 440px" width="800" height="586" loading="lazy" alt="המילונית עם המידות: 84 על 54 מ״מ, בגודל כרטיס אשראי"></a>
-        <figcaption>בגודל כרטיס אשראי</figcaption>
-        <span class="tag">הדמיה</span>
-      </figure>
-      <!-- מקומות שמורים לצילומים אמיתיים: להחליף כל div.slot ב-figure.shot כשהצילום מגיע -->
-      <div class="slot" data-slot="hand"><div><b>המכשיר ביד</b><small>צילום אמיתי בקרוב</small></div></div>
-      <div class="slot" data-slot="book"><div><b>ליד ספר שיחות פתוח</b><small>צילום אמיתי בקרוב</small></div></div>
-      <div class="slot" data-slot="screen"><div><b>מקרוב על המסך והמקלדת</b><small>צילום אמיתי בקרוב</small></div></div>
-    </div>
-  </section>
-
-  <section id="order" aria-labelledby="h-order">
-    <div class="order">
-      <h2 id="h-order">הזמנת מילונית</h2>
-      <p class="sub">ההזמנה תיפתח בקרוב.</p>
-      <div class="price">המחיר יפורסם בקרוב</div>
-      <span class="soon">טופס ההזמנה בקרוב</span>
-      <ul>
-        <li>כעשרים אלף ערכים, יידיש–עברית</li>
-        <li>בגודל כרטיס אשראי</li>
-        <li>נטען ב-USB-C</li>
-      </ul>
-    </div>
-  </section>
-
-
-  <section id="milon" aria-labelledby="h-milon">
-    <div class="prod-head">
-      <span class="num">מוצר 2</span>
-      <h2 id="h-milon">מילון אידיש–עברי לכתבי חב״ד</h2>
-      <p class="sub">ווערטערבוך צו כתבי חב״ד. כל מילה, כל כתיב.</p>
-    </div>
-    <div class="book-wrap">
-      <figure class="cover">
-        <img src="shop/book-cover-450.webp" srcset="shop/book-cover-450.webp 450w, shop/book-cover-900.webp 900w" sizes="300px" width="450" height="708" loading="lazy" alt="כריכת הספר מילון אידיש–עברי לכתבי חב״ד, מאת דוב בער שפר">
-        <span class="tag">טיוטת כריכה</span>
-      </figure>
-      <div class="book-text">
-        <p>מילון זה נועד ללומדי ספרות חב״ד באידיש. הוא מתאים למתחילים שאינם מבינים אידיש כלל, וגם למי שכבר רכש את השפה ועדיין נתקל לעיתים במילים קשות.</p>
-        <ul class="ticks">
-          <li>למעלה מ-19,000 ערכים מלקוטי שיחות, אגרות קודש, ספר השיחות, לקוטי דיבורים וספר הזכרונות</li>
-          <li>כל מילה בכתיב שבו היא מודפסת בספרים</li>
-          <li>מילים שמקורן באנגלית וברוסית מסומנות</li>
-        </ul>
-        <div class="specs">
-          <div><span>מחבר</span><b>דוב בער שפר</b></div>
-          <div><span>כריכה ופורמט</span><em class="ph">יפורסם בקרוב</em></div>
-          <div><span>מספר עמודים</span><em class="ph">יפורסם בקרוב</em></div>
-          <div><span>מחיר</span><em class="ph">יפורסם בקרוב</em></div>
-        </div>
-        <p style="margin-top:12px">אפשר כבר עכשיו לחפש מילים <a href="milon.html">במילון שבאתר</a>.</p>
+    <p>מילונים ללומדי ספרות חב״ד ביידיש.</p>
+  </div>
+  <div class="grid">
+    <a class="card" href="shop-milonit.html">
+      <div class="pic"><img src="shop/adv-front-800.webp" width="800" height="581" alt="המילונית, מילון כיס אלקטרוני" fetchpriority="high"></div>
+      <div class="body">
+        <h2>המילונית</h2>
+        <p>מילון כיס אלקטרוני יידיש–עברית, בגודל כרטיס אשראי.</p>
+        <div class="price">המחיר בקרוב</div>
       </div>
-    </div>
-  </section>
-
-  <section id="order-book" aria-labelledby="h-order-book">
-    <div class="order">
-      <h2 id="h-order-book">הזמנת המילון</h2>
-      <p class="sub">הספר עדיין בהגהה. ההזמנה תיפתח כשיצא לאור.</p>
-      <div class="price">המחיר יפורסם בקרוב</div>
-      <span class="soon">טופס ההזמנה בקרוב</span>
-    </div>
-  </section>
-
+    </a>
+    <a class="card" href="shop-milon.html">
+      <div class="pic book"><img src="shop/book-cover-450.webp" width="450" height="708" alt="כריכת הספר מילון אידיש–עברי לכתבי חב״ד"></div>
+      <div class="body">
+        <h2>מילון אידיש–עברי לכתבי חב״ד</h2>
+        <p>ספר מודפס, למעלה מ-19,000 ערכים.</p>
+        <div class="price">המחיר בקרוב</div>
+      </div>
+    </a>
+  </div>
 </main>
-
-<footer>החנות · <a href="/">ספר השיחות מתורגם ללה״ק</a></footer>
-
-<script>
-(function () {
-  // מתאים את גובה מסגרת ההדגמה לתוכן שלה (אותו מקור, לכן אפשר לקרוא את הגובה), ומסתיר בה את הכותרת הכפולה
-  var f = document.getElementById('demoFrame');
-  if (!f) return;
-  f.addEventListener('load', function () {
-    try {
-      var d = f.contentDocument;
-      var st = d.createElement('style');
-      st.textContent = '#milonit-demo > header{display:none} #milonit-demo{padding-block:4px 12px}';
-      d.head.appendChild(st);
-      var m = d.getElementById('milonit-demo') || d.body;
-      var fit = function () { f.style.height = Math.ceil(m.getBoundingClientRect().height + 20) + 'px'; };
-      fit();
-      if (window.ResizeObserver) new ResizeObserver(fit).observe(m);
-      setTimeout(fit, 400);
-    } catch (e) {}
-  });
-})();
-</script>
+<footer><a href="shop.html">החנות</a> · <a href="/">ספר השיחות מתורגם ללה״ק</a></footer>
 </body>
 </html>

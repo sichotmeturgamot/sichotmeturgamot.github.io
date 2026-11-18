@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>המילונית: מילון כיס אלקטרוני יידיש–עברית</title>
+<!-- דף נסתר: לא לקשר אליו, לא להכניס למפת האתר, ל-llms.txt או ל-IndexNow -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#17233d">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="shop/shop.css">
+</head>
+<body>
+<header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
+<main class="wrap">
+  <nav class="crumbs"><a href="shop.html">החנות</a> ‹ המילונית</nav>
+  <div class="product">
+    <div class="gal" aria-roledescription="גלריה" aria-label="תמונות המילונית">
+      <div class="track" tabindex="0">
+        <figure class="slide" data-label="מלפנים"><img src="shop/adv-front-800.webp" srcset="shop/adv-front-800.webp 800w, shop/adv-front-1600.webp 1600w" sizes="(min-width: 860px) 600px, 100vw" width="800" height="581" alt="המילונית מלפנים: מסך, מקלדת עם אותיות עבריות ומדבקות בכחול וזהב" fetchpriority="high"><span class="tag">הדמיה</span></figure>
+        <figure class="slide" data-label="בזווית"><img src="shop/adv-angle-800.webp" srcset="shop/adv-angle-800.webp 800w, shop/adv-angle-1600.webp 1600w" sizes="(min-width: 860px) 600px, 100vw" width="800" height="581" loading="lazy" alt="המילונית בזווית, עם הצד של המכשיר"><span class="tag">הדמיה</span></figure>
+        <figure class="slide" data-label="מאחור"><img src="shop/adv-back-800.webp" srcset="shop/adv-back-800.webp 800w, shop/adv-back-1600.webp 1600w" sizes="(min-width: 860px) 600px, 100vw" width="800" height="581" loading="lazy" alt="גב המילונית: קוד QR לאתר ומקום לשם ולטלפון של הבעלים"><span class="tag">הדמיה</span></figure>
+        <figure class="slide" data-label="מידות"><img src="shop/adv-size-800.webp" srcset="shop/adv-size-800.webp 800w, shop/adv-size-1600.webp 1600w" sizes="(min-width: 860px) 600px, 100vw" width="800" height="581" loading="lazy" alt="המילונית עם המידות: 84 על 54 מ״מ, בגודל כרטיס אשראי"><span class="tag">הדמיה</span></figure>
+        <figure class="slide" data-label="סרטון"><video controls muted playsinline preload="none" poster="shop/adv-poster-1280.webp" width="1280" height="720"><source src="shop/milonit-adv-video.mp4" type="video/mp4"></video><span class="tag">הדמיה</span></figure>
+      </div>
+      <button class="nav prev" type="button" aria-label="התמונה הקודמת">›</button>
+      <button class="nav next" type="button" aria-label="התמונה הבאה">‹</button>
+      <div class="dots"></div>
+      <div class="thumbs"></div>
+    </div>
+    <div class="info">
+      <h1>המילונית</h1>
+      <p class="kind">מילון כיס אלקטרוני יידיש–עברית</p>
+      <p class="price">המחיר יפורסם בקרוב</p>
+      <p class="desc">מכשיר בגודל כרטיס אשראי עם כעשרים אלף ערכים מספרות חב״ד. מקלידים מילה ביידיש ומקבלים את פירושה בעברית.</p>
+      <button class="buy" type="button" disabled>ההזמנה תיפתח בקרוב</button>
+      <a class="alt" href="#demo">נסו את המילונית</a>
+      <div class="details">
+        <div><span>ערכים</span>כעשרים אלף</div>
+        <div><span>מידות</span>84 × 54 מ״מ</div>
+        <div><span>מקלדת</span>אותיות עבריות</div>
+        <div><span>טעינה</span>USB-C</div>
+      </div>
+    </div>
+  </div>
+  <section class="demo" id="demo">
+    <h2>נסו את המילונית</h2>
+    <p>הקלידו מילה ביידיש, או לחצו על מקשי המכשיר שבתמונה.</p>
+    <iframe id="demo-frame" src="milonit-demo.html" title="הדגמה חיה של המילונית" loading="lazy"></iframe>
+  </section>
+</main>
+<footer><a href="shop.html">החנות</a> · <a href="/">ספר השיחות מתורגם ללה״ק</a></footer>
+<script src="shop/gallery.js"></script>
+<script>
+(function () {
+  var f = document.getElementById('demo-frame'); if (!f) return;
+  f.addEventListener('load', function () { try { var d = f.contentDocument; var st = d.createElement('style'); st.textContent = '#milonit-demo > header{display:none} #milonit-demo{padding-block:4px 12px}'; d.head.appendChild(st); var m = d.getElementById('milonit-demo') || d.body; var fit = function () { f.style.height = Math.ceil(m.getBoundingClientRect().height + 20) + 'px'; }; fit(); if (window.ResizeObserver) new ResizeObserver(fit).observe(m); setTimeout(fit, 400); } catch (e) {} });
+})();
+</script>
+</body>
+</html>
