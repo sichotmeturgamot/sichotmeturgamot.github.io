@@ -131,3 +131,4 @@ a.buy{text-decoration:none;cursor:pointer}
 .oform .c-3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .oform .short{max-width:180px}
 .oerr .edetail{display:block;color:var(--muted);font-size:12px;direction:ltr;text-align:right}
+.odone .edetail{display:block;color:var(--muted);font-size:12px;direction:ltr;margin-top:10px}

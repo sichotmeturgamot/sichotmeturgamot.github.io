@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#17233d">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=11">
+<link rel="stylesheet" href="shop/shop.css?v=12">
 </head>
 <body>
 <header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
@@ -181,7 +181,7 @@
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
         if (!r.ok || j.success === false || j.success === 'false') throw new Error(j.message || ('status ' + r.status));
-        document.getElementById('o-done').setAttribute('data-reply', j.message || '');
+        var dn = document.createElement('small'); dn.className = 'edetail'; dn.textContent = j.message || ''; document.getElementById('o-done').appendChild(dn);
       });
     }).then(function () {
       form.hidden = true;
