@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#17233d">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=9">
+<link rel="stylesheet" href="shop/shop.css?v=10">
 </head>
 <body>
 <header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
@@ -49,10 +49,19 @@
       <label class="pick"><input type="radio" name="delivery" value="משלוח" required checked><span><b>משלוח בדואר רשום</b><small>כ-10 ימי עסקים. מי שלא בבית מקבל הודעה ואוסף מסניף הדואר. עלות המשלוח תיאמר באישור ההזמנה.</small></span></label>
       <label class="pick"><input type="radio" name="delivery" value="איסוף עצמי מקריית מלאכי"><span><b>איסוף עצמי</b><small>מקריית מלאכי, בתיאום טלפוני</small></span></label>
       <div id="addr">
-        <label for="o-street">רחוב ומספר בית</label>
-        <input id="o-street" name="street" type="text" autocomplete="street-address">
-        <label for="o-city">עיר</label>
+        <label for="o-city">עיר / יישוב</label>
         <input id="o-city" name="city" type="text" autocomplete="address-level2">
+        <div class="cols c-street">
+          <div><label for="o-street">רחוב</label><input id="o-street" name="street" type="text" autocomplete="address-line1"></div>
+          <div><label for="o-house">מספר בית</label><input id="o-house" name="house" type="text" inputmode="numeric" autocomplete="off"></div>
+        </div>
+        <div class="cols c-3">
+          <div><label for="o-apt">דירה <span class="opt">(רשות)</span></label><input id="o-apt" name="apt" type="text" inputmode="numeric" autocomplete="off"></div>
+          <div><label for="o-entr">כניסה <span class="opt">(רשות)</span></label><input id="o-entr" name="entrance" type="text" autocomplete="off"></div>
+          <div><label for="o-floor">קומה <span class="opt">(רשות)</span></label><input id="o-floor" name="floor" type="text" inputmode="numeric" autocomplete="off"></div>
+        </div>
+        <label for="o-zip">מיקוד <span class="opt">(רשות)</span></label>
+        <input id="o-zip" name="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="7" dir="ltr" class="short">
       </div>
     </fieldset>
 
@@ -109,11 +118,19 @@
   function syncAddr() {
     var ship = form.delivery.value === 'משלוח';
     addr.hidden = !ship;
-    form.street.required = ship; form.city.required = ship;
+    form.street.required = ship; form.city.required = ship; form.house.required = ship;
   }
   Array.prototype.forEach.call(form.delivery, function (r) { r.addEventListener('change', syncAddr); });
   syncAddr();
 
+  function addrLine() {
+    var v = function (n) { return form.elements[n].value.trim(); };
+    var a = v('street') + ' ' + v('house');
+    if (v('entrance')) a += ', כניסה ' + v('entrance');
+    if (v('floor')) a += ', קומה ' + v('floor');
+    if (v('apt')) a += ', דירה ' + v('apt');
+    return a + ', ' + v('city');
+  }
   function fail(msg, el) { err.textContent = msg; if (el) el.focus(); return false; }
 
   form.addEventListener('submit', function (e) {
@@ -130,7 +147,13 @@
     if (!form.elements.name.value.trim()) return fail('נא למלא שם.', form.elements.name);
     if (form.phone.value.replace(/\D/g, '').length < 9) return fail('נא למלא מספר טלפון תקין.', form.phone);
     if (!form.email.value.trim() || !form.email.checkValidity()) return fail('נא למלא כתובת אימייל תקינה.', form.email);
-    if (form.delivery.value === 'משלוח' && (!form.street.value.trim() || !form.city.value.trim())) return fail('למשלוח צריך רחוב ועיר.', form.street.value.trim() ? form.city : form.street);
+    if (form.delivery.value === 'משלוח') {
+      if (!form.city.value.trim()) return fail('למשלוח צריך עיר או יישוב.', form.city);
+      if (!form.street.value.trim()) return fail('למשלוח צריך רחוב.', form.street);
+      if (!form.house.value.trim()) return fail('למשלוח צריך מספר בית.', form.house);
+      var z = form.zip.value.replace(/\D/g, '');
+      if (z && z.length !== 7) return fail('המיקוד צריך להיות 7 ספרות.', form.zip);
+    }
     if (!ENDPOINT) return fail('הטופס עוד לא פעיל. זו תצוגה מקדימה.');
 
     var ship = form.delivery.value === 'משלוח';
@@ -142,7 +165,8 @@
       'טלפון': form.phone.value.trim(),
       'אימייל': form.email.value.trim(),
       'קבלה': form.delivery.value,
-      'כתובת': ship ? (form.street.value.trim() + ', ' + form.city.value.trim()) : '-',
+      'כתובת': ship ? addrLine() : '-',
+      'מיקוד': ship ? (form.zip.value.replace(/\D/g, '') || '-') : '-',
       'הערות': form.notes.value.trim() || '-',
       '_subject': 'הזמנה חדשה: ' + lines.join(', '),
       '_template': 'table',
