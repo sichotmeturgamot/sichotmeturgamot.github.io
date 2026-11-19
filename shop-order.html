@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#17233d">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=10">
+<link rel="stylesheet" href="shop/shop.css?v=11">
 </head>
 <body>
 <header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
@@ -181,6 +181,7 @@
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
         if (!r.ok || j.success === false || j.success === 'false') throw new Error(j.message || ('status ' + r.status));
+        document.getElementById('o-done').setAttribute('data-reply', j.message || '');
       });
     }).then(function () {
       form.hidden = true;
@@ -188,8 +189,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }).catch(function (e) {
       fail('השליחה לא הצליחה. נסו שוב בעוד רגע.');
-      err.title = e && e.message ? e.message : '';
-      err.setAttribute('data-detail', err.title);
+      var d = document.createElement('small'); d.className = 'edetail'; d.textContent = e && e.message ? e.message : ''; err.appendChild(d);
       send.disabled = false; send.textContent = 'שליחת ההזמנה';
     });
   });
