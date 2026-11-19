@@ -83,7 +83,7 @@
   var send = document.getElementById('o-send');
   var addr = document.getElementById('addr');
 
-  var NAMES = { milonit: 'מילונית ADV', milon: 'מילון אידיש–עברי (ספר מודפס)' };
+  var NAMES = { milonit: 'מילונית', milon: 'מילון מודפס' };
   var sum = document.getElementById('o-sum');
   function qty(k) { var n = parseInt(form.elements['q_' + k].value, 10); return n >= 0 ? n : 0; }
   function setQty(k, n) { form.elements['q_' + k].value = Math.max(0, Math.min(50, n)); render(); }
@@ -92,9 +92,9 @@
     Object.keys(NAMES).forEach(function (k) {
       var n = qty(k);
       form.querySelector('.item[data-key="' + k + '"]').classList.toggle('on', n > 0);
-      if (n > 0) parts.push(NAMES[k] + ' × ' + n);
+      if (n > 0) parts.push(NAMES[k] + ': ' + n);
     });
-    sum.textContent = parts.length ? 'בהזמנה: ' + parts.join(', ') : 'עוד לא נבחר מוצר.';
+    sum.textContent = parts.length ? 'בהזמנה: ' + parts.join(' · ') : 'עוד לא נבחר מוצר.';
   }
   Array.prototype.forEach.call(form.querySelectorAll('.item'), function (it) {
     var k = it.dataset.key;
@@ -123,7 +123,7 @@
     Object.keys(NAMES).forEach(function (k) {
       var v = form.elements['q_' + k].value, n = parseInt(v, 10);
       if (v !== '' && !(n >= 0 && n <= 50 && String(n) === v.trim())) bad = true;
-      if (n > 0) { lines.push(NAMES[k] + ' × ' + n); total += n; }
+      if (n > 0) { lines.push(NAMES[k] + ': ' + n); total += n; }
     });
     if (bad) return fail('הכמות צריכה להיות מספר בין 0 ל-50.', form.elements.q_milonit);
     if (!total) return fail('בחרו לפחות מוצר אחד.', form.elements.q_milonit);
