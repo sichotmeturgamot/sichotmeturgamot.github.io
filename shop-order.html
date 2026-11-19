@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#17233d">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=6">
+<link rel="stylesheet" href="shop/shop.css?v=7">
 </head>
 <body>
 <header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
@@ -99,7 +99,7 @@
     if (!form.product.value) return fail('בחרו מה להזמין.', form.product[0]);
     var q = parseInt(form.qty.value, 10);
     if (!(q >= 1 && q <= 50)) return fail('הכמות צריכה להיות בין 1 ל-50.', form.qty);
-    if (!form.name.value.trim()) return fail('נא למלא שם.', form.name);
+    if (!form.elements.name.value.trim()) return fail('נא למלא שם.', form.elements.name);
     if (form.phone.value.replace(/\D/g, '').length < 9) return fail('נא למלא מספר טלפון תקין.', form.phone);
     if (form.email.value && !form.email.checkValidity()) return fail('כתובת האימייל לא תקינה.', form.email);
     if (form.delivery.value === 'משלוח' && (!form.street.value.trim() || !form.city.value.trim())) return fail('למשלוח צריך רחוב ועיר.', form.street.value.trim() ? form.city : form.street);
@@ -109,7 +109,7 @@
     var data = {
       'מוצר': form.product.value,
       'כמות': String(q),
-      'שם': form.name.value.trim(),
+      'שם': form.elements.name.value.trim(),
       'טלפון': form.phone.value.trim(),
       'אימייל': form.email.value.trim() || '(לא צויין)',
       'קבלה': form.delivery.value,
