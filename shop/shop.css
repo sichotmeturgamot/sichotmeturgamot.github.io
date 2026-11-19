@@ -142,3 +142,6 @@ a.buy{text-decoration:none;cursor:pointer}
 .oform .terms-text{font-size:14px;margin:4px 0 12px}
 .oform .terms-text summary{cursor:pointer;color:var(--muted)}
 .oform .terms-text ul{margin:6px 0 0;padding-inline-start:20px}
+/* זמינות מלאי */
+.info .stock{font-size:14px;color:var(--muted);margin:0 0 10px}
+.oform .iname .stock{display:block;color:var(--muted);font-size:12px;margin-top:2px}
