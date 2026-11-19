@@ -124,3 +124,5 @@ footer a{text-decoration:none}
 .oform .step input{width:52px;text-align:center;padding:7px 4px;-moz-appearance:textfield}
 .oform .step input::-webkit-inner-spin-button,.oform .step input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .oform .sum{font-size:15px;color:var(--gold-dark);margin-top:10px;font-weight:500}
+a.buy{text-decoration:none;cursor:pointer}
+.buy.order-all{max-width:420px;margin:4px auto 10px}
