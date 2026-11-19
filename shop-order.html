@@ -179,12 +179,17 @@
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(data)
     }).then(function (r) {
-      if (!r.ok) throw new Error('status');
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok || j.success === false || j.success === 'false') throw new Error(j.message || ('status ' + r.status));
+      });
+    }).then(function () {
       form.hidden = true;
       document.getElementById('o-done').hidden = false;
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }).catch(function () {
+    }).catch(function (e) {
       fail('השליחה לא הצליחה. נסו שוב בעוד רגע.');
+      err.title = e && e.message ? e.message : '';
+      err.setAttribute('data-detail', err.title);
       send.disabled = false; send.textContent = 'שליחת ההזמנה';
     });
   });
