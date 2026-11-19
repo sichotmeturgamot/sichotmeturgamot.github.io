@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הזמנה</title>
+<!-- דף נסתר: לא לקשר אליו, לא להכניס למפת האתר, ל-llms.txt או ל-IndexNow -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#17233d">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="shop/shop.css?v=6">
+</head>
+<body>
+<header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
+<main class="wrap order">
+  <nav class="crumbs"><a href="shop.html">החנות</a> ‹ הזמנה</nav>
+  <div class="order-head">
+    <h1>הזמנה</h1>
+    <p>ממלאים את הפרטים, ואנחנו חוזרים אליכם לאישור ההזמנה. אין תשלום בשלב הזה.</p>
+  </div>
+
+  <form id="order" class="oform" novalidate>
+    <fieldset>
+      <legend>מה להזמין</legend>
+      <label class="pick"><input type="radio" name="product" value="מילונית ADV" required><span><b>מילונית ADV</b><small>מכשיר המילון הדיגיטלי</small></span></label>
+      <label class="pick"><input type="radio" name="product" value="מילון אידיש–עברי (ספר מודפס)"><span><b>מילון אידיש–עברי לכתבי חב״ד</b><small>ספר מודפס, כריכה רכה</small></span></label>
+      <div class="row qty">
+        <label for="o-qty">כמות</label>
+        <input id="o-qty" name="qty" type="number" inputmode="numeric" min="1" max="50" value="1" required>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>פרטי המזמין</legend>
+      <label for="o-name">שם מלא</label>
+      <input id="o-name" name="name" type="text" autocomplete="name" required>
+      <label for="o-phone">טלפון</label>
+      <input id="o-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" required>
+      <label for="o-email">אימייל <span class="opt">(רשות)</span></label>
+      <input id="o-email" name="email" type="email" autocomplete="email" dir="ltr">
+    </fieldset>
+
+    <fieldset>
+      <legend>איך לקבל</legend>
+      <label class="pick"><input type="radio" name="delivery" value="משלוח" required checked><span><b>משלוח</b><small>עלות המשלוח תיאמר באישור ההזמנה</small></span></label>
+      <label class="pick"><input type="radio" name="delivery" value="איסוף עצמי מקריית מלאכי"><span><b>איסוף עצמי</b><small>מקריית מלאכי, בתיאום טלפוני</small></span></label>
+      <div id="addr">
+        <label for="o-street">רחוב ומספר בית</label>
+        <input id="o-street" name="street" type="text" autocomplete="street-address">
+        <label for="o-city">עיר</label>
+        <input id="o-city" name="city" type="text" autocomplete="address-level2">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>הערות <span class="opt">(רשות)</span></legend>
+      <textarea id="o-notes" name="notes" rows="3" aria-label="הערות"></textarea>
+    </fieldset>
+
+    <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p id="o-err" class="oerr" role="alert"></p>
+    <button class="buy" id="o-send" type="submit">שליחת ההזמנה</button>
+  </form>
+
+  <div class="odone" id="o-done" hidden>
+    <h2>ההזמנה התקבלה</h2>
+    <p>תודה! נחזור אליכם בטלפון לאישור ההזמנה.</p>
+    <a class="alt" href="shop.html">חזרה לחנות</a>
+  </div>
+</main>
+<footer><a href="shop.html">החנות</a> · <a href="/">ספר השיחות מתורגם ללה״ק</a></footer>
+<script>
+(function () {
+  // כתובת השליחה. ריק = הטופס עוד לא פעיל (תצוגה מקדימה)
+  var ENDPOINT = '';
+
+  var form = document.getElementById('order');
+  var err = document.getElementById('o-err');
+  var send = document.getElementById('o-send');
+  var addr = document.getElementById('addr');
+
+  var p = new URLSearchParams(location.search).get('p');
+  var map = { milonit: 0, milon: 1 };
+  if (p in map) form.product[map[p]].checked = true;
+
+  function syncAddr() {
+    var ship = form.delivery.value === 'משלוח';
+    addr.hidden = !ship;
+    form.street.required = ship; form.city.required = ship;
+  }
+  Array.prototype.forEach.call(form.delivery, function (r) { r.addEventListener('change', syncAddr); });
+  syncAddr();
+
+  function fail(msg, el) { err.textContent = msg; if (el) el.focus(); return false; }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    err.textContent = '';
+    if (!form.product.value) return fail('בחרו מה להזמין.', form.product[0]);
+    var q = parseInt(form.qty.value, 10);
+    if (!(q >= 1 && q <= 50)) return fail('הכמות צריכה להיות בין 1 ל-50.', form.qty);
+    if (!form.name.value.trim()) return fail('נא למלא שם.', form.name);
+    if (form.phone.value.replace(/\D/g, '').length < 9) return fail('נא למלא מספר טלפון תקין.', form.phone);
+    if (form.email.value && !form.email.checkValidity()) return fail('כתובת האימייל לא תקינה.', form.email);
+    if (form.delivery.value === 'משלוח' && (!form.street.value.trim() || !form.city.value.trim())) return fail('למשלוח צריך רחוב ועיר.', form.street.value.trim() ? form.city : form.street);
+    if (!ENDPOINT) return fail('הטופס עוד לא פעיל. זו תצוגה מקדימה.');
+
+    var ship = form.delivery.value === 'משלוח';
+    var data = {
+      'מוצר': form.product.value,
+      'כמות': String(q),
+      'שם': form.name.value.trim(),
+      'טלפון': form.phone.value.trim(),
+      'אימייל': form.email.value.trim() || '(לא צויין)',
+      'קבלה': form.delivery.value,
+      'כתובת': ship ? (form.street.value.trim() + ', ' + form.city.value.trim()) : '-',
+      'הערות': form.notes.value.trim() || '-',
+      '_subject': 'הזמנה חדשה: ' + form.product.value + ' × ' + q,
+      '_template': 'table',
+      '_captcha': 'false',
+      '_honey': form._honey.value
+    };
+    send.disabled = true; send.textContent = 'שולח…';
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('status');
+      form.hidden = true;
+      document.getElementById('o-done').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }).catch(function () {
+      fail('השליחה לא הצליחה. נסו שוב בעוד רגע.');
+      send.disabled = false; send.textContent = 'שליחת ההזמנה';
+    });
+  });
+})();
+</script>
+</body>
+</html>
