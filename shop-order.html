@@ -118,7 +118,7 @@
   function syncAddr() {
     var ship = form.delivery.value === 'משלוח';
     addr.hidden = !ship;
-    form.street.required = ship; form.city.required = ship; form.house.required = ship; form.apt.required = ship; form.floor.required = ship;
+    form.street.required = ship; form.city.required = ship; form.house.required = ship;
   }
   Array.prototype.forEach.call(form.delivery, function (r) { r.addEventListener('change', syncAddr); });
   syncAddr();
@@ -151,8 +151,6 @@
       if (!form.city.value.trim()) return fail('למשלוח צריך עיר או יישוב.', form.city);
       if (!form.street.value.trim()) return fail('למשלוח צריך רחוב.', form.street);
       if (!form.house.value.trim()) return fail('למשלוח צריך מספר בית.', form.house);
-      if (!form.apt.value.trim()) return fail('למשלוח צריך מספר דירה.', form.apt);
-      if (!form.floor.value.trim()) return fail('למשלוח צריך קומה.', form.floor);
       var z = form.zip.value.replace(/\D/g, '');
       if (z && z.length !== 7) return fail('המיקוד צריך להיות 7 ספרות.', form.zip);
     }
