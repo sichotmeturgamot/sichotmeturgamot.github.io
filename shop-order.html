@@ -181,7 +181,6 @@
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
         if (!r.ok || j.success === false || j.success === 'false') throw new Error(j.message || ('status ' + r.status));
-        var dn = document.createElement('small'); dn.className = 'edetail'; dn.textContent = j.message || ''; document.getElementById('o-done').appendChild(dn);
       });
     }).then(function () {
       form.hidden = true;
