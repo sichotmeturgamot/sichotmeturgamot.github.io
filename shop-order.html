@@ -70,6 +70,8 @@
       <textarea id="o-notes" name="notes" rows="3" aria-label="הערות"></textarea>
     </fieldset>
 
+    <div class="total" id="o-total" aria-live="polite"></div>
+
     <label class="terms"><input type="checkbox" name="terms" id="o-terms"><span>קראתי ואני מאשר/ת את <a href="#o-terms-text" id="o-terms-open">תנאי המשלוח</a></span></label>
     <details class="terms-text" id="o-terms-text">
       <summary>תנאי המשלוח</summary>
@@ -102,7 +104,43 @@
   var send = document.getElementById('o-send');
   var addr = document.getElementById('addr');
 
+  // מחירים בש״ח. null = "מחיר בקרוב". לעדכן כאן כשהמחירים נקבעים.
+  var PRICES = { milonit: 150, milon: 50 };
+  var SHIP_PRICE = 25;
+
   var NAMES = { milonit: 'מילונית', milon: 'מילון מודפס' };
+  var totalBox = document.getElementById('o-total');
+  function shekel(n) { return n.toLocaleString('he-IL') + ' ש״ח'; }
+  // מחשב את שורות המחיר. total = null אם חסר מחיר למוצר שנבחר
+  function pricing() {
+    var rows = [], total = 0, known = true, any = false;
+    Object.keys(NAMES).forEach(function (k) {
+      var n = qty(k); if (!n) return; any = true;
+      var pr = PRICES[k];
+      if (typeof pr === 'number') { rows.push([NAMES[k] + ' × ' + n, shekel(pr * n)]); total += pr * n; }
+      else { rows.push([NAMES[k] + ' × ' + n, 'מחיר בקרוב']); known = false; }
+    });
+    var ship = form.delivery.value === 'משלוח';
+    rows.push(ship ? ['משלוח בדואר רשום', shekel(SHIP_PRICE)] : ['איסוף עצמי', 'ללא עלות']);
+    if (ship) total += SHIP_PRICE;
+    return { rows: rows, any: any, total: (any && known) ? total : null };
+  }
+  function renderTotal() {
+    var pc = pricing();
+    totalBox.innerHTML = '';
+    pc.rows.forEach(function (r) {
+      var d = document.createElement('div'); d.className = 'trow';
+      var a = document.createElement('span'); a.textContent = r[0];
+      var b = document.createElement('span'); b.textContent = r[1];
+      d.appendChild(a); d.appendChild(b); totalBox.appendChild(d);
+    });
+    if (pc.total !== null) {
+      var t = document.createElement('div'); t.className = 'trow tsum';
+      var a2 = document.createElement('span'); a2.textContent = 'סה״כ לתשלום';
+      var b2 = document.createElement('span'); b2.textContent = shekel(pc.total);
+      t.appendChild(a2); t.appendChild(b2); totalBox.appendChild(t);
+    }
+  }
   var sum = document.getElementById('o-sum');
   function qty(k) { var n = parseInt(form.elements['q_' + k].value, 10); return n >= 0 ? n : 0; }
   function setQty(k, n) { form.elements['q_' + k].value = Math.max(0, Math.min(50, n)); render(); }
@@ -114,6 +152,7 @@
       if (n > 0) parts.push(NAMES[k] + ': ' + n);
     });
     sum.textContent = parts.length ? 'בהזמנה: ' + parts.join(' · ') : 'עוד לא נבחר מוצר.';
+    if (form.delivery) renderTotal();
   }
   Array.prototype.forEach.call(form.querySelectorAll('.item'), function (it) {
     var k = it.dataset.key;
@@ -129,6 +168,7 @@
     var ship = form.delivery.value === 'משלוח';
     addr.hidden = !ship;
     form.street.required = ship; form.city.required = ship; form.house.required = ship; form.zip.required = ship;
+    renderTotal();
   }
   Array.prototype.forEach.call(form.delivery, function (r) { r.addEventListener('change', syncAddr); });
   syncAddr();
@@ -171,6 +211,7 @@
     if (!ENDPOINT) return fail('הטופס עוד לא פעיל. זו תצוגה מקדימה.');
 
     var ship = form.delivery.value === 'משלוח';
+    var pc = pricing();
     var data = {
       'הזמנה': lines.join(' | '),
       'מילונית ADV': String(qty('milonit')),
@@ -182,6 +223,8 @@
       'כתובת': ship ? addrLine() : '-',
       'מיקוד': ship ? (form.zip.value.replace(/\D/g, '') || '-') : '-',
       'הערות': form.notes.value.trim() || '-',
+      'פירוט מחיר': pc.rows.map(function (r) { return r[0] + ': ' + r[1]; }).join(' | '),
+      'סה״כ': pc.total !== null ? shekel(pc.total) : 'לא סופי (מחיר מוצר טרם נקבע)',
       'אישור תנאי משלוח': 'כן',
       '_subject': 'הזמנה חדשה מהאתר: ' + lines.join(', '),
       '_template': 'table',
