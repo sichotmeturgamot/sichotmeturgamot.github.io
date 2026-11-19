@@ -114,3 +114,13 @@ footer a{text-decoration:none}
 .odone h2{font-size:24px;margin-bottom:6px}
 .odone p{color:var(--muted)}
 .buy:not([disabled]){cursor:pointer}
+.oform .hint{color:var(--muted);font-size:14px;margin:2px 0 4px}
+.oform .item{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;background:#fff}
+.oform .item.on{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy)}
+.oform .iname{display:flex;flex-direction:column;min-width:0}
+.oform .iname small{color:var(--muted);font-size:14px}
+.oform .step{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+.oform .step button{width:36px;height:36px;border-radius:50%;border:1px solid var(--navy);background:transparent;color:var(--navy);font-size:20px;line-height:1;cursor:pointer}
+.oform .step input{width:52px;text-align:center;padding:7px 4px;-moz-appearance:textfield}
+.oform .step input::-webkit-inner-spin-button,.oform .step input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.oform .sum{font-size:15px;color:var(--gold-dark);margin-top:10px;font-weight:500}

@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#17233d">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=7">
+<link rel="stylesheet" href="shop/shop.css?v=8">
 </head>
 <body>
 <header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
@@ -22,12 +22,16 @@
   <form id="order" class="oform" novalidate>
     <fieldset>
       <legend>מה להזמין</legend>
-      <label class="pick"><input type="radio" name="product" value="מילונית ADV" required><span><b>מילונית ADV</b><small>מכשיר המילון הדיגיטלי</small></span></label>
-      <label class="pick"><input type="radio" name="product" value="מילון אידיש–עברי (ספר מודפס)"><span><b>מילון אידיש–עברי לכתבי חב״ד</b><small>ספר מודפס, כריכה רכה</small></span></label>
-      <div class="row qty">
-        <label for="o-qty">כמות</label>
-        <input id="o-qty" name="qty" type="number" inputmode="numeric" min="1" max="50" value="1" required>
+      <p class="hint">אפשר להזמין את שני המוצרים יחד. בוחרים כמות לכל אחד.</p>
+      <div class="item" data-key="milonit">
+        <span class="iname"><b>מילונית ADV</b><small>מכשיר המילון הדיגיטלי</small></span>
+        <span class="step"><button type="button" class="minus" aria-label="פחות מילוניות">−</button><input name="q_milonit" type="number" inputmode="numeric" min="0" max="50" value="0" aria-label="כמות מילונית ADV"><button type="button" class="plus" aria-label="עוד מילונית">+</button></span>
       </div>
+      <div class="item" data-key="milon">
+        <span class="iname"><b>מילון אידיש–עברי לכתבי חב״ד</b><small>ספר מודפס, כריכה רכה</small></span>
+        <span class="step"><button type="button" class="minus" aria-label="פחות ספרים">−</button><input name="q_milon" type="number" inputmode="numeric" min="0" max="50" value="0" aria-label="כמות מילון אידיש–עברי"><button type="button" class="plus" aria-label="עוד ספר">+</button></span>
+      </div>
+      <p class="sum" id="o-sum" aria-live="polite"></p>
     </fieldset>
 
     <fieldset>
@@ -36,8 +40,8 @@
       <input id="o-name" name="name" type="text" autocomplete="name" required>
       <label for="o-phone">טלפון</label>
       <input id="o-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" required>
-      <label for="o-email">אימייל <span class="opt">(רשות)</span></label>
-      <input id="o-email" name="email" type="email" autocomplete="email" dir="ltr">
+      <label for="o-email">אימייל</label>
+      <input id="o-email" name="email" type="email" autocomplete="email" dir="ltr" required>
     </fieldset>
 
     <fieldset>
@@ -79,9 +83,28 @@
   var send = document.getElementById('o-send');
   var addr = document.getElementById('addr');
 
+  var NAMES = { milonit: 'מילונית ADV', milon: 'מילון אידיש–עברי (ספר מודפס)' };
+  var sum = document.getElementById('o-sum');
+  function qty(k) { var n = parseInt(form.elements['q_' + k].value, 10); return n >= 0 ? n : 0; }
+  function setQty(k, n) { form.elements['q_' + k].value = Math.max(0, Math.min(50, n)); render(); }
+  function render() {
+    var parts = [];
+    Object.keys(NAMES).forEach(function (k) {
+      var n = qty(k);
+      form.querySelector('.item[data-key="' + k + '"]').classList.toggle('on', n > 0);
+      if (n > 0) parts.push(NAMES[k] + ' × ' + n);
+    });
+    sum.textContent = parts.length ? 'בהזמנה: ' + parts.join(', ') : 'עוד לא נבחר מוצר.';
+  }
+  Array.prototype.forEach.call(form.querySelectorAll('.item'), function (it) {
+    var k = it.dataset.key;
+    it.querySelector('.minus').addEventListener('click', function () { setQty(k, qty(k) - 1); });
+    it.querySelector('.plus').addEventListener('click', function () { setQty(k, qty(k) + 1); });
+    it.querySelector('input').addEventListener('input', render);
+  });
   var p = new URLSearchParams(location.search).get('p');
-  var map = { milonit: 0, milon: 1 };
-  if (p in map) form.product[map[p]].checked = true;
+  if (NAMES.hasOwnProperty(p)) form.elements['q_' + p].value = 1;
+  render();
 
   function syncAddr() {
     var ship = form.delivery.value === 'משלוח';
@@ -96,26 +119,32 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     err.textContent = '';
-    if (!form.product.value) return fail('בחרו מה להזמין.', form.product[0]);
-    var q = parseInt(form.qty.value, 10);
-    if (!(q >= 1 && q <= 50)) return fail('הכמות צריכה להיות בין 1 ל-50.', form.qty);
+    var lines = [], total = 0, bad = false;
+    Object.keys(NAMES).forEach(function (k) {
+      var v = form.elements['q_' + k].value, n = parseInt(v, 10);
+      if (v !== '' && !(n >= 0 && n <= 50 && String(n) === v.trim())) bad = true;
+      if (n > 0) { lines.push(NAMES[k] + ' × ' + n); total += n; }
+    });
+    if (bad) return fail('הכמות צריכה להיות מספר בין 0 ל-50.', form.elements.q_milonit);
+    if (!total) return fail('בחרו לפחות מוצר אחד.', form.elements.q_milonit);
     if (!form.elements.name.value.trim()) return fail('נא למלא שם.', form.elements.name);
     if (form.phone.value.replace(/\D/g, '').length < 9) return fail('נא למלא מספר טלפון תקין.', form.phone);
-    if (form.email.value && !form.email.checkValidity()) return fail('כתובת האימייל לא תקינה.', form.email);
+    if (!form.email.value.trim() || !form.email.checkValidity()) return fail('נא למלא כתובת אימייל תקינה.', form.email);
     if (form.delivery.value === 'משלוח' && (!form.street.value.trim() || !form.city.value.trim())) return fail('למשלוח צריך רחוב ועיר.', form.street.value.trim() ? form.city : form.street);
     if (!ENDPOINT) return fail('הטופס עוד לא פעיל. זו תצוגה מקדימה.');
 
     var ship = form.delivery.value === 'משלוח';
     var data = {
-      'מוצר': form.product.value,
-      'כמות': String(q),
+      'הזמנה': lines.join(' | '),
+      'מילונית ADV': String(qty('milonit')),
+      'מילון מודפס': String(qty('milon')),
       'שם': form.elements.name.value.trim(),
       'טלפון': form.phone.value.trim(),
-      'אימייל': form.email.value.trim() || '(לא צויין)',
+      'אימייל': form.email.value.trim(),
       'קבלה': form.delivery.value,
       'כתובת': ship ? (form.street.value.trim() + ', ' + form.city.value.trim()) : '-',
       'הערות': form.notes.value.trim() || '-',
-      '_subject': 'הזמנה חדשה: ' + form.product.value + ' × ' + q,
+      '_subject': 'הזמנה חדשה: ' + lines.join(', '),
       '_template': 'table',
       '_captcha': 'false',
       '_honey': form._honey.value
