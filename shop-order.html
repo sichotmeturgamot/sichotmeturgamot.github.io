@@ -84,8 +84,8 @@
 <footer><a href="shop.html">החנות</a> · <a href="/">ספר השיחות מתורגם ללה״ק</a></footer>
 <script>
 (function () {
-  // כתובת השליחה (זמנית, עד שיתקבל הקוד האקראי של FormSubmit)
-  var ENDPOINT = 'https://formsubmit.co/ajax/' + String.fromCharCode(100,111,118,105,98,101,114,43,111,114,100,101,114,115,64,103,109,97,105,108,46,99,111,109);
+  // כתובת השליחה, כמו בטופס הפידבק (מוסווית)
+  var ENDPOINT = 'https://formsubmit.co/ajax/' + String.fromCharCode(100,111,118,105,98,101,114,64,103,109,97,105,108,46,99,111,109);
 
   var form = document.getElementById('order');
   var err = document.getElementById('o-err');
@@ -168,7 +168,7 @@
       'כתובת': ship ? addrLine() : '-',
       'מיקוד': ship ? (form.zip.value.replace(/\D/g, '') || '-') : '-',
       'הערות': form.notes.value.trim() || '-',
-      '_subject': 'הזמנה חדשה: ' + lines.join(', '),
+      '_subject': 'הזמנה חדשה מהאתר: ' + lines.join(', '),
       '_template': 'table',
       '_captcha': 'false',
       '_honey': form._honey.value
