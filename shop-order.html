@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#17233d">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=12">
+<link rel="stylesheet" href="shop/shop.css?v=13">
 </head>
 <body>
 <header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
@@ -70,6 +70,16 @@
       <textarea id="o-notes" name="notes" rows="3" aria-label="הערות"></textarea>
     </fieldset>
 
+    <label class="terms"><input type="checkbox" name="terms" id="o-terms"><span>קראתי ואני מאשר/ת את <a href="#o-terms-text" id="o-terms-open">תנאי המשלוח</a></span></label>
+    <details class="terms-text" id="o-terms-text">
+      <summary>תנאי המשלוח</summary>
+      <ul>
+        <li>משלוח בדואר רשום של דואר ישראל: 25 ש״ח, כ-10 ימי עסקים מאישור ההזמנה.</li>
+        <li>אם אין איש בבית, הדואר משאיר הודעה והחבילה נאספת מסניף הדואר.</li>
+        <li>איסוף עצמי מקריית מלאכי, בתיאום מראש.</li>
+      </ul>
+    </details>
+
     <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
     <p id="o-err" class="oerr" role="alert"></p>
     <button class="buy" id="o-send" type="submit">שליחת ההזמנה</button>
@@ -122,6 +132,9 @@
   }
   Array.prototype.forEach.call(form.delivery, function (r) { r.addEventListener('change', syncAddr); });
   syncAddr();
+  document.getElementById('o-terms-open').addEventListener('click', function (e) {
+    e.preventDefault(); var d = document.getElementById('o-terms-text'); d.open = true; d.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
 
   function addrLine() {
     var v = function (n) { return form.elements[n].value.trim(); };
@@ -154,6 +167,7 @@
       var z = form.zip.value.replace(/\D/g, '');
       if (z.length !== 7) return fail('למשלוח צריך מיקוד של 7 ספרות.', form.zip);
     }
+    if (!form.terms.checked) return fail('יש לאשר את תנאי המשלוח.', form.terms);
     if (!ENDPOINT) return fail('הטופס עוד לא פעיל. זו תצוגה מקדימה.');
 
     var ship = form.delivery.value === 'משלוח';
@@ -168,6 +182,7 @@
       'כתובת': ship ? addrLine() : '-',
       'מיקוד': ship ? (form.zip.value.replace(/\D/g, '') || '-') : '-',
       'הערות': form.notes.value.trim() || '-',
+      'אישור תנאי משלוח': 'כן',
       '_subject': 'הזמנה חדשה מהאתר: ' + lines.join(', '),
       '_template': 'table',
       '_captcha': 'false',
