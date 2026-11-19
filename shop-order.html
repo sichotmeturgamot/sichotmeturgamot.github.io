@@ -84,8 +84,8 @@
 <footer><a href="shop.html">החנות</a> · <a href="/">ספר השיחות מתורגם ללה״ק</a></footer>
 <script>
 (function () {
-  // כתובת השליחה. ריק = הטופס עוד לא פעיל (תצוגה מקדימה)
-  var ENDPOINT = '';
+  // כתובת השליחה (זמנית, עד שיתקבל הקוד האקראי של FormSubmit)
+  var ENDPOINT = 'https://formsubmit.co/ajax/' + String.fromCharCode(100,111,118,105,98,101,114,43,111,114,100,101,114,115,64,103,109,97,105,108,46,99,111,109);
 
   var form = document.getElementById('order');
   var err = document.getElementById('o-err');
