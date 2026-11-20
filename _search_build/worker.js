@@ -1,3 +1,4 @@
+// reload tx-ranges 20261120
 // שרת החיפוש הסמנטי — גרסה 17: חיפוש דו־שלבי (ביטים ואז מדויק). גרסה 15: סינון לפי מקור (src) ו"עוד תוצאות" (more). גרסה 10 (הטקסט לתצוגה נשלח מהשרת): חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
 // Claude חושב מעט (effort: low) לפני שהוא בוחר
 // דרוש: Binding מסוג Workers AI בשם AI, וסוד בשם ANTHROPIC_API_KEY
@@ -17,7 +18,7 @@ const hits = new Map();
 let DATA = null;   // R2: קבצי החיפוש הגדולים (לא ציבוריים)
 async function getBuf(name) {
   if (DATA) { const o = await DATA.get(name); if (o) return o.arrayBuffer(); }
-  const res = await fetch(SITE + name + '?v=54', { cf: { cacheTtl: 3600, cacheEverything: true } });
+  const res = await fetch(SITE + name + '?v=55', { cf: { cacheTtl: 3600, cacheEverything: true } });
   if (!res.ok) throw new Error(name + ' ' + res.status);
   return res.arrayBuffer();
 }
@@ -34,22 +35,39 @@ async function loadBits() {   // search-bits.bin: לכל וקטור ביט לכ�
   if (BITS) return BITS;
   return (BITS = new Uint32Array(await getBuf('search-bits.bin'), 8));
 }
+// search-tx.bin: רק טבלת ההיסטים בזיכרון; הטקסטים נקראים מ-R2 לפי הצורך (בלוק אחד לכל קטע)
+const TXC = new Map(), TXC_MAX = 4000;
 async function loadTxt() {
   if (TXT) return TXT;
-  const buf = await getBuf('search-texts.bin');
-  const n = new Uint32Array(buf, 0, 1)[0];
-  const off = new Uint32Array(buf, 4, n + 1), base = 4 + 4 * (n + 1);
-  const dec = new TextDecoder();
-  return (TXT = i => dec.decode(new Uint8Array(buf, base + off[i], off[i + 1] - off[i])));
+  const { N, np, parent, kids } = await loadIdx(), ns = N - np;
+  const h0 = await (await DATA.get('search-tx.bin', { range: { offset: 0, length: 8 } })).arrayBuffer();
+  const [tnp] = new Uint32Array(h0, 0, 2);
+  if (tnp !== np) throw new Error('search-tx.bin np mismatch ' + tnp + ' ' + np);
+  const off = new Uint32Array(await (await DATA.get('search-tx.bin', { range: { offset: 8, length: 4 * (np + 1) } })).arrayBuffer());
+  const base = 8 + 4 * (np + 1), dec = new TextDecoder();
+  const kpos = new Int32Array(ns); for (let p = 0; p < np; p++) kids[p].forEach((i, j) => { kpos[i - np] = j; });
+  const block = p => { const b = TXC.get(p); if (!b) throw new Error('text block not loaded ' + p); return b; };
+  const txt = i => {
+    if (i < np) return block(i)[0];
+    if (i < np + ns) { const m = i - np; return block(parent[i])[3 + kpos[m]]; }
+    if (i < 2 * np + ns) return block(i - np - ns)[2];
+    return block(i - 2 * np - ns)[1];
+  };
+  txt.pre = async ps => {
+    const need = [...new Set(ps)].filter(p => Number.isInteger(p) && p >= 0 && p < np && !TXC.has(p));
+    await Promise.all(need.map(async p => {
+      const o = await DATA.get('search-tx.bin', { range: { offset: base + off[p], length: off[p + 1] - off[p] } });
+      TXC.set(p, dec.decode(await o.arrayBuffer()).split('\x1e'));
+    }));
+    if (TXC.size > TXC_MAX) { let k = TXC.size - TXC_MAX; for (const key of TXC.keys()) { if (k-- <= 0) break; TXC.delete(key); } }
+    return txt;
+  };
+  return (TXT = txt);
 }
-
-// קבוצת מקור לכל קטע: s = ספר השיחות (יש f), l = לקוטי דיבורים (HebrewBooks), r = רשימות ואגרות (כל השאר)
-function groups(txt, np, ns) {
+async function loadGrp() {   // search-groups.bin: קוד מקור וסימון יידיש לכל קטע (קובץ קטן)
   if (GRP) return GRP;
-  const g = new Uint8Array(np);
-  for (let p = 0; p < np; p++) { const [f, u, t] = txt(2 * np + ns + p).split('\t');
-    g[p] = (t && t.startsWith('ספר הזכרונות')) ? 122 : (f || (t && t.startsWith('ספר השיחות')) ? 115 : (t && t.startsWith('אגרות קודש')) ? 114 : (u && u.indexOf('hebrewbooks') >= 0 ? 108 : 114)); }   // z = ספר הזכרונות, s = כל השיחות המתורגמות (האתר + תרגום קה"ת), l = לקוטי דיבורים, r = השאר
-  return (GRP = g);
+  const b = await getBuf('search-groups.bin'), np = new Uint32Array(b, 0, 1)[0];
+  return (GRP = { g: new Uint8Array(b, 4, np), yi: new Uint8Array(b, 4 + np, np) });
 }
 
 function cors(origin) {
@@ -74,6 +92,7 @@ async function claude(env, prompt, maxTokens, ms, model, effort) {
 }
 
 async function rerank(env, q, cands, txt, np, ns) {
+  await txt.pre(cands.map(c => c.p));
   const list = cands.map((c, k) => {
     const head = txt(c.p);                                  // "שם השיחה | תיאור"
     const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p).slice(0, 700); // החתיכה שהתאימה, או תחילת הקטע
@@ -111,10 +130,11 @@ ${conv}
 }
 
 async function answer(env, q, cands, txt, np, ns, chat) {
+  await txt.pre(cands.map(c => c.p)); const grp = await loadGrp();
   const list = cands.map((c, k) => {
     const head = txt(c.p);
     const body = c.m >= 0 ? txt(np + c.m) : txt(np + ns + c.p).slice(0, 700);
-    const yi = isYi(txt, np, ns, c.p) ? ' (הקטע כתוב ביידיש)' : '';
+    const yi = isYi(grp, c.p) ? ' (הקטע כתוב ביידיש)' : '';
     return `[${k + 1}] ${head}${yi}\n${body}`;
   }).join('\n\n');
   const prompt = `להלן קטעים משיחות כ"ק אדמו"ר הריי"צ (ספר השיחות ולקוטי דיבורים, בלשון הקודש). לכל קטע: מספר, שם השיחה, תקציר הנושאים, ומובאה מהטקסט.
@@ -169,7 +189,7 @@ ${chat.hist.map(t => `שאלה: ${t.q}\nתשובה: ${t.a}`).join('\n\n')}
 }
 
 // קטעים ביידיש: הכותרת מסתיימת ב"· אידיש". תרגום — רק בלחיצה על "תרגם", ונשמר במטמון
-function isYi(txt, np, ns, p) { return / · אידיש$/.test(txt(2 * np + ns + p).split('\t')[2] || ''); }
+function isYi(grp, p) { return !!grp.yi[p]; }
 const TR_MODEL = 'claude-sonnet-5-5';
 async function translate(env, x) {
   const prompt = `תרגם לעברית את הקטע הבא מתוך ספר השיחות של כ"ק אדמו"ר הריי"צ (קה"ת), שנכתב ביידיש (לעיתים עם מילים וציטוטים בלשון הקודש ובארמית).
@@ -231,10 +251,10 @@ export default {
       if (arr.length >= A_PER_MIN) return json({ error: 'יותר מדי בקשות, נסו שוב בעוד דקה' }, 429, h);
       arr.push(now); hits.set(ip, arr);
       try {
-        const { N, np } = await loadIdx(), ns = N - np, txt = await loadTxt();
-        if (!Number.isInteger(p) || p < 0 || p >= np || !isYi(txt, np, ns, p)) return json({ error: 'קטע לא מתאים לתרגום' }, 400, h);
+        const { N, np } = await loadIdx(), ns = N - np, txt = await loadTxt(), grp = await loadGrp();
+        if (!Number.isInteger(p) || p < 0 || p >= np || !isYi(grp, p)) return json({ error: 'קטע לא מתאים לתרגום' }, 400, h);
         if (!env.ANTHROPIC_API_KEY) return json({ error: 'השירות אינו זמין כרגע' }, 503, h);
-        const tr = await translate(env, txt(np + ns + p));
+        await txt.pre([p]); const tr = await translate(env, txt(np + ns + p));
         const resp = json({ tr }, 200, { ...h, 'Cache-Control': 'public, max-age=2592000' });
         ctx.waitUntil(caches.default.put(tkey, resp.clone()));
         return resp;
@@ -277,7 +297,7 @@ export default {
 
     const mode = (chat || cm === 'answer') ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r', 'z'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v50?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v52?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = (debug || chat) ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
@@ -301,7 +321,7 @@ export default {
         for (let k = 0; k < dim; k += 4, o += 4) { s0 += vec[o] * qf[k]; s1 += vec[o + 1] * qf[k + 1]; s2 += vec[o + 2] * qf[k + 2]; s3 += vec[o + 3] * qf[k + 3]; }
         return s0 + s1 + s2 + s3; };
       const ns = N - np, { kids } = idx, bits = await loadBits();
-      const grp = src ? groups(await loadTxt(), np, ns) : null, want = src ? src.charCodeAt(0) : 0;
+      const grp = src ? (await loadGrp()).g : null, want = src ? src.charCodeAt(0) : 0;
       const W4 = dim / 32, qb = new Uint8Array(dim / 8); for (let k = 0; k < dim; k++) if (qv[k] > 0) qb[k >> 3] |= 128 >> (k & 7);
       const q32 = new Uint32Array(qb.buffer), ap = new Int32Array(np).fill(-dim - 1);
       for (let i = 0; i < N; i++) {
@@ -334,6 +354,7 @@ export default {
         let a;
         try { a = await answer(env, q, cands, txt, np, N - np, chat); }
         catch (e) { return json({ error: 'לא הצלחתי לנסח תשובה, נסו שוב בעוד רגע' }, 502, h); }
+        await txt.pre(a.used.map(r => r.p));
         if (debug) return json({ q, raw: answer.last, answer: a.text, results: a.used.map(r => full(txt, r)),
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70)) }, 200, h);
         if (chat && gem) ctx.waitUntil(env.USERS.get(env.USERS.idFromName('main')).fetch('https://do/log', { method: 'POST', body: JSON.stringify({ e: gem, q: chat.q, a: a.text }) }));
@@ -357,13 +378,15 @@ export default {
         } catch (e) { rerank.err = String(e.message || e); }
       }
       if (debug) {
-        const txt = await loadTxt();
+        const txt = await loadTxt(); await txt.pre(cands.map(c => c.p));
         return json({ q, ranked, claude: rerank.last || null, err: rerank.err || null, results,
           cands: cands.map((c, k) => (k + 1) + '. ' + txt(c.p).slice(0, 70) + ' (' + c.s + ')') }, 200, h);
       }
       const txt2 = await loadTxt();
       const shown = new Set(results.map(r => r.p));
-      const more = cands.filter(c => !shown.has(c.p)).slice(0, 10).map(r => full(txt2, r));   // "הצג עוד תוצאות": הקרובים הבאים לפי משמעות
+      const moreC = cands.filter(c => !shown.has(c.p)).slice(0, 10);
+      await txt2.pre([...results.map(r => r.p), ...moreC.map(r => r.p)]);
+      const more = moreC.map(r => full(txt2, r));   // "הצג עוד תוצאות": הקרובים הבאים לפי משמעות
       results = results.map(r => full(txt2, r));
       const resp = json({ results, ranked, more }, 200, { ...h, 'Cache-Control': 'public, max-age=86400' });
       ctx.waitUntil(cache.put(ckey, resp.clone()));
