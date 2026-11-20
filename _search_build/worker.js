@@ -1,4 +1,4 @@
-// reload tx-ranges 20261120
+// reload ak16 20261120
 // שרת החיפוש הסמנטי — גרסה 17: חיפוש דו־שלבי (ביטים ואז מדויק). גרסה 15: סינון לפי מקור (src) ו"עוד תוצאות" (more). גרסה 10 (הטקסט לתצוגה נשלח מהשרת): חיפוש מקורות (Claude בוחר קטעים) + "שאל את ה-AI" (תשובה מנוסחת עם מראי מקומות)
 // Claude חושב מעט (effort: low) לפני שהוא בוחר
 // דרוש: Binding מסוג Workers AI בשם AI, וסוד בשם ANTHROPIC_API_KEY
@@ -297,7 +297,7 @@ export default {
 
     const mode = (chat || cm === 'answer') ? 'answer' : 'quotes';
     const src = ['s', 'l', 'r', 'z'].includes(url.searchParams.get('src')) ? url.searchParams.get('src') : '';
-    const cache = caches.default, ckey = new Request('https://cache.sichos/v52?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
+    const cache = caches.default, ckey = new Request('https://cache.sichos/v53?m=' + mode + '&src=' + src + '&q=' + encodeURIComponent(q) + '&x=' + (url.searchParams.get('x') || ''));
     const debug = url.searchParams.has('debug');
     const cached = (debug || chat) ? null : await cache.match(ckey);
     if (cached) { const r = new Response(cached.body, cached); Object.entries(h).forEach(([k, v]) => r.headers.set(k, v)); return r; }
@@ -337,7 +337,7 @@ export default {
       const best = new Map(); for (const p of sel) best.set(p, [bs[p], bm[p]]);
       let cands = [...best.entries()].sort((a, b) => b[1][0] - a[1][0]).slice(0, mode === 'answer' ? A_CAND : CAND)
                     .map(([p, [s, m]]) => ({ p, m, s: +s.toFixed(3) }));
-      const xs = (url.searchParams.get('x') || '').split(',').map(v => v.split(':').map(Number))   // מועמדים נוספים מהדפדפן: "קטע" או "קטע:חתיכה"
+      const xs = (url.searchParams.get('x') || '').split(',').filter(Boolean).map(v => v.split(':').map(Number))   // מועמדים נוספים מהדפדפן: "קטע" או "קטע:חתיכה"
                    .filter(([p]) => Number.isInteger(p) && p >= 0 && p < np && (!grp || grp[p] === want)).slice(0, mode === 'answer' ? A_X : 10);
       for (const [p, xm] of xs) {
         const okm = Number.isInteger(xm) && xm >= 0 && xm < ns && parent[np + xm] === p ? xm : null;
