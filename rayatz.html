@@ -247,6 +247,22 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   const st = { mode: 'series', year: null, month: null, series: null, part: null };
   try { Object.assign(st, JSON.parse(sessionStorage.getItem('rayatz-ui2') || '{}')); } catch (e) {}
   const save = () => { try { sessionStorage.setItem('rayatz-ui2', JSON.stringify(st)); } catch (e) {} };
+  // ---------- קישור קבוע לכל סדרה: rayatz.html?s=igros-kodesh ----------
+  const SLUG = { 'ספר השיחות': 'sefer-hasichos', 'לקוטי דיבורים': 'likkutei-dibburim', 'ספר המאמרים': 'sefer-hamaamarim', 'ספר הזכרונות': 'sefer-hazichronos', 'אגרות קודש': 'igros-kodesh', 'רשימות': 'reshimos' };
+  const slugOf = n => SLUG[n] || n;
+  (function () {
+    const q = new URLSearchParams(location.search).get('s'); if (!q) return;
+    const n = Object.keys(SLUG).find(k => SLUG[k] === q) || q;
+    if (st.series !== n) st.part = null;
+    st.mode = 'series'; st.series = n; save();
+  })();
+  const syncUrl = () => {
+    try {
+      const u = new URL(location.href);
+      if (st.mode === 'series' && st.series) u.searchParams.set('s', slugOf(st.series)); else u.searchParams.delete('s');
+      if (u.href !== location.href) history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (e) {}
+  };
   const href = x => x.href ? x.href : 'rayatz-read.html?book=' + x.book + '&page=' + x.pdf + '&title=' + encodeURIComponent(x.t);
   // כותרת לתצוגה: בלי שם הסדרה (מופיע בתגית/בכותרת) ובלי השנה בסוגריים בסוף
   function showTitle(x, inPart) {
@@ -331,6 +347,7 @@ main.read-main { flex:1 1 0; min-height:0; display:flex; flex-direction:column; 
   function draw() {
     document.querySelectorAll('.seg-btn').forEach(b => b.classList.toggle('on', b.dataset.mode === st.mode));
     if (st.mode === 'series') viewSeries(); else viewYears();
+    syncUrl();
   }
   document.querySelectorAll('.seg-btn').forEach(b => b.onclick = () => { st.mode = b.dataset.mode; save(); draw(); });
   // ---------- חיפוש ----------
