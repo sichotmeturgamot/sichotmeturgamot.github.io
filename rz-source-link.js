@@ -18,12 +18,14 @@
   // שם ספר/שנה בלי ה׳, בלי "חורף", בלי (לה״ק), בלי גרשיים ורווחים — כדי ש"תרצ״ו–ה׳ש״ת" = "תרצ״ו–חורף ה׳ש״ת"
   function key(s) { return norm(s).replace(/\((?:לה״ק|אידיש)\)/g, '').replace(/חורף/g, '').replace(/(^|[\s–\-])ה׳/g, '$1').replace(/[׳״\s]/g, '').replace(/[–\-]/g, '-'); }
 
-  // כותרת מקור → {ספר במרכז, ושנה (חלק) בתוך הספר כשהמספור מתחיל מחדש בכל שנה}
+  // כותרת מקור → {ספר באתר, ושנה (חלק) בתוך הספר כשהמספור מתחיל מחדש בכל שנה}
   function bookOf(t, books) {
     var m, id = null;
-    if ((m = /^אגרות קודש\s+(?:ח״|חלק\s+|כרך\s+)?([א-ת׳״]+)/.exec(t))) id = 'ak-' + gem(m[1]);
+    if ((m = /^אגרות קודש\s+(?:אדמו״ר\s+(?:מו)?הריי״[צץ]\s+)?(?:ח״|חלק\s+|כרך\s+)?([א-ת׳״]+)/.exec(t))) id = 'ak-' + gem(m[1]);
     else if ((m = /^לקוטי דיבורים\s+(?:ח״|חלק\s+|כרך\s+)?([א-ת׳״]+)/.exec(t))) id = 'ld-' + gem(m[1]);
     else if ((m = /^ספר הזכרונות\s+(?:ח״|חלק\s+)?([א-ת׳״]+)/.exec(t))) { var n = gem(m[1]); id = n === 3 ? 'zy-3' : 'zk-' + n; }
+    else if (/הצמח צדק ותנועת ההשכלה/.test(t)) id = 'kn-2';
+    else if (/^קונטרס דברי ימי החוזרים/.test(t)) id = 'kn-1';
     else if ((m = /^רשימות(?: היומן)?\s+חוברת\s+([א-ת׳״]+)/.exec(t))) id = 'rs-' + gem(m[1]);
     if (id) { for (var i = 0; i < books.length; i++) if (books[i].id === id) return { b: books[i] }; }
     var name = t.split(' — ')[0], he = /\(לה״ק\)/.test(name), nk = key(name);
@@ -55,7 +57,7 @@
     return null;
   }
 
-  // עמוד מודפס → עמוד PDF בקובץ של המרכז
+  // עמוד מודפס → עמוד PDF בקובץ שבאתר
   function pdfPage(b, pg, only) {
     if (!pg) return 0;
     var pick = null;
@@ -75,13 +77,17 @@
     var books = (typeof RAYATZ !== 'undefined' && RAYATZ.books) || [];
     var r = bookOf(t, books);
     if (!r) return 'rayatz.html';
-    var b = r.b, pm = /עמ['׳.]*\s*(\d+|[א-ת]+[׳״]?[א-ת]?)/.exec(t);
-    var page = pm ? pdfPage(b, /^\d/.test(pm[1]) ? +pm[1] : gem(pm[1]), r.sec) : 0;
+    var b = r.b, page = 0, fm = /עמ['׳.]*\s*(\d+)\s+בקובץ/.exec(t);
+    if (fm) page = Math.min(+fm[1], b.pages || +fm[1]);   // "עמ׳ N בקובץ" = כבר עמוד בקובץ
+    else {
+      var pm = /עמ['׳.]*\s*(\d+|[א-ת]+[׳״]?[א-ת]?)\s*\)/.exec(t);
+      if (pm && pm[1] !== 'מבוא') page = pdfPage(b, /^\d/.test(pm[1]) ? +pm[1] : gem(pm[1]), r.sec);
+    }
     if (!page && c.u) { var um = /pgnum=(\d+)/.exec(c.u); if (um) page = +um[1]; }
     return 'rayatz-read.html?book=' + encodeURIComponent(b.id) + (page ? '&page=' + page : '') + '&title=' + encodeURIComponent(t);
   }
 
-  // יוצר את הקישור. טקסט בלי f → מרכז הריי״ץ; שיחה מתורגמת (f) נשארת בקורא של השיחות המתורגמות.
+  // יוצר את הקישור. טקסט בלי f → תורת אדמו״ר הריי״ץ; שיחה מתורגמת (f) נשארת בקורא של השיחות המתורגמות.
   window.rzSrcLink = function (c) {
     var l = document.createElement('a');
     if (c.f && !c.u) {
