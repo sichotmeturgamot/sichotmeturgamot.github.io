@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>תורת אדמו״ר הריי״ץ</title>
-<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="תורת אדמו״ר הריי״ץ במקום אחד: ספר השיחות, לקוטי דיבורים, ספר המאמרים, אגרות קודש, ספר הזכרונות ורשימות. קריאה מהמקור ותרגום מאידיש ללשון הקודש בהקשה.">
+<link rel="canonical" href="https://sichotmeturgamot.com/rayatz.html">
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="style.css?v=3">
 <meta name="theme-color" content="#1a2942">
@@ -192,7 +193,7 @@ a.year-chip { display:inline-block; text-decoration:none; -webkit-touch-callout:
   // ---------- בניית הנתונים ----------
   // ---------- מתג "פתיחה לציבור" (rz-config.js, נשלט מעמוד הניהול) ----------
   const CFG = window.RZ_CONFIG || {};
-  if (CFG.live) { const w = document.getElementById('rzWip'); if (w) { w.textContent = 'ייפתח בקרוב בעז״ה · כניסה בקוד גישה בלבד'; w.style.display = ''; fetch('https://sichos-translate.doviber.workers.dev/yid/pdf?book=tarpach-tartzaa', { headers: { Range: 'bytes=0-0' } }).then(r => { if (r.status === 200 || r.status === 206) w.style.display = 'none'; }).catch(() => {}); } const h = document.querySelector('h1'); if (h) h.textContent = 'תורת אדמו״ר הריי״ץ'; document.title = 'תורת אדמו״ר הריי״ץ'; }
+  if (CFG.live) { const h = document.querySelector('h1'); if (h) h.textContent = 'תורת אדמו״ר הריי״ץ'; document.title = 'תורת אדמו״ר הריי״ץ'; }
   const HIDE = CFG.live ? (CFG.hide || []) : [];
   // ---------- השיחות המתורגמות: נקראות ישירות מ־data.js, כך שכל שיחה חדשה מופיעה כאן מיד ----------
   (function () {
@@ -410,31 +411,6 @@ a.year-chip { display:inline-block; text-decoration:none; -webkit-touch-callout:
     const hook = () => document.querySelectorAll('#app .rz-item:not(.reveal), #app .rz-card:not(.reveal)').forEach((el, i) => { el.classList.add('reveal'); el.style.transitionDelay = (Math.min(i, 6) * 60) + 'ms'; io.observe(el); });
     hook(); new MutationObserver(hook).observe(document.getElementById('app'), { childList: true, subtree: true });
   })();
-</script>
-<div id="rzIntro"><div class="g">
-  <button type="button" class="x" id="rzIntroX" aria-label="סגירה">×</button>
-  <div class="orn">✦</div>
-  <h2>תורת אדמו״ר הריי״ץ</h2>
-  <div class="soon">ייפתח בקרוב בעז״ה</div>
-  <p><b>כל תורת אדמו״ר הריי״ץ במקום אחד!</b></p>
-  <ul>
-    <li>ספר השיחות, לקוטי דיבורים, ספר המאמרים, אגרות קודש, ספר הזכרונות ורשימות</li>
-    <li>קריאה מהמקור, בחירת טקסט ותרגומו מאידיש ללשון הקודש</li>
-    <li>חיפוש, ואזור אישי עם היסטוריית תרגומים</li>
-  </ul>
-</div></div>
-<script>
-(function () {
-  var CFG = window.RZ_CONFIG || {}; if (!CFG.live) return;
-  var el = document.getElementById('rzIntro');
-  function close() { el.classList.remove('show'); }
-  document.getElementById('rzIntroX').onclick = close;
-  el.addEventListener('click', function (e) { if (e.target === el) close(); });
-  el.classList.add('show');   // מוצג מיד; נסגר רק אם השרת מאשר גישה בלי קוד (כלומר הקוד כבר נמחק)
-  fetch('https://sichos-translate.doviber.workers.dev/yid/pdf?book=tarpach-tartzaa', { headers: { Range: 'bytes=0-0' } })
-    .then(function (r) { if (r.status === 200 || r.status === 206) el.classList.remove('show'); })
-    .catch(function () {});
-})();
 </script>
 <script src="nav.js?v=7"></script>
 <script src="morenav.js" defer></script>
