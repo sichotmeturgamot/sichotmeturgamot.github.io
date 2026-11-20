@@ -15,28 +15,51 @@
     document.head.appendChild(s);
   }
 
-  // כותרת מקור → מזהה ספר במרכז
+  // שם ספר/שנה בלי ה׳, בלי "חורף", בלי (לה״ק), בלי גרשיים ורווחים — כדי ש"תרצ״ו–ה׳ש״ת" = "תרצ״ו–חורף ה׳ש״ת"
+  function key(s) { return norm(s).replace(/\((?:לה״ק|אידיש)\)/g, '').replace(/חורף/g, '').replace(/(^|[\s–\-])ה׳/g, '$1').replace(/[׳״\s]/g, '').replace(/[–\-]/g, '-'); }
+
+  // כותרת מקור → {ספר במרכז, ושנה (חלק) בתוך הספר כשהמספור מתחיל מחדש בכל שנה}
   function bookOf(t, books) {
     var m, id = null;
     if ((m = /^אגרות קודש\s+(?:ח״|חלק\s+|כרך\s+)?([א-ת׳״]+)/.exec(t))) id = 'ak-' + gem(m[1]);
     else if ((m = /^לקוטי דיבורים\s+(?:ח״|חלק\s+|כרך\s+)?([א-ת׳״]+)/.exec(t))) id = 'ld-' + gem(m[1]);
     else if ((m = /^ספר הזכרונות\s+(?:ח״|חלק\s+)?([א-ת׳״]+)/.exec(t))) { var n = gem(m[1]); id = n === 3 ? 'zy-3' : 'zk-' + n; }
     else if ((m = /^רשימות(?: היומן)?\s+חוברת\s+([א-ת׳״]+)/.exec(t))) id = 'rs-' + gem(m[1]);
-    if (id) { for (var i = 0; i < books.length; i++) if (books[i].id === id) return books[i]; }
-    // ספרים אחרים: שם הספר במרכז הוא תחילת הכותרת (למשל "ספר השיחות תרפ״ח–תרצ״א")
+    if (id) { for (var i = 0; i < books.length; i++) if (books[i].id === id) return { b: books[i] }; }
+    var name = t.split(' — ')[0], he = /\(לה״ק\)/.test(name), nk = key(name);
+    // 1) שם הספר זהה (אחרי ניקוי) או שהכותרת מתחילה בו
     var best = null;
     books.forEach(function (b) {
-      var bt = cleanBookTitle(b.title);
-      if (bt.length > 6 && t.indexOf(bt) === 0 && (!best || bt.length > cleanBookTitle(best.title).length)) best = b;
+      var bk = key(b.title);
+      if (bk.length > 6 && (nk === bk || nk.indexOf(bk) === 0) && (!best || bk.length > key(best.title).length)) best = b;
     });
-    return best;
+    if (best) return { b: best };
+    // 2) שנה אחת מתוך כרך משותף (למשל "ספר השיחות ה׳תש״ד (לה״ק)" בתוך "ה׳תש״ד–תש״ה"): מחפשים חלק בשם השנה
+    if ((m = /^ספר השיחות\s+(.+)$/.exec(name))) {
+      var yk = key(m[1]), hit = null;
+      books.forEach(function (b) {
+        if (!/^ספר השיחות/.test(b.title)) return;
+        var bhe = /\(לה״ק\)/.test(b.title);
+        (b.sections || []).forEach(function (sec) {
+          if (key(sec.id) !== yk) return;
+          var score = (bhe === he ? 2 : 0);
+          if (!hit || score > hit.score) hit = { b: b, sec: sec, score: score };
+        });
+      });
+      if (hit) {   // בכרכי לה״ק המספור מתחיל מחדש בכל שנה; בכרכי אידיש הוא רציף
+        var restart = false, prev = 0;
+        (hit.b.sections || []).forEach(function (sec) { if (/הוספות/.test(sec.id)) return; var xs = (sec.sichos || []).filter(function (x) { return x.ps != null; }); if (!xs.length) return; if (xs[0].ps < prev) restart = true; prev = xs[xs.length - 1].ps; });
+        return { b: hit.b, sec: restart ? hit.sec : null };
+      }
+    }
+    return null;
   }
 
   // עמוד מודפס → עמוד PDF בקובץ של המרכז
-  function pdfPage(b, pg) {
+  function pdfPage(b, pg, only) {
     if (!pg) return 0;
     var pick = null;
-    (b.sections || []).forEach(function (sec) {
+    (only ? [only] : (b.sections || [])).forEach(function (sec) {
       (sec.sichos || []).forEach(function (x) {
         if (x.href || x.ps == null || x.pdf == null) return;
         if (x.ps <= pg && (!pick || x.ps >= pick.ps)) pick = x;
@@ -50,10 +73,10 @@
   function resolve(c) {
     var t = norm((c.t || '').replace(/\s*·\s*אידיש\s*$/, ''));
     var books = (typeof RAYATZ !== 'undefined' && RAYATZ.books) || [];
-    var b = bookOf(t, books);
-    if (!b) return 'rayatz.html';
-    var pm = /עמ['׳.]*\s*(\d+)/.exec(t);
-    var page = pm ? pdfPage(b, +pm[1]) : 0;
+    var r = bookOf(t, books);
+    if (!r) return 'rayatz.html';
+    var b = r.b, pm = /עמ['׳.]*\s*(\d+|[א-ת]+[׳״]?[א-ת]?)/.exec(t);
+    var page = pm ? pdfPage(b, /^\d/.test(pm[1]) ? +pm[1] : gem(pm[1]), r.sec) : 0;
     if (!page && c.u) { var um = /pgnum=(\d+)/.exec(c.u); if (um) page = +um[1]; }
     return 'rayatz-read.html?book=' + encodeURIComponent(b.id) + (page ? '&page=' + page : '') + '&title=' + encodeURIComponent(t);
   }
