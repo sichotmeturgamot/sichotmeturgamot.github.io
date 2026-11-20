@@ -72,6 +72,9 @@
     return b.pages && p > b.pages ? pick.pdf : p;
   }
 
+  // בדיקה מול הקבצים באתר: בלקוטי דיבורים העמוד בקובץ מוקדם בעמוד אחד (בח״ד בשניים) ממה שבנתונים
+  var ADJ = { 'ld-1': -1, 'ld-2': -1, 'ld-3': -1, 'ld-4': -2, 'ld-5': -1 };
+
   function resolve(c) {
     var t = norm((c.t || '').replace(/\s*·\s*אידיש\s*$/, ''));
     var books = (typeof RAYATZ !== 'undefined' && RAYATZ.books) || [];
@@ -82,6 +85,7 @@
     else {
       var pm = /עמ['׳.]*\s*(\d+|[א-ת]+[׳״]?[א-ת]?)\s*\)/.exec(t);
       if (pm && pm[1] !== 'מבוא') page = pdfPage(b, /^\d/.test(pm[1]) ? +pm[1] : gem(pm[1]), r.sec);
+      if (page && ADJ[b.id]) page = Math.max(1, page + ADJ[b.id]);
     }
     if (!page && c.u) { var um = /pgnum=(\d+)/.exec(c.u); if (um) page = +um[1]; }
     return 'rayatz-read.html?book=' + encodeURIComponent(b.id) + (page ? '&page=' + page : '') + '&title=' + encodeURIComponent(t);
