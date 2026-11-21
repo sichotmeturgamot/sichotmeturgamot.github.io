@@ -2,32 +2,39 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>הזמנה</title>
 <!-- דף נסתר: לא לקשר אליו, לא להכניס למפת האתר, ל-llms.txt או ל-IndexNow -->
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#17233d">
+<meta name="theme-color" content="#ffffff">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=14">
+<link rel="stylesheet" href="shop/shop.css?v=20">
 </head>
 <body>
-<header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
-<main class="wrap order">
-  <nav class="crumbs"><a href="shop.html">החנות</a> ‹ הזמנה</nav>
-  <div class="order-head">
+<header class="hd"><div class="in">
+  <a class="logo" href="shop.html"><i>ש</i>החנות</a>
+  <nav aria-label="החנות"><a href="shop-milonit.html">המילונית</a><a href="shop-milon.html">המילון המודפס</a><a href="/">לאתר ספר השיחות</a></nav>
+  <a class="cta" href="shop-order.html">הזמנה</a>
+</div></header>
+<main class="wrap">
+  <nav class="crumbs"><a href="shop.html">החנות</a><span>›</span>הזמנה</nav>
+  <div class="co-head">
     <h1>הזמנה</h1>
     <p>ממלאים את הפרטים, ואנחנו חוזרים אליכם לאישור ההזמנה. אין תשלום בשלב הזה.</p>
   </div>
 
   <form id="order" class="oform" novalidate>
+    <div class="co-main">
     <fieldset>
       <legend>מה להזמין</legend>
       <p class="hint">אפשר להזמין את שני המוצרים יחד. בוחרים כמות לכל אחד.</p>
       <div class="item" data-key="milonit">
+        <span class="th"><img src="shop/adv-main3-800.webp" alt="" width="800" height="581"></span>
         <span class="iname"><b>מילונית ADV</b><small>מכשיר המילון הדיגיטלי</small><small class="stock">דורש כרטיס microSD בנפח 8 עד 32GB (לא כלול). כרטיס גדול יותר לא יעבוד.</small><small class="stock">המילונית נשלחת לפי מלאי, זמן האספקה יימסר באישור ההזמנה.</small></span>
         <span class="step"><button type="button" class="minus" aria-label="פחות מילוניות">−</button><input name="q_milonit" type="number" inputmode="numeric" min="0" max="50" value="0" aria-label="כמות מילונית ADV"><button type="button" class="plus" aria-label="עוד מילונית">+</button></span>
       </div>
       <div class="item" data-key="milon">
+        <span class="th book"><img src="shop/book-3d-p-720.webp" alt="" width="720" height="900"></span>
         <span class="iname"><b>מילון אידיש–עברי לכתבי חב״ד</b><small>ספר מודפס, כריכה רכה</small></span>
         <span class="step"><button type="button" class="minus" aria-label="פחות ספרים">−</button><input name="q_milon" type="number" inputmode="numeric" min="0" max="50" value="0" aria-label="כמות מילון אידיש–עברי"><button type="button" class="plus" aria-label="עוד ספר">+</button></span>
       </div>
@@ -69,10 +76,13 @@
       <legend>הערות <span class="opt">(רשות)</span></legend>
       <textarea id="o-notes" name="notes" rows="3" aria-label="הערות"></textarea>
     </fieldset>
+    </div>
 
-    <div class="total" id="o-total" aria-live="polite"></div>
-
-    <label class="terms"><input type="checkbox" name="terms" id="o-terms"><span>קראתי ואני מאשר/ת את <a href="#o-terms-text" id="o-terms-open">תנאי המשלוח</a></span></label>
+    <aside class="co-side">
+      <div class="card">
+        <h2>סיכום הזמנה</h2>
+        <div class="total" id="o-total" aria-live="polite"></div>
+        <label class="terms"><input type="checkbox" name="terms" id="o-terms"><span>קראתי ואני מאשר/ת את <a href="#o-terms-text" id="o-terms-open">תנאי המשלוח</a></span></label>
     <details class="terms-text" id="o-terms-text">
       <summary>תנאי המשלוח</summary>
       <ul>
@@ -82,19 +92,25 @@
         <li>איסוף עצמי מקריית מלאכי, בתיאום מראש.</li>
       </ul>
     </details>
-
-    <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <p id="o-err" class="oerr" role="alert"></p>
-    <button class="buy" id="o-send" type="submit">שליחת ההזמנה</button>
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p id="o-err" class="oerr" role="alert"></p>
+        <button class="btn btn-dark btn-block" id="o-send" type="submit">שליחת ההזמנה</button>
+        <p class="secure"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>אין תשלום עכשיו. נחזור אליכם לאישור.</p>
+      </div>
+    </aside>
   </form>
 
   <div class="odone" id="o-done" hidden>
+    <div class="ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
     <h2>ההזמנה התקבלה</h2>
     <p>תודה! נחזור אליכם בטלפון לאישור ההזמנה.</p>
-    <a class="alt" href="shop.html">חזרה לחנות</a>
+    <a class="btn btn-ghost" href="shop.html">חזרה לחנות</a>
   </div>
 </main>
-<footer><a href="shop.html">החנות</a> · <a href="/">ספר השיחות מתורגם ללה״ק</a></footer>
+<footer class="ft"><div class="wrap in">
+  <span>החנות של ספר השיחות מתורגם ללה״ק</span>
+  <nav><a href="shop-milonit.html">המילונית</a><a href="shop-milon.html">המילון המודפס</a><a href="shop-order.html">הזמנה</a><a href="/">לאתר</a></nav>
+</div></footer>
 <script>
 (function () {
   // כתובת להזמנות בלבד, דרך קוד FormSubmit (הכתובת עצמה לא מופיעה בדף)

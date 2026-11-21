@@ -2,41 +2,57 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>החנות</title>
 <!-- דף נסתר: לא לקשר אליו, לא להכניס למפת האתר, ל-llms.txt או ל-IndexNow -->
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#17233d">
+<meta name="theme-color" content="#ffffff">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=14">
+<link rel="stylesheet" href="shop/shop.css?v=20">
 </head>
 <body>
-<header class="bar"><div class="in"><a class="name" href="shop.html">החנות</a><a class="site" href="/">לאתר ספר השיחות ←</a></div></header>
+<header class="hd"><div class="in">
+  <a class="logo" href="shop.html"><i>ש</i>החנות</a>
+  <nav aria-label="החנות"><a href="shop-milonit.html">המילונית</a><a href="shop-milon.html">המילון המודפס</a><a href="/">לאתר ספר השיחות</a></nav>
+  <a class="cta" href="shop-order.html">הזמנה</a>
+</div></header>
 <main class="wrap">
-  <div class="store-head">
-    <h1>החנות</h1>
-    <p>מילונים ללומדי ספרות חב״ד ביידיש.</p>
-  </div>
-  <div class="grid">
-    <a class="card" href="shop-milonit.html">
-      <div class="pic"><img src="shop/adv-main3-800.webp" width="800" height="581" alt="המילונית, מילון כיס אלקטרוני" fetchpriority="high"></div>
-      <div class="body">
-        <h2>המילונית</h2>
-        <p>מילון כיס אלקטרוני יידיש–עברית, בגודל כרטיס אשראי.</p>
-        <div class="price">150 ש״ח</div>
-      </div>
-    </a>
-    <a class="card" href="shop-milon.html">
-      <div class="pic"><img src="shop/book-3d-p-720.webp" width="720" height="900" loading="lazy" alt="הדמיה של הספר מילון אידיש–עברי לכתבי חב״ד"></div>
-      <div class="body">
-        <h2>מילון אידיש–עברי לכתבי חב״ד</h2>
-        <p>ספר מודפס, למעלה מ-19,000 ערכים.</p>
-        <div class="price">50 ש״ח</div>
-      </div>
-    </a>
-  </div>
-  <a class="buy order-all" href="shop-order.html">להזמנה</a>
+  <section class="intro">
+    <h1>מילונים ללומדי ספרות חב״ד ביידיש</h1>
+    <p>מכשיר כיס אלקטרוני וספר מודפס</p>
+  </section>
+
+  <article class="feature">
+    <div class="ft-txt">
+      <span class="kicker">מילון כיס אלקטרוני</span>
+      <h2>המילונית</h2>
+      <p class="sub">מכשיר בגודל כרטיס אשראי עם כעשרים אלף ערכים מספרות חב״ד. מקלידים מילה ביידיש ומקבלים את פירושה בעברית.</p>
+      <p class="pr">150 ש״ח<small>+ משלוח</small></p>
+      <div class="acts"><a class="btn btn-dark" href="shop-order.html?p=milonit">להזמנה</a><a class="link" href="shop-milonit.html">לפרטים</a></div>
+    </div>
+    <a class="ft-img" href="shop-milonit.html" aria-label="לפרטים על המילונית"><img src="shop/adv-main3-1600.webp" srcset="shop/adv-main3-800.webp 800w, shop/adv-main3-1600.webp 1600w" sizes="(min-width: 880px) 640px, 100vw" width="1600" height="1162" alt="המילונית מלפנים: מסך, מקלדת עם אותיות עבריות" fetchpriority="high"></a>
+  </article>
+
+  <article class="feature flip">
+    <div class="ft-txt">
+      <span class="kicker">ספר מודפס</span>
+      <h2>מילון <span class="nw">אידיש–עברי</span> לכתבי חב״ד</h2>
+      <p class="sub">למעלה מ-19,000 ערכים מלקוטי שיחות, אגרות קודש, ספר השיחות, לקוטי דיבורים וספר הזכרונות.</p>
+      <p class="pr">50 ש״ח<small>+ משלוח</small></p>
+      <div class="acts"><a class="btn btn-dark" href="shop-order.html?p=milon">להזמנה</a><a class="link" href="shop-milon.html">לפרטים</a></div>
+    </div>
+    <a class="ft-img book" href="shop-milon.html" aria-label="לפרטים על המילון המודפס"><img src="shop/book-3d-p-1440.webp" srcset="shop/book-3d-p-720.webp 720w, shop/book-3d-p-1440.webp 1440w" sizes="(min-width: 880px) 640px, 100vw" width="1440" height="1800" alt="הדמיה של הספר מילון אידיש–עברי לכתבי חב״ד" loading="lazy"></a>
+  </article>
+
+  <section class="perks" aria-label="משלוח והזמנה">
+    <div class="perk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v9H3z"/><path d="M14 9h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><div><b>משלוח בדואר רשום</b><span>25 ש״ח, כ-10 ימי עסקים</span></div></div>
+    <div class="perk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><div><b>איסוף עצמי</b><span>מקריית מלאכי, בתיאום מראש</span></div></div>
+    <div class="perk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M8.8 12l2.2 2.2 4.4-4.4"/></svg><div><b>אין תשלום בשלב ההזמנה</b><span>ממלאים טופס, ואנחנו חוזרים לאישור</span></div></div>
+  </section>
 </main>
-<footer><a href="shop.html">החנות</a> · <a href="/">ספר השיחות מתורגם ללה״ק</a></footer>
+<footer class="ft"><div class="wrap in">
+  <span>החנות של ספר השיחות מתורגם ללה״ק</span>
+  <nav><a href="shop-milonit.html">המילונית</a><a href="shop-milon.html">המילון המודפס</a><a href="shop-order.html">הזמנה</a><a href="/">לאתר</a></nav>
+</div></footer>
 </body>
 </html>
