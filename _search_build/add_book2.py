@@ -13,7 +13,8 @@ buf = open(R + 'search-vectors.bin', 'rb').read()
 N0, dim, np0, d1000 = struct.unpack('<IIII', buf[:16])
 V0 = np.frombuffer(buf, np.int8, offset=16 + 2 * N0).reshape(N0, dim)
 EX = os.environ.get('EXCL_TITLE')
-keep = [i for i, c in enumerate(old['chunks']) if not c['id'].startswith(prefix) and not (EX and c['id'].startswith('L#') and EX in c['t'])]
+EXI = set(filter(None, os.environ.get('EXCL_IDS', '').split(',')))
+keep = [i for i, c in enumerate(old['chunks']) if not c['id'].startswith(prefix) and not (EX and c['id'].startswith('L#') and EX in c['t']) and c['id'] not in EXI]
 remap = {o: n for n, o in enumerate(keep)}
 oldC = [old['chunks'][i] for i in keep]; oldDk = [oldD[i] for i in keep]
 oldS = [(j, s) for j, s in enumerate(old['smalls']) if s['p'] in remap]
