@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>הזמנה</title>
+<!-- דף נסתר (תצוגה מקדימה של עיצוב חדש לחנות): לא לקשר אליו, לא להכניס למפת האתר, ל-llms.txt או ל-IndexNow -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="shop/shop-v2.css?v=1">
+</head>
+<body>
+<header class="hd"><div class="in">
+  <a class="logo" href="shop-v2.html"><i>ש</i>החנות</a>
+  <nav aria-label="החנות"><a href="shop-v2-milonit.html">המילונית</a><a href="shop-v2-milon.html">המילון המודפס</a><a href="/">לאתר ספר השיחות</a></nav>
+  <a class="cta" href="shop-v2-order.html">הזמנה</a>
+</div></header>
+<main class="wrap">
+  <nav class="crumbs"><a href="shop-v2.html">החנות</a><span>›</span>הזמנה</nav>
+  <div class="co-head">
+    <h1>הזמנה</h1>
+    <p>ממלאים את הפרטים, ואנחנו חוזרים אליכם לאישור ההזמנה. אין תשלום בשלב הזה.</p>
+  </div>
+
+  <form id="order" class="oform" novalidate>
+    <div class="co-main">
+    <fieldset>
+      <legend>מה להזמין</legend>
+      <p class="hint">אפשר להזמין את שני המוצרים יחד. בוחרים כמות לכל אחד.</p>
+      <div class="item" data-key="milonit">
+        <span class="th"><img src="shop/adv-main3-800.webp" alt="" width="800" height="581"></span>
+        <span class="iname"><b>מילונית ADV</b><small>מכשיר המילון הדיגיטלי</small><small class="stock">דורש כרטיס microSD בנפח 8 עד 32GB (לא כלול). כרטיס גדול יותר לא יעבוד.</small><small class="stock">המילונית נשלחת לפי מלאי, זמן האספקה יימסר באישור ההזמנה.</small></span>
+        <span class="step"><button type="button" class="minus" aria-label="פחות מילוניות">−</button><input name="q_milonit" type="number" inputmode="numeric" min="0" max="50" value="0" aria-label="כמות מילונית ADV"><button type="button" class="plus" aria-label="עוד מילונית">+</button></span>
+      </div>
+      <div class="item" data-key="milon">
+        <span class="th book"><img src="shop/book-3d-p-720.webp" alt="" width="720" height="900"></span>
+        <span class="iname"><b>מילון אידיש–עברי לכתבי חב״ד</b><small>ספר מודפס, כריכה רכה</small></span>
+        <span class="step"><button type="button" class="minus" aria-label="פחות ספרים">−</button><input name="q_milon" type="number" inputmode="numeric" min="0" max="50" value="0" aria-label="כמות מילון אידיש–עברי"><button type="button" class="plus" aria-label="עוד ספר">+</button></span>
+      </div>
+      <p class="sum" id="o-sum" aria-live="polite"></p>
+    </fieldset>
+
+    <fieldset>
+      <legend>פרטי המזמין</legend>
+      <label for="o-name">שם מלא</label>
+      <input id="o-name" name="name" type="text" autocomplete="name" required>
+      <label for="o-phone">טלפון</label>
+      <input id="o-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" required>
+      <label for="o-email">אימייל</label>
+      <input id="o-email" name="email" type="email" autocomplete="email" dir="ltr" required>
+    </fieldset>
+
+    <fieldset>
+      <legend>פרטי משלוח</legend>
+      <label class="pick"><input type="radio" name="delivery" value="משלוח" required checked><span><b>משלוח בדואר רשום</b><small>25 ש״ח. כ-10 ימי עסקים.</small></span></label>
+      <label class="pick"><input type="radio" name="delivery" value="איסוף עצמי מקריית מלאכי"><span><b>איסוף עצמי</b><small>מקריית מלאכי, בתיאום מראש</small></span></label>
+      <div id="addr">
+        <label for="o-city">עיר / יישוב</label>
+        <input id="o-city" name="city" type="text" autocomplete="address-level2">
+        <div class="cols c-street">
+          <div><label for="o-street">רחוב</label><input id="o-street" name="street" type="text" autocomplete="address-line1"></div>
+          <div><label for="o-house">מספר בית</label><input id="o-house" name="house" type="text" inputmode="numeric" autocomplete="off"></div>
+        </div>
+        <div class="cols c-3">
+          <div><label for="o-apt">דירה</label><input id="o-apt" name="apt" type="text" inputmode="numeric" autocomplete="off"></div>
+          <div><label for="o-entr">כניסה <span class="opt">(רשות)</span></label><input id="o-entr" name="entrance" type="text" autocomplete="off"></div>
+          <div><label for="o-floor">קומה</label><input id="o-floor" name="floor" type="text" inputmode="numeric" autocomplete="off"></div>
+        </div>
+        <label for="o-zip">מיקוד</label>
+        <input id="o-zip" name="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="7" dir="ltr" class="short">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>הערות <span class="opt">(רשות)</span></legend>
+      <textarea id="o-notes" name="notes" rows="3" aria-label="הערות"></textarea>
+    </fieldset>
+    </div>
+
+    <aside class="co-side">
+      <div class="card">
+        <h2>סיכום הזמנה</h2>
+        <div class="total" id="o-total" aria-live="polite"></div>
+        <label class="terms"><input type="checkbox" name="terms" id="o-terms"><span>קראתי ואני מאשר/ת את <a href="#o-terms-text" id="o-terms-open">תנאי המשלוח</a></span></label>
+    <details class="terms-text" id="o-terms-text">
+      <summary>תנאי המשלוח</summary>
+      <ul>
+        <li>משלוח בדואר רשום של דואר ישראל: 25 ש״ח, כ-10 ימי עסקים מאישור ההזמנה, למוצרים שבמלאי.</li>
+        <li>המילונית נשלחת לפי מלאי, זמן האספקה יימסר באישור ההזמנה.</li>
+        <li>אם אין איש בבית, הדואר משאיר הודעה והחבילה נאספת מסניף הדואר.</li>
+        <li>איסוף עצמי מקריית מלאכי, בתיאום מראש.</li>
+      </ul>
+    </details>
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p id="o-err" class="oerr" role="alert"></p>
+        <button class="btn btn-dark btn-block" id="o-send" type="submit">שליחת ההזמנה</button>
+        <p class="secure"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>אין תשלום עכשיו. נחזור אליכם לאישור.</p>
+      </div>
+    </aside>
+  </form>
+
+  <div class="odone" id="o-done" hidden>
+    <div class="ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h2>ההזמנה התקבלה</h2>
+    <p>תודה! נחזור אליכם בטלפון לאישור ההזמנה.</p>
+    <a class="btn btn-ghost" href="shop-v2.html">חזרה לחנות</a>
+  </div>
+</main>
+<footer class="ft"><div class="wrap in">
+  <span>החנות של ספר השיחות מתורגם ללה״ק</span>
+  <nav><a href="shop-v2-milonit.html">המילונית</a><a href="shop-v2-milon.html">המילון המודפס</a><a href="shop-v2-order.html">הזמנה</a><a href="/">לאתר</a></nav>
+</div></footer>
+<script>
+(function () {
+  // כתובת להזמנות בלבד, דרך קוד FormSubmit (הכתובת עצמה לא מופיעה בדף)
+  var ENDPOINT = 'https://formsubmit.co/ajax/dcdf10d01f6fa52dae52d2f5e5f13344';
+
+  var form = document.getElementById('order');
+  var err = document.getElementById('o-err');
+  var send = document.getElementById('o-send');
+  var addr = document.getElementById('addr');
+
+  // מחירים בש״ח. null = "מחיר בקרוב". לעדכן כאן כשהמחירים נקבעים.
+  var PRICES = { milonit: 150, milon: 50 };
+  var SHIP_PRICE = 25;
+
+  var NAMES = { milonit: 'מילונית', milon: 'מילון מודפס' };
+  var totalBox = document.getElementById('o-total');
+  function shekel(n) { return n.toLocaleString('he-IL') + ' ש״ח'; }
+  // מחשב את שורות המחיר. total = null אם חסר מחיר למוצר שנבחר
+  function pricing() {
+    var rows = [], total = 0, known = true, any = false;
+    Object.keys(NAMES).forEach(function (k) {
+      var n = qty(k); if (!n) return; any = true;
+      var pr = PRICES[k];
+      if (typeof pr === 'number') { rows.push([NAMES[k] + ' × ' + n, shekel(pr * n)]); total += pr * n; }
+      else { rows.push([NAMES[k] + ' × ' + n, 'מחיר בקרוב']); known = false; }
+    });
+    var ship = form.delivery.value === 'משלוח';
+    rows.push(ship ? ['משלוח בדואר רשום', shekel(SHIP_PRICE)] : ['איסוף עצמי', 'ללא עלות']);
+    if (ship) total += SHIP_PRICE;
+    return { rows: rows, any: any, total: (any && known) ? total : null };
+  }
+  function renderTotal() {
+    var pc = pricing();
+    totalBox.innerHTML = '';
+    pc.rows.forEach(function (r) {
+      var d = document.createElement('div'); d.className = 'trow';
+      var a = document.createElement('span'); a.textContent = r[0];
+      var b = document.createElement('span'); b.textContent = r[1];
+      d.appendChild(a); d.appendChild(b); totalBox.appendChild(d);
+    });
+    if (pc.total !== null) {
+      var t = document.createElement('div'); t.className = 'trow tsum';
+      var a2 = document.createElement('span'); a2.textContent = 'סה״כ לתשלום';
+      var b2 = document.createElement('span'); b2.textContent = shekel(pc.total);
+      t.appendChild(a2); t.appendChild(b2); totalBox.appendChild(t);
+    }
+  }
+  var sum = document.getElementById('o-sum');
+  function qty(k) { var n = parseInt(form.elements['q_' + k].value, 10); return n >= 0 ? n : 0; }
+  function setQty(k, n) { form.elements['q_' + k].value = Math.max(0, Math.min(50, n)); render(); }
+  function render() {
+    var parts = [];
+    Object.keys(NAMES).forEach(function (k) {
+      var n = qty(k);
+      form.querySelector('.item[data-key="' + k + '"]').classList.toggle('on', n > 0);
+      if (n > 0) parts.push(NAMES[k] + ': ' + n);
+    });
+    sum.textContent = parts.length ? 'בהזמנה: ' + parts.join(' · ') : 'עוד לא נבחר מוצר.';
+    if (form.delivery) renderTotal();
+  }
+  Array.prototype.forEach.call(form.querySelectorAll('.item'), function (it) {
+    var k = it.dataset.key;
+    it.querySelector('.minus').addEventListener('click', function () { setQty(k, qty(k) - 1); });
+    it.querySelector('.plus').addEventListener('click', function () { setQty(k, qty(k) + 1); });
+    it.querySelector('input').addEventListener('input', render);
+  });
+  var p = new URLSearchParams(location.search).get('p');
+  if (NAMES.hasOwnProperty(p)) form.elements['q_' + p].value = 1;
+  render();
+
+  function syncAddr() {
+    var ship = form.delivery.value === 'משלוח';
+    addr.hidden = !ship;
+    form.street.required = ship; form.city.required = ship; form.house.required = ship; form.zip.required = ship;
+    renderTotal();
+  }
+  Array.prototype.forEach.call(form.delivery, function (r) { r.addEventListener('change', syncAddr); });
+  syncAddr();
+  document.getElementById('o-terms-open').addEventListener('click', function (e) {
+    e.preventDefault(); var d = document.getElementById('o-terms-text'); d.open = true; d.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
+
+  function addrLine() {
+    var v = function (n) { return form.elements[n].value.trim(); };
+    var a = v('street') + ' ' + v('house');
+    if (v('entrance')) a += ', כניסה ' + v('entrance');
+    if (v('floor')) a += ', קומה ' + v('floor');
+    if (v('apt')) a += ', דירה ' + v('apt');
+    return a + ', ' + v('city');
+  }
+  function fail(msg, el) { err.textContent = msg; if (el) el.focus(); return false; }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    err.textContent = '';
+    var lines = [], total = 0, bad = false;
+    Object.keys(NAMES).forEach(function (k) {
+      var v = form.elements['q_' + k].value, n = parseInt(v, 10);
+      if (v !== '' && !(n >= 0 && n <= 50 && String(n) === v.trim())) bad = true;
+      if (n > 0) { lines.push(NAMES[k] + ': ' + n); total += n; }
+    });
+    if (bad) return fail('הכמות צריכה להיות מספר בין 0 ל-50.', form.elements.q_milonit);
+    if (!total) return fail('בחרו לפחות מוצר אחד.', form.elements.q_milonit);
+    if (!form.elements.name.value.trim()) return fail('נא למלא שם.', form.elements.name);
+    if (form.phone.value.replace(/\D/g, '').length < 9) return fail('נא למלא מספר טלפון תקין.', form.phone);
+    if (!form.email.value.trim() || !form.email.checkValidity()) return fail('נא למלא כתובת אימייל תקינה.', form.email);
+    if (form.delivery.value === 'משלוח') {
+      if (!form.city.value.trim()) return fail('למשלוח צריך עיר או יישוב.', form.city);
+      if (!form.street.value.trim()) return fail('למשלוח צריך רחוב.', form.street);
+      if (!form.house.value.trim()) return fail('למשלוח צריך מספר בית.', form.house);
+      var z = form.zip.value.replace(/\D/g, '');
+      if (z.length !== 7) return fail('למשלוח צריך מיקוד של 7 ספרות.', form.zip);
+    }
+    if (!form.terms.checked) return fail('יש לאשר את תנאי המשלוח.', form.terms);
+    if (!ENDPOINT) return fail('הטופס עוד לא פעיל. זו תצוגה מקדימה.');
+
+    var ship = form.delivery.value === 'משלוח';
+    var pc = pricing();
+    var data = {
+      'הזמנה': lines.join(' | '),
+      'מילונית ADV': String(qty('milonit')),
+      'מילון מודפס': String(qty('milon')),
+      'שם': form.elements.name.value.trim(),
+      'טלפון': form.phone.value.trim(),
+      'אימייל': form.email.value.trim(),
+      'קבלה': form.delivery.value,
+      'כתובת': ship ? addrLine() : '-',
+      'מיקוד': ship ? (form.zip.value.replace(/\D/g, '') || '-') : '-',
+      'הערות': form.notes.value.trim() || '-',
+      'פירוט מחיר': pc.rows.map(function (r) { return r[0] + ': ' + r[1]; }).join(' | '),
+      'סה״כ': pc.total !== null ? shekel(pc.total) : 'לא סופי (מחיר מוצר טרם נקבע)',
+      'אישור תנאי משלוח': 'כן',
+      '_subject': 'הזמנה חדשה מהאתר: ' + lines.join(', '),
+      '_template': 'table',
+      '_captcha': 'false',
+      '_honey': form._honey.value
+    };
+    send.disabled = true; send.textContent = 'שולח…';
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok || j.success === false || j.success === 'false') throw new Error(j.message || ('status ' + r.status));
+      });
+    }).then(function () {
+      form.hidden = true;
+      document.getElementById('o-done').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }).catch(function (e) {
+      fail('השליחה לא הצליחה. נסו שוב בעוד רגע.');
+      var d = document.createElement('small'); d.className = 'edetail'; d.textContent = e && e.message ? e.message : ''; err.appendChild(d);
+      send.disabled = false; send.textContent = 'שליחת ההזמנה';
+    });
+  });
+})();
+</script>
+</body>
+</html>
