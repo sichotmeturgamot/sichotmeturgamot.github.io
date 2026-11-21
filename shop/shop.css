@@ -218,3 +218,11 @@ h1,h2,h3{font-weight:800;line-height:1.12;letter-spacing:-.01em;text-wrap:balanc
 .oform[hidden]{display:none}
 .nw{white-space:nowrap}
 @media(max-width:879px){.ft-img{order:-1}.ft-img.book img{object-fit:contain;padding:16px 0 0;object-position:center bottom}}
+/* על המילונית: הסבר מפורט */
+.about-grid{display:grid;grid-template-columns:1fr;gap:16px;max-width:1000px;margin:0 auto}
+@media(min-width:800px){.about-grid{grid-template-columns:1fr 1fr;gap:20px}}
+.about-grid article{border:1px solid var(--line);border-radius:var(--r);padding:26px 26px 24px}
+.about-grid h3{font-size:1.18rem;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.about-grid h3 i{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;font-style:normal;font-size:.9rem;font-weight:700;display:grid;place-items:center}
+.about-grid p{color:var(--ink2);line-height:1.8}
+.about-grid p+p{margin-top:8px}
