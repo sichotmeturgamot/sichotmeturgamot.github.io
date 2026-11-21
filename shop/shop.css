@@ -226,3 +226,9 @@ h1,h2,h3{font-weight:800;line-height:1.12;letter-spacing:-.01em;text-wrap:balanc
 .about-grid h3 i{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--brand);color:#fff;font-style:normal;font-size:.9rem;font-weight:700;display:grid;place-items:center}
 .about-grid p{color:var(--ink2);line-height:1.8}
 .about-grid p+p{margin-top:8px}
+/* מחיר השקה */
+.launch{display:inline-block;background:#faf3e3;color:#6f5216;font-weight:600;font-size:.84rem;padding:5px 12px;border-radius:999px;margin-top:20px}
+.launch+.pr{margin-top:10px}
+.pr s{color:var(--mute);font-weight:400;font-size:1.05rem;margin-inline-start:4px}
+.bb .pr s{font-size:1.2rem}
+.pr-note{color:var(--mute);font-size:.9rem;margin:2px 0 0}
