@@ -216,3 +216,5 @@ h1,h2,h3{font-weight:800;line-height:1.12;letter-spacing:-.01em;text-wrap:balanc
 .odone h2{font-size:1.8rem;margin-bottom:8px}
 .odone p{color:var(--mute);margin-bottom:22px}
 .oform[hidden]{display:none}
+.nw{white-space:nowrap}
+@media(max-width:879px){.ft-img{order:-1}.ft-img.book img{object-fit:contain;padding:16px 0 0;object-position:center bottom}}
