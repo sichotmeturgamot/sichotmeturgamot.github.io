@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#ffffff">
 <link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="shop/shop.css?v=20">
+<link rel="stylesheet" href="shop/shop.css?v=22">
 </head>
 <body>
 <header class="hd"><div class="in">
@@ -27,12 +27,7 @@
     <div class="co-main">
     <fieldset>
       <legend>מה להזמין</legend>
-      <p class="hint">אפשר להזמין את שני המוצרים יחד. בוחרים כמות לכל אחד.</p>
-      <div class="item" data-key="milonit">
-        <span class="th"><img src="shop/adv-main3-800.webp" alt="" width="800" height="581"></span>
-        <span class="iname"><b>מילונית ADV</b><small>מכשיר המילון הדיגיטלי</small><small class="stock">דורש כרטיס microSD בנפח 8 עד 32GB (לא כלול). כרטיס גדול יותר לא יעבוד.</small><small class="stock">המילונית נשלחת לפי מלאי, זמן האספקה יימסר באישור ההזמנה.</small></span>
-        <span class="step"><button type="button" class="minus" aria-label="פחות מילוניות">−</button><input name="q_milonit" type="number" inputmode="numeric" min="0" max="50" value="0" aria-label="כמות מילונית ADV"><button type="button" class="plus" aria-label="עוד מילונית">+</button></span>
-      </div>
+      <p class="hint">המילונית עוד לא במלאי. אפשר <a href="shop-waitlist.html">להצטרף לרשימת ההמתנה</a>.</p>
       <div class="item" data-key="milon">
         <span class="th book"><img src="shop/book-3d-p-720.webp" alt="" width="720" height="900"></span>
         <span class="iname"><b>מילון אידיש–עברי לכתבי חב״ד</b><small>ספר מודפס, כריכה רכה</small></span>
@@ -87,7 +82,6 @@
       <summary>תנאי המשלוח</summary>
       <ul>
         <li>משלוח בדואר רשום של דואר ישראל: 25 ש״ח, כ-10 ימי עסקים מאישור ההזמנה, למוצרים שבמלאי.</li>
-        <li>המילונית נשלחת לפי מלאי, זמן האספקה יימסר באישור ההזמנה.</li>
         <li>אם אין איש בבית, הדואר משאיר הודעה והחבילה נאספת מסניף הדואר.</li>
         <li>איסוף עצמי מקריית מלאכי, בתיאום מראש.</li>
       </ul>
@@ -122,10 +116,10 @@
   var addr = document.getElementById('addr');
 
   // מחירים בש״ח. null = "מחיר בקרוב". לעדכן כאן כשהמחירים נקבעים.
-  var PRICES = { milonit: 175, milon: 50 };
+  var PRICES = { milon: 50 };
   var SHIP_PRICE = 25;
 
-  var NAMES = { milonit: 'מילונית', milon: 'מילון מודפס' };
+  var NAMES = { milon: 'מילון מודפס' };
   var totalBox = document.getElementById('o-total');
   function shekel(n) { return n.toLocaleString('he-IL') + ' ש״ח'; }
   // מחשב את שורות המחיר. total = null אם חסר מחיר למוצר שנבחר
@@ -178,7 +172,8 @@
     it.querySelector('input').addEventListener('input', render);
   });
   var p = new URLSearchParams(location.search).get('p');
-  if (NAMES.hasOwnProperty(p)) form.elements['q_' + p].value = 1;
+  if (p === 'milonit') { location.replace('shop-waitlist.html'); return; }
+  form.elements.q_milon.value = 1;
   render();
 
   function syncAddr() {
@@ -212,8 +207,8 @@
       if (v !== '' && !(n >= 0 && n <= 50 && String(n) === v.trim())) bad = true;
       if (n > 0) { lines.push(NAMES[k] + ': ' + n); total += n; }
     });
-    if (bad) return fail('הכמות צריכה להיות מספר בין 0 ל-50.', form.elements.q_milonit);
-    if (!total) return fail('בחרו לפחות מוצר אחד.', form.elements.q_milonit);
+    if (bad) return fail('הכמות צריכה להיות מספר בין 0 ל-50.', form.elements.q_milon);
+    if (!total) return fail('בחרו כמות של לפחות ספר אחד.', form.elements.q_milon);
     if (!form.elements.name.value.trim()) return fail('נא למלא שם.', form.elements.name);
     if (form.phone.value.replace(/\D/g, '').length < 9) return fail('נא למלא מספר טלפון תקין.', form.phone);
     if (!form.email.value.trim() || !form.email.checkValidity()) return fail('נא למלא כתובת אימייל תקינה.', form.email);
@@ -231,8 +226,7 @@
     var pc = pricing();
     var data = {
       'הזמנה': lines.join(' | '),
-      'מילונית ADV': String(qty('milonit')),
-      'מילון מודפס': String(qty('milon')),
+            'מילון מודפס': String(qty('milon')),
       'שם': form.elements.name.value.trim(),
       'טלפון': form.phone.value.trim(),
       'אימייל': form.email.value.trim(),

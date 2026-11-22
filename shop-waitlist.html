@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>רשימת ההמתנה למילונית</title>
+<!-- דף נסתר: לא לקשר אליו, לא להכניס למפת האתר, ל-llms.txt או ל-IndexNow -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="shop/shop.css?v=22">
+</head>
+<body>
+<header class="hd"><div class="in">
+  <a class="logo" href="shop.html"><i>ש</i>החנות</a>
+  <nav aria-label="החנות"><a href="shop-milonit.html">המילונית</a><a href="shop-milon.html">המילון המודפס</a><a href="/">לאתר ספר השיחות</a></nav>
+  <a class="cta" href="shop-order.html">הזמנה</a>
+</div></header>
+<main class="wrap">
+  <nav class="crumbs"><a href="shop.html">החנות</a><span>›</span><a href="shop-milonit.html">המילונית</a><span>›</span>רשימת ההמתנה</nav>
+  <div class="co-head">
+    <h1>רשימת ההמתנה למילונית</h1>
+    <p>המילונית עוד לא במלאי. משאירים פרטים, וכשהיא תגיע נחזור אליכם לאישור ההזמנה. אין תשלום עכשיו.</p>
+  </div>
+
+  <form id="order" class="oform" novalidate>
+    <div class="co-main">
+    <fieldset>
+      <legend>כמה מילוניות</legend>
+      <div class="item on" data-key="milonit">
+        <span class="th"><img src="shop/adv-main3-800.webp" alt="" width="800" height="581"></span>
+        <span class="iname"><b>מילונית ADV</b><small>מילון כיס אלקטרוני יידיש–עברית</small><small class="stock">דורש כרטיס microSD בנפח 8 עד 32GB (לא כלול). כרטיס גדול יותר לא יעבוד.</small></span>
+        <span class="step"><button type="button" class="minus" aria-label="פחות מילוניות">−</button><input name="q_milonit" type="number" inputmode="numeric" min="1" max="50" value="1" aria-label="כמות מילוניות"><button type="button" class="plus" aria-label="עוד מילונית">+</button></span>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>פרטי קשר</legend>
+      <label for="o-name">שם מלא</label>
+      <input id="o-name" name="name" type="text" autocomplete="name" required>
+      <label for="o-phone">טלפון</label>
+      <input id="o-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" required>
+      <label for="o-email">אימייל</label>
+      <input id="o-email" name="email" type="email" autocomplete="email" dir="ltr" required>
+    </fieldset>
+
+    <fieldset>
+      <legend>הערות <span class="opt">(רשות)</span></legend>
+      <textarea id="o-notes" name="notes" rows="3" aria-label="הערות"></textarea>
+    </fieldset>
+    </div>
+
+    <aside class="co-side">
+      <div class="card">
+        <h2>מחיר השקה</h2>
+        <div class="total">
+          <div class="trow"><span>לעשרת הראשונים ברשימה</span><span>175 ש״ח</span></div>
+          <div class="trow"><span>אחר כך</span><span>220 ש״ח</span></div>
+          <div class="trow"><span>משלוח בדואר רשום</span><span>25 ש״ח</span></div>
+          <div class="trow"><span>איסוף עצמי מקריית מלאכי</span><span>ללא עלות</span></div>
+        </div>
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p id="o-err" class="oerr" role="alert"></p>
+        <button class="btn btn-dark btn-block" id="o-send" type="submit">הצטרפות לרשימת ההמתנה</button>
+        <p class="secure"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>אין תשלום עכשיו. נחזור אליכם כשהמילונית תגיע.</p>
+      </div>
+    </aside>
+  </form>
+
+  <div class="odone" id="o-done" hidden>
+    <div class="ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h2>נרשמתם לרשימת ההמתנה</h2>
+    <p>תודה! כשהמילונית תגיע למלאי, נחזור אליכם לאישור ההזמנה.</p>
+    <a class="btn btn-ghost" href="shop.html">חזרה לחנות</a>
+  </div>
+</main>
+<footer class="ft"><div class="wrap in">
+  <span>החנות של ספר השיחות מתורגם ללה״ק</span>
+  <nav><a href="shop-milonit.html">המילונית</a><a href="shop-milon.html">המילון המודפס</a><a href="shop-order.html">הזמנה</a><a href="/">לאתר</a></nav>
+</div></footer>
+<script>
+(function () {
+  // כתובת להזמנות בלבד, דרך קוד FormSubmit (הכתובת עצמה לא מופיעה בדף)
+  var ENDPOINT = 'https://formsubmit.co/ajax/dcdf10d01f6fa52dae52d2f5e5f13344';
+  var form = document.getElementById('order');
+  var err = document.getElementById('o-err');
+  var send = document.getElementById('o-send');
+  var q = form.elements.q_milonit;
+  function qty() { var n = parseInt(q.value, 10); return n >= 1 ? n : 1; }
+  form.querySelector('.minus').addEventListener('click', function () { q.value = Math.max(1, qty() - 1); });
+  form.querySelector('.plus').addEventListener('click', function () { q.value = Math.min(50, qty() + 1); });
+  function fail(msg, el) { err.textContent = msg; if (el) el.focus(); return false; }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    err.textContent = '';
+    var v = q.value.trim(), n = parseInt(v, 10);
+    if (!(n >= 1 && n <= 50 && String(n) === v)) return fail('הכמות צריכה להיות מספר בין 1 ל-50.', q);
+    if (!form.elements.name.value.trim()) return fail('נא למלא שם.', form.elements.name);
+    if (form.phone.value.replace(/\D/g, '').length < 9) return fail('נא למלא מספר טלפון תקין.', form.phone);
+    if (!form.email.value.trim() || !form.email.checkValidity()) return fail('נא למלא כתובת אימייל תקינה.', form.email);
+    var data = {
+      'רשימת המתנה': 'מילונית: ' + n,
+      'שם': form.elements.name.value.trim(),
+      'טלפון': form.phone.value.trim(),
+      'אימייל': form.email.value.trim(),
+      'הערות': form.notes.value.trim() || '-',
+      'מחיר': 'מחיר השקה 175 ש״ח לעשרת הראשונים ברשימה, אחר כך 220 ש״ח. משלוח 25 ש״ח או איסוף עצמי.',
+      '_subject': 'רשימת המתנה למילונית: ' + n,
+      '_template': 'table',
+      '_captcha': 'false',
+      '_honey': form._honey.value
+    };
+    send.disabled = true; send.textContent = 'שולח…';
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok || j.success === false || j.success === 'false') throw new Error(j.message || ('status ' + r.status));
+      });
+    }).then(function () {
+      form.hidden = true;
+      document.getElementById('o-done').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }).catch(function (e) {
+      fail('השליחה לא הצליחה. נסו שוב בעוד רגע.');
+      send.disabled = false; send.textContent = 'הצטרפות לרשימת ההמתנה';
+    });
+  });
+})();
+</script>
+</body>
+</html>
