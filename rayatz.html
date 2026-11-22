@@ -274,7 +274,14 @@ a.year-chip { display:inline-block; text-decoration:none; -webkit-touch-callout:
   const syncUrl = () => {
     try {
       const u = new URL(location.href);
-      if (st.mode === 'series' && st.series) u.searchParams.set('s', slugOf(st.series)); else u.searchParams.delete('s');
+      // סדרה מוכרת: בשורת הכתובת מופיע דף הסדרה (rayatz-<slug>.html), כך ששיתוף הקישור מציג תצוגה מקדימה עם שם הסדרה
+      const sl = st.mode === 'series' && st.series && SLUG[st.series];
+      u.searchParams.delete('s');
+      if (sl) u.pathname = u.pathname.replace(/[^\/]*$/, 'rayatz-' + sl + '.html');
+      else {
+        u.pathname = u.pathname.replace(/[^\/]*$/, 'rayatz.html');
+        if (st.mode === 'series' && st.series) u.searchParams.set('s', slugOf(st.series));
+      }
       if (u.href !== location.href) history.replaceState(null, '', u.pathname + u.search + u.hash);
     } catch (e) {}
   };
