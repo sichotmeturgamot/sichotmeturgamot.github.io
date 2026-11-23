@@ -1064,6 +1064,17 @@ const YEARS = [
         "hebDate": "קיץ",
         "addedAt": "2026-11-17",
         "hasPage": true
+      },
+      {
+        "title": "ב', י\"ב תמוז תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/yud_beis_tammuz_5708.pdf",
+        "pages": 11,
+        "count": 1,
+        "sortDate": "11-12",
+        "hebDate": "י״ב תמוז",
+        "addedAt": "2026-11-23",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",

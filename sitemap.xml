@@ -6,18 +6,13 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://sichotmeturgamot.com/rayatz.html</loc>
-    <lastmod>2026-11-20</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://sichotmeturgamot.com/sichos.html</loc>
     <lastmod>2026-11-14</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/index.html</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -57,47 +52,52 @@
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/rosh-hashana.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/yom-kippur.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/sukkos.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/simchas-torah.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/yud-tes-kislev.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/purim.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/pesach.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/shavuos.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sichotmeturgamot.com/sichos/moadim/yud-beis-tammuz.html</loc>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/moadim/elul.html</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -552,7 +552,12 @@
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/summer_5708.html</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-23</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sichotmeturgamot.com/sichos/yud_beis_tammuz_5708.html</loc>
+    <lastmod>2026-11-23</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>
