@@ -1086,6 +1086,17 @@ const YEARS = [
         "hebDate": "ט״ו תמוז",
         "addedAt": "2026-11-25",
         "hasPage": true
+      },
+      {
+        "title": "יחידות תמוז תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/yechidus_tammuz_5708.pdf",
+        "pages": 1,
+        "count": 1,
+        "sortDate": "11-15",
+        "hebDate": "ט״ו תמוז",
+        "addedAt": "2026-11-25",
+        "hasPage": true
       }
     ],
     "fullFile": "pdfs/choref_5708.pdf",
