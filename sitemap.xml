@@ -12,7 +12,7 @@
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/index.html</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -557,7 +557,12 @@
   </url>
   <url>
     <loc>https://sichotmeturgamot.com/sichos/yud_beis_tammuz_5708.html</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-25</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sichotmeturgamot.com/sichos/yechidus_tes_tammuz_5708.html</loc>
+    <lastmod>2026-11-25</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>
