@@ -1066,17 +1066,6 @@ const YEARS = [
         "hasPage": true
       },
       {
-        "title": "רשימת שיחה - בקיץ תש\"ח",
-        "subtitle": "",
-        "file": "pdfs/reshimas_sicha_summer_5708.pdf",
-        "pages": 4,
-        "count": 1,
-        "sortDate": "11-06",
-        "hebDate": "קיץ",
-        "addedAt": "2026-11-25",
-        "hasPage": true
-      },
-      {
         "title": "ב', י\"ב תמוז תש\"ח",
         "subtitle": "",
         "file": "pdfs/yud_beis_tammuz_5708.pdf",
@@ -1106,6 +1095,17 @@ const YEARS = [
         "count": 1,
         "sortDate": "11-15",
         "hebDate": "ט״ו תמוז",
+        "addedAt": "2026-11-25",
+        "hasPage": true
+      },
+      {
+        "title": "רשימת שיחה - בקיץ תש\"ח",
+        "subtitle": "",
+        "file": "pdfs/reshimas_sicha_summer_5708.pdf",
+        "pages": 4,
+        "count": 1,
+        "sortDate": "11-16",
+        "hebDate": "קיץ",
         "addedAt": "2026-11-25",
         "hasPage": true
       }
